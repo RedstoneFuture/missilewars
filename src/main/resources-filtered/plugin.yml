@@ -1,0 +1,50 @@
+name: MissileWars
+author: Butzlabben
+version: ${project.version}
+main: de.butzlabben.missilewars.MissileWars
+
+api-version: 1.13
+
+depend: [ WorldEdit ]
+softdepend: [ Vault, FastAsyncWorldEdit ]
+
+commands:
+  mw:
+  mw appendrestart:
+    permission: mw.appendrestart
+  mw stop:
+    permission: mw.stop
+  mw start:
+    permission: mw.start
+  mw paste:
+    permission: mw.paste
+  mw restart:
+    permission: mw.restart
+  mw setup:
+    permission: mw.setup
+
+permissions:
+  mw.*:
+    default: op
+    children:
+      mw.appendrestart: true
+      mw.restart: true
+      mw.stop: true
+      mw.start: true
+      mw.paste: true
+      mw.change: true
+  mw.stop:
+    default: op
+  mw.start:
+    default: op
+  mw.paste:
+    default: false
+  mw.appendrestart:
+    default: op
+  mw.restart:
+    default: op
+  mw.setup:
+    default: op
+  mw.change:
+    default: op
+  
