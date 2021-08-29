@@ -58,7 +58,7 @@ public class Lobby {
     private Area area = Area.defaultAreaAround(Bukkit.getWorlds().get(0).getSpawnLocation());
     @SerializedName("map_choose_procedure") private MapChooseProcedure mapChooseProcedure = MapChooseProcedure.FIRST;
     @SerializedName("possible_arenas") private List<String> possibleArenas = new ArrayList<String>() {{
-        add("arena");
+        add("arena0");
     }};
 
     @Setter private transient File file;

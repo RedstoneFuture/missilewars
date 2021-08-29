@@ -42,7 +42,7 @@ public class Arenas {
         File folder = new File(Config.getArenaFolder());
         File[] files = folder.listFiles();
         if (files.length == 0) {
-            File defaultArena = new File(folder, "arena.yml");
+            File defaultArena = new File(folder, "arena0.yml");
             try {
                 defaultArena.createNewFile();
                 Serializer.serialize(defaultArena, new Arena());
