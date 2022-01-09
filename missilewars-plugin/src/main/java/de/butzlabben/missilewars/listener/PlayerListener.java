@@ -217,9 +217,7 @@ public class PlayerListener implements Listener {
         Game game = getGame(event.getWhoClicked().getLocation());
         if (game != null) {
             if (event.getInventory().getType() == InventoryType.ANVIL) {
-                if (event.getCurrentItem().getAmount() != 1) {
-                    event.setCancelled(true);
-                }
+                event.setCancelled(true);
             }
         }
     }
