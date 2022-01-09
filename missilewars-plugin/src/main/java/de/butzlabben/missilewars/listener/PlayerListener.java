@@ -211,13 +211,15 @@ public class PlayerListener implements Listener {
         return false;
     }
 
-    // cancel anvil interact to block the way to rename
-    // missile spawn-egg for changing the spawn
+    // cancel anvil interaction to block renaming, and thus changing missiles
     @EventHandler
     public void onClick(InventoryClickEvent event) {
-        if(event.getInventory().getType() == InventoryType.ANVIL) {
-            if(event.getCurrentItem().getAmount() != 1) {
-                event.setCancelled(true);
+        Game game = getGame(event.getWhoClicked().getLocation());
+        if (game != null) {
+            if (event.getInventory().getType() == InventoryType.ANVIL) {
+                if (event.getCurrentItem().getAmount() != 1) {
+                    event.setCancelled(true);
+                }
             }
         }
     }
