@@ -21,16 +21,10 @@ package de.butzlabben.missilewars.util.stats;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
-import com.mojang.authlib.properties.PropertyMap;
-import com.mojang.util.UUIDTypeAdapter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -44,6 +38,7 @@ import java.util.Map;
 import java.util.UUID;
 import lombok.Getter;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
+import com.mojang.util.UUIDTypeAdapter;
 
 /**
  * @author Butzlabben
