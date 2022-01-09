@@ -21,6 +21,11 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
 
     <groupId>de.butzlabben</groupId>
     <artifactId>missilewars</artifactId>
@@ -42,77 +47,79 @@
         </repository>
 
         <repository>
-            <id>we-repo</id>
-            <url>http://maven.sk89q.com/repo/</url>
+            <id>enginehub-maven</id>
+            <url>https://maven.enginehub.org/repo/</url>
         </repository>
 
         <repository>
-            <id>CodeMC</id>
-            <url>https://repo.codemc.org/repository/maven-public</url>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
 
         <repository>
-            <id>vault-repo</id>
-            <url>http://nexus.hc.to/content/repositories/pub_releases</url>
-        </repository>
-
-        <!--Repo for CommandFramework-->
-        <repository>
-            <id>pp-public</id>
-            <url>http://nexus.myplayplanet.net/repository/public/</url>
-        </repository>
-        <repository>
-            <id>fawe-repo</id>
-            <url>http://ci.athion.net/job/FastAsyncWorldEdit/ws/mvn/</url>
+            <id>S01-Sonatype-Snapshots</id>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
 
         <repository>
-            <id>mojang</id>
-            <name>Mojang's Repository</name>
+            <id>minecraft-repo</id>
             <url>https://libraries.minecraft.net/</url>
         </repository>
 
-        <!-- FAWE 1.16-->
-        <repository>
-            <id>IntellectualSites</id>
-            <url>https://mvn.intellectualsites.com/content/repositories/releases/</url>
-        </repository>
     </repositories>
 
     <dependencies>
+        <!-- repo spigot-repo -->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.14-R0.1-SNAPSHOT</version>
+            <version>1.18.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
+        <!-- repo enginehub-maven -->
         <dependency>
-            <groupId>org.bukkit</groupId>
-            <artifactId>bukkit</artifactId>
-            <version>1.14-R0.1-SNAPSHOT</version>
+            <groupId>com.sk89q.worldedit</groupId>
+            <artifactId>worldedit-bukkit</artifactId>
+            <version>7.2.0-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.sk89q.worldedit</groupId>
+            <artifactId>worldedit-core</artifactId>
+            <version>7.2.0-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
+        <!-- repo jitpack.io -->
         <dependency>
-            <groupId>net.milkbowl.vault</groupId>
+            <groupId>com.github.MilkBowl</groupId>
             <artifactId>VaultAPI</artifactId>
-            <version>1.6</version>
+            <version>1.7</version>
             <scope>provided</scope>
         </dependency>
 
+        <!-- repo maven central -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.20</version>
+            <version>1.18.22</version>
             <scope>provided</scope>
         </dependency>
 
+        <!-- repo minecraft-repo -->
         <dependency>
             <groupId>com.mojang</groupId>
             <artifactId>authlib</artifactId>
             <version>1.5.21</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.bstats</groupId>
+            <artifactId>bstats-bukkit</artifactId>
+            <version>2.2.1</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
