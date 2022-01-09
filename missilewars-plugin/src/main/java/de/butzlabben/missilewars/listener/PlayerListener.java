@@ -41,6 +41,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -209,6 +211,16 @@ public class PlayerListener implements Listener {
         return false;
     }
 
+    // cancel anvil interact to block the way to rename
+    // missile spawn-egg for changing the spawn
+    @EventHandler
+    public void onClick(InventoryClickEvent event) {
+        if(event.getInventory().getType() == InventoryType.ANVIL) {
+            if(event.getCurrentItem().getAmount() != 1) {
+                event.setCancelled(true);
+            }
+        }
+    }
 
     // Internal stuff
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
