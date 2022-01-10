@@ -59,14 +59,15 @@ public class RespawnGoldBlock implements Listener {
     }
 
     private void activate() {
+        double seconds = (double) duration / 20;
+        if ((seconds == Math.floor(seconds)) && !Double.isInfinite(seconds)) {
+            player.sendMessage(MessageConfig.getMessage("fall_protection").replace("%seconds%", "" + (int) seconds));
+        }
+
         task = Bukkit.getScheduler().scheduleSyncRepeatingTask(MissileWars.getInstance(), () -> {
             if (duration == 0) {
                 stop();
                 return;
-            }
-            double seconds = (double) duration / 20;
-            if ((seconds == Math.floor(seconds)) && !Double.isInfinite(seconds)) {
-                player.sendMessage(MessageConfig.getMessage("fall_protection").replace("%seconds%", "" + (int) seconds));
             }
             if (player.getGameMode() != GameMode.SURVIVAL) {
                 stop();
