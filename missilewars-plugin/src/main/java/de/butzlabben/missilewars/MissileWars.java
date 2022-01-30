@@ -71,37 +71,24 @@ public class MissileWars extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        long start = System.currentTimeMillis();
-        Logger.BOOT.log("This server is running MissileWars v" + version + " by Butzlabben");
-        if (VersionUtil.getVersion() < 8) {
-            Logger.WARN.log("====================================================");
-            Logger.WARN.log("It seems that you are using version older than 1.8");
-            Logger.WARN.log("There is no guarantee for this to work");
-            Logger.WARN.log("Proceed with extreme caution");
-            Logger.WARN.log("====================================================");
-        }
+        long startTime;
+        long endTime;
 
-        if (version.contains("beta")) {
-            Logger.WARN.log("NOTE: This is a beta version which means, that it may not be fully stable");
-        }
+        startTime = System.currentTimeMillis();
 
-        if (getDescription().getAuthors().size() > 1) {
-            StringBuilder sb = new StringBuilder();
-            for (String author : getDescription().getAuthors()) {
-                if (author.equals("Butzlabben"))
-                    continue;
-                sb.append(author);
-                sb.append(" ");
-            }
-            Logger.BOOT.log("Other authors: " + sb);
-        }
+        sendPluginInfo();
 
         Logger.BOOT.log("Loading properties...");
-        checkMaps();
+
+        deleteTempWorlds();
+
         Config.load();
         MessageConfig.load();
+
+        // TODO
         // I don't know why, and I don't want to know why, but this is needed to ensure the the messages are properly loaded at the first time
         MessageConfig.load();
+
         new File(Config.getArenaFolder()).mkdirs();
         new File(Config.getLobbiesFolder()).mkdirs();
 
@@ -112,7 +99,8 @@ public class MissileWars extends JavaPlugin {
         }
         this.signRepository = repository;
 
-        checkMaps();
+        // TODO (Why twice again?)
+        deleteTempWorlds();
 
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         Bukkit.getPluginManager().registerEvents(new ClickListener(), this);
@@ -149,18 +137,21 @@ public class MissileWars extends JavaPlugin {
             PreFetcher.preFetchPlayers(new StatsFetcher(new Date(0L), ""));
         }
 
-        long end = System.currentTimeMillis();
-        Logger.SUCCESS.log("MissileWars was enabled in " + (end - start) + "ms");
+        endTime = System.currentTimeMillis();
+        Logger.SUCCESS.log("MissileWars was enabled in " + (endTime - startTime) + "ms");
     }
 
     @Override
     public void onDisable() {
         GameManager.getInstance().disableAll();
-        checkMaps();
+        deleteTempWorlds();
+
+        // TODO
         File missiles = new File(getDataFolder(), "missiles.zip");
         File arena = new File(getDataFolder(), "MissileWars-Arena.zip");
         FileUtils.deleteQuietly(missiles);
         FileUtils.deleteQuietly(arena);
+
         ConnectionHolder.close();
     }
 
@@ -168,7 +159,10 @@ public class MissileWars extends JavaPlugin {
         return foundFAWE;
     }
 
-    private void checkMaps() {
+    /**
+     * This methode delete the temp arena worlds of the MW game.
+     */
+    private void deleteTempWorlds() {
         File[] dirs = Bukkit.getWorldContainer().listFiles();
         for (File dir : dirs) {
             if (dir.getName().startsWith("mw-")) {
@@ -177,6 +171,38 @@ public class MissileWars extends JavaPlugin {
                 } catch (Exception ignored) {
                 }
             }
+        }
+    }
+
+    /**
+     * This methode send info about the version, version warnings (if needed) and the autors
+     * in the console.
+     */
+    private void sendPluginInfo() {
+
+        Logger.BOOT.log("This server is running MissileWars v" + version + " by Butzlabben");
+
+        if (VersionUtil.getVersion() < 8) {
+            Logger.WARN.log("====================================================");
+            Logger.WARN.log("It seems that you are using version older than 1.8");
+            Logger.WARN.log("There is no guarantee for this to work");
+            Logger.WARN.log("Proceed with extreme caution");
+            Logger.WARN.log("====================================================");
+        }
+
+        if (version.contains("beta")) {
+            Logger.WARN.log("NOTE: This is a beta version which means, that it may not be fully stable");
+        }
+
+        if (getDescription().getAuthors().size() > 1) {
+            StringBuilder sb = new StringBuilder();
+            for (String author : getDescription().getAuthors()) {
+                if (author.equals("Butzlabben"))
+                    continue;
+                sb.append(author);
+                sb.append(" ");
+            }
+            Logger.BOOT.log("Other authors: " + sb);
         }
     }
 }
