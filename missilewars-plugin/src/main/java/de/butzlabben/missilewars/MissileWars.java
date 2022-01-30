@@ -80,6 +80,7 @@ public class MissileWars extends JavaPlugin {
 
         Logger.BOOT.log("Loading properties...");
 
+        // delete old missile wars temp-worlds from the last server session
         deleteTempWorlds();
 
         Config.load();
@@ -99,9 +100,6 @@ public class MissileWars extends JavaPlugin {
         }
         this.signRepository = repository;
 
-        // TODO (Why twice again?)
-        deleteTempWorlds();
-
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
         Bukkit.getPluginManager().registerEvents(new ClickListener(), this);
         Bukkit.getPluginManager().registerEvents(new ManageListener(), this);
@@ -111,7 +109,6 @@ public class MissileWars extends JavaPlugin {
         framework.registerCommands(new MWCommands());
         framework.registerCommands(new StatsCommands());
         framework.registerCommands(new UserCommands());
-        Logger.BOOTDONE.log("Registering commands");
 
         Arenas.load();
         SetupUtil.checkShields();
@@ -120,6 +117,7 @@ public class MissileWars extends JavaPlugin {
 
         new Metrics(this, 3749);
 
+        // Check if FAWE is installed
         foundFAWE = Bukkit.getPluginManager().getPlugin("FastAsyncWorldEdit") != null;
 
         GameManager.getInstance().getGames().values().forEach(game -> {
@@ -155,6 +153,9 @@ public class MissileWars extends JavaPlugin {
         ConnectionHolder.close();
     }
 
+    /**
+     * @return true, of FAWE is installed
+     */
     public boolean foundFAWE() {
         return foundFAWE;
     }
