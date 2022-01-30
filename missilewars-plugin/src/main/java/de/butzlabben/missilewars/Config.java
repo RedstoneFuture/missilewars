@@ -45,25 +45,28 @@ public class Config {
     private static final File dir = MissileWars.getInstance().getDataFolder();
     private static final File file = new File(MissileWars.getInstance().getDataFolder(), "config.yml");
     private static YamlConfiguration cfg;
+    private static boolean configNew = false;
 
     public static void load() {
-        boolean configNew = false;
 
+        // check if the directory "/MissileWars" is exist
         if (!dir.exists())
             dir.mkdirs();
 
         SetupUtil.checkMissiles();
+
+        // check if the config file is exist
         if (!file.exists()) {
-            configNew = true;
-            dir.mkdirs();
             try {
                 file.createNewFile();
             } catch (IOException e) {
                 Logger.ERROR.log("Could not create config!");
                 e.printStackTrace();
             }
+            configNew = true;
         }
 
+        // try to load the config
         try {
             cfg = YamlConfiguration
                     .loadConfiguration(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
@@ -73,11 +76,40 @@ public class Config {
             return;
         }
 
+        // copy the config input
         cfg.options().copyDefaults(true);
 
+        // validate the config options
+        addDefaults();
+
+        // re-save the config with only validated options
+        saveConfig();
+    }
+
+    public static HashMap<String, Integer> getScoreboardEntries() {
+        HashMap<String, Integer> ret = new HashMap<>();
+        ConfigurationSection section = cfg.getConfigurationSection("sidebar.entries");
+        for (String s : section.getKeys(false)) {
+            ret.put(section.getString(s), Integer.valueOf(s));
+        }
+        return ret;
+    }
+
+    public static Material getStartReplace() {
+        String name = cfg.getString("replace.material", "JUKEBOX").toUpperCase();
+        try {
+            return valueOf(name);
+        } catch (Exception e) {
+            Logger.WARN.log("Unknown material " + name + " in start_replace");
+        }
+        return null;
+    }
+
+    private static void addDefaults() {
         cfg.addDefault("debug", false);
-        if (debug())
+        if (debug()) {
             Logger.DEBUG.log("Debug enabled");
+        }
 
         cfg.addDefault("setup_mode", false);
 
@@ -131,38 +163,13 @@ public class Config {
             cfg.addDefault("sidebar.entries.2", "   ");
             cfg.addDefault("sidebar.entries.1", "%team2% §7» %team2_color%%team2_amount%");
         }
+    }
+
+    private static void saveConfig() {
         try {
             cfg.save(file);
         } catch (IOException e) {
             Logger.ERROR.log("Could not save config!");
-            e.printStackTrace();
-        }
-    }
-
-    public static HashMap<String, Integer> getScoreboardEntries() {
-        HashMap<String, Integer> ret = new HashMap<>();
-        ConfigurationSection section = cfg.getConfigurationSection("sidebar.entries");
-        for (String s : section.getKeys(false)) {
-            ret.put(section.getString(s), Integer.valueOf(s));
-        }
-        return ret;
-    }
-
-    public static Material getStartReplace() {
-        String name = cfg.getString("replace.material", "JUKEBOX").toUpperCase();
-        try {
-            return valueOf(name);
-        } catch (Exception e) {
-            Logger.WARN.log("Unknown material " + name + " in start_replace");
-        }
-        return null;
-    }
-
-    public static void save(YamlConfiguration cfg) {
-        try {
-            cfg.save(file);
-        } catch (IOException e) {
-            Logger.ERROR.log("Couldn't save config");
             e.printStackTrace();
         }
     }
