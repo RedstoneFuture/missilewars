@@ -82,6 +82,8 @@ public class SetupUtil {
 
     public static void checkMissiles() {
         File file = new File(MissileWars.getInstance().getDataFolder(), "missiles");
+
+        // check if the directory "/missiles" is exist
         if (!file.isDirectory()) {
             Logger.BOOT.log("Copying default missiles folder");
 
@@ -90,7 +92,7 @@ public class SetupUtil {
             try {
                 copyZip(resource, file.getPath());
             } catch (IOException e) {
-                Logger.ERROR.log("Unable to copy missiles");
+                Logger.ERROR.log("Unable to copy missiles!");
                 e.printStackTrace();
             }
         }

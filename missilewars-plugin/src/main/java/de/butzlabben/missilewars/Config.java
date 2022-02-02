@@ -53,14 +53,12 @@ public class Config {
         if (!dir.exists())
             dir.mkdirs();
 
-        SetupUtil.checkMissiles();
-
         // check if the config file is exist
         if (!file.exists()) {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                Logger.ERROR.log("Could not create config!");
+                Logger.ERROR.log("Could not create config.yml!");
                 e.printStackTrace();
             }
             configNew = true;
@@ -68,11 +66,10 @@ public class Config {
 
         // try to load the config
         try {
-            cfg = YamlConfiguration
-                    .loadConfiguration(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
-        } catch (FileNotFoundException e1) {
+            cfg = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
+        } catch (FileNotFoundException e) {
             Logger.ERROR.log("Couldn't load config.yml");
-            e1.printStackTrace();
+            e.printStackTrace();
             return;
         }
 
@@ -84,25 +81,6 @@ public class Config {
 
         // re-save the config with only validated options
         saveConfig();
-    }
-
-    public static HashMap<String, Integer> getScoreboardEntries() {
-        HashMap<String, Integer> ret = new HashMap<>();
-        ConfigurationSection section = cfg.getConfigurationSection("sidebar.entries");
-        for (String s : section.getKeys(false)) {
-            ret.put(section.getString(s), Integer.valueOf(s));
-        }
-        return ret;
-    }
-
-    public static Material getStartReplace() {
-        String name = cfg.getString("replace.material", "JUKEBOX").toUpperCase();
-        try {
-            return valueOf(name);
-        } catch (Exception e) {
-            Logger.WARN.log("Unknown material " + name + " in start_replace");
-        }
-        return null;
     }
 
     private static void addDefaults() {
@@ -169,9 +147,28 @@ public class Config {
         try {
             cfg.save(file);
         } catch (IOException e) {
-            Logger.ERROR.log("Could not save config!");
+            Logger.ERROR.log("Could not save config.yml!");
             e.printStackTrace();
         }
+    }
+
+    public static HashMap<String, Integer> getScoreboardEntries() {
+        HashMap<String, Integer> ret = new HashMap<>();
+        ConfigurationSection section = cfg.getConfigurationSection("sidebar.entries");
+        for (String s : section.getKeys(false)) {
+            ret.put(section.getString(s), Integer.valueOf(s));
+        }
+        return ret;
+    }
+
+    public static Material getStartReplace() {
+        String name = cfg.getString("replace.material", "JUKEBOX").toUpperCase();
+        try {
+            return valueOf(name);
+        } catch (Exception e) {
+            Logger.WARN.log("Unknown material " + name + " in start_replace");
+        }
+        return null;
     }
 
     public static Location getFallbackSpawn() {
@@ -195,27 +192,27 @@ public class Config {
     }
 
     public static String motdEnded() {
-        return cfg.getString("motd.ended", "&cError configuring motd in motd.ended");
+        return cfg.getString("motd.ended");
     }
 
     public static String motdGame() {
-        return cfg.getString("motd.ingame", "&cError configuring motd in motd.ingame");
+        return cfg.getString("motd.ingame");
     }
 
     public static String motdLobby() {
-        return cfg.getString("motd.lobby", "&cError configuring motd in motd.lobby");
+        return cfg.getString("motd.lobby");
     }
 
     public static boolean motdEnabled() {
-        return cfg.getBoolean("motd.enable", true);
+        return cfg.getBoolean("motd.enable");
     }
 
     public static int getReplaceTicks() {
-        return cfg.getInt("replace.after_ticks", 1);
+        return cfg.getInt("replace.after_ticks");
     }
 
     public static int getReplaceRadius() {
-        return cfg.getInt("replace.radius", 1);
+        return cfg.getInt("replace.radius");
     }
 
     static boolean debug() {
@@ -239,31 +236,31 @@ public class Config {
     }
 
     public static String getHost() {
-        return cfg.getString("mysql.host", "localhost");
+        return cfg.getString("mysql.host");
     }
 
     public static String getDatabase() {
-        return cfg.getString("mysql.database", "db");
+        return cfg.getString("mysql.database");
     }
 
     public static String getPort() {
-        return cfg.getString("mysql.port", "3306");
+        return cfg.getString("mysql.port");
     }
 
     public static String getUser() {
-        return cfg.getString("mysql.user", "root");
+        return cfg.getString("mysql.user");
     }
 
     public static String getPassword() {
-        return cfg.getString("mysql.password", "");
+        return cfg.getString("mysql.password");
     }
 
     public static String getFightsTable() {
-        return cfg.getString("mysql.fights_table", "mw_fights");
+        return cfg.getString("mysql.fights_table");
     }
 
     public static String getFightMembersTable() {
-        return cfg.getString("mysql.fightmember_table", "mw_fightmember");
+        return cfg.getString("mysql.fightmember_table");
     }
 
     public static String getArenaFolder() {

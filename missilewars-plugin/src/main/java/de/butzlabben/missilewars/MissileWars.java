@@ -85,10 +85,7 @@ public class MissileWars extends JavaPlugin {
 
         Config.load();
         MessageConfig.load();
-
-        // TODO
-        // I don't know why, and I don't want to know why, but this is needed to ensure the the messages are properly loaded at the first time
-        MessageConfig.load();
+        SetupUtil.checkMissiles();
 
         new File(Config.getArenaFolder()).mkdirs();
         new File(Config.getLobbiesFolder()).mkdirs();
