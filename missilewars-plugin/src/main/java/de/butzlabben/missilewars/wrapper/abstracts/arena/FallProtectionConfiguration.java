@@ -30,4 +30,5 @@ public class FallProtectionConfiguration {
 
     private final boolean enabled = true;
     private final int duration = 60;
+    private final boolean message_only_on_start = false;
 }

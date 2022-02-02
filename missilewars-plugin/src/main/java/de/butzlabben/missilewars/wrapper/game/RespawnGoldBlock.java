@@ -48,20 +48,23 @@ public class RespawnGoldBlock implements Listener {
     private final Game game;
     private final Map<Location, Map.Entry<Material, ?>> map = new HashMap<>();
     private int duration;
+    private final boolean messageOnlyOnStart;
     private int task;
 
-    public RespawnGoldBlock(Player p, int dur, Game game) {
-        this.duration = dur;
+    public RespawnGoldBlock(Player p, int duration, boolean messageOnlyOnStart, Game game) {
         this.player = p;
+        this.duration = duration;
+        this.messageOnlyOnStart = messageOnlyOnStart;
         this.game = game;
+
         Bukkit.getPluginManager().registerEvents(this, MissileWars.getInstance());
         activate();
     }
 
     private void activate() {
-        double seconds = (double) duration / 20;
-        if ((seconds == Math.floor(seconds)) && !Double.isInfinite(seconds)) {
-            player.sendMessage(MessageConfig.getMessage("fall_protection").replace("%seconds%", "" + (int) seconds));
+
+        if (messageOnlyOnStart) {
+            sendFallProtectionMessage();
         }
 
         task = Bukkit.getScheduler().scheduleSyncRepeatingTask(MissileWars.getInstance(), () -> {
@@ -69,6 +72,11 @@ public class RespawnGoldBlock implements Listener {
                 stop();
                 return;
             }
+
+            if (!messageOnlyOnStart) {
+                sendFallProtectionMessage();
+            }
+
             if (player.getGameMode() != GameMode.SURVIVAL) {
                 stop();
                 return;
@@ -121,6 +129,17 @@ public class RespawnGoldBlock implements Listener {
         player.sendMessage(MessageConfig.getMessage("fall_protection_inactive"));
         Bukkit.getScheduler().cancelTask(task);
         HandlerList.unregisterAll(this);
+    }
+
+    /**
+     * This methode send the fall protection message to the player.
+     * The message include the remaining time until the fall protection is ending.
+     */
+    private void sendFallProtectionMessage() {
+        double seconds = (double) duration / 20;
+        if ((seconds == Math.floor(seconds)) && !Double.isInfinite(seconds)) {
+            player.sendMessage(MessageConfig.getMessage("fall_protection").replace("%seconds%", "" + (int) seconds));
+        }
     }
 
     @EventHandler
