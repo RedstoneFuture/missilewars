@@ -34,29 +34,46 @@ import org.bukkit.configuration.file.YamlConfiguration;
  */
 public class MessageConfig {
 
-    private static final File dir = new File(MissileWars.getInstance().getDataFolder(), "missiles/");
+    private static final File dir = MissileWars.getInstance().getDataFolder();
     private static final File file = new File(MissileWars.getInstance().getDataFolder(), "messages.yml");
     private static YamlConfiguration cfg;
 
     public static void load() {
-        if (!file.exists()) {
+
+        // check if the directory "/MissileWars" is exist
+        if (!dir.exists())
             dir.mkdirs();
+
+        // check if the config file is exist
+        if (!file.exists()) {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                Logger.ERROR.log("Could not create properties!");
+                Logger.ERROR.log("Could not create messages.yml!");
                 e.printStackTrace();
             }
         }
+
+        // try to load the config
         try {
             cfg = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
-        } catch (FileNotFoundException e1) {
+        } catch (FileNotFoundException e) {
             Logger.ERROR.log("Couldn't load messages.yml");
-            e1.printStackTrace();
+            e.printStackTrace();
             return;
         }
 
+        // copy the config input
         cfg.options().copyDefaults(true);
+
+        // validate the config options
+        addDefaults();
+
+        // re-save the config with only validated options
+        saveConfig();
+    }
+
+    private static void addDefaults() {
 
         cfg.addDefault("prefix", "&6•&e● MissileWars &8▎  &7");
 
@@ -108,10 +125,13 @@ public class MessageConfig {
         cfg.addDefault("vote.finished", "The map %map% &7was elected");
         cfg.addDefault("vote.gui", "Vote for a map");
 
+    }
+
+    private static void saveConfig() {
         try {
             cfg.save(file);
         } catch (IOException e) {
-            Logger.ERROR.log("Could not save properties!");
+            Logger.ERROR.log("Could not save messages.yml!");
             e.printStackTrace();
         }
     }
@@ -129,6 +149,6 @@ public class MessageConfig {
     }
 
     public static String getPrefix() {
-        return ChatColor.translateAlternateColorCodes('&', cfg.getString("prefix", "&6•&e● MissileWars &8▎  &7"));
+        return ChatColor.translateAlternateColorCodes('&', cfg.getString("prefix"));
     }
 }
