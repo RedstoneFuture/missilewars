@@ -19,6 +19,7 @@
 package de.butzlabben.missilewars.wrapper.abstracts.arena;
 
 
+import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -30,5 +31,5 @@ public class FallProtectionConfiguration {
 
     private final boolean enabled = true;
     private final int duration = 60;
-    private final boolean message_only_on_start = false;
+    @SerializedName("message_only_on_start") private final boolean messageOnlyOnStart = false;
 }
