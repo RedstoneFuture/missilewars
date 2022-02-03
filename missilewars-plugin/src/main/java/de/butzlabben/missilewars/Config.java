@@ -161,12 +161,15 @@ public class Config {
         return ret;
     }
 
+    /**
+     * This methode get the material of the block to start the missile.
+     */
     public static Material getStartReplace() {
-        String name = cfg.getString("replace.material", "JUKEBOX").toUpperCase();
+        String name = cfg.getString("replace.material").toUpperCase();
         try {
             return valueOf(name);
         } catch (Exception e) {
-            Logger.WARN.log("Unknown material " + name + " in start_replace");
+            Logger.WARN.log("Could not use " + name + " as start material!");
         }
         return null;
     }
@@ -189,6 +192,10 @@ public class Config {
         }
 
         return location;
+    }
+
+    public static YamlConfiguration getConfig() {
+        return cfg;
     }
 
     public static String motdEnded() {
@@ -217,10 +224,6 @@ public class Config {
 
     static boolean debug() {
         return cfg.getBoolean("debug");
-    }
-
-    public static YamlConfiguration getConfig() {
-        return cfg;
     }
 
     public static boolean isSetup() {
