@@ -246,7 +246,7 @@ public class GameListener extends GameBoundListener {
             e.setRespawnLocation(t.getSpawn());
             FallProtectionConfiguration fallProtection = getGame().getArena().getFallProtection();
             if (fallProtection.isEnabled())
-                new RespawnGoldBlock(e.getPlayer(), fallProtection.getDuration(), getGame());
+                new RespawnGoldBlock(e.getPlayer(), fallProtection.getDuration(), fallProtection.isMessageOnlyOnStart(), getGame());
         } else {
             e.setRespawnLocation(getGame().getArena().getSpectatorSpawn());
         }
