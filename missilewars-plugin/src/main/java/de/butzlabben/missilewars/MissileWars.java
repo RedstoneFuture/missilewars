@@ -63,7 +63,7 @@ public class MissileWars extends JavaPlugin {
     }
 
     /**
-     * @return the instance
+     * @return the instance of the plugin
      */
     public static MissileWars getInstance() {
         return instance;
@@ -151,7 +151,7 @@ public class MissileWars extends JavaPlugin {
     }
 
     /**
-     * @return true, of FAWE is installed
+     * @return true, if FAWE is installed
      */
     public boolean foundFAWE() {
         return foundFAWE;
@@ -173,7 +173,7 @@ public class MissileWars extends JavaPlugin {
     }
 
     /**
-     * This methode send info about the version, version warnings (if needed) and the autors
+     * This methode send info about the version, version warnings (if needed) and the authors
      * in the console.
      */
     private void sendPluginInfo() {
