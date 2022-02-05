@@ -285,9 +285,9 @@ public class GameListener extends GameBoundListener {
         // check the death cause for choice the death message
         if (p.getLastDamageCause() != null) {
 
-            EntityDamageEvent.DamageCause demageCause = p.getLastDamageCause().getCause();
+            EntityDamageEvent.DamageCause damageCause = p.getLastDamageCause().getCause();
 
-            if (demageCause == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION || demageCause == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
+            if (damageCause == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION || damageCause == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
                 deathBroadcastMessage = MessageConfig.getNativeMessage("died_explosion").replace("%player%", p.getDisplayName());
             } else {
                 deathBroadcastMessage = MessageConfig.getNativeMessage("died").replace("%player%", p.getDisplayName());
