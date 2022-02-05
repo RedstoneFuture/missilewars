@@ -19,22 +19,19 @@
 package de.butzlabben.missilewars;
 
 import de.butzlabben.missilewars.game.GameManager;
-import de.butzlabben.missilewars.util.SetupUtil;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import static org.bukkit.Material.JUKEBOX;
-import static org.bukkit.Material.valueOf;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+
+import static org.bukkit.Material.JUKEBOX;
+import static org.bukkit.Material.valueOf;
 
 /**
  * @author Butzlabben
