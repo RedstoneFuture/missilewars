@@ -463,4 +463,34 @@ public class Game {
         players.put(player.getUniqueId(), mwPlayer);
         return mwPlayer;
     }
+
+    public void sendGameResult(Game game) {
+
+        // Send all player of both teams her money, even of offline or online.
+        team1.sendMoney();
+        team2.sendMoney();
+
+        // Send all online players of the game world her own game result message
+        // as title / subtitle.
+        for (Player player : gameWorld.getWorld().getPlayers()) {
+            MWPlayer missileWarsPlayer = game.getPlayer(player);
+
+            if (team1.isMember(missileWarsPlayer)) {
+                team1.sendGameResultTitle(player);
+
+            } else if (team2.isMember(missileWarsPlayer)) {
+                team2.sendGameResultTitle(player);
+
+            } else {
+
+                if (team1.isWon()) {
+                    team1.sendNeutralGameResultTitle(player);
+                } else if (team2.isWon()) {
+                    team2.sendNeutralGameResultTitle(player);
+                }
+
+            }
+        }
+
+    }
 }

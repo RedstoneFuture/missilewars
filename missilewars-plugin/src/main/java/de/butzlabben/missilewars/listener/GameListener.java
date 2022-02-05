@@ -109,11 +109,11 @@ public class GameListener extends GameBoundListener {
         if (event.getChangedType() != VersionUtil.getPortal()) return;
         Game game = getGame();
         if (game.getArena().getPlane1().distance(location.toVector()) > game.getArena().getPlane2().distance(location.toVector())) {
-            game.getTeam1().win();
-            game.getTeam2().lose();
+            game.getTeam1().setWon();
+            game.sendGameResult(game);
         } else {
-            game.getTeam2().win();
-            game.getTeam1().lose();
+            game.getTeam2().setWon();
+            game.sendGameResult(game);
         }
         game.setDraw(false);
         game.stopGame();
@@ -304,8 +304,8 @@ public class GameListener extends GameBoundListener {
             if (teamSize == 0) {
                 Bukkit.getScheduler().runTask(MissileWars.getInstance(), () -> {
                     getGame().draw(false);
-                    team.lose();
-                    team.getEnemyTeam().win();
+                    team.getEnemyTeam().setWon();
+                    game.sendGameResult(game);
                     getGame().stopGame();
                 });
                 getGame().broadcast(MessageConfig.getMessage("team_offline").replace("%team%", team.getFullname()));

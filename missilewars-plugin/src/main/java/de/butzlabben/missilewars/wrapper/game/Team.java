@@ -160,30 +160,71 @@ public class Team {
         return members.contains(player);
     }
 
-    public void win() {
-        int money = game.getArena().getMoney().getWin();
-        for (MWPlayer player : members) {
-            MoneyUtil.giveMoney(player.getUUID(), money);
-        }
-        for (MWPlayer p : game.getPlayers().values()) {
-            Player player = p.getPlayer();
-            if (player != null && player.isOnline())
-                VersionUtil.sendTitle(player, MessageConfig.getNativeMessage("title_won").replace("%team%", getFullname()),
-                        MessageConfig.getNativeMessage("subtitle_won"));
-        }
-        won = true;
+    /**
+     *
+     * @return true, if the team has won the game
+     */
+    public boolean isWon() {
+        return won;
+    }
+
+    /**
+     * This method make the team to the winner.
+     */
+    public void setWon() {
+        this.won = true;
         Bukkit.getPluginManager().callEvent(new GameEndEvent(game, this));
     }
 
-    public void lose() {
-        int money = game.getArena().getMoney().getLoss();
-        for (MWPlayer player : members) {
-            MoneyUtil.giveMoney(player.getUUID(), money);
+    /**
+     * This method send all team players the money for play the game
+     * with a specific amount for win and lose.
+     */
+    public void sendMoney() {
+        int money;
+
+        if (won) {
+            money = game.getArena().getMoney().getWin();
+        } else {
+            money = game.getArena().getMoney().getLoss();
         }
+
+        for (MWPlayer missileWarsPlayer : members) {
+            MoneyUtil.giveMoney(missileWarsPlayer.getUUID(), money);
+        }
+
     }
 
-    public boolean isWon() {
-        return won;
+    /**
+     * This method send the player the title / subtitle of the
+     * game result to team members.
+     */
+    public void sendGameResultTitle(Player player) {
+        String title;
+        String subTitle;
+
+        if (won) {
+            title = MessageConfig.getNativeMessage("title_winner");
+            subTitle = MessageConfig.getNativeMessage("subtitle_winner");
+
+        } else {
+            title = MessageConfig.getNativeMessage("title_loser");
+            subTitle = MessageConfig.getNativeMessage("subtitle_loser");
+        }
+
+        VersionUtil.sendTitle(player, title, subTitle);
+
+    }
+
+    /**
+     * This method send the player the title / subtitle of the
+     * game result to players there are not in a team (=spectator).
+     */
+    public void sendNeutralGameResultTitle(Player player) {
+
+        VersionUtil.sendTitle(player, MessageConfig.getNativeMessage("title_won").replace("%team%", getFullname()),
+                MessageConfig.getNativeMessage("subtitle_won"));
+
     }
 
     public void updateIntervals(int newInterval) {
