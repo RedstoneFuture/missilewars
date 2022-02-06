@@ -46,11 +46,11 @@ public class Config {
 
     public static void load() {
 
-        // check if the directory "/MissileWars" is exist
+        // check if the directory "/MissileWars" exists
         if (!dir.exists())
             dir.mkdirs();
 
-        // check if the config file is exist
+        // check if the config file exists
         if (!file.exists()) {
             try {
                 file.createNewFile();
@@ -159,7 +159,7 @@ public class Config {
     }
 
     /**
-     * This methode get the material of the block to start the missile.
+     * This method gets the minecraft material type of the block to start missiles.
      */
     public static Material getStartReplace() {
         String name = cfg.getString("replace.material").toUpperCase();

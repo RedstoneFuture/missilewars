@@ -83,7 +83,7 @@ public class SetupUtil {
     public static void checkMissiles() {
         File file = new File(MissileWars.getInstance().getDataFolder(), "missiles");
 
-        // check if the directory "/missiles" is exist
+        // check if the directory "/missiles" exists
         if (!file.isDirectory()) {
             Logger.BOOT.log("Copying default missiles folder");
 
