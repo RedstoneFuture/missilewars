@@ -18,7 +18,6 @@
 
 package de.butzlabben.missilewars.wrapper.abstracts.arena;
 
-
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
