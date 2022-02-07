@@ -406,7 +406,7 @@ public class Game {
     }
 
     /**
-     * This methode create the game items for the player kit.
+     * This method is used to create the game items for the player kit.
      */
     private void createGameItems() {
 
@@ -434,11 +434,11 @@ public class Game {
     }
 
     /**
-     * This methode give the player the starter item set, based on the
-     * config.yml configuration for spawn and respawn items.
+     * This method gives the player the starter item set, based on the config.yml
+     * configuration for spawn and respawn.
      *
      * @param player the target player
-     * @param isRespawn true, if the player should get it after a respawn
+     * @param isRespawn true, if the player should receive it after a respawn
      */
     public void sendGameItems(Player player, boolean isRespawn) {
 
@@ -469,7 +469,7 @@ public class Game {
     }
 
     /**
-     * This methode set the player attributes (game-mode, level, enchantments, ...)
+     * This method sets the player attributes (game mode, level, enchantments, ...).
      *
      * @param player the target player
      */
