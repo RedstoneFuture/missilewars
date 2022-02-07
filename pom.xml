@@ -157,7 +157,6 @@
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
-                            <!-- Replace this with your package! -->
                             <shadedPattern>de.butzlabben.missilewars</shadedPattern>
                         </relocation>
                     </relocations>
