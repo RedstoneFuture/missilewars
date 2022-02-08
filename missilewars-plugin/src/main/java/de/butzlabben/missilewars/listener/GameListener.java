@@ -241,15 +241,21 @@ public class GameListener extends GameBoundListener {
         if (!isInGameWorld(e.getPlayer().getLocation()))
             return;
 
-        Team t = Objects.requireNonNull(getGame().getPlayer(e.getPlayer())).getTeam();
+        Game game = getGame();
+        Player player = e.getPlayer();
+
+        Team t = Objects.requireNonNull(getGame().getPlayer(player)).getTeam();
         if (t != null) {
             e.setRespawnLocation(t.getSpawn());
             FallProtectionConfiguration fallProtection = getGame().getArena().getFallProtection();
             if (fallProtection.isEnabled())
-                new RespawnGoldBlock(e.getPlayer(), fallProtection.getDuration(), fallProtection.isMessageOnlyOnStart(), getGame());
+                new RespawnGoldBlock(player, fallProtection.getDuration(), fallProtection.isMessageOnlyOnStart(), getGame());
         } else {
             e.setRespawnLocation(getGame().getArena().getSpectatorSpawn());
         }
+
+        game.sendGameItems(player, true);
+        game.setPlayerAttributes(player);
     }
 
     @EventHandler
@@ -278,9 +284,6 @@ public class GameListener extends GameBoundListener {
             p.teleport(getGame().getArena().getSpectatorSpawn());
             return;
         }
-
-        game.sendGameItems(p, true);
-        game.setPlayerAttributes(p);
 
         // check the death cause for choice the death message
         if (p.getLastDamageCause() != null) {
