@@ -28,7 +28,7 @@ import lombok.ToString;
 @RequiredArgsConstructor
 public class FireballConfiguration {
 
-    private final String name = "&cFireball";
-    private final int occurrence = 2;
+    private String name = "Fireball";
+    private int occurrence = 2;
     @SerializedName("destroy_portal") private boolean destroysPortal = false;
 }

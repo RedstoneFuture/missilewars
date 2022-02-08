@@ -28,8 +28,8 @@ import lombok.ToString;
 @RequiredArgsConstructor
 public class ShieldConfiguration {
 
-    private final String name = "Shield";
-    private final String schematic = "shield.schematic";
-    private final int occurrence = 1;
+    private String name = "Shield";
+    private String schematic = "shield.schematic";
+    private int occurrence = 1;
     @SerializedName("serialized_name") private int flyTime = 20;
 }

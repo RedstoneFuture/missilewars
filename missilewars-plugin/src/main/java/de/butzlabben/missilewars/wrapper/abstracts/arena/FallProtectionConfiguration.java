@@ -29,7 +29,7 @@ import lombok.ToString;
 @RequiredArgsConstructor
 public class FallProtectionConfiguration {
 
-    private final boolean enabled = true;
-    private final int duration = 60;
+    private boolean enabled = true;
+    private int duration = 60;
     @SerializedName("message_only_on_start") private final boolean messageOnlyOnStart = false;
 }
