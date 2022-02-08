@@ -28,6 +28,6 @@ import lombok.ToString;
 @RequiredArgsConstructor
 public class GameSpawnConfiguration {
 
-    @SerializedName("send_bow") private final boolean sendBow = true;
-    @SerializedName("send_pickaxe") private final boolean sendPickaxe = false;
+    @SerializedName("send_bow") private boolean sendBow = true;
+    @SerializedName("send_pickaxe") private boolean sendPickaxe = false;
 }
