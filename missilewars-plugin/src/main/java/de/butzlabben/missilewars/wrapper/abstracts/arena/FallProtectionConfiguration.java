@@ -31,5 +31,5 @@ public class FallProtectionConfiguration {
 
     private final boolean enabled = true;
     private final int duration = 60;
-    @SerializedName("message_only_on_start") private final boolean messageOnlyOnStart = false;
+    @SerializedName("message_only_on_start") private boolean messageOnlyOnStart = false;
 }
