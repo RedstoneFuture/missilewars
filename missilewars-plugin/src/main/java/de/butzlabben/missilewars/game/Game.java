@@ -137,6 +137,9 @@ public class Game {
         team1 = new Team(lobby.getTeam1Name(), lobby.getTeam1Color(), this);
         team2 = new Team(lobby.getTeam2Name(), lobby.getTeam2Color(), this);
 
+        team1.createTeamArmor();
+        team2.createTeamArmor();
+
         scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
 
         org.bukkit.scoreboard.Team t = scoreboard.getTeam("0" + team1.getFullname());
@@ -398,8 +401,6 @@ public class Game {
         sendGameItems(player, false);
         setPlayerAttributes(player);
 
-        mwPlayer.getTeam().setTeamArmor(player);
-
         playerTasks.put(player.getUniqueId(),
                 Bukkit.getScheduler().runTaskTimer(MissileWars.getInstance(), mwPlayer, 0, 20));
 
@@ -442,8 +443,14 @@ public class Game {
      */
     public void sendGameItems(Player player, boolean isRespawn) {
 
+        // clear inventory
         player.getInventory().clear();
 
+        // send armor
+        ItemStack[] armor = getPlayer(player).getTeam().getTeamArmor();
+        player.getInventory().setArmorContents(armor);
+
+        // send kit items
         if (isRespawn) {
 
             if (this.getArena().getRespawn().isSendBow()) {
