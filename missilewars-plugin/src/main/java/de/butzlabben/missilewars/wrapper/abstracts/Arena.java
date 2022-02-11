@@ -61,7 +61,7 @@ public class Arena {
     @SerializedName("save_statistics") private boolean saveStatistics = true;
     @SerializedName("fall_protection") private FallProtectionConfiguration fallProtection = new FallProtectionConfiguration();
     @SerializedName("money") private MoneyConfiguration money = new MoneyConfiguration();
-    @SerializedName("intervals") private Map<Integer, Integer> intervals = new HashMap<Integer, Integer>() {{
+    @SerializedName("intervals") private Map<Integer, Integer> intervals = new HashMap<>() {{
         put(1, 15);
         put(2, 20);
         put(4, 25);
