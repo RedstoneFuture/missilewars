@@ -63,7 +63,7 @@ public class MissileWars extends JavaPlugin {
     }
 
     /**
-     * @return the instance
+     * @return the instance of the plugin
      */
     public static MissileWars getInstance() {
         return instance;
@@ -71,8 +71,115 @@ public class MissileWars extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        long start = System.currentTimeMillis();
+        long startTime;
+        long endTime;
+
+        startTime = System.currentTimeMillis();
+
+        sendPluginInfo();
+
+        Logger.BOOT.log("Loading properties...");
+
+        // delete old missile wars temp-worlds from the last server session
+        deleteTempWorlds();
+
+        Config.load();
+        MessageConfig.load();
+        SetupUtil.checkMissiles();
+
+        new File(Config.getArenaFolder()).mkdirs();
+        new File(Config.getLobbiesFolder()).mkdirs();
+
+        SignRepository repository = SignRepository.load();
+        if (repository == null) {
+            repository = new SignRepository();
+            repository.save();
+        }
+        this.signRepository = repository;
+
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
+        Bukkit.getPluginManager().registerEvents(new ClickListener(), this);
+        Bukkit.getPluginManager().registerEvents(new ManageListener(), this);
+
+        Logger.BOOT.log("Registering commands");
+        framework = new CommandFramework(this);
+        framework.registerCommands(new MWCommands());
+        framework.registerCommands(new StatsCommands());
+        framework.registerCommands(new UserCommands());
+
+        Arenas.load();
+        SetupUtil.checkShields();
+
+        GameManager.getInstance().loadGames();
+
+        new Metrics(this, 3749);
+
+        // Check if FAWE is installed
+        foundFAWE = Bukkit.getPluginManager().getPlugin("FastAsyncWorldEdit") != null;
+
+        GameManager.getInstance().getGames().values().forEach(game -> {
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                if (!game.isIn(player.getLocation())) continue;
+                game.addPlayer(player);
+            }
+        });
+
+        MoneyUtil.giveMoney(null, -1);
+
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, new CheckRunnable(), 20, 20 * 10);
+
+        if (Config.isPrefetchPlayers()) {
+            PreFetcher.preFetchPlayers(new StatsFetcher(new Date(0L), ""));
+        }
+
+        endTime = System.currentTimeMillis();
+        Logger.SUCCESS.log("MissileWars was enabled in " + (endTime - startTime) + "ms");
+    }
+
+    @Override
+    public void onDisable() {
+        GameManager.getInstance().disableAll();
+        deleteTempWorlds();
+
+        // TODO
+        File missiles = new File(getDataFolder(), "missiles.zip");
+        File arena = new File(getDataFolder(), "MissileWars-Arena.zip");
+        FileUtils.deleteQuietly(missiles);
+        FileUtils.deleteQuietly(arena);
+
+        ConnectionHolder.close();
+    }
+
+    /**
+     * @return true, if FAWE is installed
+     */
+    public boolean foundFAWE() {
+        return foundFAWE;
+    }
+
+    /**
+     * This methode delete the temp arena worlds of the MW game.
+     */
+    private void deleteTempWorlds() {
+        File[] dirs = Bukkit.getWorldContainer().listFiles();
+        for (File dir : dirs) {
+            if (dir.getName().startsWith("mw-")) {
+                try {
+                    FileUtils.deleteDirectory(dir);
+                } catch (Exception ignored) {
+                }
+            }
+        }
+    }
+
+    /**
+     * This methode send info about the version, version warnings (if needed) and the authors
+     * in the console.
+     */
+    private void sendPluginInfo() {
+
         Logger.BOOT.log("This server is running MissileWars v" + version + " by Butzlabben");
+
         if (VersionUtil.getVersion() < 8) {
             Logger.WARN.log("====================================================");
             Logger.WARN.log("It seems that you are using version older than 1.8");
@@ -94,89 +201,6 @@ public class MissileWars extends JavaPlugin {
                 sb.append(" ");
             }
             Logger.BOOT.log("Other authors: " + sb);
-        }
-
-        Logger.BOOT.log("Loading properties...");
-        checkMaps();
-        Config.load();
-        MessageConfig.load();
-        // I don't know why, and I don't want to know why, but this is needed to ensure the the messages are properly loaded at the first time
-        MessageConfig.load();
-        new File(Config.getArenaFolder()).mkdirs();
-        new File(Config.getLobbiesFolder()).mkdirs();
-
-        SignRepository repository = SignRepository.load();
-        if (repository == null) {
-            repository = new SignRepository();
-            repository.save();
-        }
-        this.signRepository = repository;
-
-        checkMaps();
-
-        Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
-        Bukkit.getPluginManager().registerEvents(new ClickListener(), this);
-        Bukkit.getPluginManager().registerEvents(new ManageListener(), this);
-
-        Logger.BOOT.log("Registering commands");
-        framework = new CommandFramework(this);
-        framework.registerCommands(new MWCommands());
-        framework.registerCommands(new StatsCommands());
-        framework.registerCommands(new UserCommands());
-        Logger.BOOTDONE.log("Registering commands");
-
-        Arenas.load();
-        SetupUtil.checkShields();
-
-        GameManager.getInstance().loadGames();
-
-        new Metrics(this, 3749);
-
-        foundFAWE = Bukkit.getPluginManager().getPlugin("FastAsyncWorldEdit") != null;
-
-        GameManager.getInstance().getGames().values().forEach(game -> {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (!game.isIn(player.getLocation())) continue;
-                game.addPlayer(player);
-            }
-        });
-
-        MoneyUtil.giveMoney(null, -1);
-
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, new CheckRunnable(), 20, 20 * 10);
-
-        if (Config.isPrefetchPlayers()) {
-            PreFetcher.preFetchPlayers(new StatsFetcher(new Date(0L), ""));
-        }
-
-        long end = System.currentTimeMillis();
-        Logger.SUCCESS.log("MissileWars was enabled in " + (end - start) + "ms");
-    }
-
-    @Override
-    public void onDisable() {
-        GameManager.getInstance().disableAll();
-        checkMaps();
-        File missiles = new File(getDataFolder(), "missiles.zip");
-        File arena = new File(getDataFolder(), "MissileWars-Arena.zip");
-        FileUtils.deleteQuietly(missiles);
-        FileUtils.deleteQuietly(arena);
-        ConnectionHolder.close();
-    }
-
-    public boolean foundFAWE() {
-        return foundFAWE;
-    }
-
-    private void checkMaps() {
-        File[] dirs = Bukkit.getWorldContainer().listFiles();
-        for (File dir : dirs) {
-            if (dir.getName().startsWith("mw-")) {
-                try {
-                    FileUtils.deleteDirectory(dir);
-                } catch (Exception ignored) {
-                }
-            }
         }
     }
 }

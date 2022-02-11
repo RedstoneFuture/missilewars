@@ -315,16 +315,17 @@ public class GameListener extends GameBoundListener {
         }
     }
 
+    // TODO - Analyse, Ingame Check and Crop Cancel Analytic
     @EventHandler
     public void onClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player)) return;
         Player p = (Player) event.getWhoClicked();
         if (!isInGameWorld(p.getLocation())) return;
+
         if (p.getGameMode() == GameMode.CREATIVE || p.isOp()) return;
         if (event.getSlotType() != InventoryType.SlotType.ARMOR) return;
         event.setCancelled(true);
     }
-
 
     private boolean isInBetween(Vector point, Plane plane1, Plane plane2) {
         double distanceBetween = plane1.distanceSquared(plane2.getSupport());
