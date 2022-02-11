@@ -19,22 +19,19 @@
 package de.butzlabben.missilewars;
 
 import de.butzlabben.missilewars.game.GameManager;
-import de.butzlabben.missilewars.util.SetupUtil;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import static org.bukkit.Material.JUKEBOX;
-import static org.bukkit.Material.valueOf;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+
+import static org.bukkit.Material.JUKEBOX;
+import static org.bukkit.Material.valueOf;
 
 /**
  * @author Butzlabben
@@ -45,39 +42,49 @@ public class Config {
     private static final File dir = MissileWars.getInstance().getDataFolder();
     private static final File file = new File(MissileWars.getInstance().getDataFolder(), "config.yml");
     private static YamlConfiguration cfg;
+    private static boolean configNew = false;
 
     public static void load() {
-        boolean configNew = false;
 
+        // check if the directory "/MissileWars" exists
         if (!dir.exists())
             dir.mkdirs();
 
-        SetupUtil.checkMissiles();
+        // check if the config file exists
         if (!file.exists()) {
-            configNew = true;
-            dir.mkdirs();
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                Logger.ERROR.log("Could not create config!");
+                Logger.ERROR.log("Could not create config.yml!");
                 e.printStackTrace();
             }
+            configNew = true;
         }
 
+        // try to load the config
         try {
-            cfg = YamlConfiguration
-                    .loadConfiguration(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
-        } catch (FileNotFoundException e1) {
+            cfg = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
+        } catch (FileNotFoundException e) {
             Logger.ERROR.log("Couldn't load config.yml");
-            e1.printStackTrace();
+            e.printStackTrace();
             return;
         }
 
+        // copy the config input
         cfg.options().copyDefaults(true);
 
+        // validate the config options
+        addDefaults();
+
+        // re-save the config with only validated options
+        saveConfig();
+    }
+
+    private static void addDefaults() {
         cfg.addDefault("debug", false);
-        if (debug())
+        if (debug()) {
             Logger.DEBUG.log("Debug enabled");
+        }
 
         cfg.addDefault("setup_mode", false);
 
@@ -131,10 +138,13 @@ public class Config {
             cfg.addDefault("sidebar.entries.2", "   ");
             cfg.addDefault("sidebar.entries.1", "%team2% §7» %team2_color%%team2_amount%");
         }
+    }
+
+    private static void saveConfig() {
         try {
             cfg.save(file);
         } catch (IOException e) {
-            Logger.ERROR.log("Could not save config!");
+            Logger.ERROR.log("Could not save config.yml!");
             e.printStackTrace();
         }
     }
@@ -148,23 +158,17 @@ public class Config {
         return ret;
     }
 
+    /**
+     * This method gets the minecraft material type of the block to start missiles.
+     */
     public static Material getStartReplace() {
-        String name = cfg.getString("replace.material", "JUKEBOX").toUpperCase();
+        String name = cfg.getString("replace.material").toUpperCase();
         try {
             return valueOf(name);
         } catch (Exception e) {
-            Logger.WARN.log("Unknown material " + name + " in start_replace");
+            Logger.WARN.log("Could not use " + name + " as start material!");
         }
         return null;
-    }
-
-    public static void save(YamlConfiguration cfg) {
-        try {
-            cfg.save(file);
-        } catch (IOException e) {
-            Logger.ERROR.log("Couldn't save config");
-            e.printStackTrace();
-        }
     }
 
     public static Location getFallbackSpawn() {
@@ -187,36 +191,36 @@ public class Config {
         return location;
     }
 
+    public static YamlConfiguration getConfig() {
+        return cfg;
+    }
+
     public static String motdEnded() {
-        return cfg.getString("motd.ended", "&cError configuring motd in motd.ended");
+        return cfg.getString("motd.ended");
     }
 
     public static String motdGame() {
-        return cfg.getString("motd.ingame", "&cError configuring motd in motd.ingame");
+        return cfg.getString("motd.ingame");
     }
 
     public static String motdLobby() {
-        return cfg.getString("motd.lobby", "&cError configuring motd in motd.lobby");
+        return cfg.getString("motd.lobby");
     }
 
     public static boolean motdEnabled() {
-        return cfg.getBoolean("motd.enable", true);
+        return cfg.getBoolean("motd.enable");
     }
 
     public static int getReplaceTicks() {
-        return cfg.getInt("replace.after_ticks", 1);
+        return cfg.getInt("replace.after_ticks");
     }
 
     public static int getReplaceRadius() {
-        return cfg.getInt("replace.radius", 1);
+        return cfg.getInt("replace.radius");
     }
 
     static boolean debug() {
         return cfg.getBoolean("debug");
-    }
-
-    public static YamlConfiguration getConfig() {
-        return cfg;
     }
 
     public static boolean isSetup() {
@@ -232,31 +236,31 @@ public class Config {
     }
 
     public static String getHost() {
-        return cfg.getString("mysql.host", "localhost");
+        return cfg.getString("mysql.host");
     }
 
     public static String getDatabase() {
-        return cfg.getString("mysql.database", "db");
+        return cfg.getString("mysql.database");
     }
 
     public static String getPort() {
-        return cfg.getString("mysql.port", "3306");
+        return cfg.getString("mysql.port");
     }
 
     public static String getUser() {
-        return cfg.getString("mysql.user", "root");
+        return cfg.getString("mysql.user");
     }
 
     public static String getPassword() {
-        return cfg.getString("mysql.password", "");
+        return cfg.getString("mysql.password");
     }
 
     public static String getFightsTable() {
-        return cfg.getString("mysql.fights_table", "mw_fights");
+        return cfg.getString("mysql.fights_table");
     }
 
     public static String getFightMembersTable() {
-        return cfg.getString("mysql.fightmember_table", "mw_fightmember");
+        return cfg.getString("mysql.fightmember_table");
     }
 
     public static String getArenaFolder() {
