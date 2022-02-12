@@ -135,7 +135,7 @@ public class Game {
         team1 = new Team(lobby.getTeam1Name(), lobby.getTeam1Color(), this);
         team2 = new Team(lobby.getTeam2Name(), lobby.getTeam2Color(), this);
 
-        scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+        scoreboardManager = new ScoreboardManager(team1, team2, arena.getDisplayName(), getTimer());
 
         org.bukkit.scoreboard.Team t = scoreboard.getTeam("0" + team1.getFullname());
         if (t != null)
@@ -160,8 +160,6 @@ public class Game {
         t.setPrefix("§7");
 
         VersionUtil.setScoreboardTeamColor(t, ChatColor.GRAY);
-
-        scoreboardManager = new ScoreboardManager(this, scoreboard);
 
         Logger.DEBUG.log("Registering, teleporting, etc. all players");
 

@@ -19,9 +19,11 @@
 package de.butzlabben.missilewars.util;
 
 import de.butzlabben.missilewars.Config;
-import de.butzlabben.missilewars.game.Game;
-import java.util.HashMap;
+import de.butzlabben.missilewars.game.timer.Timer;
+import de.butzlabben.missilewars.wrapper.game.Team;
+import de.butzlabben.missilewars.wrapper.player.MWPlayer;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Bukkit;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
@@ -29,21 +31,69 @@ import org.bukkit.scoreboard.Scoreboard;
 @RequiredArgsConstructor
 public class ScoreboardManager {
 
-    private final Game game;
-    private final Scoreboard board;
+    private Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
+
+    private final Team team1;
+    private final Team team2;
+    private final String arenaDisplayName;
+    private final Timer gameTimer;
+
+    // get config options
+    String scoreBoardTitle = Config.getScoreboardTitle();
+    String memberListStyle = Config.getScoreboardMembersStyle();
+    int memberListMaxSize = Config.getScoreboardMembersMax();
 
     public void updateInGameScoreboard() {
         removeScoreboard();
 
         Objective obj = board.registerNewObjective("Info", "dummy");
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-        obj.setDisplayName(Config.getScoreboardTitle());
+        obj.setDisplayName(scoreBoardTitle);
 
-        HashMap<String, Integer> entries = Config.getScoreboardEntries();
+        for (String cleanLine : Config.getScoreboardEntries()) {
+            int i = 1;
+            String replacedLine;
 
-        for (String entry : entries.keySet()) {
-            String s = rep(entry);
-            obj.getScore(s).setScore(entries.get(entry));
+            if (cleanLine.contains("%team1_members%") || cleanLine.contains("%team2_members%")) {
+
+                // team member list
+                Team placeholderTeam;
+
+                // set the current placeholder team
+                if (cleanLine.contains("%team1_members%")) {
+                    placeholderTeam = team1;
+                } else {
+                    placeholderTeam = team2;
+                }
+
+                int players = 0;
+
+                for (MWPlayer player : placeholderTeam.getMembers()) {
+
+                    // limit check
+                    if (players >= memberListMaxSize) {
+                        break;
+                    }
+
+                    String playerName = player.getPlayer().getName();
+                    String teamColor = placeholderTeam.getColor();
+
+                    replacedLine = memberListStyle.replace("%playername%", playerName)
+                            .replace("%team_color%", teamColor);
+                    setScoreBoardLine(obj, replacedLine, i);
+
+                    players++;
+                    i++;
+                }
+
+            } else {
+
+                // normal placeholders
+                replacedLine = replaceScoreboardPlaceholders(cleanLine);
+                setScoreBoardLine(obj, replacedLine, i);
+
+                i++;
+            }
         }
     }
 
@@ -53,24 +103,43 @@ public class ScoreboardManager {
             old.unregister();
     }
 
-    private String rep(String entry) {
-        return replaceTeam1(replaceTeam2(replaceTime(entry)));
-    }
+    /**
+     * This method replaces the placeholders with the current value.
+     * @param text (String) the original config String
+     * @return the replaced text as String
+     */
+    private String replaceScoreboardPlaceholders(String text) {
+
+        String time = "" + Integer.toString(gameTimer.getSeconds() / 60);
 
 
-    private String replaceTeam2(String str) {
-        return str.replace("%team2%", game.getTeam2().getFullname())
-                .replace("%team2_amount%", "" + game.getTeam2().getMembers().size())
-                .replace("%team2_color%", game.getTeam2().getColorCode());
+        text.replace("%team1%", team1.getFullname());
+        text.replace("%team2%", team2.getFullname());
+
+        text.replace("%team1_color%", team1.getColor());
+        text.replace("%team2_color%", team2.getColor());
+
+        text.replace("%team1_amount%", Integer.toString(team1.getMembers().size()));
+        text.replace("%team2_amount%", Integer.toString(team2.getMembers().size()));
+
+        text.replace("%arena_name%", arenaDisplayName);
+
+        text.replace("%time%", time);
+
+        return text;
     }
 
-    private String replaceTeam1(String str) {
-        return str.replace("%team1%", game.getTeam1().getFullname())
-                .replace("%team1_amount%", "" + game.getTeam1().getMembers().size())
-                .replace("%team1_color%", game.getTeam1().getColorCode());
+    /**
+     * This methode set the scoreboard line.
+     *
+     * @param scoreBoardObject the vanilla scoreboard object
+     * @param message the text line
+     * @param lineNr the target line number (= object "score")
+     */
+    private static void setScoreBoardLine(Objective scoreBoardObject, String message, int lineNr) {
+        // Get the "score object" (instead of a player with a text line)
+        // and set the scoreboard line number with the definition of his score.
+        scoreBoardObject.getScore(message).setScore(lineNr);
     }
 
-    private String replaceTime(String str) {
-        return str.replace("%time%", "" + game.getTimer().getSeconds() / 60);
-    }
 }
