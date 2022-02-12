@@ -41,31 +41,31 @@ public class Randomizer {
     private final HashMap<Interval, String> defensive = new HashMap<>();
     private final HashMap<Interval, String> missiles = new HashMap<>();
 
-    private int allMissiles = 0;
-    private int allDefensives = 0;
+    private int totalOccurrenceMissiles = 0;
+    private int totalOccurrenceDefensive = 0;
     private int count = 1;
 
     public Randomizer(Game game) {
         this.game = game;
         missileConfiguration = game.getArena().getMissileConfiguration();
         for (Missile missile : missileConfiguration.getMissiles()) {
-            Interval i = new Interval(allMissiles, allMissiles + missile.occurrence() - 1);
-            missiles.put(i, missile.getName());
-            allMissiles += missile.occurrence();
+            Interval interval = new Interval(totalOccurrenceMissiles, totalOccurrenceMissiles + missile.occurrence() - 1);
+            missiles.put(interval, missile.getName());
+            totalOccurrenceMissiles += missile.occurrence();
         }
 
         int shieldOccurrence = game.getArena().getShieldConfiguration().getOccurrence();
-        Interval shield = new Interval(allDefensives, allDefensives + shieldOccurrence - 1);
-        allDefensives += shieldOccurrence;
+        Interval shield = new Interval(totalOccurrenceDefensive, totalOccurrenceDefensive + shieldOccurrence - 1);
+        totalOccurrenceDefensive += shieldOccurrence;
         defensive.put(shield, "s");
 
         int arrowOccurrence = game.getArena().getArrowOccurrence();
-        Interval arrow = new Interval(allDefensives, allDefensives + arrowOccurrence - 1);
-        allDefensives += arrowOccurrence;
+        Interval arrow = new Interval(totalOccurrenceDefensive, totalOccurrenceDefensive + arrowOccurrence - 1);
+        totalOccurrenceDefensive += arrowOccurrence;
         defensive.put(arrow, "a");
 
-        Interval fireball = new Interval(allDefensives, allDefensives + arrowOccurrence - 1);
-        allDefensives += arrowOccurrence;
+        Interval fireball = new Interval(totalOccurrenceDefensive, totalOccurrenceDefensive + arrowOccurrence - 1);
+        totalOccurrenceDefensive += arrowOccurrence;
         defensive.put(fireball, "f");
     }
 
@@ -75,7 +75,7 @@ public class Randomizer {
         Random r = new Random();
         if (count == 2) {
             count = 0;
-            int random = r.nextInt(allDefensives);
+            int random = r.nextInt(totalOccurrenceDefensive);
             for (Interval i : defensive.keySet()) {
                 if (i.isIn(random)) {
                     String to = defensive.get(i);
@@ -96,7 +96,7 @@ public class Randomizer {
                 }
             }
         } else {
-            int random = r.nextInt(allMissiles);
+            int random = r.nextInt(totalOccurrenceMissiles);
             for (Interval i : missiles.keySet()) {
                 if (i.isIn(random)) {
                     String to = missiles.get(i);
