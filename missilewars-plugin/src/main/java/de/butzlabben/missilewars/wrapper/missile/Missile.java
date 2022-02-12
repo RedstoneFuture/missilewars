@@ -98,6 +98,12 @@ public class Missile {
         return egg;
     }
 
+    /**
+     * This method provides the missile spawn item based on the
+     * mob spawn item specification in the arena configuration.
+     *
+     * @return ItemStack = the spawn egg with the missile name
+     */
     public ItemStack getItem() {
         ItemStack is = new ItemStack(VersionUtil.getMonsterEgg(egg));
         if (VersionUtil.getVersion() > 10) {

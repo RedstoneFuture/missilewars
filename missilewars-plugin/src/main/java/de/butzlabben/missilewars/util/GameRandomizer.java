@@ -34,7 +34,7 @@ import org.bukkit.inventory.meta.ItemMeta;
  * @author Butzlabben
  * @since 19.01.2018
  */
-public class Randomizer {
+public class GameRandomizer {
 
     private final MissileConfiguration missileConfiguration;
     private final Game game;
@@ -43,72 +43,108 @@ public class Randomizer {
 
     private int totalOccurrenceMissiles = 0;
     private int totalOccurrenceDefensive = 0;
-    private int count = 1;
+    private int randomizeCounter = 0;
 
-    public Randomizer(Game game) {
+    private ItemStack shield;
+    private ItemStack arrow;
+    private ItemStack fireball;
+
+
+    public GameRandomizer(Game game) {
         this.game = game;
         missileConfiguration = game.getArena().getMissileConfiguration();
+
+        createDefenseItems();
+
+        // get missiles
         for (Missile missile : missileConfiguration.getMissiles()) {
+
             Interval interval = new Interval(totalOccurrenceMissiles, totalOccurrenceMissiles + missile.occurrence() - 1);
             missiles.put(interval, missile.getName());
             totalOccurrenceMissiles += missile.occurrence();
         }
 
+        // get shield
         int shieldOccurrence = game.getArena().getShieldConfiguration().getOccurrence();
         Interval shield = new Interval(totalOccurrenceDefensive, totalOccurrenceDefensive + shieldOccurrence - 1);
         totalOccurrenceDefensive += shieldOccurrence;
         defensive.put(shield, "s");
 
+        // get arrow
         int arrowOccurrence = game.getArena().getArrowOccurrence();
         Interval arrow = new Interval(totalOccurrenceDefensive, totalOccurrenceDefensive + arrowOccurrence - 1);
         totalOccurrenceDefensive += arrowOccurrence;
         defensive.put(arrow, "a");
 
+        // get fireball
         Interval fireball = new Interval(totalOccurrenceDefensive, totalOccurrenceDefensive + arrowOccurrence - 1);
         totalOccurrenceDefensive += arrowOccurrence;
         defensive.put(fireball, "f");
     }
 
-    public ItemStack createItem() {
-        ItemStack is = null;
-        ItemMeta im;
-        Random r = new Random();
-        if (count == 2) {
-            count = 0;
-            int random = r.nextInt(totalOccurrenceDefensive);
-            for (Interval i : defensive.keySet()) {
-                if (i.isIn(random)) {
-                    String to = defensive.get(i);
-                    if (to.equals("s")) {
-                        is = new ItemStack(VersionUtil.getSnowball());
-                        im = is.getItemMeta();
-                        im.setDisplayName(game.getArena().getShieldConfiguration().getName());
-                    } else if (to.equals("a")) {
-                        is = new ItemStack(Material.ARROW, 3);
-                        im = is.getItemMeta();
-                    } else {
-                        is = new ItemStack(VersionUtil.getFireball());
-                        im = is.getItemMeta();
-                        im.setDisplayName(game.getArena().getFireballConfiguration().getName());
+    public ItemStack getRandomItem() {
+        Random randomizer = new Random();
+        int random;
+
+        ItemStack itemStack = null;
+
+        // switch between type of "items":
+        // after 2 occurrence items, you get one defensive item
+        if (randomizeCounter == 2) {
+            randomizeCounter = 0;
+            random = randomizer.nextInt(totalOccurrenceDefensive);
+            
+            for (Interval interval : defensive.keySet()) {
+                if (interval.isIn(random)) {
+
+                    switch (defensive.get(interval)) {
+                        case "s": return shield;
+                        case "a": return arrow;
+                        case "f": return fireball;
+                        default: return null;
                     }
-                    is.setItemMeta(im);
-                    return is;
+
                 }
             }
         } else {
-            int random = r.nextInt(totalOccurrenceMissiles);
-            for (Interval i : missiles.keySet()) {
-                if (i.isIn(random)) {
-                    String to = missiles.get(i);
-                    Missile m = missileConfiguration.getMissileFromName(to);
-                    if (m != null) {
-                        is = m.getItem();
+            random = randomizer.nextInt(totalOccurrenceMissiles);
+            
+            for (Interval interval : missiles.keySet()) {
+                if (interval.isIn(random)) {
+                    String randomItem = missiles.get(interval);
+                    Missile missile = missileConfiguration.getMissileFromName(randomItem);
+
+                    if (missile != null) {
+                        itemStack = missile.getItem();
                     } else
                         Logger.DEBUG.log("There wasn't a missile found, when giving out items");
-                    ++count;
+                    randomizeCounter++;
                 }
             }
         }
-        return is;
+        return itemStack;
     }
+
+    /**
+     * This method creates the item stacks for the defense random-items.
+     */
+    private void createDefenseItems() {
+
+        // create MW shield
+        shield = new ItemStack(VersionUtil.getSnowball());
+        ItemMeta shieldMeta = shield.getItemMeta();
+        shieldMeta.setDisplayName(game.getArena().getShieldConfiguration().getName());
+        shield.setItemMeta(shieldMeta);
+
+        // create MW arrow
+        arrow = new ItemStack(Material.ARROW, 3);
+
+        // create MW fireball
+        fireball = new ItemStack(VersionUtil.getFireball());
+        ItemMeta fireballMeta = fireball.getItemMeta();
+        fireballMeta.setDisplayName(game.getArena().getFireballConfiguration().getName());
+        fireball.setItemMeta(fireballMeta);
+
+    }
+
 }
