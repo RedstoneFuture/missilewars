@@ -241,48 +241,63 @@ public class GameListener extends GameBoundListener {
         if (!isInGameWorld(e.getPlayer().getLocation()))
             return;
 
-        Team t = Objects.requireNonNull(getGame().getPlayer(e.getPlayer())).getTeam();
+        Game game = getGame();
+        Player player = e.getPlayer();
+
+        Team t = Objects.requireNonNull(getGame().getPlayer(player)).getTeam();
         if (t != null) {
             e.setRespawnLocation(t.getSpawn());
             FallProtectionConfiguration fallProtection = getGame().getArena().getFallProtection();
             if (fallProtection.isEnabled())
-                new RespawnGoldBlock(e.getPlayer(), fallProtection.getDuration(), fallProtection.isMessageOnlyOnStart(), getGame());
+                new RespawnGoldBlock(player, fallProtection.getDuration(), fallProtection.isMessageOnlyOnStart(), getGame());
         } else {
             e.setRespawnLocation(getGame().getArena().getSpectatorSpawn());
         }
+
+        game.sendGameItems(player, true);
+        game.setPlayerAttributes(player);
     }
 
     @EventHandler
     public void onDeath(PlayerDeathEvent e) {
-        if (!isInGameWorld(e.getEntity().getLocation()))
-            return;
-        Game game = getGame();
 
+        // check if the player is in a game world
+        if (!isInGameWorld(e.getEntity().getLocation())) {
+            return;
+        }
+
+        Game game = getGame();
         Player p = e.getEntity();
-        e.setDeathMessage(MessageConfig.getNativeMessage("died").replace("%player%", p.getDisplayName()));
+
+        e.setDeathMessage(null);
+        // delete vanilla death message
+        String deathBroadcastMessage = null;
+
         MWPlayer player = getGame().getPlayer(p);
         assert player != null;
 
         if (game.getArena().isAutoRespawn()) Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> p.spigot().respawn(), 20L);
 
+        // spectator respawn for people there are not in a team
         if (player.getTeam() == null) {
             p.setHealth(p.getMaxHealth());
             p.teleport(getGame().getArena().getSpectatorSpawn());
-            e.setDeathMessage(null);
             return;
         }
 
-        p.setGameMode(GameMode.SURVIVAL);
-        if (p.getLastDamageCause() != null)
-            if (p.getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION
-                    || p.getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
-                e.setDeathMessage(
-                        MessageConfig.getNativeMessage("died_explosion").replace("%player%", p.getDisplayName()));
-            }
+        // check the death cause for choice the death message
+        if (p.getLastDamageCause() != null) {
 
-        String msg = e.getDeathMessage();
-        e.setDeathMessage(null);
-        getGame().broadcast(msg);
+            EntityDamageEvent.DamageCause damageCause = p.getLastDamageCause().getCause();
+
+            if (damageCause == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION || damageCause == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
+                deathBroadcastMessage = MessageConfig.getNativeMessage("died_explosion").replace("%player%", p.getDisplayName());
+            } else {
+                deathBroadcastMessage = MessageConfig.getNativeMessage("died").replace("%player%", p.getDisplayName());
+            }
+        }
+
+        getGame().broadcast(deathBroadcastMessage);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
