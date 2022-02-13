@@ -429,6 +429,7 @@ public class Game {
         if (this.getArena().getSpawn().isSendPickaxe() || this.getArena().getRespawn().isSendPickaxe()) {
 
             ItemStack pickaxe = new ItemStack(Material.IRON_PICKAXE);
+            VersionUtil.setUnbreakable(pickaxe);
             this.customPickaxe = pickaxe;
         }
 
