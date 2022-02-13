@@ -20,11 +20,7 @@ package de.butzlabben.missilewars.wrapper.abstracts;
 
 import com.google.gson.annotations.SerializedName;
 import de.butzlabben.missilewars.Logger;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.FallProtectionConfiguration;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.FireballConfiguration;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.MissileConfiguration;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.MoneyConfiguration;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.ShieldConfiguration;
+import de.butzlabben.missilewars.wrapper.abstracts.arena.*;
 import de.butzlabben.missilewars.wrapper.geometry.FlatArea;
 import de.butzlabben.missilewars.wrapper.geometry.Plane;
 import java.util.Collections;
@@ -50,6 +46,8 @@ public class Arena {
     @SerializedName("display_material") private String displayMaterial = "STONE";
     @SerializedName("template_world") private String templateWorld = "default_map";
     @SerializedName("auto_respawn") private boolean autoRespawn = true;
+    @SerializedName("game_spawn") private GameSpawnConfiguration spawn = new GameSpawnConfiguration();
+    @SerializedName("game_respawn") private GameRespawnConfiguration respawn = new GameRespawnConfiguration();
     @SerializedName("do_tile_drops") private boolean doTileDrops = false;
     @SerializedName("max_height") private int maxHeight = 170;
     @SerializedName("death_height") private int deathHeight = 65;
