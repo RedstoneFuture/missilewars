@@ -26,10 +26,8 @@ import lombok.ToString;
 @Getter
 @ToString
 @RequiredArgsConstructor
-public class ShieldConfiguration {
+public class GameRespawnConfiguration {
 
-    private String name = "Shield";
-    private String schematic = "shield.schematic";
-    private int occurrence = 1;
-    @SerializedName("serialized_name") private int flyTime = 20;
+    @SerializedName("send_bow") private boolean sendBow = true;
+    @SerializedName("send_pickaxe") private boolean sendPickaxe = false;
 }

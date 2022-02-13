@@ -58,6 +58,7 @@ public class Team {
     private transient boolean won;
     private transient org.bukkit.scoreboard.Team scoreboardTeam;
     private transient int currentInterval = 0;
+    ItemStack[] teamArmor;
 
     public ArrayList<MWPlayer> getMembers() {
         return members;
@@ -105,7 +106,7 @@ public class Team {
         if (sb.getPlayerTeam(p) != null)
             sb.getPlayerTeam(p).removePlayer(p);
         scoreboardTeam.addPlayer(p);
-        setTeamArmor(p);
+        p.getInventory().setArmorContents(getTeamArmor());
     }
 
     public org.bukkit.scoreboard.Team getSBTeam() {
@@ -126,34 +127,41 @@ public class Team {
         return color;
     }
 
-    public void setTeamArmor(Player p) {
-        Color c = ColorConverter.getColorFromCode(getColorCode());
-        ItemStack is = new ItemStack(Material.LEATHER_BOOTS);
-        LeatherArmorMeta lam = (LeatherArmorMeta) is.getItemMeta();
-        lam.setColor(c);
-        is.setItemMeta(lam);
-        VersionUtil.setUnbreakable(is);
+    /**
+     * This method creates the team armor based on the team color.
+     */
+    public void createTeamArmor() {
+        Color color = ColorConverter.getColorFromCode(getColorCode());
 
-        ItemStack is1 = new ItemStack(Material.LEATHER_LEGGINGS);
-        LeatherArmorMeta lam1 = (LeatherArmorMeta) is1.getItemMeta();
-        lam1.setColor(c);
-        is1.setItemMeta(lam1);
-        VersionUtil.setUnbreakable(is1);
+        ItemStack boots = new ItemStack(Material.LEATHER_BOOTS);
+        LeatherArmorMeta bootsMeta = (LeatherArmorMeta) boots.getItemMeta();
+        bootsMeta.setColor(color);
+        boots.setItemMeta(bootsMeta);
+        VersionUtil.setUnbreakable(boots);
 
-        ItemStack is2 = new ItemStack(Material.LEATHER_CHESTPLATE);
-        LeatherArmorMeta lam2 = (LeatherArmorMeta) is2.getItemMeta();
-        lam2.setColor(c);
-        is2.setItemMeta(lam2);
-        VersionUtil.setUnbreakable(is2);
+        ItemStack leggings = new ItemStack(Material.LEATHER_LEGGINGS);
+        LeatherArmorMeta leggingsMeta = (LeatherArmorMeta) leggings.getItemMeta();
+        leggingsMeta.setColor(color);
+        leggings.setItemMeta(leggingsMeta);
+        VersionUtil.setUnbreakable(leggings);
 
-        ItemStack is3 = new ItemStack(Material.LEATHER_HELMET);
-        LeatherArmorMeta lam3 = (LeatherArmorMeta) is3.getItemMeta();
-        lam3.setColor(c);
-        is3.setItemMeta(lam3);
-        VersionUtil.setUnbreakable(is3);
+        ItemStack chestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
+        LeatherArmorMeta chestplateMeta = (LeatherArmorMeta) chestplate.getItemMeta();
+        chestplateMeta.setColor(color);
+        chestplate.setItemMeta(chestplateMeta);
+        VersionUtil.setUnbreakable(chestplate);
 
-        ItemStack[] armor = new ItemStack[] {is, is1, is2, is3};
-        p.getInventory().setArmorContents(armor);
+        ItemStack helmet = new ItemStack(Material.LEATHER_HELMET);
+        LeatherArmorMeta helmetMeta = (LeatherArmorMeta) helmet.getItemMeta();
+        helmetMeta.setColor(color);
+        helmet.setItemMeta(helmetMeta);
+        VersionUtil.setUnbreakable(helmet);
+
+        teamArmor = new ItemStack[] {boots, leggings, chestplate, helmet};
+    }
+
+    public ItemStack[] getTeamArmor() {
+        return this.teamArmor;
     }
 
     public boolean isMember(MWPlayer player) {
