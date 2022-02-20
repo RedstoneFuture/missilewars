@@ -78,11 +78,8 @@ public class Team {
         Player p = player.getPlayer();
         player.setTeam(null);
         if (p != null) {
-            if (scoreboardTeam.hasPlayer(p))
-                scoreboardTeam.removePlayer(p);
-
-            game.getScoreboard().getTeam("2Guest§7").addPlayer(p);
             p.setDisplayName("§7" + p.getName() + "§r");
+            //TODO Scoreboard entfernen
         }
         return members.removeIf(mp -> mp.getUUID().equals(player.getUUID()));
     }
@@ -102,19 +99,8 @@ public class Team {
         members.add(player);
         player.setTeam(this);
         p.setDisplayName(getColorCode() + p.getName() + "§r");
-        Scoreboard sb = game.getScoreboard();
-        if (sb.getPlayerTeam(p) != null)
-            sb.getPlayerTeam(p).removePlayer(p);
-        scoreboardTeam.addPlayer(p);
+        p.setScoreboard(game.getScoreboard());
         p.getInventory().setArmorContents(getTeamArmor());
-    }
-
-    public org.bukkit.scoreboard.Team getSBTeam() {
-        return scoreboardTeam;
-    }
-
-    public void setSBTeam(org.bukkit.scoreboard.Team team) {
-        scoreboardTeam = team;
     }
 
     public String getFullname() {

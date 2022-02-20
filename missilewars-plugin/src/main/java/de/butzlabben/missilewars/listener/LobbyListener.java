@@ -95,6 +95,7 @@ public class LobbyListener extends GameBoundListener {
         p.setFoodLevel(20);
         p.setHealth(p.getMaxHealth());
         p.setScoreboard(game.getScoreboard());
+        game.getScoreboardManager().updateScoreboard();
 
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> p.setGameMode(GameMode.ADVENTURE), 10);
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> p.teleport(game.getLobby().getSpawnPoint()), 2);

@@ -56,10 +56,8 @@ public class EndListener extends GameBoundListener {
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> p.teleport(game.getArena().getSpectatorSpawn()), 2);
 
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> p.setGameMode(GameMode.SPECTATOR), 35);
-        Scoreboard sb = game.getScoreboard();
-        p.setScoreboard(sb);
-        sb.getTeam("2Guest§7").addPlayer(p);
         p.setDisplayName("§7" + p.getName() + "§r");
+        // TODO scoreboard entfernen
         game.addPlayer(p);
     }
 

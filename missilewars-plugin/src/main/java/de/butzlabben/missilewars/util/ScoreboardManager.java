@@ -19,7 +19,8 @@
 package de.butzlabben.missilewars.util;
 
 import de.butzlabben.missilewars.Config;
-import de.butzlabben.missilewars.game.timer.Timer;
+import de.butzlabben.missilewars.game.Game;
+import de.butzlabben.missilewars.wrapper.abstracts.Arena;
 import de.butzlabben.missilewars.wrapper.game.Team;
 import de.butzlabben.missilewars.wrapper.player.MWPlayer;
 import lombok.RequiredArgsConstructor;
@@ -28,35 +29,114 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
+import java.util.HashMap;
+import java.util.List;
+
+// Scoreboard Management: https://www.spigotmc.org/wiki/making-scoreboard-with-teams-no-flicker
+
 @RequiredArgsConstructor
 public class ScoreboardManager {
 
-    private Scoreboard board = Bukkit.getScoreboardManager().getNewScoreboard();
+    private final Game game;
 
-    private final Team team1;
-    private final Team team2;
-    private final String arenaDisplayName;
-    private final Timer gameTimer;
+    private Team team1;
+    private Team team2;
+    private Arena arena;
 
     // get config options
-    String scoreBoardTitle = Config.getScoreboardTitle();
-    String memberListStyle = Config.getScoreboardMembersStyle();
-    int memberListMaxSize = Config.getScoreboardMembersMax();
+    private String scoreBoardTitle = Config.getScoreboardTitle();
+    private String memberListStyle = Config.getScoreboardMembersStyle();
+    private int memberListMaxSize = Config.getScoreboardMembersMax();
+    private List<String> scoreBoardEntries = Config.getScoreboardEntries();
 
-    public void updateInGameScoreboard() {
-        removeScoreboard();
+    private boolean isTeam1ListUsed = false;
+    private boolean isTeam2ListUsed = false;
 
-        Objective obj = board.registerNewObjective("Info", "dummy");
+    private int maxScoreboardLines = 15;
+    public Scoreboard board;
+    private Objective obj;
+    private HashMap<Integer, org.bukkit.scoreboard.Team> teams = new HashMap<>();
+    String[] colorCodes = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};
+    
+    /**
+     * This method register the scoreboard.
+     */
+    public void createScoreboard() {
+
+        team1 = game.getTeam1();
+        team2 = game.getTeam2();
+        arena = game.getArena();
+        
+        // register Scoreboard
+        if (board == null) {
+            board = Bukkit.getScoreboardManager().getNewScoreboard();
+        }
+        obj = board.registerNewObjective("Info", "dummy");
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-        obj.setDisplayName(scoreBoardTitle);
+        obj.setDisplayName(scoreBoardTitle.replace("&", "§"));
 
-        for (String cleanLine : Config.getScoreboardEntries()) {
-            int i = 1;
-            String replacedLine;
+        // check if the team lists are used
+        for (String cleanLine : scoreBoardEntries) {
+            if (cleanLine.contains("%team1_members%")) {
+                isTeam1ListUsed = true;
+            } else if (cleanLine.contains("%team2_members%")) {
+                isTeam2ListUsed = true;
+            }
+        }
+
+        updateScoreboard();
+    }
+
+    /**
+     * This method create a team for the scoreboard and add it to the teams ArrayList.
+     *
+     * @param line the Scoreboard line number
+     */
+    private void addScoreboardTeam(int line) {
+        org.bukkit.scoreboard.Team team;
+
+        if (teams.size() < line) {
+            team = board.registerNewTeam(arena.getName() + "-" + line);
+            team.addEntry("§" + colorCodes[line - 1]);
+            obj.getScore("§" + colorCodes[line - 1]).setScore(line);
+            teams.put(line, team);
+
+            // VersionUtil.setScoreboardTeamColor(t, ChatColor.getByChar(team2.getColorCode().charAt(1)));
+        }
+    }
+
+    public void updateScoreboard() {
+
+        // the number of lines required for the complete Scoreboard
+        int scoreboardLine = scoreBoardEntries.size() + getLineOffset();
+
+        // add new teams
+        for (int i = 1; i <= scoreboardLine; i++) {
+            addScoreboardTeam(i);
+        }
+
+        /*
+
+        Not possible! When a user leaves the game, the scoreboard must be reset.
+
+        // removes old teams when they are no longer needed
+        while (teams.size() > scoreboardLine) {
+            int oldTeamNumber = teams.size();
+            removeScoreboardTeam(oldTeamNumber);
+        }
+         */
+
+        String replacedLine;
+
+        for (String cleanLine : scoreBoardEntries) {
+            if (scoreboardLine <= 0) {
+                break;
+            }
 
             if (cleanLine.contains("%team1_members%") || cleanLine.contains("%team2_members%")) {
 
-                // team member list
+                // team member list placeholder management:
+
                 Team placeholderTeam;
 
                 // set the current placeholder team
@@ -66,8 +146,14 @@ public class ScoreboardManager {
                     placeholderTeam = team2;
                 }
 
+                // check if there is no one in the team at the moment
+                if (placeholderTeam.getMembers().isEmpty()) {
+                    continue;
+                }
+
                 int players = 0;
 
+                // list all team members
                 for (MWPlayer player : placeholderTeam.getMembers()) {
 
                     // limit check
@@ -80,27 +166,79 @@ public class ScoreboardManager {
 
                     replacedLine = memberListStyle.replace("%playername%", playerName)
                             .replace("%team_color%", teamColor);
-                    setScoreBoardLine(obj, replacedLine, i);
+                    teams.get(scoreboardLine).setPrefix(replacedLine);
 
                     players++;
-                    i++;
+                    scoreboardLine--;
                 }
 
             } else {
 
-                // normal placeholders
-                replacedLine = replaceScoreboardPlaceholders(cleanLine);
-                setScoreBoardLine(obj, replacedLine, i);
+                // normal placeholders management:
 
-                i++;
+                replacedLine = replaceScoreboardPlaceholders(cleanLine);
+                teams.get(scoreboardLine).setPrefix(replacedLine);
+
+                scoreboardLine--;
             }
         }
     }
 
+    /**
+     * This method calculates the offset lines based of the amount of players
+     * and the using of the member-list placeholders for booth teams.
+     *
+     * @return (int) the amount of offset lines
+     */
+    private int getLineOffset() {
+
+        int team1ListSize = 0;
+        int team2ListSize = 0;
+
+        if (isTeam1ListUsed) {
+            if (team1.getMembers().size() > memberListMaxSize) {
+                team1ListSize = memberListMaxSize;
+            } else {
+                team1ListSize = team1.getMembers().size();
+            }
+            team1ListSize--;
+        }
+
+        if (isTeam2ListUsed) {
+            if (team2.getMembers().size() > memberListMaxSize) {
+                team2ListSize = memberListMaxSize;
+            } else {
+                team2ListSize = team2.getMembers().size();
+            }
+            team2ListSize--;
+        }
+
+        return (team1ListSize + team2ListSize);
+    }
+
+    /**
+     * This method deletes the old Scoreboard object, if one exists.
+     */
     public void removeScoreboard() {
-        Objective old = board.getObjective(DisplaySlot.SIDEBAR);
-        if (old != null)
-            old.unregister();
+
+        if (obj != null) {
+            obj.unregister();
+            obj = null;
+        }
+
+        if (!teams.isEmpty()) {
+            teams.forEach((k, v) -> v.unregister());
+            teams.clear();
+        }
+
+    }
+
+    /**
+     * This method remove the current Scoreboard and create a new one.
+     */
+    public void resetScoreboard() {
+        removeScoreboard();
+        createScoreboard();
     }
 
     /**
@@ -110,36 +248,26 @@ public class ScoreboardManager {
      */
     private String replaceScoreboardPlaceholders(String text) {
 
-        String time = "" + Integer.toString(gameTimer.getSeconds() / 60);
+        String time = Integer.toString(game.getTimer().getSeconds() / 60);
 
 
-        text.replace("%team1%", team1.getFullname());
-        text.replace("%team2%", team2.getFullname());
+        text = text.replace("&", "§");
 
-        text.replace("%team1_color%", team1.getColor());
-        text.replace("%team2_color%", team2.getColor());
+        text = text.replace("%team1%", team1.getFullname());
+        text = text.replace("%team2%", team2.getFullname());
 
-        text.replace("%team1_amount%", Integer.toString(team1.getMembers().size()));
-        text.replace("%team2_amount%", Integer.toString(team2.getMembers().size()));
+        text = text.replace("%team1_color%", team1.getColor());
+        text = text.replace("%team2_color%", team2.getColor());
 
-        text.replace("%arena_name%", arenaDisplayName);
+        text = text.replace("%team1_amount%", Integer.toString(team1.getMembers().size()));
+        text = text.replace("%team2_amount%", Integer.toString(team2.getMembers().size()));
 
-        text.replace("%time%", time);
+        text = text.replace("%arena_name%", arena.getDisplayName());
+
+        text = text.replace("%time%", time);
 
         return text;
     }
 
-    /**
-     * This methode set the scoreboard line.
-     *
-     * @param scoreBoardObject the vanilla scoreboard object
-     * @param message the text line
-     * @param lineNr the target line number (= object "score")
-     */
-    private static void setScoreBoardLine(Objective scoreBoardObject, String message, int lineNr) {
-        // Get the "score object" (instead of a player with a text line)
-        // and set the scoreboard line number with the definition of his score.
-        scoreBoardObject.getScore(message).setScore(lineNr);
-    }
 
 }

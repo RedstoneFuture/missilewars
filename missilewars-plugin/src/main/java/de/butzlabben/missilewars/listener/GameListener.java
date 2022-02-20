@@ -58,7 +58,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
 
 /**
@@ -176,11 +175,10 @@ public class GameListener extends GameBoundListener {
         if (!game.getLobby().isJoinOngoingGame() || game.getPlayers().size() >= game.getLobby().getMaxSize()) {
             p.sendMessage(MessageConfig.getMessage("spectator"));
             Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> p.teleport(game.getArena().getSpectatorSpawn()), 2);
-            Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> p.setGameMode(GameMode.SPECTATOR), 35);
-            Scoreboard sb = game.getScoreboard();
-            p.setScoreboard(sb);
-            sb.getTeam("2Guest§7").addPlayer(p);
+            Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> p.setGameMode(GameMode.SPECTATOR), 35);;
             p.setDisplayName("§7" + p.getName() + "§r");
+            p.setScoreboard(game.getScoreboard());
+            game.getScoreboardManager().updateScoreboard();
         } else {
             Team to;
             int size1 = game.getTeam1().getMembers().size();
@@ -194,6 +192,7 @@ public class GameListener extends GameBoundListener {
             to.updateIntervals(game.getArena().getInterval(to.getMembers().size()));
             game.startForPlayer(p);
             p.setScoreboard(game.getScoreboard());
+            game.getScoreboardManager().updateScoreboard();
         }
     }
 
@@ -315,6 +314,7 @@ public class GameListener extends GameBoundListener {
             getGame().broadcast(
                     MessageConfig.getMessage("player_left").replace("%player%", e.getPlayer().getDisplayName()));
             team.removeMember(getGame().getPlayer(e.getPlayer()));
+            game.getScoreboardManager().resetScoreboard();
             int teamSize = team.getMembers().size();
             if (teamSize == 0) {
                 Bukkit.getScheduler().runTask(MissileWars.getInstance(), () -> {
