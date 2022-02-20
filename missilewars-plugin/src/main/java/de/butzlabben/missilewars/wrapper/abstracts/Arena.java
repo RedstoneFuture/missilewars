@@ -26,22 +26,18 @@ import de.butzlabben.missilewars.wrapper.geometry.Plane;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+
+import lombok.*;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
-@Data
-@ToString
-@AllArgsConstructor
 @RequiredArgsConstructor
+@AllArgsConstructor
+@Data
 @Builder(toBuilder = true)
 public class Arena {
 
-    private String name = "arena";
+    private String name = "arena0";
     @SerializedName("display_name") private String displayName = "&eDefault map";
     @SerializedName("display_material") private String displayMaterial = "STONE";
     @SerializedName("template_world") private String templateWorld = "default_map";
@@ -59,7 +55,7 @@ public class Arena {
     @SerializedName("save_statistics") private boolean saveStatistics = true;
     @SerializedName("fall_protection") private FallProtectionConfiguration fallProtection = new FallProtectionConfiguration();
     @SerializedName("money") private MoneyConfiguration money = new MoneyConfiguration();
-    @SerializedName("intervals") private Map<Integer, Integer> intervals = new HashMap<Integer, Integer>() {{
+    @SerializedName("intervals") private Map<Integer, Integer> intervals = new HashMap<>() {{
         put(1, 15);
         put(2, 20);
         put(4, 25);

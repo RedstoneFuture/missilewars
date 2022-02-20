@@ -127,7 +127,7 @@ public class Config {
         cfg.addDefault("mysql.fights_table", "mw_fights");
         cfg.addDefault("mysql.fightmember_table", "mw_fightmember");
 
-        cfg.addDefault("sidebar.title", "§eInfo ●§6•");
+        cfg.addDefault("sidebar.title", "&eInfo ●&6•");
         cfg.addDefault("sidebar.member_list_style", "%team_color%%playername%");
         cfg.addDefault("sidebar.member_list_max", "4");
 
