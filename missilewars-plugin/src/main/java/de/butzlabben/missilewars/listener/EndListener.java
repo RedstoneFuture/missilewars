@@ -71,10 +71,8 @@ public class EndListener extends GameBoundListener {
     }
 
     @EventHandler
-
     public void onDeath(PlayerDeathEvent e) {
-        if (!isInLobbyArea(e.getEntity().getLocation()))
-            return;
+        if (!isInLobbyArea(e.getEntity().getLocation())) return;
 
         Player p = e.getEntity();
         p.setHealth(p.getMaxHealth());
