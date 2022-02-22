@@ -276,7 +276,6 @@ public class Game {
 
         timer = new EndTimer(this);
         bt = Bukkit.getScheduler().runTaskTimer(MissileWars.getInstance(), timer, 5, 20);
-        scoreboardManager.removeScoreboard();
 
         // Change MOTD
         if (!Config.isMultipleLobbies())
