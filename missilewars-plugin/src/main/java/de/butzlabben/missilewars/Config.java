@@ -28,6 +28,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.bukkit.Material.JUKEBOX;
@@ -133,14 +134,16 @@ public class Config {
 
         //TODO generate list
         if (configNew) {
-            cfg.addDefault("sidebar.entries.6", "§7Time left:");
-            cfg.addDefault("sidebar.entries.5", "§e» %time%m");
+            List<String> sidebarList = new ArrayList<>();
 
-            cfg.addDefault("sidebar.entries.4", "  ");
-            cfg.addDefault("sidebar.entries.3", "%team1% §7» %team1_color%%team1_amount%");
+            sidebarList.add("§7Time left:");
+            sidebarList.add("§e» %time%m");
+            sidebarList.add("");
+            sidebarList.add("%team1% §7» %team1_color%%team1_amount%");
+            sidebarList.add("");
+            sidebarList.add("%team2% §7» %team2_color%%team2_amount%");
 
-            cfg.addDefault("sidebar.entries.2", "   ");
-            cfg.addDefault("sidebar.entries.1", "%team2% §7» %team2_color%%team2_amount%");
+            cfg.set("sidebar.entries", sidebarList);
         }
     }
 
