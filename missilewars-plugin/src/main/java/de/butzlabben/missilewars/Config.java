@@ -132,7 +132,6 @@ public class Config {
         cfg.addDefault("sidebar.member_list_style", "%team_color%%playername%");
         cfg.addDefault("sidebar.member_list_max", "4");
 
-        //TODO generate list
         if (configNew) {
             List<String> sidebarList = new ArrayList<>();
 

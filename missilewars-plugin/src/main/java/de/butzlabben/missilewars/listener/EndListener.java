@@ -31,7 +31,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.scoreboard.Scoreboard;
 
 /**
  * @author Butzlabben
@@ -57,7 +56,7 @@ public class EndListener extends GameBoundListener {
 
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> p.setGameMode(GameMode.SPECTATOR), 35);
         p.setDisplayName("§7" + p.getName() + "§r");
-        // TODO scoreboard entfernen
+        // TODO remove scoreboard
         game.addPlayer(p);
     }
 

@@ -26,7 +26,6 @@ import de.butzlabben.missilewars.util.version.ColorConverter;
 import de.butzlabben.missilewars.util.version.VersionUtil;
 import de.butzlabben.missilewars.wrapper.event.GameEndEvent;
 import de.butzlabben.missilewars.wrapper.player.MWPlayer;
-import java.util.ArrayList;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -38,7 +37,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.scoreboard.Scoreboard;
+
+import java.util.ArrayList;
 
 /**
  * @author Butzlabben
@@ -79,7 +79,7 @@ public class Team {
         player.setTeam(null);
         if (p != null) {
             p.setDisplayName("§7" + p.getName() + "§r");
-            //TODO Scoreboard entfernen
+            // TODO remove scoreboard
         }
         return members.removeIf(mp -> mp.getUUID().equals(player.getUUID()));
     }
