@@ -34,11 +34,19 @@ public class EndTimer extends Timer {
 
     @Override
     public void tick() {
-        if (seconds == 20)
-            broadcast(MessageConfig.getMessage("game_starts_new_in").replace("%seconds%", "" + seconds));
-        else if (seconds == 0)
-            getGame().reset();
-        --seconds;
+
+        switch(seconds) {
+            case 20:
+                broadcast(MessageConfig.getMessage("game_starts_new_in").replace("%seconds%", Integer.toString(seconds)));
+                break;
+            case 0:
+                getGame().reset();
+                break;
+            default:
+                break;
+        }
+
+        seconds--;
     }
 
 }
