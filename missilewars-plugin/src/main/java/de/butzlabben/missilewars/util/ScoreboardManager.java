@@ -25,6 +25,7 @@ import de.butzlabben.missilewars.wrapper.game.Team;
 import de.butzlabben.missilewars.wrapper.player.MWPlayer;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
@@ -73,7 +74,7 @@ public class ScoreboardManager {
         }
         obj = board.registerNewObjective("Info", "dummy");
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-        obj.setDisplayName(scoreBoardTitle.replace("&", "§"));
+        obj.setDisplayName(ChatColor.translateAlternateColorCodes('&', scoreBoardTitle));
 
         // check if the team lists are used
         for (String cleanLine : scoreBoardEntries) {
@@ -88,7 +89,7 @@ public class ScoreboardManager {
     }
 
     /**
-     * This method create a team for the scoreboard and add it to the teams ArrayList.
+     * This method creates a team for the scoreboard and adds it to the teams ArrayList.
      *
      * @param line the Scoreboard line number
      */
@@ -100,8 +101,6 @@ public class ScoreboardManager {
             team.addEntry("§" + colorCodes[line - 1]);
             obj.getScore("§" + colorCodes[line - 1]).setScore(line);
             teams.put(line, team);
-
-            // VersionUtil.setScoreboardTeamColor(t, ChatColor.getByChar(team2.getColorCode().charAt(1)));
         }
     }
 
@@ -114,17 +113,6 @@ public class ScoreboardManager {
         for (int i = 1; i <= scoreboardLine; i++) {
             addScoreboardTeam(i);
         }
-
-        /*
-
-        Not possible! When a user leaves the game, the scoreboard must be reset.
-
-        // removes old teams when they are no longer needed
-        while (teams.size() > scoreboardLine) {
-            int oldTeamNumber = teams.size();
-            removeScoreboardTeam(oldTeamNumber);
-        }
-         */
 
         String replacedLine;
 
@@ -151,13 +139,13 @@ public class ScoreboardManager {
                     continue;
                 }
 
-                int players = 0;
+                int playerCounter = 0;
 
                 // list all team members
                 for (MWPlayer player : placeholderTeam.getMembers()) {
 
                     // limit check
-                    if (players >= memberListMaxSize) {
+                    if (playerCounter >= memberListMaxSize) {
                         break;
                     }
 
@@ -168,7 +156,7 @@ public class ScoreboardManager {
                             .replace("%team_color%", teamColor);
                     teams.get(scoreboardLine).setPrefix(replacedLine);
 
-                    players++;
+                    playerCounter++;
                     scoreboardLine--;
                 }
 
@@ -186,7 +174,7 @@ public class ScoreboardManager {
 
     /**
      * This method calculates the offset lines based of the amount of players
-     * and the using of the member-list placeholders for booth teams.
+     * and the using of the member-list placeholders for booths teams.
      *
      * @return (int) the amount of offset lines
      */
@@ -213,7 +201,7 @@ public class ScoreboardManager {
             team2ListSize--;
         }
 
-        return (team1ListSize + team2ListSize);
+        return team1ListSize + team2ListSize;
     }
 
     /**
@@ -251,7 +239,7 @@ public class ScoreboardManager {
         String time = Integer.toString(game.getTimer().getSeconds() / 60);
 
 
-        text = text.replace("&", "§");
+        text = ChatColor.translateAlternateColorCodes('&', text);
 
         text = text.replace("%team1%", team1.getFullname());
         text = text.replace("%team2%", team2.getFullname());

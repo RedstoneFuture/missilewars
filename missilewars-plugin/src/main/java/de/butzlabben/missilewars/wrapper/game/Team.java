@@ -69,38 +69,44 @@ public class Team {
             return game.getTeam2();
         return game.getTeam1();
     }
-
-    @SuppressWarnings("deprecation")
-    public boolean removeMember(MWPlayer player) {
-        if (!isMember(player))
-            return false;
+    
+    public void removeMember(MWPlayer player) {
+        if (!isMember(player)) return;
 
         Player p = player.getPlayer();
         player.setTeam(null);
+
         if (p != null) {
             p.setDisplayName("§7" + p.getName() + "§r");
-            // TODO remove scoreboard
         }
-        return members.removeIf(mp -> mp.getUUID().equals(player.getUUID()));
-    }
 
-    @SuppressWarnings("deprecation")
+        members.removeIf(mp -> mp.getUUID().equals(player.getUUID()));
+
+        game.getScoreboardManager().resetScoreboard();
+        p.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+    }
+    
     public void addMember(MWPlayer player) {
-        if (isMember(player))
-            return;
+        if (isMember(player)) return;
+
+        // Already in a team?
         if (player.getTeam() != null) {
             player.getTeam().removeMember(player);
         }
+
         Player p = player.getPlayer();
         if (p == null) {
             Logger.WARN.log("Could not add player " + player.getUUID().toString() + " to a team because he went offline");
             return;
         }
+
         members.add(player);
         player.setTeam(this);
         p.setDisplayName(getColorCode() + p.getName() + "§r");
-        p.setScoreboard(game.getScoreboard());
         p.getInventory().setArmorContents(getTeamArmor());
+
+        game.getScoreboardManager().updateScoreboard();
+        p.setScoreboard(game.getScoreboard());
     }
 
     public String getFullname() {

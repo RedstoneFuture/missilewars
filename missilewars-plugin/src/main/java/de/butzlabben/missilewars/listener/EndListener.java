@@ -25,6 +25,7 @@ import de.butzlabben.missilewars.util.PlayerDataProvider;
 import de.butzlabben.missilewars.wrapper.event.PlayerArenaJoinEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -46,8 +47,8 @@ public class EndListener extends GameBoundListener {
     @EventHandler
     public void onJoin(PlayerArenaJoinEvent e) {
         Game game = e.getGame();
-        if (game != getGame())
-            return;
+        if (game != getGame()) return;
+
         Player p = e.getPlayer();
         PlayerDataProvider.getInstance().storeInventory(p);
         p.sendMessage(MessageConfig.getMessage("spectator"));
@@ -56,7 +57,6 @@ public class EndListener extends GameBoundListener {
 
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> p.setGameMode(GameMode.SPECTATOR), 35);
         p.setDisplayName("§7" + p.getName() + "§r");
-        // TODO remove scoreboard
         game.addPlayer(p);
     }
 
@@ -68,21 +68,19 @@ public class EndListener extends GameBoundListener {
     }
 
     @EventHandler
-
     public void onDeath(PlayerDeathEvent e) {
-        if (!isInLobbyArea(e.getEntity().getLocation()))
-            return;
+        if (!isInLobbyArea(e.getEntity().getLocation())) return;
 
         Player p = e.getEntity();
-        p.setHealth(p.getMaxHealth());
+        p.setHealth(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getDefaultValue());
         p.teleport(getGame().getArena().getSpectatorSpawn());
         e.setDeathMessage(null);
     }
 
     @EventHandler
     public void onClick(InventoryClickEvent e) {
-        if (!(e.getWhoClicked() instanceof Player))
-            return;
+        if (!(e.getWhoClicked() instanceof Player)) return;
+
         Player p = (Player) e.getWhoClicked();
         if (isInGameWorld(p.getLocation()))
             if (p.getGameMode() != GameMode.CREATIVE && !p.isOp())

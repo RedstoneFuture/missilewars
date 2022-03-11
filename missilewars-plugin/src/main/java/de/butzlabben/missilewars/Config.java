@@ -156,8 +156,7 @@ public class Config {
     }
 
     public static List<String> getScoreboardEntries() {
-        List<String> scoreboardLines = cfg.getStringList("sidebar.entries");
-        return scoreboardLines;
+        return cfg.getStringList("sidebar.entries");
     }
 
     /**

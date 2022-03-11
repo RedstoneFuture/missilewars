@@ -122,7 +122,9 @@ public class LobbyListener extends GameBoundListener {
             p.getInventory().setItem(4, new OrcItem(Material.NETHER_STAR, "§3Vote Map").getItemStack());
         }
 
+        // Adds the player to the new team.
         to.addMember(mw);
+
         p.sendMessage(MessageConfig.getMessage("team_assigned").replace("%team%", to.getFullname()));
 
         String name = p.getName();
@@ -130,9 +132,6 @@ public class LobbyListener extends GameBoundListener {
         String maxPlayers = "" + game.getLobby().getMaxSize();
         String message = MessageConfig.getMessage("lobby_joined").replace("%max_players%", maxPlayers).replace("%players%", players).replace("%player%", name);
         game.broadcast(message);
-
-        p.setScoreboard(game.getScoreboard());
-        game.getScoreboardManager().updateScoreboard();
 
         MissileWars.getInstance().getSignRepository().getSigns(game).forEach(MWSign::update);
     }
