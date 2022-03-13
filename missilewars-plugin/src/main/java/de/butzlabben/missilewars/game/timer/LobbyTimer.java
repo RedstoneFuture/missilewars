@@ -25,6 +25,7 @@ import de.butzlabben.missilewars.util.version.VersionUtil;
 import de.butzlabben.missilewars.wrapper.abstracts.Arena;
 import de.butzlabben.missilewars.wrapper.abstracts.MapChooseProcedure;
 import de.butzlabben.missilewars.wrapper.player.MWPlayer;
+
 import java.util.Map;
 import java.util.Optional;
 
@@ -71,48 +72,40 @@ public class LobbyTimer extends Timer implements Runnable {
             remaining = 90;
             broadcast(MessageConfig.getMessage("not_enough_players"));
         }
-        if (seconds == 120) {
-            broadcast(MessageConfig.getMessage("game_starts_in").replace("%seconds%", "120"));
-            playPling();
-        } else if (seconds == 60) {
-            broadcast(MessageConfig.getMessage("game_starts_in").replace("%seconds%", "60"));
-            playPling();
-        } else if (seconds == 30) {
-            broadcast(MessageConfig.getMessage("game_starts_in").replace("%seconds%", "30"));
-            playPling();
-        } else if (seconds == 10) {
-            checkVote();
-            broadcast(MessageConfig.getMessage("game_starts_in").replace("%seconds%", "10"));
-            playPling();
-        } else if (seconds == 5) {
-            broadcast(MessageConfig.getMessage("game_starts_in").replace("%seconds%", "5"));
-            playPling();
-        } else if (seconds == 4) {
-            broadcast(MessageConfig.getMessage("game_starts_in").replace("%seconds%", "4"));
-            playPling();
-        } else if (seconds == 3) {
-            broadcast(MessageConfig.getMessage("game_starts_in").replace("%seconds%", "3"));
-            playPling();
-        } else if (seconds == 2) {
-            broadcast(MessageConfig.getMessage("game_starts_in").replace("%seconds%", "2"));
-            playPling();
-        } else if (seconds == 1) {
-            broadcast(MessageConfig.getMessage("game_starts_in").replace("%seconds%", "1"));
-            playPling();
 
-        } else if (seconds == 0) {
-            int diff = size1 - size2;
-            if (diff >= 2 || diff <= -2) {
-                broadcast(MessageConfig.getMessage("teams_unequal"));
-                seconds = startTime;
+        switch(seconds) {
+            case 120:
+            case 60:
+            case 30:
+            case 5:
+            case 4:
+            case 3:
+            case 2:
+            case 1:
+                broadcast(MessageConfig.getMessage("game_starts_in").replace("%seconds%", Integer.toString(seconds)));
+                playPling();
+                break;
+            case 10:
+                checkVote();
+                broadcast(MessageConfig.getMessage("game_starts_in").replace("%seconds%", Integer.toString(seconds)));
+                playPling();
+                break;
+            case 0:
+                int diff = size1 - size2;
+                if (diff >= 2 || diff <= -2) {
+                    broadcast(MessageConfig.getMessage("teams_unequal"));
+                    seconds = startTime;
+                    return;
+                }
+                broadcast(MessageConfig.getMessage("game_starts"));
+                playPling();
+                getGame().startGame();
                 return;
-            }
-            broadcast(MessageConfig.getMessage("game_starts"));
-            playPling();
-            getGame().startGame();
-            return;
+            default:
+                break;
         }
-        --seconds;
+
+        seconds--;
     }
 
     private void playPling() {

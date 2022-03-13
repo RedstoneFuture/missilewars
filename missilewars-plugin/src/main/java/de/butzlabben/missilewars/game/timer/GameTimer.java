@@ -34,43 +34,39 @@ public class GameTimer extends Timer {
 
     @Override
     public void tick() {
-        if (seconds == 7200) {
-            broadcast(MessageConfig.getMessage("game_ends_in_minutes").replace("%minutes%", "120"));
-        } else if (seconds == 5400) {
-            broadcast(MessageConfig.getMessage("game_ends_in_minutes").replace("%minutes%", "90"));
-        } else if (seconds == 3600) {
-            broadcast(MessageConfig.getMessage("game_ends_in_minutes").replace("%minutes%", "60"));
-        } else if (seconds == 1800) {
-            broadcast(MessageConfig.getMessage("game_ends_in_minutes").replace("%minutes%", "30"));
-        } else if (seconds == 1200) {
-            broadcast(MessageConfig.getMessage("game_ends_in_minutes").replace("%minutes%", "20"));
-        } else if (seconds == 600) {
-            broadcast(MessageConfig.getMessage("game_ends_in_minutes").replace("%minutes%", "10"));
-        } else if (seconds == 300) {
-            broadcast(MessageConfig.getMessage("game_ends_in_minutes").replace("%minutes%", "5"));
-        } else if (seconds == 180) {
-            broadcast(MessageConfig.getMessage("game_ends_in_minutes").replace("%minutes%", "3"));
-        } else if (seconds == 60) {
-            broadcast(MessageConfig.getMessage("game_ends_in_seconds").replace("%seconds%", "60"));
-        } else if (seconds == 30) {
-            broadcast(MessageConfig.getMessage("game_ends_in_seconds").replace("%seconds%", "30"));
-        } else if (seconds == 10) {
-            broadcast(MessageConfig.getMessage("game_ends_in_seconds").replace("%seconds%", "10"));
-        } else if (seconds == 5) {
-            broadcast(MessageConfig.getMessage("game_ends_in_seconds").replace("%seconds%", "5"));
-        } else if (seconds == 4) {
-            broadcast(MessageConfig.getMessage("game_ends_in_seconds").replace("%seconds%", "4"));
-        } else if (seconds == 3) {
-            broadcast(MessageConfig.getMessage("game_ends_in_seconds").replace("%seconds%", "3"));
-        } else if (seconds == 2) {
-            broadcast(MessageConfig.getMessage("game_ends_in_seconds").replace("%seconds%", "2"));
-        } else if (seconds == 1) {
-            broadcast(MessageConfig.getMessage("game_ends_in_seconds").replace("%seconds%", "1"));
-        } else if (seconds == 0) {
-            getGame().stopGame();
+
+        switch(seconds) {
+            case 7200:
+            case 5400:
+            case 3600:
+            case 1800:
+            case 1200:
+            case 600:
+            case 300:
+            case 180:
+                broadcast(MessageConfig.getMessage("game_ends_in_minutes").replace("%minutes%", Integer.toString(seconds/60)));
+                break;
+            case 60:
+            case 30:
+            case 10:
+            case 5:
+            case 4:
+            case 3:
+            case 2:
+            case 1:
+                broadcast(MessageConfig.getMessage("game_ends_in_seconds").replace("%seconds%", Integer.toString(seconds)));
+                break;
+            case 0:
+                getGame().stopGame();
+                break;
+            default:
+                break;
         }
-        if (seconds % 10 == 0)
-            getGame().getScoreboardManager().updateScoreboard();
-        --seconds;
+
+        if (seconds % 10 == 0) {
+            getGame().getScoreboardManager().updateInGameScoreboard();
+        }
+
+        seconds--;
     }
 }
