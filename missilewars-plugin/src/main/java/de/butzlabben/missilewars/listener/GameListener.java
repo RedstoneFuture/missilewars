@@ -36,7 +36,6 @@ import de.butzlabben.missilewars.wrapper.player.MWPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -266,7 +265,7 @@ public class GameListener extends GameBoundListener {
 
         // spectator respawn for people there are not in a team
         if (player.getTeam() == null) {
-            p.setHealth(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getDefaultValue());
+            p.setHealth(p.getMaxHealth());
             p.teleport(getGame().getArena().getSpectatorSpawn());
             return;
         }

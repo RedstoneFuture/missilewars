@@ -45,22 +45,21 @@ public class ScoreboardManager {
     private Arena arena;
 
     // get config options
-    private String scoreBoardTitle = Config.getScoreboardTitle();
-    private String memberListStyle = Config.getScoreboardMembersStyle();
-    private int memberListMaxSize = Config.getScoreboardMembersMax();
-    private List<String> scoreBoardEntries = Config.getScoreboardEntries();
+    private static final String SCOREBOARD_TITLE = Config.getScoreboardTitle();
+    private static final String MEMBER_LIST_STYLE = Config.getScoreboardMembersStyle();
+    private static final int MEMBER_LIST_MAX_SIZE = Config.getScoreboardMembersMax();
+    private static final List<String> SCOREBOARD_ENTRIES = Config.getScoreboardEntries();
 
     private boolean isTeam1ListUsed = false;
     private boolean isTeam2ListUsed = false;
 
-    private int maxScoreboardLines = 15;
     public Scoreboard board;
     private Objective obj;
     private HashMap<Integer, org.bukkit.scoreboard.Team> teams = new HashMap<>();
-    String[] colorCodes = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};
+    private static final String[] COLOR_CODES = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};
     
     /**
-     * This method register the scoreboard.
+     * This method registers the scoreboard.
      */
     public void createScoreboard() {
 
@@ -74,10 +73,10 @@ public class ScoreboardManager {
         }
         obj = board.registerNewObjective("Info", "dummy");
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-        obj.setDisplayName(ChatColor.translateAlternateColorCodes('&', scoreBoardTitle));
+        obj.setDisplayName(ChatColor.translateAlternateColorCodes('&', SCOREBOARD_TITLE));
 
         // check if the team lists are used
-        for (String cleanLine : scoreBoardEntries) {
+        for (String cleanLine : SCOREBOARD_ENTRIES) {
             if (cleanLine.contains("%team1_members%")) {
                 isTeam1ListUsed = true;
             } else if (cleanLine.contains("%team2_members%")) {
@@ -98,8 +97,8 @@ public class ScoreboardManager {
 
         if (teams.size() < line) {
             team = board.registerNewTeam(arena.getName() + "-" + line);
-            team.addEntry("§" + colorCodes[line - 1]);
-            obj.getScore("§" + colorCodes[line - 1]).setScore(line);
+            team.addEntry("§" + COLOR_CODES[line - 1]);
+            obj.getScore("§" + COLOR_CODES[line - 1]).setScore(line);
             teams.put(line, team);
         }
     }
@@ -107,7 +106,7 @@ public class ScoreboardManager {
     public void updateScoreboard() {
 
         // the number of lines required for the complete Scoreboard
-        int scoreboardLine = scoreBoardEntries.size() + getLineOffset();
+        int scoreboardLine = SCOREBOARD_ENTRIES.size() + getLineOffset();
 
         // add new teams
         for (int i = 1; i <= scoreboardLine; i++) {
@@ -116,7 +115,7 @@ public class ScoreboardManager {
 
         String replacedLine;
 
-        for (String cleanLine : scoreBoardEntries) {
+        for (String cleanLine : SCOREBOARD_ENTRIES) {
             if (scoreboardLine <= 0) {
                 break;
             }
@@ -145,14 +144,14 @@ public class ScoreboardManager {
                 for (MWPlayer player : placeholderTeam.getMembers()) {
 
                     // limit check
-                    if (playerCounter >= memberListMaxSize) {
+                    if (playerCounter >= MEMBER_LIST_MAX_SIZE) {
                         break;
                     }
 
                     String playerName = player.getPlayer().getName();
                     String teamColor = placeholderTeam.getColor();
 
-                    replacedLine = memberListStyle.replace("%playername%", playerName)
+                    replacedLine = MEMBER_LIST_STYLE.replace("%playername%", playerName)
                             .replace("%team_color%", teamColor);
                     teams.get(scoreboardLine).setPrefix(replacedLine);
 
@@ -174,7 +173,7 @@ public class ScoreboardManager {
 
     /**
      * This method calculates the offset lines based of the amount of players
-     * and the using of the member-list placeholders for booths teams.
+     * and the using of the member-list placeholders for both teams.
      *
      * @return (int) the amount of offset lines
      */
@@ -184,20 +183,12 @@ public class ScoreboardManager {
         int team2ListSize = 0;
 
         if (isTeam1ListUsed) {
-            if (team1.getMembers().size() > memberListMaxSize) {
-                team1ListSize = memberListMaxSize;
-            } else {
-                team1ListSize = team1.getMembers().size();
-            }
+            team1ListSize = Math.min(team1.getMembers().size(), MEMBER_LIST_MAX_SIZE);
             team1ListSize--;
         }
 
         if (isTeam2ListUsed) {
-            if (team2.getMembers().size() > memberListMaxSize) {
-                team2ListSize = memberListMaxSize;
-            } else {
-                team2ListSize = team2.getMembers().size();
-            }
+            team2ListSize = Math.min(team2.getMembers().size(), MEMBER_LIST_MAX_SIZE);
             team2ListSize--;
         }
 
@@ -222,7 +213,7 @@ public class ScoreboardManager {
     }
 
     /**
-     * This method remove the current Scoreboard and create a new one.
+     * This method deletes the current indicator and creates a new one.
      */
     public void resetScoreboard() {
         removeScoreboard();

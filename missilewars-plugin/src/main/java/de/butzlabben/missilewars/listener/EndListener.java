@@ -25,7 +25,6 @@ import de.butzlabben.missilewars.util.PlayerDataProvider;
 import de.butzlabben.missilewars.wrapper.event.PlayerArenaJoinEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -67,12 +66,13 @@ public class EndListener extends GameBoundListener {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @EventHandler
     public void onDeath(PlayerDeathEvent e) {
         if (!isInLobbyArea(e.getEntity().getLocation())) return;
 
         Player p = e.getEntity();
-        p.setHealth(p.getAttribute(Attribute.GENERIC_MAX_HEALTH).getDefaultValue());
+        p.setHealth(p.getMaxHealth());
         p.teleport(getGame().getArena().getSpectatorSpawn());
         e.setDeathMessage(null);
     }

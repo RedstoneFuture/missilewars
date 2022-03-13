@@ -207,6 +207,7 @@ public class Config {
     public static boolean isContactAuth() {
         return cfg.getBoolean("contact_auth_server");
     }
+
     public static boolean isPrefetchPlayers() {
         return cfg.getBoolean("prefetch_players");
     }
@@ -222,9 +223,11 @@ public class Config {
     public static boolean isMultipleLobbies() {
         return cfg.getBoolean("lobbies.multiple_lobbies");
     }
+
     public static String getLobbiesFolder() {
         return cfg.getString("lobbies.folder") + "/";
     }
+
     public static String getDefaultLobby() {
         return cfg.getString("lobbies.default_lobby");
     }
@@ -232,6 +235,7 @@ public class Config {
     public static int getReplaceTicks() {
         return cfg.getInt("replace.after_ticks");
     }
+
     public static int getReplaceRadius() {
         return cfg.getInt("replace.radius");
     }
@@ -239,12 +243,15 @@ public class Config {
     public static String motdEnded() {
         return cfg.getString("motd.ended");
     }
+
     public static String motdGame() {
         return cfg.getString("motd.ingame");
     }
+
     public static String motdLobby() {
         return cfg.getString("motd.lobby");
     }
+
     public static boolean motdEnabled() {
         return cfg.getBoolean("motd.enable");
     }
@@ -252,6 +259,7 @@ public class Config {
     public static boolean isFightStatsEnabled() {
         return cfg.getBoolean("fightstats.enable");
     }
+
     public static boolean isShowRealSkins() {
         return cfg.getBoolean("fightstats.show_real_skins");
     }
@@ -259,27 +267,41 @@ public class Config {
     public static String getHost() {
         return cfg.getString("mysql.host");
     }
+
     public static String getDatabase() {
         return cfg.getString("mysql.database");
     }
+
     public static String getPort() {
         return cfg.getString("mysql.port");
     }
+
     public static String getUser() {
         return cfg.getString("mysql.user");
     }
+
     public static String getPassword() {
         return cfg.getString("mysql.password");
     }
+
     public static String getFightsTable() {
         return cfg.getString("mysql.fights_table");
     }
+
     public static String getFightMembersTable() {
         return cfg.getString("mysql.fightmember_table");
     }
 
-    public static String getScoreboardTitle() {return cfg.getString("sidebar.title");}
-    public static String getScoreboardMembersStyle() {return cfg.getString("sidebar.member_list_style");}
-    public static int getScoreboardMembersMax() {return cfg.getInt("sidebar.member_list_max");}
+    public static String getScoreboardTitle() {
+        return cfg.getString("sidebar.title");
+    }
+
+    public static String getScoreboardMembersStyle() {
+        return cfg.getString("sidebar.member_list_style");
+    }
+
+    public static int getScoreboardMembersMax() {
+        return cfg.getInt("sidebar.member_list_max");
+    }
 
 }
