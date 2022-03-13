@@ -21,6 +21,7 @@ package de.butzlabben.missilewars.listener;
 import de.butzlabben.missilewars.MessageConfig;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.game.Game;
+import de.butzlabben.missilewars.game.GameResult;
 import de.butzlabben.missilewars.util.PlayerDataProvider;
 import de.butzlabben.missilewars.util.version.VersionUtil;
 import de.butzlabben.missilewars.wrapper.abstracts.arena.FallProtectionConfiguration;
@@ -33,24 +34,15 @@ import de.butzlabben.missilewars.wrapper.geometry.Plane;
 import de.butzlabben.missilewars.wrapper.missile.Missile;
 import de.butzlabben.missilewars.wrapper.missile.MissileFacing;
 import de.butzlabben.missilewars.wrapper.player.MWPlayer;
-import java.util.Objects;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Fireball;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Snowball;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPhysicsEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -60,6 +52,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
+
+import java.util.Objects;
 
 /**
  * @author Butzlabben
@@ -98,24 +92,26 @@ public class GameListener extends GameBoundListener {
         if (!isInGameWorld(e.getLocation()))
             return;
         Game game = getGame();
+
         if (e.getEntity().getType() == EntityType.FIREBALL && !game.getArena().getFireballConfiguration().isDestroysPortal())
             e.blockList().removeIf(b -> b.getType() == VersionUtil.getPortal());
     }
 
     @EventHandler
-    public void on(BlockPhysicsEvent event) {
+    public void onBlockPhysics(BlockPhysicsEvent event) {
         Location location = event.getBlock().getLocation();
         if (!isInGameWorld(location)) return;
         if (event.getChangedType() != VersionUtil.getPortal()) return;
         Game game = getGame();
+
         if (game.getArena().getPlane1().distance(location.toVector()) > game.getArena().getPlane2().distance(location.toVector())) {
-            game.getTeam1().setWon();
-            game.sendGameResult(game);
+            game.getTeam1().setGameResult(GameResult.WIN);
+            game.getTeam2().setGameResult(GameResult.LOSE);
         } else {
-            game.getTeam2().setWon();
-            game.sendGameResult(game);
+            game.getTeam1().setGameResult(GameResult.LOSE);
+            game.getTeam2().setGameResult(GameResult.WIN);
         }
-        game.setDraw(false);
+        game.sendGameResult();
         game.stopGame();
     }
 
@@ -212,7 +208,7 @@ public class GameListener extends GameBoundListener {
     }
 
     @EventHandler
-    public void onDmg(EntityDamageByEntityEvent e) {
+    public void onDamage(EntityDamageByEntityEvent e) {
         if (!isInGameWorld(e.getEntity().getLocation()))
             return;
         if (!(e.getEntity() instanceof Player))
@@ -303,9 +299,9 @@ public class GameListener extends GameBoundListener {
             int teamSize = team.getMembers().size();
             if (teamSize == 0) {
                 Bukkit.getScheduler().runTask(MissileWars.getInstance(), () -> {
-                    getGame().draw(false);
-                    team.getEnemyTeam().setWon();
-                    game.sendGameResult(game);
+                    team.getEnemyTeam().setGameResult(GameResult.WIN);
+                    team.setGameResult(GameResult.LOSE);
+                    game.sendGameResult();
                     getGame().stopGame();
                 });
                 getGame().broadcast(MessageConfig.getMessage("team_offline").replace("%team%", team.getFullname()));
@@ -317,7 +313,7 @@ public class GameListener extends GameBoundListener {
 
     // TODO - Analyse, Ingame Check and Crop Cancel Analytic
     @EventHandler
-    public void onClick(InventoryClickEvent event) {
+    public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player)) return;
         Player p = (Player) event.getWhoClicked();
         if (!isInGameWorld(p.getLocation())) return;

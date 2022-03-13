@@ -18,14 +18,11 @@
 
 package de.butzlabben.missilewars;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 
 /**
@@ -103,6 +100,8 @@ public class MessageConfig {
         cfg.addDefault("subtitle_winner", "&7have won");
         cfg.addDefault("title_loser", "You");
         cfg.addDefault("subtitle_loser", "&7have lost");
+        cfg.addDefault("title_draw", "Draw!");
+        cfg.addDefault("subtitle_draw", "");
 
         cfg.addDefault("spectator", "&7You are now a spectator");
         cfg.addDefault("change_team_not_now", "&cNow you cannot change your team anymore");

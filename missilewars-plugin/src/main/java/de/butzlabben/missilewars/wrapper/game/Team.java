@@ -21,17 +21,15 @@ package de.butzlabben.missilewars.wrapper.game;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MessageConfig;
 import de.butzlabben.missilewars.game.Game;
+import de.butzlabben.missilewars.game.GameResult;
 import de.butzlabben.missilewars.util.MoneyUtil;
 import de.butzlabben.missilewars.util.version.ColorConverter;
 import de.butzlabben.missilewars.util.version.VersionUtil;
-import de.butzlabben.missilewars.wrapper.event.GameEndEvent;
 import de.butzlabben.missilewars.wrapper.player.MWPlayer;
-import java.util.ArrayList;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -39,6 +37,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.scoreboard.Scoreboard;
+
+import java.util.ArrayList;
 
 /**
  * @author Butzlabben
@@ -55,7 +55,7 @@ public class Team {
     private final Game game;
     private final transient ArrayList<MWPlayer> members = new ArrayList<>();
     @Setter private Location spawn;
-    private transient boolean won;
+    private transient GameResult gameResult;
     private transient org.bukkit.scoreboard.Team scoreboardTeam;
     private transient int currentInterval = 0;
 
@@ -160,72 +160,84 @@ public class Team {
         return members.contains(player);
     }
 
-    /**
-     *
-     * @return true, if the team has won the game
-     */
-    public boolean isWon() {
-        return won;
+    public void setGameResult(GameResult gameResult) {
+        this.gameResult = gameResult;
     }
 
     /**
-     * This method make the team to the winner.
-     */
-    public void setWon() {
-        this.won = true;
-        Bukkit.getPluginManager().callEvent(new GameEndEvent(game, this));
-    }
-
-    /**
-     * This method send all team players the money for play the game
+     * This method sends all team members the money for playing the game
      * with a specific amount for win and lose.
      */
-    public void sendMoney() {
+    public void sendMoney(MWPlayer missileWarsPlayer) {
         int money;
 
-        if (won) {
-            money = game.getArena().getMoney().getWin();
-        } else {
-            money = game.getArena().getMoney().getLoss();
+        switch (gameResult) {
+            case WIN:
+                money = game.getArena().getMoney().getWin();
+                break;
+            case LOSE:
+                money = game.getArena().getMoney().getLoss();
+                break;
+            case DRAW:
+                money = game.getArena().getMoney().getDraw();
+                break;
+            default:
+                money = 0;
+                break;
         }
 
-        for (MWPlayer missileWarsPlayer : members) {
-            MoneyUtil.giveMoney(missileWarsPlayer.getUUID(), money);
-        }
-
+        MoneyUtil.giveMoney(missileWarsPlayer.getUUID(), money);
     }
 
     /**
-     * This method send the player the title / subtitle of the
-     * game result to team members.
+     * This method sends all team members the title / subtitle of the
+     * game result.
      */
-    public void sendGameResultTitle(Player player) {
+    public void sendGameResultTitle(MWPlayer missileWarsPlayer) {
         String title;
         String subTitle;
 
-        if (won) {
-            title = MessageConfig.getNativeMessage("title_winner");
-            subTitle = MessageConfig.getNativeMessage("subtitle_winner");
-
-        } else {
-            title = MessageConfig.getNativeMessage("title_loser");
-            subTitle = MessageConfig.getNativeMessage("subtitle_loser");
+        switch (gameResult) {
+            case WIN:
+                title = MessageConfig.getNativeMessage("title_winner");
+                subTitle = MessageConfig.getNativeMessage("subtitle_winner");
+                break;
+            case LOSE:
+                title = MessageConfig.getNativeMessage("title_loser");
+                subTitle = MessageConfig.getNativeMessage("subtitle_loser");
+                break;
+            case DRAW:
+                title = MessageConfig.getNativeMessage("title_draw");
+                subTitle = MessageConfig.getNativeMessage("subtitle_draw");
+                break;
+            default:
+                title = null;
+                subTitle = null;
+                break;
         }
 
-        VersionUtil.sendTitle(player, title, subTitle);
-
+        VersionUtil.sendTitle(missileWarsPlayer.getPlayer(), title, subTitle);
     }
 
     /**
-     * This method send the player the title / subtitle of the
-     * game result to players there are not in a team (=spectator).
+     * This method sends all team members the end-sound of the
+     * game result.
      */
-    public void sendNeutralGameResultTitle(Player player) {
+    public void sendGameResultSound(MWPlayer missileWarsPlayer) {
 
-        VersionUtil.sendTitle(player, MessageConfig.getNativeMessage("title_won").replace("%team%", getFullname()),
-                MessageConfig.getNativeMessage("subtitle_won"));
-
+        switch (gameResult) {
+            case WIN:
+                VersionUtil.playPling(missileWarsPlayer.getPlayer());
+                break;
+            case LOSE:
+            case DRAW:
+                VersionUtil.playDraw(missileWarsPlayer.getPlayer());
+                break;
+            default:
+                break;
+        }
     }
+
 
     public void updateIntervals(int newInterval) {
         if (newInterval < currentInterval && currentInterval != 0) {
@@ -239,4 +251,5 @@ public class Team {
         }
         currentInterval = newInterval;
     }
+
 }
