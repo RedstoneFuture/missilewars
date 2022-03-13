@@ -40,13 +40,13 @@ public class MissileConfiguration {
 
     // TODO pretty names
 
-    private final boolean onlyBlockPlaceable = false;
-    private final boolean onlyBetweenSpawnPlaceable = false;
-    private final boolean northFacing = true;
-    private final boolean eastFacing = true;
-    private final boolean southFacing = true;
-    private final boolean westFacing = true;
-    private final List<Missile> missiles = new ArrayList<Missile>() {{
+    private boolean onlyBlockPlaceable = false;
+    private boolean onlyBetweenSpawnPlaceable = false;
+    private boolean northFacing = true;
+    private boolean eastFacing = true;
+    private boolean southFacing = true;
+    private boolean westFacing = true;
+    private List<Missile> missiles = new ArrayList<Missile>() {{
         add(new Missile("Tomahawk.schematic", "&aTomahawk", EntityType.CREEPER, 2, 2, 3));
         add(new Missile("Cruiser.schematic", "&eCruiser", EntityType.BLAZE, 2, 2, 2));
         add(new Missile("Sword.schematic", "&7Sword", EntityType.SKELETON, 2, 2, 2));

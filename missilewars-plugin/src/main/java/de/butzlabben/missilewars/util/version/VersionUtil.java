@@ -21,9 +21,7 @@ package de.butzlabben.missilewars.util.version;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MessageConfig;
 import de.butzlabben.missilewars.wrapper.game.Team;
-import java.lang.reflect.Method;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -31,6 +29,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.lang.reflect.Method;
 
 /**
  * @author Butzlabben
@@ -103,12 +103,6 @@ public class VersionUtil {
             }
         } else {
             p.sendMessage(MessageConfig.getPrefix() + title + " " + subtitle);
-        }
-    }
-
-    public static void setScoreboardTeamColor(org.bukkit.scoreboard.Team team, ChatColor color) {
-        if (VersionUtil.getVersion() >= 12) {
-            team.setColor(color);
         }
     }
 
