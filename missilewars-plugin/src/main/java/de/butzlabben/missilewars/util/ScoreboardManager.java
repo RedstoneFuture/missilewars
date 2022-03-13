@@ -213,7 +213,7 @@ public class ScoreboardManager {
     }
 
     /**
-     * This method deletes the current indicator and creates a new one.
+     * This method deletes the current scoreboard and creates a new one.
      */
     public void resetScoreboard() {
         removeScoreboard();
