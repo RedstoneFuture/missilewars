@@ -24,11 +24,12 @@ import de.butzlabben.missilewars.util.version.VersionUtil;
 import de.butzlabben.missilewars.wrapper.abstracts.arena.MissileConfiguration;
 import de.butzlabben.missilewars.wrapper.missile.Missile;
 import de.butzlabben.missilewars.wrapper.player.Interval;
-import java.util.HashMap;
-import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.HashMap;
+import java.util.Random;
 
 /**
  * @author Butzlabben
@@ -43,7 +44,7 @@ public class GameRandomizer {
 
     private int totalOccurrenceMissiles = 0;
     private int totalOccurrenceDefensive = 0;
-    private int randomizeCounter = 0;
+    private int randomizeCounter = 1;
 
     private ItemStack shield;
     private ItemStack arrow;

@@ -44,6 +44,8 @@ public class GameTimer extends Timer {
             case 600:
             case 300:
             case 180:
+                broadcast(MessageConfig.getMessage("game_ends_in_minutes").replace("%minutes%", Integer.toString(seconds/60)));
+                break;
             case 60:
             case 30:
             case 10:
@@ -52,7 +54,7 @@ public class GameTimer extends Timer {
             case 3:
             case 2:
             case 1:
-                broadcast(MessageConfig.getMessage("game_ends_in_minutes").replace("%minutes%", Integer.toString(seconds)));
+                broadcast(MessageConfig.getMessage("game_ends_in_seconds").replace("%seconds%", Integer.toString(seconds)));
                 break;
             case 0:
                 getGame().stopGame();
