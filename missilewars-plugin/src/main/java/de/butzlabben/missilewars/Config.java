@@ -28,7 +28,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.bukkit.Material.JUKEBOX;
 import static org.bukkit.Material.valueOf;
@@ -127,16 +128,21 @@ public class Config {
         cfg.addDefault("mysql.fights_table", "mw_fights");
         cfg.addDefault("mysql.fightmember_table", "mw_fightmember");
 
-        cfg.addDefault("sidebar.title", "§eInfo ●§6•");
+        cfg.addDefault("sidebar.title", "&eInfo ●&6•");
+        cfg.addDefault("sidebar.member_list_style", "%team_color%%playername%");
+        cfg.addDefault("sidebar.member_list_max", "4");
+
         if (configNew) {
-            cfg.addDefault("sidebar.entries.6", "§7Time left:");
-            cfg.addDefault("sidebar.entries.5", "§e» %time%m");
+            List<String> sidebarList = new ArrayList<>();
 
-            cfg.addDefault("sidebar.entries.4", "  ");
-            cfg.addDefault("sidebar.entries.3", "%team1% §7» %team1_color%%team1_amount%");
+            sidebarList.add("§7Time left:");
+            sidebarList.add("§e» %time%m");
+            sidebarList.add("");
+            sidebarList.add("%team1% §7» %team1_color%%team1_amount%");
+            sidebarList.add("");
+            sidebarList.add("%team2% §7» %team2_color%%team2_amount%");
 
-            cfg.addDefault("sidebar.entries.2", "   ");
-            cfg.addDefault("sidebar.entries.1", "%team2% §7» %team2_color%%team2_amount%");
+            cfg.set("sidebar.entries", sidebarList);
         }
     }
 
@@ -149,13 +155,8 @@ public class Config {
         }
     }
 
-    public static HashMap<String, Integer> getScoreboardEntries() {
-        HashMap<String, Integer> ret = new HashMap<>();
-        ConfigurationSection section = cfg.getConfigurationSection("sidebar.entries");
-        for (String s : section.getKeys(false)) {
-            ret.put(section.getString(s), Integer.valueOf(s));
-        }
-        return ret;
+    public static List<String> getScoreboardEntries() {
+        return cfg.getStringList("sidebar.entries");
     }
 
     /**
@@ -195,6 +196,50 @@ public class Config {
         return cfg;
     }
 
+    static boolean debug() {
+        return cfg.getBoolean("debug");
+    }
+
+    public static boolean isSetup() {
+        return cfg.getBoolean("setup_mode");
+    }
+
+    public static boolean isContactAuth() {
+        return cfg.getBoolean("contact_auth_server");
+    }
+
+    public static boolean isPrefetchPlayers() {
+        return cfg.getBoolean("prefetch_players");
+    }
+
+    public static int getFightRestart() {
+        return cfg.getInt("restart_after_fights");
+    }
+
+    public static String getArenaFolder() {
+        return cfg.getString("arena_folder") + "/";
+    }
+
+    public static boolean isMultipleLobbies() {
+        return cfg.getBoolean("lobbies.multiple_lobbies");
+    }
+
+    public static String getLobbiesFolder() {
+        return cfg.getString("lobbies.folder") + "/";
+    }
+
+    public static String getDefaultLobby() {
+        return cfg.getString("lobbies.default_lobby");
+    }
+
+    public static int getReplaceTicks() {
+        return cfg.getInt("replace.after_ticks");
+    }
+
+    public static int getReplaceRadius() {
+        return cfg.getInt("replace.radius");
+    }
+
     public static String motdEnded() {
         return cfg.getString("motd.ended");
     }
@@ -211,28 +256,12 @@ public class Config {
         return cfg.getBoolean("motd.enable");
     }
 
-    public static int getReplaceTicks() {
-        return cfg.getInt("replace.after_ticks");
+    public static boolean isFightStatsEnabled() {
+        return cfg.getBoolean("fightstats.enable");
     }
 
-    public static int getReplaceRadius() {
-        return cfg.getInt("replace.radius");
-    }
-
-    static boolean debug() {
-        return cfg.getBoolean("debug");
-    }
-
-    public static boolean isSetup() {
-        return cfg.getBoolean("setup_mode");
-    }
-
-    public static int getFightRestart() {
-        return cfg.getInt("restart_after_fights");
-    }
-
-    public static String getScoreboardTitle() {
-        return cfg.getString("sidebar.title");
+    public static boolean isShowRealSkins() {
+        return cfg.getBoolean("fightstats.show_real_skins");
     }
 
     public static String getHost() {
@@ -263,35 +292,16 @@ public class Config {
         return cfg.getString("mysql.fightmember_table");
     }
 
-    public static String getArenaFolder() {
-        return cfg.getString("arena_folder") + "/";
+    public static String getScoreboardTitle() {
+        return cfg.getString("sidebar.title");
     }
 
-    public static boolean isContactAuth() {
-        return cfg.getBoolean("contact_auth_server");
+    public static String getScoreboardMembersStyle() {
+        return cfg.getString("sidebar.member_list_style");
     }
 
-    public static boolean isPrefetchPlayers() {
-        return cfg.getBoolean("prefetch_players");
+    public static int getScoreboardMembersMax() {
+        return cfg.getInt("sidebar.member_list_max");
     }
 
-    public static boolean isShowRealSkins() {
-        return cfg.getBoolean("fightstats.show_real_skins");
-    }
-
-    public static boolean isMultipleLobbies() {
-        return cfg.getBoolean("lobbies.multiple_lobbies");
-    }
-
-    public static String getLobbiesFolder() {
-        return cfg.getString("lobbies.folder") + "/";
-    }
-
-    public static String getDefaultLobby() {
-        return cfg.getString("lobbies.default_lobby");
-    }
-
-    public static boolean isFightStatsEnabled() {
-        return cfg.getBoolean("fightstats.enable");
-    }
 }

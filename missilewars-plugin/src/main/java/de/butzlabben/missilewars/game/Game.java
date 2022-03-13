@@ -46,20 +46,10 @@ import de.butzlabben.missilewars.wrapper.event.PlayerArenaJoinEvent;
 import de.butzlabben.missilewars.wrapper.game.Team;
 import de.butzlabben.missilewars.wrapper.player.MWPlayer;
 import de.butzlabben.missilewars.wrapper.stats.FightStats;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -67,6 +57,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * @author Butzlabben
@@ -94,7 +90,6 @@ public class Game {
     private GameWorld gameWorld;
     private long timestart;
     @Getter private Arena arena;
-    private Scoreboard scoreboard;
     private ScoreboardManager scoreboardManager;
     private GameBoundListener listener;
     private ItemStack customBow;
@@ -136,37 +131,9 @@ public class Game {
 
         team1 = new Team(lobby.getTeam1Name(), lobby.getTeam1Color(), this);
         team2 = new Team(lobby.getTeam2Name(), lobby.getTeam2Color(), this);
-
+      
         team1.createTeamArmor();
         team2.createTeamArmor();
-
-        scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-
-        org.bukkit.scoreboard.Team t = scoreboard.getTeam("0" + team1.getFullname());
-        if (t != null)
-            t.unregister();
-        t = scoreboard.registerNewTeam("0" + team1.getFullname());
-        t.setPrefix(team1.getColorCode());
-        VersionUtil.setScoreboardTeamColor(t, ChatColor.getByChar(team1.getColorCode().charAt(1)));
-        team1.setSBTeam(t);
-
-        t = scoreboard.getTeam("1" + team2.getFullname());
-        if (t != null)
-            t.unregister();
-        t = scoreboard.registerNewTeam("1" + team2.getFullname());
-        t.setPrefix(team2.getColorCode());
-        VersionUtil.setScoreboardTeamColor(t, ChatColor.getByChar(team2.getColorCode().charAt(1)));
-        team2.setSBTeam(t);
-
-        t = scoreboard.getTeam("2Guest§7");
-        if (t != null)
-            t.unregister();
-        t = scoreboard.registerNewTeam("2Guest§7");
-        t.setPrefix("§7");
-
-        VersionUtil.setScoreboardTeamColor(t, ChatColor.GRAY);
-
-        scoreboardManager = new ScoreboardManager(this, scoreboard);
 
         Logger.DEBUG.log("Registering, teleporting, etc. all players");
 
@@ -190,6 +157,7 @@ public class Game {
             return;
         }
 
+        // choose the game arena
         if (lobby.getMapChooseProcedure() == MapChooseProcedure.FIRST) {
             setArena(lobby.getArenas().get(0));
         } else if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPCYCLE) {
@@ -205,6 +173,8 @@ public class Game {
             lobby.getArenas().forEach(arena -> votes.put(arena.getName(), 0));
         }
 
+        scoreboardManager = new ScoreboardManager(this);
+        scoreboardManager.createScoreboard();
 
         Logger.DEBUG.log("Making game ready");
         ++fights;
@@ -215,6 +185,10 @@ public class Game {
         Logger.DEBUG.log("Fights: " + fights);
 
         createGameItems();
+    }
+
+    public Scoreboard getScoreboard() {
+        return scoreboardManager.board;
     }
 
     public void startGame() {
@@ -302,7 +276,6 @@ public class Game {
 
         timer = new EndTimer(this);
         bt = Bukkit.getScheduler().runTaskTimer(MissileWars.getInstance(), timer, 5, 20);
-        scoreboardManager.removeScoreboard();
 
         // Change MOTD
         if (!Config.isMultipleLobbies())

@@ -31,7 +31,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.scoreboard.Scoreboard;
 
 /**
  * @author Butzlabben
@@ -47,8 +46,8 @@ public class EndListener extends GameBoundListener {
     @EventHandler
     public void onJoin(PlayerArenaJoinEvent e) {
         Game game = e.getGame();
-        if (game != getGame())
-            return;
+        if (game != getGame()) return;
+
         Player p = e.getPlayer();
         PlayerDataProvider.getInstance().storeInventory(p);
         p.sendMessage(MessageConfig.getMessage("spectator"));
@@ -56,9 +55,6 @@ public class EndListener extends GameBoundListener {
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> p.teleport(game.getArena().getSpectatorSpawn()), 2);
 
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> p.setGameMode(GameMode.SPECTATOR), 35);
-        Scoreboard sb = game.getScoreboard();
-        p.setScoreboard(sb);
-        sb.getTeam("2Guest§7").addPlayer(p);
         p.setDisplayName("§7" + p.getName() + "§r");
         game.addPlayer(p);
     }
@@ -70,11 +66,10 @@ public class EndListener extends GameBoundListener {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @EventHandler
-
     public void onDeath(PlayerDeathEvent e) {
-        if (!isInLobbyArea(e.getEntity().getLocation()))
-            return;
+        if (!isInLobbyArea(e.getEntity().getLocation())) return;
 
         Player p = e.getEntity();
         p.setHealth(p.getMaxHealth());
@@ -84,8 +79,8 @@ public class EndListener extends GameBoundListener {
 
     @EventHandler
     public void onClick(InventoryClickEvent e) {
-        if (!(e.getWhoClicked() instanceof Player))
-            return;
+        if (!(e.getWhoClicked() instanceof Player)) return;
+
         Player p = (Player) e.getWhoClicked();
         if (isInGameWorld(p.getLocation()))
             if (p.getGameMode() != GameMode.CREATIVE && !p.isOp())

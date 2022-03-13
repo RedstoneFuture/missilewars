@@ -19,7 +19,7 @@
 package de.butzlabben.missilewars.wrapper.player;
 
 import de.butzlabben.missilewars.game.Game;
-import de.butzlabben.missilewars.util.Randomizer;
+import de.butzlabben.missilewars.util.GameRandomizer;
 import de.butzlabben.missilewars.wrapper.game.Team;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicLong;
@@ -42,7 +42,7 @@ public class MWPlayer implements Runnable {
     private final Game game;
     int i = -1;
     private Team t;
-    private Randomizer r;
+    private GameRandomizer r;
     private int period;
 
     public MWPlayer(Player player, Game game) {
@@ -82,8 +82,8 @@ public class MWPlayer implements Runnable {
         i++;
         if (i >= period) {
             if (r == null)
-                r = new Randomizer(game);
-            p.getInventory().addItem(r.createItem());
+                r = new GameRandomizer(game);
+            p.getInventory().addItem(r.getRandomItem());
             i = 0;
         }
         p.setLevel(period - i);
