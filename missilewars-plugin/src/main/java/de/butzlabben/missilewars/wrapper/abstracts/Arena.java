@@ -20,36 +20,30 @@ package de.butzlabben.missilewars.wrapper.abstracts;
 
 import com.google.gson.annotations.SerializedName;
 import de.butzlabben.missilewars.Logger;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.FallProtectionConfiguration;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.FireballConfiguration;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.MissileConfiguration;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.MoneyConfiguration;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.ShieldConfiguration;
+import de.butzlabben.missilewars.wrapper.abstracts.arena.*;
 import de.butzlabben.missilewars.wrapper.geometry.FlatArea;
 import de.butzlabben.missilewars.wrapper.geometry.Plane;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+
+import lombok.*;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
-@Data
-@ToString
-@AllArgsConstructor
 @RequiredArgsConstructor
+@AllArgsConstructor
+@Data
 @Builder(toBuilder = true)
 public class Arena {
 
-    private String name = "arena";
+    private String name = "arena0";
     @SerializedName("display_name") private String displayName = "&eDefault map";
     @SerializedName("display_material") private String displayMaterial = "STONE";
     @SerializedName("template_world") private String templateWorld = "default_map";
     @SerializedName("auto_respawn") private boolean autoRespawn = true;
+    @SerializedName("game_spawn") private GameSpawnConfiguration spawn = new GameSpawnConfiguration();
+    @SerializedName("game_respawn") private GameRespawnConfiguration respawn = new GameRespawnConfiguration();
     @SerializedName("do_tile_drops") private boolean doTileDrops = false;
     @SerializedName("max_height") private int maxHeight = 170;
     @SerializedName("death_height") private int deathHeight = 65;
@@ -61,7 +55,7 @@ public class Arena {
     @SerializedName("save_statistics") private boolean saveStatistics = true;
     @SerializedName("fall_protection") private FallProtectionConfiguration fallProtection = new FallProtectionConfiguration();
     @SerializedName("money") private MoneyConfiguration money = new MoneyConfiguration();
-    @SerializedName("intervals") private Map<Integer, Integer> intervals = new HashMap<Integer, Integer>() {{
+    @SerializedName("intervals") private Map<Integer, Integer> intervals = new HashMap<>() {{
         put(1, 15);
         put(2, 20);
         put(4, 25);

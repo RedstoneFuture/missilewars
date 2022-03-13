@@ -36,7 +36,8 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-import org.bukkit.scoreboard.Scoreboard;
+
+import java.util.ArrayList;
 
 import java.util.ArrayList;
 
@@ -58,6 +59,7 @@ public class Team {
     private transient GameResult gameResult;
     private transient org.bukkit.scoreboard.Team scoreboardTeam;
     private transient int currentInterval = 0;
+    ItemStack[] teamArmor;
 
     public ArrayList<MWPlayer> getMembers() {
         return members;
@@ -68,52 +70,44 @@ public class Team {
             return game.getTeam2();
         return game.getTeam1();
     }
-
-    @SuppressWarnings("deprecation")
-    public boolean removeMember(MWPlayer player) {
-        if (!isMember(player))
-            return false;
+    
+    public void removeMember(MWPlayer player) {
+        if (!isMember(player)) return;
 
         Player p = player.getPlayer();
         player.setTeam(null);
-        if (p != null) {
-            if (scoreboardTeam.hasPlayer(p))
-                scoreboardTeam.removePlayer(p);
 
-            game.getScoreboard().getTeam("2Guest§7").addPlayer(p);
+        if (p != null) {
             p.setDisplayName("§7" + p.getName() + "§r");
         }
-        return members.removeIf(mp -> mp.getUUID().equals(player.getUUID()));
-    }
 
-    @SuppressWarnings("deprecation")
+        members.removeIf(mp -> mp.getUUID().equals(player.getUUID()));
+
+        game.getScoreboardManager().resetScoreboard();
+        p.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+    }
+    
     public void addMember(MWPlayer player) {
-        if (isMember(player))
-            return;
+        if (isMember(player)) return;
+
+        // Already in a team?
         if (player.getTeam() != null) {
             player.getTeam().removeMember(player);
         }
+
         Player p = player.getPlayer();
         if (p == null) {
             Logger.WARN.log("Could not add player " + player.getUUID().toString() + " to a team because he went offline");
             return;
         }
+
         members.add(player);
         player.setTeam(this);
         p.setDisplayName(getColorCode() + p.getName() + "§r");
-        Scoreboard sb = game.getScoreboard();
-        if (sb.getPlayerTeam(p) != null)
-            sb.getPlayerTeam(p).removePlayer(p);
-        scoreboardTeam.addPlayer(p);
-        setTeamArmor(p);
-    }
+        p.getInventory().setArmorContents(getTeamArmor());
 
-    public org.bukkit.scoreboard.Team getSBTeam() {
-        return scoreboardTeam;
-    }
-
-    public void setSBTeam(org.bukkit.scoreboard.Team team) {
-        scoreboardTeam = team;
+        game.getScoreboardManager().updateScoreboard();
+        p.setScoreboard(game.getScoreboard());
     }
 
     public String getFullname() {
@@ -126,34 +120,41 @@ public class Team {
         return color;
     }
 
-    public void setTeamArmor(Player p) {
-        Color c = ColorConverter.getColorFromCode(getColorCode());
-        ItemStack is = new ItemStack(Material.LEATHER_BOOTS);
-        LeatherArmorMeta lam = (LeatherArmorMeta) is.getItemMeta();
-        lam.setColor(c);
-        is.setItemMeta(lam);
-        VersionUtil.setUnbreakable(is);
+    /**
+     * This method creates the team armor based on the team color.
+     */
+    public void createTeamArmor() {
+        Color color = ColorConverter.getColorFromCode(getColorCode());
 
-        ItemStack is1 = new ItemStack(Material.LEATHER_LEGGINGS);
-        LeatherArmorMeta lam1 = (LeatherArmorMeta) is1.getItemMeta();
-        lam1.setColor(c);
-        is1.setItemMeta(lam1);
-        VersionUtil.setUnbreakable(is1);
+        ItemStack boots = new ItemStack(Material.LEATHER_BOOTS);
+        LeatherArmorMeta bootsMeta = (LeatherArmorMeta) boots.getItemMeta();
+        bootsMeta.setColor(color);
+        boots.setItemMeta(bootsMeta);
+        VersionUtil.setUnbreakable(boots);
 
-        ItemStack is2 = new ItemStack(Material.LEATHER_CHESTPLATE);
-        LeatherArmorMeta lam2 = (LeatherArmorMeta) is2.getItemMeta();
-        lam2.setColor(c);
-        is2.setItemMeta(lam2);
-        VersionUtil.setUnbreakable(is2);
+        ItemStack leggings = new ItemStack(Material.LEATHER_LEGGINGS);
+        LeatherArmorMeta leggingsMeta = (LeatherArmorMeta) leggings.getItemMeta();
+        leggingsMeta.setColor(color);
+        leggings.setItemMeta(leggingsMeta);
+        VersionUtil.setUnbreakable(leggings);
 
-        ItemStack is3 = new ItemStack(Material.LEATHER_HELMET);
-        LeatherArmorMeta lam3 = (LeatherArmorMeta) is3.getItemMeta();
-        lam3.setColor(c);
-        is3.setItemMeta(lam3);
-        VersionUtil.setUnbreakable(is3);
+        ItemStack chestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
+        LeatherArmorMeta chestplateMeta = (LeatherArmorMeta) chestplate.getItemMeta();
+        chestplateMeta.setColor(color);
+        chestplate.setItemMeta(chestplateMeta);
+        VersionUtil.setUnbreakable(chestplate);
 
-        ItemStack[] armor = new ItemStack[] {is, is1, is2, is3};
-        p.getInventory().setArmorContents(armor);
+        ItemStack helmet = new ItemStack(Material.LEATHER_HELMET);
+        LeatherArmorMeta helmetMeta = (LeatherArmorMeta) helmet.getItemMeta();
+        helmetMeta.setColor(color);
+        helmet.setItemMeta(helmetMeta);
+        VersionUtil.setUnbreakable(helmet);
+
+        teamArmor = new ItemStack[] {boots, leggings, chestplate, helmet};
+    }
+
+    public ItemStack[] getTeamArmor() {
+        return this.teamArmor;
     }
 
     public boolean isMember(MWPlayer player) {

@@ -50,7 +50,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
 
 import java.util.Objects;
@@ -68,8 +67,8 @@ public class GameListener extends GameBoundListener {
 
     @EventHandler
     public void onMove(PlayerMoveEvent e) {
-        if (!isInGameWorld(e.getTo()))
-            return;
+        if (!isInGameWorld(e.getTo())) return;
+
         Player p = e.getPlayer();
         if ((e.getTo().getBlockY() >= getGame().getArena().getMaxHeight()) && (p.getGameMode() == GameMode.SURVIVAL)) {
             p.teleport(e.getFrom());
@@ -89,8 +88,8 @@ public class GameListener extends GameBoundListener {
 
     @EventHandler
     public void onExplode(EntityExplodeEvent e) {
-        if (!isInGameWorld(e.getLocation()))
-            return;
+        if (!isInGameWorld(e.getLocation())) return;
+
         Game game = getGame();
 
         if (e.getEntity().getType() == EntityType.FIREBALL && !game.getArena().getFireballConfiguration().isDestroysPortal())
@@ -117,12 +116,10 @@ public class GameListener extends GameBoundListener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
-        if (!isInGameWorld(e.getPlayer().getLocation()))
-            return;
-        if (e.getItem() == null)
-            return;
-        if (e.getAction() != Action.RIGHT_CLICK_AIR && e.getAction() != Action.RIGHT_CLICK_BLOCK)
-            return;
+        if (!isInGameWorld(e.getPlayer().getLocation())) return;
+        if (e.getItem() == null) return;
+        if (e.getAction() != Action.RIGHT_CLICK_AIR && e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+
         Player player = e.getPlayer();
         ItemStack itemStack = e.getItem();
         Game game = getGame();
@@ -161,8 +158,7 @@ public class GameListener extends GameBoundListener {
     @EventHandler
     public void onJoin(PlayerArenaJoinEvent e) {
         Game game = e.getGame();
-        if (game != getGame())
-            return;
+        if (game != getGame()) return;
 
         Player p = e.getPlayer();
         MWPlayer mwPlayer = game.addPlayer(p);
@@ -172,11 +168,9 @@ public class GameListener extends GameBoundListener {
         if (!game.getLobby().isJoinOngoingGame() || game.getPlayers().size() >= game.getLobby().getMaxSize()) {
             p.sendMessage(MessageConfig.getMessage("spectator"));
             Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> p.teleport(game.getArena().getSpectatorSpawn()), 2);
-            Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> p.setGameMode(GameMode.SPECTATOR), 35);
-            Scoreboard sb = game.getScoreboard();
-            p.setScoreboard(sb);
-            sb.getTeam("2Guest§7").addPlayer(p);
+            Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> p.setGameMode(GameMode.SPECTATOR), 35);;
             p.setDisplayName("§7" + p.getName() + "§r");
+            p.setScoreboard(game.getScoreboard());
         } else {
             Team to;
             int size1 = game.getTeam1().getMembers().size();
@@ -185,18 +179,20 @@ public class GameListener extends GameBoundListener {
                 to = getGame().getTeam2();
             else
                 to = getGame().getTeam1();
+
+            // Adds the player to the new team.
             to.addMember(mwPlayer);
+
             p.sendMessage(MessageConfig.getMessage("team_assigned").replace("%team%", to.getFullname()));
             to.updateIntervals(game.getArena().getInterval(to.getMembers().size()));
             game.startForPlayer(p);
-            p.setScoreboard(game.getScoreboard());
         }
     }
 
     @EventHandler
     public void onThrow(ProjectileLaunchEvent e) {
-        if (!isInGameWorld(e.getEntity().getLocation()))
-            return;
+        if (!isInGameWorld(e.getEntity().getLocation())) return;
+
         Game game = getGame();
         if (e.getEntity() instanceof Snowball) {
             Snowball ball = (Snowball) e.getEntity();
@@ -209,10 +205,9 @@ public class GameListener extends GameBoundListener {
 
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent e) {
-        if (!isInGameWorld(e.getEntity().getLocation()))
-            return;
-        if (!(e.getEntity() instanceof Player))
-            return;
+        if (!isInGameWorld(e.getEntity().getLocation())) return;
+        if (!(e.getEntity() instanceof Player)) return;
+      
         Player p = (Player) e.getEntity();
         if (e.getDamager() instanceof Projectile) {
             Projectile pj = (Projectile) e.getDamager();
@@ -234,68 +229,81 @@ public class GameListener extends GameBoundListener {
 
     @EventHandler(priority = EventPriority.HIGH)
     public void onRespawn(PlayerRespawnEvent e) {
-        if (!isInGameWorld(e.getPlayer().getLocation()))
-            return;
+        if (!isInGameWorld(e.getPlayer().getLocation())) return;
 
-        Team t = Objects.requireNonNull(getGame().getPlayer(e.getPlayer())).getTeam();
+        Game game = getGame();
+        Player player = e.getPlayer();
+
+        Team t = Objects.requireNonNull(getGame().getPlayer(player)).getTeam();
         if (t != null) {
             e.setRespawnLocation(t.getSpawn());
             FallProtectionConfiguration fallProtection = getGame().getArena().getFallProtection();
             if (fallProtection.isEnabled())
-                new RespawnGoldBlock(e.getPlayer(), fallProtection.getDuration(), fallProtection.isMessageOnlyOnStart(), getGame());
+                new RespawnGoldBlock(player, fallProtection.getDuration(), fallProtection.isMessageOnlyOnStart(), getGame());
         } else {
             e.setRespawnLocation(getGame().getArena().getSpectatorSpawn());
         }
+
+        game.sendGameItems(player, true);
+        game.setPlayerAttributes(player);
     }
 
     @EventHandler
     public void onDeath(PlayerDeathEvent e) {
-        if (!isInGameWorld(e.getEntity().getLocation()))
-            return;
-        Game game = getGame();
 
+        // check if the player is in a game world
+        if (!isInGameWorld(e.getEntity().getLocation())) return;
+
+        Game game = getGame();
         Player p = e.getEntity();
-        e.setDeathMessage(MessageConfig.getNativeMessage("died").replace("%player%", p.getDisplayName()));
+
+        e.setDeathMessage(null);
+        // delete vanilla death message
+        String deathBroadcastMessage = null;
+
         MWPlayer player = getGame().getPlayer(p);
         assert player != null;
 
         if (game.getArena().isAutoRespawn()) Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> p.spigot().respawn(), 20L);
 
+        // spectator respawn for people there are not in a team
         if (player.getTeam() == null) {
             p.setHealth(p.getMaxHealth());
             p.teleport(getGame().getArena().getSpectatorSpawn());
-            e.setDeathMessage(null);
             return;
         }
 
-        p.setGameMode(GameMode.SURVIVAL);
-        if (p.getLastDamageCause() != null)
-            if (p.getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION
-                    || p.getLastDamageCause().getCause() == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
-                e.setDeathMessage(
-                        MessageConfig.getNativeMessage("died_explosion").replace("%player%", p.getDisplayName()));
-            }
+        // check the death cause for choice the death message
+        if (p.getLastDamageCause() != null) {
 
-        String msg = e.getDeathMessage();
-        e.setDeathMessage(null);
-        getGame().broadcast(msg);
+            EntityDamageEvent.DamageCause damageCause = p.getLastDamageCause().getCause();
+
+            if (damageCause == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION || damageCause == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
+                deathBroadcastMessage = MessageConfig.getNativeMessage("died_explosion").replace("%player%", p.getDisplayName());
+            } else {
+                deathBroadcastMessage = MessageConfig.getNativeMessage("died").replace("%player%", p.getDisplayName());
+            }
+        }
+
+        getGame().broadcast(deathBroadcastMessage);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onLeave(PlayerArenaLeaveEvent e) {
         Game game = e.getGame();
-        if (game != getGame())
-            return;
+        if (game != getGame()) return;
 
         MWPlayer player = getGame().getPlayer(e.getPlayer());
         if (player == null) return;
         BukkitTask task = game.getPlayerTasks().get(player.getUUID());
         if (task != null) task.cancel();
+
         Team team = player.getTeam();
         if (team != null) {
             getGame().broadcast(
                     MessageConfig.getMessage("player_left").replace("%player%", e.getPlayer().getDisplayName()));
             team.removeMember(getGame().getPlayer(e.getPlayer()));
+
             int teamSize = team.getMembers().size();
             if (teamSize == 0) {
                 Bukkit.getScheduler().runTask(MissileWars.getInstance(), () -> {

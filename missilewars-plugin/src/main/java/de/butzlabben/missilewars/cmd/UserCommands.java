@@ -30,10 +30,11 @@ import de.butzlabben.missilewars.wrapper.abstracts.Arena;
 import de.butzlabben.missilewars.wrapper.abstracts.MapChooseProcedure;
 import de.butzlabben.missilewars.wrapper.game.Team;
 import de.butzlabben.missilewars.wrapper.player.MWPlayer;
-import java.util.Optional;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.Optional;
 
 public class UserCommands {
 
@@ -77,7 +78,8 @@ public class UserCommands {
                 player.sendMessage(MessageConfig.getMessage("cannot_change_difference"));
                 return;
             }
-            mwPlayer.getTeam().removeMember(mwPlayer);
+
+            // Remove the player from the old team and add him to the new team
             to.addMember(mwPlayer);
 
             player.sendMessage(MessageConfig.getMessage("team_changed").replace("%team%", to.getFullname()));

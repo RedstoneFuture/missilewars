@@ -86,9 +86,10 @@ public class Game {
     private GameWorld gameWorld;
     private long timestart;
     @Getter private Arena arena;
-    private Scoreboard scoreboard;
     private ScoreboardManager scoreboardManager;
     private GameBoundListener listener;
+    private ItemStack customBow;
+    private ItemStack customPickaxe;
 
     public Game(Lobby lobby) {
         Logger.BOOT.log("Loading game " + lobby.getDisplayName());
@@ -126,34 +127,9 @@ public class Game {
 
         team1 = new Team(lobby.getTeam1Name(), lobby.getTeam1Color(), this);
         team2 = new Team(lobby.getTeam2Name(), lobby.getTeam2Color(), this);
-
-        scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-
-        org.bukkit.scoreboard.Team t = scoreboard.getTeam("0" + team1.getFullname());
-        if (t != null)
-            t.unregister();
-        t = scoreboard.registerNewTeam("0" + team1.getFullname());
-        t.setPrefix(team1.getColorCode());
-        VersionUtil.setScoreboardTeamColor(t, ChatColor.getByChar(team1.getColorCode().charAt(1)));
-        team1.setSBTeam(t);
-
-        t = scoreboard.getTeam("1" + team2.getFullname());
-        if (t != null)
-            t.unregister();
-        t = scoreboard.registerNewTeam("1" + team2.getFullname());
-        t.setPrefix(team2.getColorCode());
-        VersionUtil.setScoreboardTeamColor(t, ChatColor.getByChar(team2.getColorCode().charAt(1)));
-        team2.setSBTeam(t);
-
-        t = scoreboard.getTeam("2Guest§7");
-        if (t != null)
-            t.unregister();
-        t = scoreboard.registerNewTeam("2Guest§7");
-        t.setPrefix("§7");
-
-        VersionUtil.setScoreboardTeamColor(t, ChatColor.GRAY);
-
-        scoreboardManager = new ScoreboardManager(this, scoreboard);
+      
+        team1.createTeamArmor();
+        team2.createTeamArmor();
 
         Logger.DEBUG.log("Registering, teleporting, etc. all players");
 
@@ -177,6 +153,7 @@ public class Game {
             return;
         }
 
+        // choose the game arena
         if (lobby.getMapChooseProcedure() == MapChooseProcedure.FIRST) {
             setArena(lobby.getArenas().get(0));
         } else if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPCYCLE) {
@@ -192,6 +169,8 @@ public class Game {
             lobby.getArenas().forEach(arena -> votes.put(arena.getName(), 0));
         }
 
+        scoreboardManager = new ScoreboardManager(this);
+        scoreboardManager.createScoreboard();
 
         Logger.DEBUG.log("Making game ready");
         ++fights;
@@ -200,6 +179,12 @@ public class Game {
 
         FightStats.checkTables();
         Logger.DEBUG.log("Fights: " + fights);
+
+        createGameItems();
+    }
+
+    public Scoreboard getScoreboard() {
+        return scoreboardManager.board;
     }
 
     public void startGame() {
@@ -279,7 +264,6 @@ public class Game {
 
         timer = new EndTimer(this);
         bt = Bukkit.getScheduler().runTaskTimer(MissileWars.getInstance(), timer, 5, 20);
-        scoreboardManager.removeScoreboard();
 
         // Change MOTD
         if (!Config.isMultipleLobbies()) {
@@ -369,25 +353,95 @@ public class Game {
         }
 
         player.teleport(mwPlayer.getTeam().getSpawn());
-        ItemStack air = new ItemStack(Material.AIR);
-        ItemStack bow = new ItemStack(Material.BOW);
-        bow.addEnchantment(Enchantment.ARROW_FIRE, 1);
-        bow.addEnchantment(Enchantment.ARROW_DAMAGE, 1);
-        bow.addEnchantment(Enchantment.ARROW_KNOCKBACK, 1);
-        ItemMeta im = bow.getItemMeta();
-        im.addEnchant(Enchantment.DAMAGE_ALL, 6, true);
-        bow.setItemMeta(im);
-        VersionUtil.setUnbreakable(bow);
 
-        player.getInventory().setItem(0, air);
-        player.getInventory().setItem(8, air);
-        player.getInventory().addItem(bow);
-        mwPlayer.getTeam().setTeamArmor(player);
+        sendGameItems(player, false);
+        setPlayerAttributes(player);
+
+        playerTasks.put(player.getUniqueId(),
+                Bukkit.getScheduler().runTaskTimer(MissileWars.getInstance(), mwPlayer, 0, 20));
+
+    }
+
+    /**
+     * This method is used to create the game items for the player kit.
+     */
+    private void createGameItems() {
+
+        // Will it be used ?
+        if (this.getArena().getSpawn().isSendBow() || this.getArena().getRespawn().isSendBow()) {
+
+            ItemStack bow = new ItemStack(Material.BOW);
+            bow.addEnchantment(Enchantment.ARROW_FIRE, 1);
+            bow.addEnchantment(Enchantment.ARROW_DAMAGE, 1);
+            bow.addEnchantment(Enchantment.ARROW_KNOCKBACK, 1);
+            ItemMeta im = bow.getItemMeta();
+            im.addEnchant(Enchantment.DAMAGE_ALL, 6, true);
+            bow.setItemMeta(im);
+            VersionUtil.setUnbreakable(bow);
+            this.customBow = bow;
+        }
+
+        // Will it be used ?
+        if (this.getArena().getSpawn().isSendPickaxe() || this.getArena().getRespawn().isSendPickaxe()) {
+
+            ItemStack pickaxe = new ItemStack(Material.IRON_PICKAXE);
+            VersionUtil.setUnbreakable(pickaxe);
+            this.customPickaxe = pickaxe;
+        }
+
+    }
+
+    /**
+     * This method gives the player the starter item set, based on the config.yml
+     * configuration for spawn and respawn.
+     *
+     * @param player the target player
+     * @param isRespawn true, if the player should receive it after a respawn
+     */
+    public void sendGameItems(Player player, boolean isRespawn) {
+
+        // clear inventory
+        player.getInventory().clear();
+
+        // send armor
+        ItemStack[] armor = getPlayer(player).getTeam().getTeamArmor();
+        player.getInventory().setArmorContents(armor);
+
+        // send kit items
+        if (isRespawn) {
+
+            if (this.getArena().getRespawn().isSendBow()) {
+                player.getInventory().addItem(this.customBow);
+            }
+
+            if (this.getArena().getRespawn().isSendPickaxe()) {
+                player.getInventory().addItem(this.customPickaxe);
+            }
+
+        } else {
+
+            if (this.getArena().getSpawn().isSendBow()) {
+                player.getInventory().addItem(this.customBow);
+            }
+
+            if (this.getArena().getSpawn().isSendPickaxe()) {
+                player.getInventory().addItem(this.customPickaxe);
+            }
+
+        }
+
+    }
+
+    /**
+     * This method sets the player attributes (game mode, level, enchantments, ...).
+     *
+     * @param player the target player
+     */
+    public void setPlayerAttributes(Player player) {
+
         player.setGameMode(GameMode.SURVIVAL);
         player.setLevel(0);
         player.setFireTicks(0);
-        playerTasks.put(player.getUniqueId(),
-                Bukkit.getScheduler().runTaskTimer(MissileWars.getInstance(), mwPlayer, 0, 20));
 
     }
 

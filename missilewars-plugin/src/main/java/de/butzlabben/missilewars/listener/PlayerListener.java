@@ -45,8 +45,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerListPingEvent;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Vector;
 
 /**
@@ -140,11 +138,12 @@ public class PlayerListener implements Listener {
         Game game = event.getGame();
 
         MWPlayer mwPlayer = game.getPlayer(event.getPlayer());
-        if (mwPlayer == null)
-            return;
+        if (mwPlayer == null) return;
 
-        if (mwPlayer.getTeam() != null)
+        // Already in a team?
+        if (mwPlayer.getTeam() != null) {
             mwPlayer.getTeam().removeMember(mwPlayer);
+        }
 
         game.getPlayers().remove(event.getPlayer().getUniqueId());
 
@@ -154,13 +153,7 @@ public class PlayerListener implements Listener {
             return;
         }
 
-        Scoreboard sb = game.getScoreboard();
-        Team scoreboardTeam = sb.getPlayerTeam(player);
-        if (scoreboardTeam != null)
-            scoreboardTeam.removePlayer(player);
-
         player.getInventory().clear();
-        player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
 
         MissileWars.getInstance().getSignRepository().getSigns(game).forEach(MWSign::update);
 

@@ -52,26 +52,31 @@ public class LobbyListener extends GameBoundListener {
 
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
-        if (!isInLobbyArea(e.getPlayer().getLocation()))
-            return;
+        if (!isInLobbyArea(e.getPlayer().getLocation())) return;
+
         Player p = e.getPlayer();
-        if (p.getGameMode() == GameMode.CREATIVE)
-            return;
+        if (p.getGameMode() == GameMode.CREATIVE) return;
         e.setCancelled(true);
         if (e.getItem() == null) return;
 
         if (VersionUtil.isStainedGlassPane(e.getItem().getType())) {
+
             if (!p.hasPermission("mw.change")) return;
+
             if (getGame().getTimer().getSeconds() < 10) {
                 p.sendMessage(MessageConfig.getMessage("change_team_not_now"));
                 return;
             }
+
             String displayName = e.getItem().getItemMeta().getDisplayName();
             if (displayName.equals(getGame().getTeam1().getFullname())) {
                 p.performCommand("mw change 1");
+                getGame().getScoreboardManager().updateScoreboard();
             } else {
                 p.performCommand("mw change 2");
+                getGame().getScoreboardManager().updateScoreboard();
             }
+
         } else if (e.getItem().getType() == Material.NETHER_STAR) {
             VoteInventory inventory = new VoteInventory(getGame().getLobby().getArenas());
             p.openInventory(inventory.getInventory(p));
@@ -82,9 +87,7 @@ public class LobbyListener extends GameBoundListener {
     @EventHandler
     public void onJoin(PlayerArenaJoinEvent e) {
         Game game = e.getGame();
-        if (game != getGame())
-            return;
-
+        if (game != getGame()) return;
 
         Player p = e.getPlayer();
         MWPlayer mw = game.addPlayer(p);
@@ -94,7 +97,6 @@ public class LobbyListener extends GameBoundListener {
         p.getInventory().clear();
         p.setFoodLevel(20);
         p.setHealth(p.getMaxHealth());
-        p.setScoreboard(game.getScoreboard());
 
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> p.setGameMode(GameMode.ADVENTURE), 10);
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> p.teleport(game.getLobby().getSpawnPoint()), 2);
@@ -104,10 +106,11 @@ public class LobbyListener extends GameBoundListener {
         int size1 = getGame().getTeam1().getMembers().size();
         int size2 = getGame().getTeam2().getMembers().size();
 
-        if (size2 < size1)
+        if (size2 < size1) {
             to = getGame().getTeam2();
-        else
+        } else {
             to = getGame().getTeam1();
+        }
 
         // Premium version
         if (p.hasPermission("mw.change")) {
@@ -119,7 +122,9 @@ public class LobbyListener extends GameBoundListener {
             p.getInventory().setItem(4, new OrcItem(Material.NETHER_STAR, "§3Vote Map").getItemStack());
         }
 
+        // Adds the player to the new team.
         to.addMember(mw);
+
         p.sendMessage(MessageConfig.getMessage("team_assigned").replace("%team%", to.getFullname()));
 
         String name = p.getName();
@@ -133,18 +138,22 @@ public class LobbyListener extends GameBoundListener {
 
     @EventHandler
     public void onDamage(EntityDamageEvent e) {
-        if (isInLobbyArea(e.getEntity().getLocation())) e.setCancelled(true);
+        if (isInLobbyArea(e.getEntity().getLocation())) {
+            e.setCancelled(true);
+        }
     }
 
     @EventHandler
     public void onRespawn(PlayerRespawnEvent e) {
-        if (isInLobbyArea(e.getPlayer().getLocation())) e.setRespawnLocation(getGame().getLobby().getSpawnPoint());
+        if (isInLobbyArea(e.getPlayer().getLocation())) {
+            e.setRespawnLocation(getGame().getLobby().getSpawnPoint());
+        }
     }
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
-        if (!(e.getWhoClicked() instanceof Player))
-            return;
+        if (!(e.getWhoClicked() instanceof Player)) return;
+
         Player p = (Player) e.getWhoClicked();
         if (isInLobbyArea(p.getLocation()))
             if (p.getGameMode() != GameMode.CREATIVE && !p.isOp())

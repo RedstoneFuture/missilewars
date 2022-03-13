@@ -27,7 +27,7 @@ import lombok.ToString;
 @RequiredArgsConstructor
 public class MoneyConfiguration {
 
-    private final int win = 80;
-    private final int loss = 50;
-    private final int draw = 30;
+    private int win = 80;
+    private int loss = 50;
+    private int draw = 30;
 }
