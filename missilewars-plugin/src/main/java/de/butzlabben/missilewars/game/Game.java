@@ -319,12 +319,17 @@ public class Game {
         stopTimer();
 
         applyForAllPlayers(player -> player.teleport(lobby.getAfterGameSpawn()));
-        if (gameWorld.getWorldName() != null) {
+
+        if (gameWorld != null) {
             gameWorld.sendPlayersBack();
             gameWorld.unload();
             gameWorld.delete();
         }
-        scoreboardManager.removeScoreboard();
+
+        if (scoreboardManager != null) {
+            scoreboardManager.removeScoreboard();
+        }
+
         team1 = null;
         team2 = null;
     }
