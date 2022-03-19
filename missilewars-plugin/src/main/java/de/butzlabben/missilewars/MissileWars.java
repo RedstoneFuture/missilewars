@@ -135,7 +135,6 @@ public class MissileWars extends JavaPlugin {
     @Override
     public void onDisable() {
         GameManager.getInstance().disableAll();
-        //deleteDefaultFileSource();
         deleteTempWorlds();
 
         ConnectionHolder.close();
@@ -163,19 +162,6 @@ public class MissileWars extends JavaPlugin {
                 }
             }
         }
-    }
-
-    /**
-     * This method deletes the original ZIP files from the
-     * "/MissileWars" folder. The default missiles and the
-     * default arena world was copied from these archives
-     * at the first server start.
-     */
-    private void deleteDefaultFileSource() {
-        File missiles = new File(getDataFolder(), "missiles.zip");
-        File arena = new File(getDataFolder(), "MissileWars-Arena.zip");
-        FileUtils.deleteQuietly(missiles);
-        FileUtils.deleteQuietly(arena);
     }
 
     /**
