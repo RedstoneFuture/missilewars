@@ -40,21 +40,22 @@ import static org.bukkit.Material.valueOf;
  */
 public class Config {
 
-    private static final File dir = MissileWars.getInstance().getDataFolder();
-    private static final File file = new File(MissileWars.getInstance().getDataFolder(), "config.yml");
+    private static final File DIR = MissileWars.getInstance().getDataFolder();
+    private static final File FILE = new File(DIR, "config.yml");
     private static YamlConfiguration cfg;
     private static boolean configNew = false;
 
     public static void load() {
 
         // check if the directory "/MissileWars" exists
-        if (!dir.exists())
-            dir.mkdirs();
+        if (!DIR.exists()) {
+            DIR.mkdirs();
+        }
 
         // check if the config file exists
-        if (!file.exists()) {
+        if (!FILE.exists()) {
             try {
-                file.createNewFile();
+                FILE.createNewFile();
             } catch (IOException e) {
                 Logger.ERROR.log("Could not create config.yml!");
                 e.printStackTrace();
@@ -64,7 +65,7 @@ public class Config {
 
         // try to load the config
         try {
-            cfg = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
+            cfg = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(FILE), StandardCharsets.UTF_8));
         } catch (FileNotFoundException e) {
             Logger.ERROR.log("Couldn't load config.yml");
             e.printStackTrace();
@@ -148,7 +149,7 @@ public class Config {
 
     private static void saveConfig() {
         try {
-            cfg.save(file);
+            cfg.save(FILE);
         } catch (IOException e) {
             Logger.ERROR.log("Could not save config.yml!");
             e.printStackTrace();

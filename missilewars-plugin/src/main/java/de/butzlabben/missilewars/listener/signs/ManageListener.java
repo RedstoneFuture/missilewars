@@ -25,13 +25,14 @@ import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.util.version.VersionUtil;
 import de.butzlabben.missilewars.wrapper.signs.MWSign;
 import de.butzlabben.missilewars.wrapper.signs.SignRepository;
-import java.util.Optional;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
+
+import java.util.Optional;
 
 public class ManageListener implements Listener {
 
@@ -53,7 +54,7 @@ public class ManageListener implements Listener {
                     MWSign sign = new MWSign(event.getBlock().getLocation(), lobbyName);
                     sign.update();
                     signRepository.getSigns().add(new MWSign(event.getBlock().getLocation(), lobbyName));
-                    signRepository.save();
+                    signRepository.saveData();
                     player.sendMessage(MessageConfig.getPrefix() + "Sign was successfully created and connected");
                 }
             }
@@ -72,7 +73,7 @@ public class ManageListener implements Listener {
                     if (player.isSneaking()) {
                         MWSign sign = optional.get();
                         repository.getSigns().remove(sign);
-                        repository.save();
+                        repository.saveData();
                         player.sendMessage(MessageConfig.getPrefix() + "You have successfully removed this missilewars sign");
                     } else {
                         player.sendMessage(MessageConfig.getPrefix() + "§cYou have to be sneaking in order to remove this sign");

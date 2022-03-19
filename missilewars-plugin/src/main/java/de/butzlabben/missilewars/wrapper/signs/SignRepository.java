@@ -26,59 +26,73 @@ import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.util.serialization.LocationTypeAdapter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import lombok.Getter;
+import org.bukkit.Location;
+
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import lombok.Getter;
-import org.bukkit.Location;
 
 @Getter
 public class SignRepository {
 
-    private final static String PATH = "data";
-    private final static String FILE_NAME = "signs.json";
+    private static final File DIR = new File(MissileWars.getInstance().getDataFolder(), "data");
+    private static final File FILE = new File(DIR, "signs.json");
+    private static boolean configNew = false;
 
     private final List<MWSign> signs = new ArrayList<>();
 
     public static SignRepository load() {
-        File dir = new File(MissileWars.getInstance().getDataFolder(), PATH);
-        if (!dir.exists()) {
-            dir.mkdirs();
-            return null;
-        }
-        File file = new File(dir, FILE_NAME);
-        if (!file.exists())
-            return null;
-        Gson gson = new GsonBuilder().setPrettyPrinting().registerTypeAdapter(Location.class, new LocationTypeAdapter(true)).create();
-        try (InputStream in = new FileInputStream(file);
-             JsonReader reader = new JsonReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
 
-            return gson.fromJson(reader, SignRepository.class);
-        } catch (IOException e) {
-            Logger.WARN.log("Could not load missilewars signs: Error: " + e.getMessage());
+        // check if the directory "/data" exists
+        if (!DIR.exists()) {
+            DIR.mkdirs();
         }
-        return null;
+
+        // check if the config file exists
+        if (!FILE.exists()) {
+            try {
+                FILE.createNewFile();
+            } catch (IOException e) {
+                Logger.ERROR.log("Could not create signs.json!");
+                e.printStackTrace();
+            }
+            configNew = true;
+        }
+
+        // load data if it's existing
+        if (!configNew) {
+
+            Gson gson = new GsonBuilder().setPrettyPrinting().registerTypeAdapter(Location.class, new LocationTypeAdapter(true)).create();
+
+            try (InputStream in = new FileInputStream(FILE);
+                 JsonReader reader = new JsonReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
+                return gson.fromJson(reader, SignRepository.class);
+            } catch (IOException e) {
+                Logger.WARN.log("Could not load missilewars signs: Error: " + e.getMessage());
+            }
+
+        }
+
+        // create default data object
+        SignRepository repository = new SignRepository();
+        repository.saveData();
+        return repository;
     }
+
 
     public Optional<MWSign> getSign(Location location) {
         return MissileWars.getInstance().getSignRepository().getSigns()
                 .stream().filter(sign -> sign.isLocation(location)).findAny();
     }
 
-    public void save() {
-        File dir = new File(MissileWars.getInstance().getDataFolder(), PATH);
+    public void saveData() {
         Gson gson = new GsonBuilder().setPrettyPrinting().registerTypeAdapter(Location.class, new LocationTypeAdapter(true)).create();
-        try (OutputStream out = new FileOutputStream(new File(dir, FILE_NAME));
+
+        try (OutputStream out = new FileOutputStream(FILE);
              JsonWriter writer = new JsonWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8))) {
             writer.setIndent("  ");
             gson.toJson(this, SignRepository.class, writer);
