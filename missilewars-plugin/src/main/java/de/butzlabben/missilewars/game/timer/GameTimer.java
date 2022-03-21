@@ -64,7 +64,7 @@ public class GameTimer extends Timer {
         }
 
         if (seconds % 10 == 0) {
-            getGame().getScoreboardManager().updateInGameScoreboard();
+            getGame().getScoreboardManager().updateScoreboard();
         }
 
         seconds--;
