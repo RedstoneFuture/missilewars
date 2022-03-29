@@ -544,23 +544,23 @@ public class Game {
 
     /**
      * This method sends the players the title / subtitle of the
-     * game result there are not in a team (=spectator).
+     * game result there are not in a team (= spectator).
      */
     public void sendNeutralGameResultTitle(Player player) {
         String title;
         String subTitle;
 
         if (team1.getGameResult() == GameResult.WIN) {
-            title = MessageConfig.getNativeMessage("title_won").replace("%team%", team1.getName());
-            subTitle = MessageConfig.getNativeMessage("subtitle_won");
+            title = MessageConfig.getNativeMessage("game_result.title_won").replace("%team%", team1.getName());
+            subTitle = MessageConfig.getNativeMessage("game_result.subtitle_won");
 
         } else if (team2.getGameResult() == GameResult.WIN) {
-            title = MessageConfig.getNativeMessage("title_won").replace("%team%", team2.getName());
-            subTitle = MessageConfig.getNativeMessage("subtitle_won");
+            title = MessageConfig.getNativeMessage("game_result.title_won").replace("%team%", team2.getName());
+            subTitle = MessageConfig.getNativeMessage("game_result.subtitle_won");
 
         } else {
-            title = MessageConfig.getNativeMessage("title_draw");
-            subTitle = MessageConfig.getNativeMessage("subtitle_draw");
+            title = MessageConfig.getNativeMessage("game_result.title_draw");
+            subTitle = MessageConfig.getNativeMessage("game_result.subtitle_draw");
 
         }
 

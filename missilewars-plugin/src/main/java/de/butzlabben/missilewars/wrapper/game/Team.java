@@ -30,14 +30,13 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-
-import java.util.ArrayList;
 
 import java.util.ArrayList;
 
@@ -200,16 +199,16 @@ public class Team {
 
         switch (gameResult) {
             case WIN:
-                title = MessageConfig.getNativeMessage("title_winner");
-                subTitle = MessageConfig.getNativeMessage("subtitle_winner");
+                title = MessageConfig.getNativeMessage("game_result.title_winner");
+                subTitle = MessageConfig.getNativeMessage("game_result.subtitle_winner");
                 break;
             case LOSE:
-                title = MessageConfig.getNativeMessage("title_loser");
-                subTitle = MessageConfig.getNativeMessage("subtitle_loser");
+                title = MessageConfig.getNativeMessage("game_result.title_loser");
+                subTitle = MessageConfig.getNativeMessage("game_result.subtitle_loser");
                 break;
             case DRAW:
-                title = MessageConfig.getNativeMessage("title_draw");
-                subTitle = MessageConfig.getNativeMessage("subtitle_draw");
+                title = MessageConfig.getNativeMessage("game_result.title_draw");
+                subTitle = MessageConfig.getNativeMessage("game_result.subtitle_draw");
                 break;
             default:
                 title = null;

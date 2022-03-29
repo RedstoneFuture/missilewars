@@ -93,16 +93,16 @@ public class MessageConfig {
         cfg.addDefault("fall_protection_deactivated", "&cFall protection deactivated by sneaking");
 
         cfg.addDefault("money", "You received &e%money% &7coins");
-        cfg.addDefault("kick_inactivity", "&cYou were inactive on missilewars");
+        cfg.addDefault("kick_inactivity", "&cYou were inactive on MissileWars");
 
-        cfg.addDefault("title_won", "%team%");
-        cfg.addDefault("subtitle_won", "&7has won the game");
-        cfg.addDefault("title_winner", "You");
-        cfg.addDefault("subtitle_winner", "&7have won");
-        cfg.addDefault("title_loser", "You");
-        cfg.addDefault("subtitle_loser", "&7have lost");
-        cfg.addDefault("title_draw", "Draw!");
-        cfg.addDefault("subtitle_draw", "");
+        cfg.addDefault("game_result.title_won", "%team%");
+        cfg.addDefault("game_result.subtitle_won", "&7has won the game");
+        cfg.addDefault("game_result.title_winner", "You");
+        cfg.addDefault("game_result.subtitle_winner", "&7have won");
+        cfg.addDefault("game_result.title_loser", "You");
+        cfg.addDefault("game_result.subtitle_loser", "&7have lost");
+        cfg.addDefault("game_result.title_draw", "Draw!");
+        cfg.addDefault("game_result.subtitle_draw", "");
 
         cfg.addDefault("spectator", "&7You are now a spectator");
         cfg.addDefault("change_team_not_now", "&cNow you cannot change your team anymore");
