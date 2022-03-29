@@ -124,34 +124,54 @@ public class GameListener extends GameBoundListener {
         ItemStack itemStack = e.getItem();
         Game game = getGame();
 
+        // missile spawn with using of a missile spawn egg
         if (VersionUtil.isMonsterEgg(itemStack.getType())) {
             e.setCancelled(true);
-            if (game.getArena().getMissileConfiguration().isOnlyBlockPlaceable() && e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-            if (game.getArena().getMissileConfiguration().isOnlyBlockPlaceable() &&
-                    !isInBetween(player.getLocation().toVector(), getGame().getArena().getPlane1(), getGame().getArena().getPlane2())) {
-                player.sendMessage(MessageConfig.getMessage("missile_place_deny"));
-                return;
+
+            // Can missiles only be spawned if the item interaction was performed on a block (no air)?
+            boolean isOnlyBlockPlaceable = game.getArena().getMissileConfiguration().isOnlyBlockPlaceable();
+            if (isOnlyBlockPlaceable) {
+                if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
             }
-            Missile m = game.getArena().getMissileConfiguration().getMissileFromName(itemStack.getItemMeta().getDisplayName());
-            if (m == null) {
+
+            // Are missiles only allowed to spawn inside the arena, between the two arena spawn points?
+            boolean isOnlyBetweenSpawnPlaceable = game.getArena().getMissileConfiguration().isOnlyBetweenSpawnPlaceable();
+            if (isOnlyBetweenSpawnPlaceable) {
+                if (!isInBetween(player.getLocation().toVector(), getGame().getArena().getPlane1(), getGame().getArena().getPlane2())) {
+                    player.sendMessage(MessageConfig.getMessage("missile_place_deny"));
+                    return;
+                }
+            }
+
+            Missile missile = game.getArena().getMissileConfiguration().getMissileFromName(itemStack.getItemMeta().getDisplayName());
+            if (missile == null) {
                 player.sendMessage(MessageConfig.getMessage("invalid_missile"));
                 return;
             }
             itemStack.setAmount(itemStack.getAmount() - 1);
             player.setItemInHand(itemStack);
-            m.paste(player, MissileFacing.getFacingPlayer(player, game.getArena().getMissileConfiguration()), getGame());
-        } else if (itemStack.getType() == VersionUtil.getFireball()) {
+            missile.paste(player, MissileFacing.getFacingPlayer(player, game.getArena().getMissileConfiguration()), getGame());
+
+            return;
+        }
+
+        // shield spawn with using of a missile spawn egg
+        if (itemStack.getType() == VersionUtil.getFireball()) {
             int amount = e.getItem().getAmount();
             e.getItem().setAmount(amount - 1);
+
             if (amount == 1 && VersionUtil.getVersion() == 8) {
                 player.getInventory().remove(VersionUtil.getFireball());
             }
+
             Fireball fb = player.launchProjectile(Fireball.class);
             fb.setVelocity(player.getLocation().getDirection().multiply(2.5D));
             VersionUtil.playFireball(player, fb.getLocation());
             fb.setYield(3F);
             fb.setIsIncendiary(true);
             fb.setBounce(false);
+
+            return;
         }
     }
 

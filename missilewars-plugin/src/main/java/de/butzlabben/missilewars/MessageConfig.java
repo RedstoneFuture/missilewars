@@ -31,20 +31,21 @@ import java.nio.charset.StandardCharsets;
  */
 public class MessageConfig {
 
-    private static final File dir = MissileWars.getInstance().getDataFolder();
-    private static final File file = new File(MissileWars.getInstance().getDataFolder(), "messages.yml");
+    private static final File DIR = MissileWars.getInstance().getDataFolder();
+    private static final File FILE = new File(DIR, "messages.yml");
     private static YamlConfiguration cfg;
 
     public static void load() {
 
         // check if the directory "/MissileWars" exists
-        if (!dir.exists())
-            dir.mkdirs();
+        if (!DIR.exists()) {
+            DIR.mkdirs();
+        }
 
         // check if the config file exists
-        if (!file.exists()) {
+        if (!FILE.exists()) {
             try {
-                file.createNewFile();
+                FILE.createNewFile();
             } catch (IOException e) {
                 Logger.ERROR.log("Could not create messages.yml!");
                 e.printStackTrace();
@@ -53,7 +54,7 @@ public class MessageConfig {
 
         // try to load the config
         try {
-            cfg = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
+            cfg = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(FILE), StandardCharsets.UTF_8));
         } catch (FileNotFoundException e) {
             Logger.ERROR.log("Couldn't load messages.yml");
             e.printStackTrace();
@@ -142,7 +143,7 @@ public class MessageConfig {
 
     private static void saveConfig() {
         try {
-            cfg.save(file);
+            cfg.save(FILE);
         } catch (IOException e) {
             Logger.ERROR.log("Could not save messages.yml!");
             e.printStackTrace();

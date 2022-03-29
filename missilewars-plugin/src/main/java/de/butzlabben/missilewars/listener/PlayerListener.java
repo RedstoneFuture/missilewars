@@ -95,6 +95,7 @@ public class PlayerListener implements Listener {
 
         Game game = getGame(p.getLocation());
         if (game != null) {
+
             if (!game.isIn(game.getLobby().getAfterGameSpawn()))
                 p.teleport(game.getLobby().getAfterGameSpawn());
             else
@@ -107,8 +108,11 @@ public class PlayerListener implements Listener {
         Player p = event.getPlayer();
 
         Game game = getGame(p.getLocation());
-        if (checkJoinOrLeave(p, null, game)) {
-            p.teleport(Config.getFallbackSpawn());
+        if (game != null) {
+
+            if (checkJoinOrLeave(p, null, game)) {
+                p.teleport(Config.getFallbackSpawn());
+            }
         }
     }
 
@@ -125,12 +129,14 @@ public class PlayerListener implements Listener {
     public void onMove(PlayerMoveEvent event) {
         Game to = getGame(event.getTo());
         Game from = getGame(event.getFrom());
+
         if (checkJoinOrLeave(event.getPlayer(), from, to)) {
             event.setCancelled(true);
             Vector addTo = event.getFrom().toVector().subtract(event.getTo().toVector()).multiply(3);
             addTo.setY(0);
             event.getPlayer().teleport(event.getFrom().add(addTo));
         }
+
     }
 
     @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)

@@ -74,18 +74,18 @@ public class Game {
     private static int fights = 0;
     private final Map<UUID, MWPlayer> players = new HashMap<>();
     private final Map<String, Integer> votes = new HashMap<>(); // Votes for the maps.
-    @Getter private final Lobby lobby;
+    private final Lobby lobby;
     private final HashMap<UUID, BukkitTask> playerTasks = new HashMap<>();
     private Timer timer;
     private BukkitTask bt;
     private GameState state = GameState.LOBBY;
     private Team team1;
     private Team team2;
-    @Getter private boolean ready = false;
+    private boolean ready = false;
     private boolean restart = false;
     private GameWorld gameWorld;
     private long timestart;
-    @Getter private Arena arena;
+    private Arena arena;
     private ScoreboardManager scoreboardManager;
     private GameBoundListener listener;
     private ItemStack customBow;
@@ -302,12 +302,17 @@ public class Game {
         stopTimer();
 
         applyForAllPlayers(player -> player.teleport(lobby.getAfterGameSpawn()));
-        if (gameWorld.getWorldName() != null) {
+
+        if (gameWorld != null) {
             gameWorld.sendPlayersBack();
             gameWorld.unload();
             gameWorld.delete();
         }
-        scoreboardManager.removeScoreboard();
+
+        if (scoreboardManager != null) {
+            scoreboardManager.removeScoreboard();
+        }
+
         team1 = null;
         team2 = null;
     }
@@ -327,7 +332,12 @@ public class Game {
 
     public boolean isInGameWorld(Location location) {
         World world = location.getWorld();
-        return gameWorld.isWorld(world);
+        if (world == null) return false;
+
+        if (gameWorld != null) {
+            return gameWorld.isWorld(world);
+        }
+        return false;
     }
 
     public boolean isIn(Location location) {

@@ -23,12 +23,9 @@ import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.wrapper.abstracts.Arena;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.Enumeration;
@@ -36,7 +33,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * @author Butzlabben
@@ -123,6 +119,8 @@ public class SetupUtil {
         Files.copy(in, out.toPath());
 
         unzip(out.getPath(), outputFolder);
+
+        // delete the ZIP files after server stopping
         out.deleteOnExit();
     }
 

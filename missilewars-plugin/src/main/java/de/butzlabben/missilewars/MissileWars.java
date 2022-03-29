@@ -35,14 +35,15 @@ import de.butzlabben.missilewars.util.version.VersionUtil;
 import de.butzlabben.missilewars.wrapper.signs.CheckRunnable;
 import de.butzlabben.missilewars.wrapper.signs.SignRepository;
 import de.butzlabben.missilewars.wrapper.stats.StatsFetcher;
-import java.io.File;
-import java.util.Date;
 import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
+import java.util.Date;
 
 /**
  * @author Butzlabben
@@ -87,14 +88,9 @@ public class MissileWars extends JavaPlugin {
         MessageConfig.load();
         SetupUtil.checkMissiles();
 
-        new File(Config.getArenaFolder()).mkdirs();
         new File(Config.getLobbiesFolder()).mkdirs();
 
         SignRepository repository = SignRepository.load();
-        if (repository == null) {
-            repository = new SignRepository();
-            repository.save();
-        }
         this.signRepository = repository;
 
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
@@ -141,24 +137,20 @@ public class MissileWars extends JavaPlugin {
         GameManager.getInstance().disableAll();
         deleteTempWorlds();
 
-        // TODO
-        File missiles = new File(getDataFolder(), "missiles.zip");
-        File arena = new File(getDataFolder(), "MissileWars-Arena.zip");
-        FileUtils.deleteQuietly(missiles);
-        FileUtils.deleteQuietly(arena);
-
         ConnectionHolder.close();
     }
 
     /**
-     * @return true, if FAWE is installed
+     * This method checks if FAWE (FastAsyncWorldEdit) is installed.
+     *
+     * @return true, if it's installed
      */
     public boolean foundFAWE() {
         return foundFAWE;
     }
 
     /**
-     * This methode delete the temp arena worlds of the MW game.
+     * This methode deletes the temp arena worlds of the MW game.
      */
     private void deleteTempWorlds() {
         File[] dirs = Bukkit.getWorldContainer().listFiles();
@@ -173,8 +165,8 @@ public class MissileWars extends JavaPlugin {
     }
 
     /**
-     * This methode send info about the version, version warnings (if needed) and the authors
-     * in the console.
+     * This method sends information about the version, version
+     * warnings (if necessary) and authors in the console.
      */
     private void sendPluginInfo() {
 

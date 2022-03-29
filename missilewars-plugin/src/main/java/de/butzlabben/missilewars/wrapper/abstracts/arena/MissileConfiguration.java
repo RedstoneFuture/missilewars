@@ -21,16 +21,13 @@ package de.butzlabben.missilewars.wrapper.abstracts.arena;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.wrapper.missile.Missile;
 import de.butzlabben.missilewars.wrapper.missile.MissileFacing;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.bukkit.entity.EntityType;
+
+import java.io.File;
+import java.util.*;
 
 
 @Getter
@@ -46,7 +43,8 @@ public class MissileConfiguration {
     private boolean eastFacing = true;
     private boolean southFacing = true;
     private boolean westFacing = true;
-    private List<Missile> missiles = new ArrayList<Missile>() {{
+
+    private List<Missile> missiles = new ArrayList<>() {{
         add(new Missile("Tomahawk.schematic", "&aTomahawk", EntityType.CREEPER, 2, 2, 3));
         add(new Missile("Cruiser.schematic", "&eCruiser", EntityType.BLAZE, 2, 2, 2));
         add(new Missile("Sword.schematic", "&7Sword", EntityType.SKELETON, 2, 2, 2));
@@ -57,14 +55,17 @@ public class MissileConfiguration {
 
     public List<MissileFacing> getEnabledFacings() {
         List<MissileFacing> enabledDirections = new ArrayList<>();
+
         if (northFacing) enabledDirections.add(MissileFacing.NORTH);
         if (eastFacing) enabledDirections.add(MissileFacing.EAST);
         if (southFacing) enabledDirections.add(MissileFacing.SOUTH);
         if (westFacing) enabledDirections.add(MissileFacing.WEST);
+
         if (enabledDirections.isEmpty()) {
             Logger.WARN.log("All facings were disabled for an arena. Please correct this issue");
             enabledDirections.addAll(Arrays.asList(MissileFacing.values()));
         }
+
         return enabledDirections;
     }
 
@@ -74,18 +75,6 @@ public class MissileConfiguration {
                 return m;
         }
         return null;
-    }
-
-    public Missile getMissileFromType(EntityType type) {
-        for (Missile m : missiles) {
-            if (m.getType() == type)
-                return m;
-        }
-        return null;
-    }
-
-    public Missile getMissileFromID(int i) {
-        return missiles.get(i);
     }
 
     public void check() {

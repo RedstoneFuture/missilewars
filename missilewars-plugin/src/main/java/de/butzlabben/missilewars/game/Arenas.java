@@ -24,13 +24,14 @@ import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.util.SetupUtil;
 import de.butzlabben.missilewars.util.serialization.Serializer;
 import de.butzlabben.missilewars.wrapper.abstracts.Arena;
+import lombok.Getter;
+import org.bukkit.Bukkit;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import lombok.Getter;
-import org.bukkit.Bukkit;
 
 public class Arenas {
 
@@ -40,9 +41,14 @@ public class Arenas {
         arenas.clear();
 
         File folder = new File(Config.getArenaFolder());
+
+        // Creates the folder "/arena", if not existing
+        folder.mkdirs();
+
+        // Get all arena files or create a new one
         File[] files = folder.listFiles();
         if (files.length == 0) {
-            File defaultArena = new File(folder, "arena.yml");
+            File defaultArena = new File(folder, "arena0.yml");
             try {
                 defaultArena.createNewFile();
                 Serializer.serialize(defaultArena, new Arena());
@@ -55,6 +61,7 @@ public class Arenas {
             }
             files = new File[] {defaultArena};
         }
+
         for (File config : files) {
             if (!config.getName().endsWith(".yml") && !config.getName().endsWith(".yaml")) continue;
             try {
