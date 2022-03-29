@@ -34,6 +34,7 @@ public class GameTimer extends Timer {
 
     @Override
     public void tick() {
+        Game game = getGame();
 
         switch(seconds) {
             case 7200:
@@ -64,7 +65,7 @@ public class GameTimer extends Timer {
         }
 
         if (seconds % 10 == 0) {
-            getGame().getScoreboardManager().updateScoreboard();
+            game.getScoreboardManager().updateScoreboard();
         }
 
         seconds--;

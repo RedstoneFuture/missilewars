@@ -22,8 +22,6 @@ import de.butzlabben.missilewars.Config;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MessageConfig;
 import de.butzlabben.missilewars.game.Game;
-import java.io.File;
-import java.io.IOException;
 import lombok.Getter;
 import lombok.ToString;
 import org.apache.commons.io.FileUtils;
@@ -32,6 +30,9 @@ import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+
+import java.io.File;
+import java.io.IOException;
 
 @Getter
 @ToString(exclude = {"game", "lock"})
@@ -50,8 +51,9 @@ public class GameWorld {
     }
 
     public boolean isWorld(World world) {
-        if (world == null)
+        if (world == null) {
             return false;
+        }
         return world.getName().equals(worldName);
     }
 
