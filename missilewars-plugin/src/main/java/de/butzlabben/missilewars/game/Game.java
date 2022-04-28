@@ -294,17 +294,25 @@ public class Game {
         restart = true;
     }
 
-    public void sendPlayerToFallbackSpawn() {
+    public void disableGameOnServerStop() {
+        sendPlayerToFallbackSpawn();
+        gameWorld.unload();
+    }
+
+    private void sendPlayerToFallbackSpawn() {
 
         for (Player player : Bukkit.getOnlinePlayers()) {
             if (!isIn(player.getLocation())) continue;
+
             player.teleport(Config.getFallbackSpawn());
-            player.setHealth(player.getMaxHealth());
+
             player.getInventory().clear();
+            player.setFoodLevel(20);
+            player.setHealth(player.getMaxHealth());
         }
     }
 
-    public void disable() {
+    public void resetGame() {
         if (state == GameState.INGAME) stopGame();
 
         HandlerList.unregisterAll(listener);

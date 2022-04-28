@@ -41,8 +41,7 @@ public class GameManager {
 
 
     public void disableAll() {
-        games.values().forEach(Game::sendPlayerToFallbackSpawn);
-        games.values().forEach(Game::disable);
+        games.values().forEach(Game::disableGameOnServerStop);
         games.clear();
     }
 
@@ -78,7 +77,6 @@ public class GameManager {
     }
 
     private void loadGames(File[] files) {
-        disableAll();
 
         for (File game : files) {
             if (game == null)
@@ -112,7 +110,7 @@ public class GameManager {
         Game game = getGame(name);
         if (game == null)
             return;
-        game.disable();
+        game.resetGame();
         games.remove(name);
     }
 
