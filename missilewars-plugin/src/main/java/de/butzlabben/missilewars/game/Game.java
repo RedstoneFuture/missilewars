@@ -294,6 +294,16 @@ public class Game {
         restart = true;
     }
 
+    public void sendPlayerToFallbackSpawn() {
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!isIn(player.getLocation())) continue;
+            player.teleport(Config.getFallbackSpawn());
+            player.setHealth(player.getMaxHealth());
+            player.getInventory().clear();
+        }
+    }
+
     public void disable() {
         if (state == GameState.INGAME) stopGame();
 
