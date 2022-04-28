@@ -36,7 +36,7 @@ public class EndTimer extends Timer {
     public void tick() {
 
         switch(seconds) {
-            case 20:
+            case 15:
                 broadcast(MessageConfig.getMessage("game_starts_new_in").replace("%seconds%", Integer.toString(seconds)));
                 break;
             case 0:
