@@ -20,13 +20,15 @@ package de.butzlabben.missilewars.wrapper.stats;
 
 import de.butzlabben.missilewars.Config;
 import de.butzlabben.missilewars.game.Game;
+import de.butzlabben.missilewars.game.GameResult;
 import de.butzlabben.missilewars.util.ConnectionHolder;
 import de.butzlabben.missilewars.wrapper.player.MWPlayer;
+import lombok.RequiredArgsConstructor;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
-import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class FightStats {
@@ -43,15 +45,24 @@ public class FightStats {
         arenaName = game.getArena().getName();
         timeStart = game.getTimestart();
         timeElapsed = System.currentTimeMillis() - timeStart;
-        if (game.getTeam1().isWon())
-            teamWon = 1;
-        else if (game.getTeam2().isWon())
-            teamWon = 2;
-        else
-            teamWon = 0;
+        teamWon = getGameResultCode();
         players = game.getPlayers().values();
     }
 
+
+    /**
+     * This method returns the game result code for the database.
+     */
+    private int getGameResultCode() {
+
+        if (game.getTeam1().getGameResult() == GameResult.WIN) {
+            return 1;
+        } else if (game.getTeam2().getGameResult() == GameResult.WIN) {
+            return 2;
+        }
+
+        return 0;
+    }
 
     public static void checkTables() {
         if (!Config.isFightStatsEnabled())

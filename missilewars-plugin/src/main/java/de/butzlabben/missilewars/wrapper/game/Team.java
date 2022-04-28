@@ -55,8 +55,7 @@ public class Team {
     private final Game game;
     private final transient ArrayList<MWPlayer> members = new ArrayList<>();
     @Setter private Location spawn;
-    private transient GameResult gameResult;
-    private transient org.bukkit.scoreboard.Team scoreboardTeam;
+    @Setter private transient GameResult gameResult = GameResult.DRAW;
     private transient int currentInterval = 0;
     ItemStack[] teamArmor;
 
@@ -158,10 +157,6 @@ public class Team {
 
     public boolean isMember(MWPlayer player) {
         return members.contains(player);
-    }
-
-    public void setGameResult(GameResult gameResult) {
-        this.gameResult = gameResult;
     }
 
     /**

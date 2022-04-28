@@ -19,8 +19,6 @@
 package de.butzlabben.missilewars.wrapper.event;
 
 import de.butzlabben.missilewars.game.Game;
-import de.butzlabben.missilewars.wrapper.game.Team;
-import java.util.Optional;
 import lombok.Getter;
 import org.bukkit.event.HandlerList;
 
@@ -28,11 +26,9 @@ import org.bukkit.event.HandlerList;
 public class GameEndEvent extends GameEvent {
 
     public final static HandlerList handlers = new HandlerList();
-    private final Optional<Team> winningTeam;
 
-    public GameEndEvent(Game game, Team winningTeam) {
+    public GameEndEvent(Game game) {
         super(game);
-        this.winningTeam = Optional.ofNullable(winningTeam);
     }
 
     public static HandlerList getHandlerList() {
