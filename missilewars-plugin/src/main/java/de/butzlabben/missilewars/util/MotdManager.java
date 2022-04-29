@@ -38,24 +38,24 @@ public class MotdManager {
 
     public void updateMOTD(Game game) {
         GameState state = game.getState();
+        String newMotd = "&cError in getting Motd";
 
         if (Config.motdEnabled()) {
-            String motd = "&cError in getting Motd";
             switch (state) {
                 case LOBBY:
-                    motd = Config.motdLobby();
+                    newMotd = Config.motdLobby();
                     break;
                 case END:
-                    motd = Config.motdEnded();
+                    newMotd = Config.motdEnded();
                     break;
                 case INGAME:
-                    motd = Config.motdGame();
+                    newMotd = Config.motdGame();
                     break;
             }
 
             String players = "" + game.getPlayers().values().size();
             String maxPlayers = "" + game.getLobby().getMaxSize();
-            this.motd = ChatColor.translateAlternateColorCodes('&', motd).replace("%max_players%", maxPlayers).replace("%players%", players);
+            motd = ChatColor.translateAlternateColorCodes('&', newMotd).replace("%max_players%", maxPlayers).replace("%players%", players);
         }
     }
 }
