@@ -523,4 +523,13 @@ public class Game {
         players.put(player.getUniqueId(), mwPlayer);
         return mwPlayer;
     }
+
+    /**
+     * This method removes players from the game. Besides former
+     * team members, it also affects spectators.
+     */
+    public void removePlayer(MWPlayer mwPlayer) {
+        if (mwPlayer.getTeam() != null) mwPlayer.getTeam().removeMember(mwPlayer);
+        players.remove(mwPlayer);
+    }
 }
