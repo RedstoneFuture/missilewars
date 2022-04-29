@@ -40,10 +40,6 @@ public class PrePlayerArenaJoinEvent extends PlayerEvent implements Cancellable 
         this.game = game;
     }
 
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
-
     @Override
     public HandlerList getHandlers() {
         return handlers;

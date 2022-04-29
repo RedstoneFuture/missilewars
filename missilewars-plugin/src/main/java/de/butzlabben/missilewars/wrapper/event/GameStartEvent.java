@@ -29,10 +29,6 @@ public class GameStartEvent extends GameEvent {
         super(game);
     }
 
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
-
     @Override
     public HandlerList getHandlers() {
         return handlers;
