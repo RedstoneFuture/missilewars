@@ -146,7 +146,6 @@ public class PlayerListener implements Listener {
         MWPlayer mwPlayer = game.getPlayer(event.getPlayer());
         Player player= mwPlayer.getPlayer();
 
-        player.getInventory().clear();
         PlayerDataProvider.getInstance().loadInventory(player);
 
         game.removePlayer(mwPlayer);
