@@ -21,60 +21,46 @@ package de.butzlabben.missilewars.wrapper.player;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.util.GameRandomizer;
 import de.butzlabben.missilewars.wrapper.game.Team;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicLong;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Butzlabben
  * @since 01.01.2018
  */
-@EqualsAndHashCode(of = {"uuid", "id"})
+@EqualsAndHashCode(of = {"UUID", "id"})
 @Getter
 public class MWPlayer implements Runnable {
 
     private static final AtomicLong NEXT_ID = new AtomicLong(0);
     final long id = NEXT_ID.getAndIncrement();
-    private final UUID uuid;
+    private final UUID UUID;
     private final Game game;
     int i = -1;
-    private Team t;
+    @Setter private Team team;
     private GameRandomizer r;
-    private int period;
+    @Setter private int period;
 
     public MWPlayer(Player player, Game game) {
-        this.uuid = player.getUniqueId();
+        this.UUID = player.getUniqueId();
         this.game = game;
     }
 
-    public Team getTeam() {
-        return t;
-    }
-
-    public void setTeam(Team t) {
-        this.t = t;
-    }
-
     public Player getPlayer() {
-        return Bukkit.getPlayer(uuid);
-    }
-
-    public UUID getUUID() {
-        return uuid;
-    }
-
-    public void setPeriod(int period) {
-        this.period = period;
+        return Bukkit.getPlayer(UUID);
     }
 
     @Override
     public void run() {
-        Player p = Bukkit.getPlayer(uuid);
-        if (p == null || !p.isOnline())
-            return;
+        Player p = Bukkit.getPlayer(UUID);
+        if (p == null || !p.isOnline()) return;
+
         if (i == -1) {
             i = period - 10;
             if (i >= period || i < 0) i = 0;
@@ -91,6 +77,6 @@ public class MWPlayer implements Runnable {
 
     @Override
     public String toString() {
-        return "MWPlayer(uuid=" + uuid + ", id=" + id + ", teamName=" + getTeam().getName() + ")";
+        return "MWPlayer(uuid=" + UUID + ", id=" + id + ", teamName=" + getTeam().getName() + ")";
     }
 }
