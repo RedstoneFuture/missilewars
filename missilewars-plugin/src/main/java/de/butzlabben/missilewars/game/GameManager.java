@@ -24,12 +24,13 @@ import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.util.serialization.Serializer;
 import de.butzlabben.missilewars.wrapper.abstracts.Lobby;
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
 
 @Getter
 public class GameManager {
@@ -40,7 +41,7 @@ public class GameManager {
 
 
     public void disableAll() {
-        games.values().forEach(Game::disable);
+        games.values().forEach(Game::disableGameOnServerStop);
         games.clear();
     }
 
@@ -76,7 +77,6 @@ public class GameManager {
     }
 
     private void loadGames(File[] files) {
-        disableAll();
 
         for (File game : files) {
             if (game == null)
@@ -110,7 +110,7 @@ public class GameManager {
         Game game = getGame(name);
         if (game == null)
             return;
-        game.disable();
+        game.resetGame();
         games.remove(name);
     }
 

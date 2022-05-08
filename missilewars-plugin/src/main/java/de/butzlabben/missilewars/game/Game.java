@@ -31,7 +31,6 @@ import de.butzlabben.missilewars.listener.EndListener;
 import de.butzlabben.missilewars.listener.GameBoundListener;
 import de.butzlabben.missilewars.listener.GameListener;
 import de.butzlabben.missilewars.listener.LobbyListener;
-import de.butzlabben.missilewars.util.MoneyUtil;
 import de.butzlabben.missilewars.util.MotdManager;
 import de.butzlabben.missilewars.util.ScoreboardManager;
 import de.butzlabben.missilewars.util.serialization.Serializer;
@@ -40,14 +39,12 @@ import de.butzlabben.missilewars.wrapper.abstracts.Arena;
 import de.butzlabben.missilewars.wrapper.abstracts.GameWorld;
 import de.butzlabben.missilewars.wrapper.abstracts.Lobby;
 import de.butzlabben.missilewars.wrapper.abstracts.MapChooseProcedure;
-import de.butzlabben.missilewars.wrapper.event.GameEndEvent;
 import de.butzlabben.missilewars.wrapper.event.GameStartEvent;
 import de.butzlabben.missilewars.wrapper.event.PlayerArenaJoinEvent;
 import de.butzlabben.missilewars.wrapper.game.Team;
 import de.butzlabben.missilewars.wrapper.player.MWPlayer;
 import de.butzlabben.missilewars.wrapper.stats.FightStats;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
@@ -84,7 +81,6 @@ public class Game {
     private GameState state = GameState.LOBBY;
     private Team team1;
     private Team team2;
-    @Setter private boolean draw = true;
     private boolean ready = false;
     private boolean restart = false;
     private GameWorld gameWorld;
@@ -246,47 +242,38 @@ public class Game {
         }
 
         Logger.DEBUG.log("Stopping for players");
-        int money = arena.getMoney().getDraw();
-        for (Player all : Bukkit.getOnlinePlayers()) {
-            if (!isIn(all.getLocation()))
-                continue;
-            Logger.DEBUG.log("Stopping for: " + all.getName());
+        for (Player player : gameWorld.getWorld().getPlayers()) {
 
-            all.setGameMode(GameMode.SPECTATOR);
-            all.teleport(arena.getSpectatorSpawn());
-            all.setHealth(all.getMaxHealth());
+            Logger.DEBUG.log("Stopping for: " + player.getName());
+            player.setGameMode(GameMode.SPECTATOR);
+            player.teleport(arena.getSpectatorSpawn());
+            player.setHealth(player.getMaxHealth());
 
-            VersionUtil.playDraw(all);
-            if (draw) {
-                if (getPlayer(all).getTeam() == null)
-                    continue;
-                MoneyUtil.giveMoney(all.getUniqueId(), money);
-            }
         }
 
         stopTimer();
-
         HandlerList.unregisterAll(listener);
         GameBoundListener listener = new EndListener(this);
+
         try {
             Bukkit.getPluginManager().registerEvents(listener, MissileWars.getInstance());
         } catch (Exception ignored) {
         }
+
         this.listener = listener;
 
         timer = new EndTimer(this);
         bt = Bukkit.getScheduler().runTaskTimer(MissileWars.getInstance(), timer, 5, 20);
 
         // Change MOTD
-        if (!Config.isMultipleLobbies())
+        if (!Config.isMultipleLobbies()) {
             MotdManager.getInstance().updateMOTD(this);
+        }
 
         if (getArena().isSaveStatistics()) {
             FightStats stats = new FightStats(this);
             stats.insert();
         }
-
-        if (draw) Bukkit.getPluginManager().callEvent(new GameEndEvent(this, null));
 
         Logger.DEBUG.log("Stopped completely");
     }
@@ -307,11 +294,25 @@ public class Game {
         restart = true;
     }
 
-    public void draw(boolean draw) {
-        this.draw = draw;
+    public void disableGameOnServerStop() {
+        sendPlayerToFallbackSpawn();
+        gameWorld.unload();
     }
 
-    public void disable() {
+    private void sendPlayerToFallbackSpawn() {
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!isIn(player.getLocation())) continue;
+
+            player.teleport(Config.getFallbackSpawn());
+
+            player.getInventory().clear();
+            player.setFoodLevel(20);
+            player.setHealth(player.getMaxHealth());
+        }
+    }
+
+    public void resetGame() {
         if (state == GameState.INGAME) stopGame();
 
         HandlerList.unregisterAll(listener);
@@ -523,4 +524,65 @@ public class Game {
         players.put(player.getUniqueId(), mwPlayer);
         return mwPlayer;
     }
+
+    /**
+     * This method manages the message output of the game result.
+     * Each player who is currently in the arena world gets a
+     * customized message.
+     */
+    public void sendGameResult() {
+
+        for (Player player : gameWorld.getWorld().getPlayers()) {
+            MWPlayer missileWarsPlayer = getPlayer(player);
+
+            // team member of team 1
+            if (team1.isMember(missileWarsPlayer)) {
+                team1.sendMoney(missileWarsPlayer);
+                team1.sendGameResultTitle(missileWarsPlayer);
+                team1.sendGameResultSound(missileWarsPlayer);
+                continue;
+            }
+
+            // team member of team 2
+            if (team2.isMember(missileWarsPlayer)) {
+                team2.sendMoney(missileWarsPlayer);
+                team2.sendGameResultTitle(missileWarsPlayer);
+                team2.sendGameResultSound(missileWarsPlayer);
+                continue;
+            }
+
+            // spectator
+            if (player.isOnline()) {
+                sendNeutralGameResultTitle(player);
+            }
+
+        }
+    }
+
+
+    /**
+     * This method sends the players the title / subtitle of the
+     * game result there are not in a team (= spectator).
+     */
+    public void sendNeutralGameResultTitle(Player player) {
+        String title;
+        String subTitle;
+
+        if (team1.getGameResult() == GameResult.WIN) {
+            title = MessageConfig.getNativeMessage("game_result.title_won").replace("%team%", team1.getName());
+            subTitle = MessageConfig.getNativeMessage("game_result.subtitle_won");
+
+        } else if (team2.getGameResult() == GameResult.WIN) {
+            title = MessageConfig.getNativeMessage("game_result.title_won").replace("%team%", team2.getName());
+            subTitle = MessageConfig.getNativeMessage("game_result.subtitle_won");
+
+        } else {
+            title = MessageConfig.getNativeMessage("game_result.title_draw");
+            subTitle = MessageConfig.getNativeMessage("game_result.subtitle_draw");
+
+        }
+
+        VersionUtil.sendTitle(player, title, subTitle);
+    }
+
 }

@@ -16,37 +16,15 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.game.timer;
-
-import de.butzlabben.missilewars.MessageConfig;
-import de.butzlabben.missilewars.game.Game;
+package de.butzlabben.missilewars.game;
 
 /**
  * @author Butzlabben
- * @since 14.01.2018
+ * @since 01.01.2018
  */
-public class EndTimer extends Timer {
+public enum GameResult {
 
-    public EndTimer(Game game) {
-        super(game);
-        seconds = 21;
-    }
-
-    @Override
-    public void tick() {
-
-        switch(seconds) {
-            case 15:
-                broadcast(MessageConfig.getMessage("game_starts_new_in").replace("%seconds%", Integer.toString(seconds)));
-                break;
-            case 0:
-                getGame().reset();
-                break;
-            default:
-                break;
-        }
-
-        seconds--;
-    }
-
+    WIN,
+    LOSE,
+    DRAW
 }

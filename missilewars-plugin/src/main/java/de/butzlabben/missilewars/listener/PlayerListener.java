@@ -62,14 +62,14 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void on(FoodLevelChangeEvent e) {
+    public void onFoodLevelChange(FoodLevelChangeEvent e) {
         Game game = getGame(e.getEntity().getLocation());
         if (game != null)
             e.setCancelled(true);
     }
 
     @EventHandler
-    public void on(BlockPlaceEvent e) {
+    public void onBlockPlace(BlockPlaceEvent e) {
         Game game = getGame(e.getPlayer().getLocation());
         if (game != null && e.getPlayer().getGameMode() != GameMode.CREATIVE)
             e.setBuild(false);
@@ -83,14 +83,14 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onDrop(PlayerPickupItemEvent e) {
+    public void onPickup(PlayerPickupItemEvent e) {
         Game game = getGame(e.getPlayer().getLocation());
         if (game != null)
             e.setCancelled(true);
     }
 
     @EventHandler
-    public void on(PlayerQuitEvent e) {
+    public void onQuit(PlayerQuitEvent e) {
         Player p = e.getPlayer();
 
         Game game = getGame(p.getLocation());
@@ -104,7 +104,7 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void on(PlayerJoinEvent event) {
+    public void onJoin(PlayerJoinEvent event) {
         Player p = event.getPlayer();
 
         Game game = getGame(p.getLocation());
@@ -225,7 +225,7 @@ public class PlayerListener implements Listener {
 
     // Internal stuff
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void on(PrePlayerArenaJoinEvent event) {
+    public void onPreJoin(PrePlayerArenaJoinEvent event) {
         Logger.DEBUG.log("PrePlayerArenaJoinEvent: " + event.getPlayer().getName());
         Bukkit.getScheduler().runTask(MissileWars.getInstance(), () -> Bukkit.getPluginManager().callEvent(new PlayerArenaJoinEvent(event.getPlayer(), event.getGame())));
     }

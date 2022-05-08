@@ -20,6 +20,7 @@ package de.butzlabben.missilewars.util;
 
 import de.butzlabben.missilewars.Config;
 import de.butzlabben.missilewars.game.Game;
+import de.butzlabben.missilewars.game.GameState;
 import de.butzlabben.missilewars.wrapper.abstracts.Arena;
 import de.butzlabben.missilewars.wrapper.game.Team;
 import de.butzlabben.missilewars.wrapper.player.MWPlayer;
@@ -227,7 +228,12 @@ public class ScoreboardManager {
      */
     private String replaceScoreboardPlaceholders(String text) {
 
-        String time = Integer.toString(game.getTimer().getSeconds() / 60);
+        String time;
+        if (game.getState() == GameState.LOBBY) {
+            time = Integer.toString(game.getArena().getGameDuration());
+        } else {
+            time = Integer.toString(game.getTimer().getSeconds() / 60);
+        }
 
 
         text = ChatColor.translateAlternateColorCodes('&', text);
