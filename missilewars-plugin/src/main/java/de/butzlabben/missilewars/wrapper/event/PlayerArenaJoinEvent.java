@@ -38,6 +38,10 @@ public class PlayerArenaJoinEvent extends PlayerEvent {
         this.game = game;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     @Override
     public HandlerList getHandlers() {
         return handlers;
