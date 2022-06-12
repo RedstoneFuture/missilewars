@@ -36,6 +36,10 @@ public class GameEndEvent extends GameEvent {
         this.winningTeam = Optional.ofNullable(winningTeam);
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     @Override
     public HandlerList getHandlers() {
         return handlers;
