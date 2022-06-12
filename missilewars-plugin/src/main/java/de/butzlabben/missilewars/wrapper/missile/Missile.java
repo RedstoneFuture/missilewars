@@ -23,7 +23,7 @@ import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.util.version.VersionUtil;
 import de.butzlabben.missilewars.wrapper.missile.paste.PasteProvider;
-import java.io.File;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -34,6 +34,8 @@ import org.bukkit.inventory.meta.SpawnEggMeta;
 import org.bukkit.material.SpawnEgg;
 import org.bukkit.util.Vector;
 
+import java.io.File;
+
 /**
  * @author Butzlabben
  * @since 06.01.2018
@@ -43,11 +45,11 @@ import org.bukkit.util.Vector;
 public class Missile {
 
     private final String schematic;
-    private final String name;
+    @Getter private final String name;
     private final EntityType egg;
     private final int down;
     private final int dist;
-    private final int occurrence;
+    @Getter private final int occurrence;
 
     public void paste(Player p, MissileFacing mf, Game game) {
         if (mf == null)
@@ -84,14 +86,6 @@ public class Missile {
         File pluginDir = MissileWars.getInstance().getDataFolder();
         File file = new File(pluginDir, "missiles/" + schematic);
         return file;
-    }
-
-    public int occurrence() {
-        return occurrence;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public EntityType getType() {
