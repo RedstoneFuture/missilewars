@@ -24,12 +24,13 @@ import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.util.serialization.Serializer;
 import de.butzlabben.missilewars.wrapper.abstracts.Lobby;
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
 
 @Getter
 public class GameManager {
@@ -45,18 +46,18 @@ public class GameManager {
     }
 
     public void loadGames() {
-        File[] files = null;
+        File[] lobbyFiles = null;
         if (Config.isMultipleLobbies()) {
-            files = new File(Config.getLobbiesFolder()).listFiles();
+            lobbyFiles = new File(Config.getLobbiesFolder()).listFiles();
         } else {
             File file = new File(Config.getLobbiesFolder() + "/" + Config.getDefaultLobby());
             if (file.exists()) {
-                files = new File[] {file};
+                lobbyFiles = new File[] {file};
             }
         }
-        if (files == null) files = new File[0];
+        if (lobbyFiles == null) lobbyFiles = new File[0];
 
-        if (files.length == 0) {
+        if (lobbyFiles.length == 0) {
             Logger.WARN.log("No lobby configs found. Creating default one");
             File file = new File(Config.getLobbiesFolder() + "/" + Config.getDefaultLobby());
             try {
@@ -69,25 +70,25 @@ public class GameManager {
                 Bukkit.getPluginManager().disablePlugin(MissileWars.getInstance());
                 return;
             }
-            files = new File[] {file};
+            lobbyFiles = new File[] {file};
         }
 
-        loadGames(files);
+        loadGames(lobbyFiles);
     }
 
-    private void loadGames(File[] files) {
+    private void loadGames(File[] lobbyFileList) {
         disableAll();
 
-        for (File game : files) {
-            if (game == null)
+        for (File lobbyFile : lobbyFileList) {
+            if (lobbyFile == null)
                 continue;
-            if (!game.getName().endsWith(".yml") && !game.getName().endsWith(".yaml")) continue;
+            if (!lobbyFile.getName().endsWith(".yml") && !lobbyFile.getName().endsWith(".yaml")) continue;
 
-            Logger.BOOT.log("Loading lobby " + game.getName());
+            Logger.BOOT.log("Loading lobby " + lobbyFile.getName());
             try {
-                Lobby lobby = Serializer.deserialize(game, Lobby.class);
+                Lobby lobby = Serializer.deserialize(lobbyFile, Lobby.class);
                 if (lobby == null) {
-                    Logger.ERROR.log("Could not load lobby " + game.getName());
+                    Logger.ERROR.log("Could not load lobby " + lobbyFile.getName());
                     continue;
                 }
                 Game potentialOtherGame = getGame(lobby.getName());
@@ -95,11 +96,11 @@ public class GameManager {
                     Logger.ERROR.log("A lobby with the same name was already loaded. Names of lobbies must be unique, this lobby will not be loaded");
                     continue;
                 }
-                lobby.setFile(game);
+                lobby.setFile(lobbyFile);
                 restartGame(lobby);
-                Logger.BOOTDONE.log("Loaded lobby " + game.getName());
+                Logger.BOOTDONE.log("Loaded lobby " + lobbyFile.getName());
             } catch (IOException exception) {
-                Logger.ERROR.log("Could not load lobby " + game.getName());
+                Logger.ERROR.log("Could not load lobby " + lobbyFile.getName());
                 exception.printStackTrace();
             }
         }
