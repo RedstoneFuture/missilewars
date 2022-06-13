@@ -530,6 +530,15 @@ public class Game {
     }
 
     /**
+     * This method removes players from the game. Besides, former
+     * team members, it also affects spectators.
+     */
+    public void removePlayer(MWPlayer mwPlayer) {
+        if (mwPlayer.getTeam() != null) mwPlayer.getTeam().removeMember(mwPlayer);
+        players.remove(mwPlayer);
+    }
+
+    /**
      * This method manages the message output of the game result.
      * Each player who is currently in the arena world gets a
      * customized message.
