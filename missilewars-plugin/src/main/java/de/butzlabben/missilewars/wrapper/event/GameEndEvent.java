@@ -22,8 +22,6 @@ import de.butzlabben.missilewars.game.Game;
 import lombok.Getter;
 import org.bukkit.event.HandlerList;
 
-import java.util.Optional;
-
 @Getter
 public class GameEndEvent extends GameEvent {
 
