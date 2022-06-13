@@ -102,6 +102,8 @@ public class MissileWars extends JavaPlugin {
         framework.registerCommands(new MWCommands());
         framework.registerCommands(new StatsCommands());
         framework.registerCommands(new UserCommands());
+        // TODO make more admin commands usable with console by adding more optional arguments like game name etc.
+        framework.setInGameOnlyMessage(MessageConfig.getPrefix() + "§cYou are not a player");
 
         Arenas.load();
         SetupUtil.checkShields();
