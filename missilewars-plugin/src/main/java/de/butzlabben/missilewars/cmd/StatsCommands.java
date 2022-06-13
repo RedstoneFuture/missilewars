@@ -32,18 +32,15 @@ import de.butzlabben.missilewars.util.version.VersionUtil;
 import de.butzlabben.missilewars.wrapper.stats.PlayerStats;
 import de.butzlabben.missilewars.wrapper.stats.SavedStats;
 import de.butzlabben.missilewars.wrapper.stats.StatsFetcher;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class StatsCommands {
 
@@ -55,13 +52,11 @@ public class StatsCommands {
 
     @Command(name = "mw.stats.recommendations", permission = "mw.stats.recommendations", inGameOnly = true, usage = "/mw stats recommendations [from] [arena]")
     public void onRecommendations(CommandArgs args) {
-        CommandSender sender = args.getSender();
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(MessageConfig.getPrefix() + "§cYou are not a player");
-            return;
-        }
 
+        CommandSender sender = args.getSender();
+        if (!senderIsPlayer(sender)) return;
         Player player = (Player) sender;
+
         StatsFetcher fetcher = getFetcher(player, args);
         if (fetcher == null) return;
         SavedStats avgStatsWithDraws = fetcher.getAverageSavedStats(false);
@@ -95,13 +90,11 @@ public class StatsCommands {
 
     @Command(name = "mw.stats", permission = "mw.stats", inGameOnly = true, usage = "/mw stats [from] [arena]")
     public void onStats(CommandArgs args) {
-        CommandSender sender = args.getSender();
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(MessageConfig.getPrefix() + "§cYou are not a player");
-            return;
-        }
 
+        CommandSender sender = args.getSender();
+        if (!senderIsPlayer(sender)) return;
         Player player = (Player) sender;
+
         StatsFetcher fetcher = getFetcher(player, args);
         if (fetcher == null) return;
         String arena = fetcher.getArena().replace("%", "");
@@ -148,13 +141,11 @@ public class StatsCommands {
 
     @Command(name = "mw.stats.players", permission = "mw.stats.players", inGameOnly = true, usage = "/mw stats players [from] [arena]")
     public void onPlayers(CommandArgs args) {
-        CommandSender sender = args.getSender();
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(MessageConfig.getPrefix() + "§cYou are not a player");
-            return;
-        }
 
+        CommandSender sender = args.getSender();
+        if (!senderIsPlayer(sender)) return;
         Player player = (Player) sender;
+
         StatsFetcher fetcher = getFetcher(player, args);
         if (fetcher == null) return;
         List<UUID> players = fetcher.getPlayers();
@@ -166,13 +157,11 @@ public class StatsCommands {
 
     @Command(name = "mw.stats.list", permission = "mw.stats.list", inGameOnly = true, usage = "/mw stats list [from] [arena]")
     public void onList(CommandArgs args) {
-        CommandSender sender = args.getSender();
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(MessageConfig.getPrefix() + "§cYou are not a player");
-            return;
-        }
 
+        CommandSender sender = args.getSender();
+        if (!senderIsPlayer(sender)) return;
         Player player = (Player) sender;
+
         StatsFetcher fetcher = getFetcher(player, args);
         if (fetcher == null) return;
         List<SavedStats> players = fetcher.getAllStats();
@@ -213,5 +202,12 @@ public class StatsCommands {
         }
         player.sendMessage(MessageConfig.getPrefix() + "Loading data...");
         return fetcher;
+    }
+
+    private boolean senderIsPlayer(CommandSender sender) {
+        if (sender instanceof Player) return true;
+
+        sender.sendMessage(MessageConfig.getPrefix() + "§cYou are not a player");
+        return false;
     }
 }
