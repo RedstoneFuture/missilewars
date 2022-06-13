@@ -21,6 +21,7 @@ package de.butzlabben.missilewars.listener;
 import de.butzlabben.missilewars.MessageConfig;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.game.Game;
+import de.butzlabben.missilewars.game.GameResult;
 import de.butzlabben.missilewars.util.PlayerDataProvider;
 import de.butzlabben.missilewars.util.version.VersionUtil;
 import de.butzlabben.missilewars.wrapper.abstracts.arena.FallProtectionConfiguration;
@@ -90,24 +91,26 @@ public class GameListener extends GameBoundListener {
         if (!isInGameWorld(e.getLocation())) return;
 
         Game game = getGame();
+
         if (e.getEntity().getType() == EntityType.FIREBALL && !game.getArena().getFireballConfiguration().isDestroysPortal())
             e.blockList().removeIf(b -> b.getType() == VersionUtil.getPortal());
     }
 
     @EventHandler
-    public void on(BlockPhysicsEvent event) {
+    public void onBlockPhysics(BlockPhysicsEvent event) {
         Location location = event.getBlock().getLocation();
         if (!isInGameWorld(location)) return;
         if (event.getChangedType() != VersionUtil.getPortal()) return;
         Game game = getGame();
+
         if (game.getArena().getPlane1().distance(location.toVector()) > game.getArena().getPlane2().distance(location.toVector())) {
-            game.getTeam1().win();
-            game.getTeam2().lose();
+            game.getTeam1().setGameResult(GameResult.WIN);
+            game.getTeam2().setGameResult(GameResult.LOSE);
         } else {
-            game.getTeam2().win();
-            game.getTeam1().lose();
+            game.getTeam1().setGameResult(GameResult.LOSE);
+            game.getTeam2().setGameResult(GameResult.WIN);
         }
-        game.setDraw(false);
+        game.sendGameResult();
         game.stopGame();
     }
 
@@ -220,10 +223,10 @@ public class GameListener extends GameBoundListener {
     }
 
     @EventHandler
-    public void onDmg(EntityDamageByEntityEvent e) {
+    public void onDamage(EntityDamageByEntityEvent e) {
         if (!isInGameWorld(e.getEntity().getLocation())) return;
         if (!(e.getEntity() instanceof Player)) return;
-
+      
         Player p = (Player) e.getEntity();
         if (e.getDamager() instanceof Projectile) {
             Projectile pj = (Projectile) e.getDamager();
@@ -323,9 +326,9 @@ public class GameListener extends GameBoundListener {
             int teamSize = team.getMembers().size();
             if (teamSize == 0) {
                 Bukkit.getScheduler().runTask(MissileWars.getInstance(), () -> {
-                    getGame().draw(false);
-                    team.lose();
-                    team.getEnemyTeam().win();
+                    team.getEnemyTeam().setGameResult(GameResult.WIN);
+                    team.setGameResult(GameResult.LOSE);
+                    game.sendGameResult();
                     getGame().stopGame();
                 });
                 getGame().broadcast(MessageConfig.getMessage("team_offline").replace("%team%", team.getFullname()));
@@ -335,7 +338,7 @@ public class GameListener extends GameBoundListener {
 
     // TODO - Analyse, Ingame Check and Crop Cancel Analytic
     @EventHandler
-    public void onClick(InventoryClickEvent event) {
+    public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player)) return;
         Player p = (Player) event.getWhoClicked();
         if (!isInGameWorld(p.getLocation())) return;

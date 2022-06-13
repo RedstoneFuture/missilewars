@@ -51,7 +51,7 @@ public class LobbyListener extends GameBoundListener {
     }
 
     @EventHandler
-    public void onClick(PlayerInteractEvent e) {
+    public void onInteract(PlayerInteractEvent e) {
         if (!isInLobbyArea(e.getPlayer().getLocation())) return;
 
         Player p = e.getPlayer();
@@ -137,21 +137,21 @@ public class LobbyListener extends GameBoundListener {
     }
 
     @EventHandler
-    public void on(EntityDamageEvent e) {
+    public void onDamage(EntityDamageEvent e) {
         if (isInLobbyArea(e.getEntity().getLocation())) {
             e.setCancelled(true);
         }
     }
 
     @EventHandler
-    public void on(PlayerRespawnEvent e) {
+    public void onRespawn(PlayerRespawnEvent e) {
         if (isInLobbyArea(e.getPlayer().getLocation())) {
             e.setRespawnLocation(getGame().getLobby().getSpawnPoint());
         }
     }
 
     @EventHandler
-    public void onClick(InventoryClickEvent e) {
+    public void onInventoryClick(InventoryClickEvent e) {
         if (!(e.getWhoClicked() instanceof Player)) return;
 
         Player p = (Player) e.getWhoClicked();

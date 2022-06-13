@@ -21,10 +21,10 @@ package de.butzlabben.missilewars.wrapper.game;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MessageConfig;
 import de.butzlabben.missilewars.game.Game;
+import de.butzlabben.missilewars.game.GameResult;
 import de.butzlabben.missilewars.util.MoneyUtil;
 import de.butzlabben.missilewars.util.version.ColorConverter;
 import de.butzlabben.missilewars.util.version.VersionUtil;
-import de.butzlabben.missilewars.wrapper.event.GameEndEvent;
 import de.butzlabben.missilewars.wrapper.player.MWPlayer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -55,8 +55,7 @@ public class Team {
     private final Game game;
     private final transient ArrayList<MWPlayer> members = new ArrayList<>();
     @Setter private Location spawn;
-    private transient boolean won;
-    private transient org.bukkit.scoreboard.Team scoreboardTeam;
+    @Setter private transient GameResult gameResult = GameResult.DRAW;
     private transient int currentInterval = 0;
     ItemStack[] teamArmor;
 
@@ -160,30 +159,78 @@ public class Team {
         return members.contains(player);
     }
 
-    public void win() {
-        int money = game.getArena().getMoney().getWin();
-        for (MWPlayer player : members) {
-            MoneyUtil.giveMoney(player.getUUID(), money);
+    /**
+     * This method sends all team members the money for playing the game
+     * with a specific amount for win and lose.
+     */
+    public void sendMoney(MWPlayer missileWarsPlayer) {
+        int money;
+
+        switch (gameResult) {
+            case WIN:
+                money = game.getArena().getMoney().getWin();
+                break;
+            case LOSE:
+                money = game.getArena().getMoney().getLoss();
+                break;
+            case DRAW:
+                money = game.getArena().getMoney().getDraw();
+                break;
+            default:
+                money = 0;
+                break;
         }
-        for (MWPlayer p : game.getPlayers().values()) {
-            Player player = p.getPlayer();
-            if (player != null && player.isOnline())
-                VersionUtil.sendTitle(player, MessageConfig.getNativeMessage("title_won").replace("%team%", getFullname()),
-                        MessageConfig.getNativeMessage("subtitle_won"));
-        }
-        won = true;
-        Bukkit.getPluginManager().callEvent(new GameEndEvent(game, this));
+
+        MoneyUtil.giveMoney(missileWarsPlayer.getUUID(), money);
     }
 
-    public void lose() {
-        int money = game.getArena().getMoney().getLoss();
-        for (MWPlayer player : members) {
-            MoneyUtil.giveMoney(player.getUUID(), money);
+    /**
+     * This method sends all team members the title / subtitle of the
+     * game result.
+     */
+    public void sendGameResultTitle(MWPlayer missileWarsPlayer) {
+        String title;
+        String subTitle;
+
+        switch (gameResult) {
+            case WIN:
+                title = MessageConfig.getNativeMessage("game_result.title_winner");
+                subTitle = MessageConfig.getNativeMessage("game_result.subtitle_winner");
+                break;
+            case LOSE:
+                title = MessageConfig.getNativeMessage("game_result.title_loser");
+                subTitle = MessageConfig.getNativeMessage("game_result.subtitle_loser");
+                break;
+            case DRAW:
+                title = MessageConfig.getNativeMessage("game_result.title_draw");
+                subTitle = MessageConfig.getNativeMessage("game_result.subtitle_draw");
+                break;
+            default:
+                title = null;
+                subTitle = null;
+                break;
         }
+
+        VersionUtil.sendTitle(missileWarsPlayer.getPlayer(), title, subTitle);
     }
 
-    public boolean isWon() {
-        return won;
+    /**
+     * This method sends all team members the end-sound of the
+     * game result.
+     */
+    public void sendGameResultSound(MWPlayer missileWarsPlayer) {
+
+        switch (gameResult) {
+            case WIN:
+                VersionUtil.playPling(missileWarsPlayer.getPlayer());
+                break;
+            case LOSE:
+            case DRAW:
+                VersionUtil.playDraw(missileWarsPlayer.getPlayer());
+                break;
+            default:
+                break;
+        }
     }
 
     // TODO
