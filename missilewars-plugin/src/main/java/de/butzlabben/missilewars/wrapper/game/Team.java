@@ -186,6 +186,7 @@ public class Team {
         return won;
     }
 
+    // TODO
     public void updateIntervals(int newInterval) {
         if (newInterval < currentInterval && currentInterval != 0) {
             getGame().broadcast(MessageConfig.getMessage("team_buffed").replace("%team%", getFullname()));
@@ -193,9 +194,6 @@ public class Team {
         if (newInterval > currentInterval && currentInterval != 0) {
             getGame().broadcast(MessageConfig.getMessage("team_nerved").replace("%team%", getFullname()));
         }
-        for (MWPlayer mwPlayer : members) {
-            mwPlayer.setPeriod(newInterval);
-        }
-        currentInterval = newInterval;
     }
+
 }
