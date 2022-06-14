@@ -108,7 +108,7 @@ public class FightStats {
                     PreparedStatement statement = ConnectionHolder.prepareStatement("INSERT INTO " + Config.getFightMembersTable() + " (fid, player, team) VALUES "
                             + " (?, ?, ?)");
                     statement.setInt(1, fightID);
-                    statement.setString(2, player.getUUID().toString());
+                    statement.setString(2, player.getUuid().toString());
 
                     if (player.getTeam() == game.getTeam1())
                         statement.setInt(3, 1);

@@ -314,7 +314,7 @@ public class GameListener extends GameBoundListener {
 
         MWPlayer player = getGame().getPlayer(e.getPlayer());
         if (player == null) return;
-        BukkitTask task = game.getPlayerTasks().get(player.getUUID());
+        BukkitTask task = game.getPlayerTasks().get(player.getUuid());
         if (task != null) task.cancel();
 
         Team team = player.getTeam();

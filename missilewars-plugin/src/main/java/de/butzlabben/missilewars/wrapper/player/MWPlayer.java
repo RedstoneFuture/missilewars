@@ -34,31 +34,31 @@ import java.util.concurrent.atomic.AtomicLong;
  * @author Butzlabben
  * @since 01.01.2018
  */
-@EqualsAndHashCode(of = {"UUID", "id"})
+@EqualsAndHashCode(of = {"uuid", "id"})
 @Getter
 public class MWPlayer implements Runnable {
 
     private static final AtomicLong NEXT_ID = new AtomicLong(0);
     final long id = NEXT_ID.getAndIncrement();
-    private final UUID UUID;
+    private final UUID uuid;
     private final Game game;
     @Setter private Team team;
     private PlayerEquipmentRandomizer randomGameEquipment;
 
     public MWPlayer(Player player, Game game) {
-        this.UUID = player.getUniqueId();
+        this.uuid = player.getUniqueId();
         this.game = game;
         this.randomGameEquipment = new PlayerEquipmentRandomizer(this, game);
     }
 
     public Player getPlayer() {
-        return Bukkit.getPlayer(UUID);
+        return Bukkit.getPlayer(uuid);
     }
 
     @Override
     public void run() {
 
-        Player p = Bukkit.getPlayer(UUID);
+        Player p = Bukkit.getPlayer(uuid);
         if (p == null || !p.isOnline()) return;
 
         randomGameEquipment.nextPeriod();
@@ -66,6 +66,6 @@ public class MWPlayer implements Runnable {
 
     @Override
     public String toString() {
-        return "MWPlayer(uuid=" + UUID + ", id=" + id + ", teamName=" + getTeam().getName() + ")";
+        return "MWPlayer(uuid=" + uuid + ", id=" + id + ", teamName=" + getTeam().getName() + ")";
     }
 }
