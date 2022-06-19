@@ -6,6 +6,12 @@ api-version: 1.13
 depend: [ WorldEdit ]
 softdepend: [ Vault, FastAsyncWorldEdit ]
 
+commands:
+  mw:
+    description: "MissileWars Main Command"
+    aliases:
+      - missilewars
+
 permissions:
   mw.*:
     default: op
