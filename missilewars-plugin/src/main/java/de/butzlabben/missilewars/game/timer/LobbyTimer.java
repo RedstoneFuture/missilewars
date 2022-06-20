@@ -47,14 +47,13 @@ public class LobbyTimer extends Timer implements Runnable {
 
     @Override
     public void tick() {
-        if (getGame().getPlayers().values().size() == 0)
-            return;
+        if (getGame().getPlayers().values().size() == 0) return;
 
         for (MWPlayer mp : getGame().getPlayers().values()) {
-            if (mp.getPlayer() != null) mp.getPlayer().setLevel(seconds);
-            else {
-                if (mp.getTeam() != null) mp.getTeam().removeMember(mp);
-                getGame().getPlayers().remove(mp.getUUID());
+            if (mp.getPlayer() != null) {
+                mp.getPlayer().setLevel(seconds);
+            } else {
+                getGame().removePlayer(mp);
             }
         }
 
