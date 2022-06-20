@@ -22,7 +22,7 @@ permissions:
       mw.stats.*: true
   mw.stats.*:
     default: op
-    childrean:
+    children:
       mw.stats: true
       mw.stats.recommendations: true
       mw.stats.players: true
