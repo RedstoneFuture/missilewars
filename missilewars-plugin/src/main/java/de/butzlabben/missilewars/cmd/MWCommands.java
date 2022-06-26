@@ -33,28 +33,27 @@ import de.butzlabben.missilewars.wrapper.abstracts.Lobby;
 import de.butzlabben.missilewars.wrapper.abstracts.MapChooseProcedure;
 import de.butzlabben.missilewars.wrapper.missile.Missile;
 import de.butzlabben.missilewars.wrapper.missile.MissileFacing;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class MWCommands {
 
     @Command(name = "mw.paste", usage = "/mw paste <missile>", permission = "mw.paste", description = "Pastes a missile", inGameOnly = true)
     public void pasteCommand(CommandArgs args) {
-        CommandSender sender = args.getSender();
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(MessageConfig.getPrefix() + "§cYou are not a player");
-            return;
-        }
 
-        Player p = (Player) sender;
-        Game game = GameManager.getInstance().getGame(p.getLocation());
+        CommandSender sender = args.getSender();
+        if (!senderIsPlayer(sender)) return;
+        Player player = (Player) sender;
+
+        Game game = GameManager.getInstance().getGame(player.getLocation());
         if (game == null) {
-            p.sendMessage(MessageConfig.getMessage("not_in_arena"));
+            player.sendMessage(MessageConfig.getMessage("not_in_arena"));
             return;
         }
         StringBuilder sb = new StringBuilder();
@@ -64,38 +63,35 @@ public class MWCommands {
         }
         Missile m = game.getArena().getMissileConfiguration().getMissileFromName(sb.toString().trim());
         if (m == null) {
-            p.sendMessage(MessageConfig.getPrefix() + "§cUnknown missile");
+            player.sendMessage(MessageConfig.getPrefix() + "§cUnknown missile");
             return;
         }
-        MissileFacing mf = MissileFacing.getFacingPlayer(p, game.getArena().getMissileConfiguration());
-        m.paste(p, mf, game);
+        MissileFacing mf = MissileFacing.getFacingPlayer(player, game.getArena().getMissileConfiguration());
+        m.paste(player, mf, game);
     }
 
     @Command(name = "mw.start", usage = "/mw start", permission = "mw.start", description = "Starts the game", inGameOnly = true)
     public void startCommand(CommandArgs args) {
-        CommandSender cs = args.getSender();
-        if (!(cs instanceof Player)) {
-            cs.sendMessage(MessageConfig.getPrefix() + "§cYou are not a player");
-            return;
-        }
 
-        Player sender = (Player) cs;
-        Game game = GameManager.getInstance().getGame(sender.getLocation());
+        CommandSender sender = args.getSender();
+        if (!senderIsPlayer(sender)) return;
+        Player player = (Player) sender;
 
+        Game game = GameManager.getInstance().getGame(player.getLocation());
         if (game == null) {
-            sender.sendMessage(MessageConfig.getMessage("not_in_arena"));
+            player.sendMessage(MessageConfig.getMessage("not_in_arena"));
             return;
         }
 
         if (game.getState() != GameState.LOBBY) {
-            sender.sendMessage(MessageConfig.getPrefix() + "§cGame already started");
+            player.sendMessage(MessageConfig.getPrefix() + "§cGame already started");
             return;
         }
         if (game.isReady())
             game.startGame();
         else {
             if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING && game.getArena() == null) {
-                sender.sendMessage(MessageConfig.getPrefix() + "§cGame cannot be started");
+                player.sendMessage(MessageConfig.getPrefix() + "§cGame cannot be started");
             } else {
                 Map.Entry<String, Integer> mostVotes = null;
                 for (Map.Entry<String, Integer> arena : game.getVotes().entrySet()) {
@@ -109,20 +105,18 @@ public class MWCommands {
                 Optional<Arena> arena = Arenas.getFromName(mostVotes.getKey());
                 if (!arena.isPresent()) throw new IllegalStateException("Voted arena is not present");
                 game.setArena(arena.get());
-                sender.sendMessage(MessageConfig.getPrefix() + "A map was elected. Use \"/mw start\" again to start the round");
+                player.sendMessage(MessageConfig.getPrefix() + "A map was elected. Use \"/mw start\" again to start the round");
             }
         }
     }
 
     @Command(name = "mw.stop", usage = "/mw stop", permission = "mw.stop", description = "Stops the game", inGameOnly = true)
     public void stopCommand(CommandArgs args) {
-        CommandSender sender = args.getSender();
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(MessageConfig.getPrefix() + "§cYou are not a player");
-            return;
-        }
 
+        CommandSender sender = args.getSender();
+        if (!senderIsPlayer(sender)) return;
         Player player = (Player) sender;
+
         Game game = GameManager.getInstance().getGame(player.getLocation());
         if (game == null) {
             player.sendMessage(MessageConfig.getMessage("not_in_arena"));
@@ -135,13 +129,11 @@ public class MWCommands {
 
     @Command(name = "mw.restart", usage = "/mw restart", permission = "mw.restart", description = "Restarts the game", inGameOnly = true)
     public void restartCommand(CommandArgs args) {
-        CommandSender sender = args.getSender();
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(MessageConfig.getPrefix() + "§cYou are not a player");
-            return;
-        }
 
+        CommandSender sender = args.getSender();
+        if (!senderIsPlayer(sender)) return;
         Player player = (Player) sender;
+
         Game game = GameManager.getInstance().getGame(player.getLocation());
 
         if (game == null) {
@@ -164,38 +156,41 @@ public class MWCommands {
 
     @Command(name = "mw", aliases = "missilewars", usage = "/mw", description = "Shows information about the MissileWars Plugin")
     public void mwCommand(CommandArgs args) {
-        CommandSender cs = args.getSender();
 
-        cs.sendMessage(MessageConfig.getPrefix() + "MissileWars v" + MissileWars.getInstance().version + " by Butzlabben");
+        CommandSender sender = args.getSender();
 
-        if (cs.hasPermission("mw.quit"))
-            cs.sendMessage(MessageConfig.getPrefix() + "/mw quit -  Quit a game");
-        if (cs.hasPermission("mw.start"))
-            cs.sendMessage(MessageConfig.getPrefix() + "/mw start - Starts the game");
-        if (cs.hasPermission("mw.stop"))
-            cs.sendMessage(MessageConfig.getPrefix() + "/mw stop - Stops the game");
-        if (cs.hasPermission("mw.restart"))
-            cs.sendMessage(MessageConfig.getPrefix() + "/mw start - Restarts the game");
-        if (cs.hasPermission("mw.appendrestart"))
-            cs.sendMessage(MessageConfig.getPrefix()
+        sender.sendMessage(MessageConfig.getPrefix() + "MissileWars v" + MissileWars.getInstance().version + " by Butzlabben");
+
+        if (sender.hasPermission("mw.quit"))
+            sender.sendMessage(MessageConfig.getPrefix() + "/mw quit -  Quit a game");
+        if (sender.hasPermission("mw.start"))
+            sender.sendMessage(MessageConfig.getPrefix() + "/mw start - Starts the game");
+        if (sender.hasPermission("mw.stop"))
+            sender.sendMessage(MessageConfig.getPrefix() + "/mw stop - Stops the game");
+        if (sender.hasPermission("mw.restart"))
+            sender.sendMessage(MessageConfig.getPrefix() + "/mw start - Restarts the game");
+        if (sender.hasPermission("mw.appendrestart"))
+            sender.sendMessage(MessageConfig.getPrefix()
                     + "/mw appendrestart - Appends a restart after the next game ends");
-        if (cs.hasPermission("mw.paste"))
-            cs.sendMessage(MessageConfig.getPrefix() + "/mw paste - Pastes a missile");
-        if (cs.hasPermission("mw.reload"))
-            cs.sendMessage(MessageConfig.getPrefix() + "/mw reload - Reloads configurations");
-        if (cs.hasPermission("mw.stats"))
-            cs.sendMessage(MessageConfig.getPrefix() + "/mw stats - Shows stats");
-        if (cs.hasPermission("mw.stats.recommendations"))
-            cs.sendMessage(MessageConfig.getPrefix() + "/mw stats recommendations - Shows recommendations");
-        if (cs.hasPermission("mw.stats.players"))
-            cs.sendMessage(MessageConfig.getPrefix() + "/mw stats players - Shows player list");
-        if (cs.hasPermission("mw.stats.list"))
-            cs.sendMessage(MessageConfig.getPrefix() + "/mw stats list - Lists history of games");
+        if (sender.hasPermission("mw.paste"))
+            sender.sendMessage(MessageConfig.getPrefix() + "/mw paste - Pastes a missile");
+        if (sender.hasPermission("mw.reload"))
+            sender.sendMessage(MessageConfig.getPrefix() + "/mw reload - Reloads configurations");
+        if (sender.hasPermission("mw.stats"))
+            sender.sendMessage(MessageConfig.getPrefix() + "/mw stats - Shows stats");
+        if (sender.hasPermission("mw.stats.recommendations"))
+            sender.sendMessage(MessageConfig.getPrefix() + "/mw stats recommendations - Shows recommendations");
+        if (sender.hasPermission("mw.stats.players"))
+            sender.sendMessage(MessageConfig.getPrefix() + "/mw stats players - Shows player list");
+        if (sender.hasPermission("mw.stats.list"))
+            sender.sendMessage(MessageConfig.getPrefix() + "/mw stats list - Lists history of games");
     }
 
     @Command(name = "mw.reload", permission = "mw.reload", usage = "/mw reload")
     public void onReload(CommandArgs args) {
+
         CommandSender sender = args.getSender();
+
         Config.load();
         MessageConfig.load();
         Arenas.load();
@@ -204,7 +199,9 @@ public class MWCommands {
 
     @Command(name = "mw.debug", permission = "mw.debug", usage = "/mw debug")
     public void onDebug(CommandArgs args) {
+
         CommandSender sender = args.getSender();
+
         int i = 0;
         Logger.NORMAL.log("Starting to print debug information for MissileWars v" + MissileWars.getInstance().version);
         for (Game game : GameManager.getInstance().getGames().values()) {
@@ -216,11 +213,20 @@ public class MWCommands {
 
     @Command(name = "mw.restartall", permission = "mw.reload", usage = "/mw restartall")
     public void onRestartAll(CommandArgs args) {
+
         CommandSender sender = args.getSender();
+
         sender.sendMessage(MessageConfig.getPrefix() + "§cWarning - Restarting all games. This may take a while");
         List<Lobby> arenaPropertiesList = GameManager.getInstance().getGames().values()
                 .stream().map(Game::getLobby).collect(Collectors.toList());
         arenaPropertiesList.forEach(GameManager.getInstance()::restartGame);
         sender.sendMessage(MessageConfig.getPrefix() + "Reloaded configs");
+    }
+
+    private boolean senderIsPlayer(CommandSender sender) {
+        if (sender instanceof Player) return true;
+
+        sender.sendMessage(MessageConfig.getPrefix() + "§cYou are not a player");
+        return false;
     }
 }

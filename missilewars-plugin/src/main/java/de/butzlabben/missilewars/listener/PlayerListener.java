@@ -144,26 +144,13 @@ public class PlayerListener implements Listener {
         Game game = event.getGame();
 
         MWPlayer mwPlayer = game.getPlayer(event.getPlayer());
-        if (mwPlayer == null) return;
-
-        // Already in a team?
-        if (mwPlayer.getTeam() != null) {
-            mwPlayer.getTeam().removeMember(mwPlayer);
-        }
-
-        game.getPlayers().remove(event.getPlayer().getUniqueId());
-
         Player player = mwPlayer.getPlayer();
-        if (player == null) {
-            Logger.WARN.log("Player was null as he left the game");
-            return;
-        }
-
-        player.getInventory().clear();
-
-        MissileWars.getInstance().getSignRepository().getSigns(game).forEach(MWSign::update);
 
         PlayerDataProvider.getInstance().loadInventory(player);
+
+        game.removePlayer(mwPlayer);
+
+        MissileWars.getInstance().getSignRepository().getSigns(game).forEach(MWSign::update);
     }
 
     @EventHandler

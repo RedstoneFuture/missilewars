@@ -79,7 +79,7 @@ public class Team {
             p.setDisplayName("§7" + p.getName() + "§r");
         }
 
-        members.removeIf(mp -> mp.getUUID().equals(player.getUUID()));
+        members.removeIf(mp -> mp.getUuid().equals(player.getUuid()));
 
         game.getScoreboardManager().resetScoreboard();
         p.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
@@ -95,7 +95,7 @@ public class Team {
 
         Player p = player.getPlayer();
         if (p == null) {
-            Logger.WARN.log("Could not add player " + player.getUUID().toString() + " to a team because he went offline");
+            Logger.WARN.log("Could not add player " + player.getUuid().toString() + " to a team because he went offline");
             return;
         }
 
@@ -181,7 +181,7 @@ public class Team {
                 break;
         }
 
-        MoneyUtil.giveMoney(missileWarsPlayer.getUUID(), money);
+        MoneyUtil.giveMoney(missileWarsPlayer.getUuid(), money);
     }
 
     /**

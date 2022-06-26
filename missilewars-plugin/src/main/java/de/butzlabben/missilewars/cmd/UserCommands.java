@@ -40,13 +40,11 @@ public class UserCommands {
 
     @Command(name = "mw.change", usage = "/mw change <1|2>", permission = "mw.change", description = "Changes your team", inGameOnly = true)
     public void changeCommand(CommandArgs args) {
-        CommandSender sender = args.getSender();
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(MessageConfig.getPrefix() + "§cYou are not a player");
-            return;
-        }
 
+        CommandSender sender = args.getSender();
+        if (!senderIsPlayer(sender)) return;
         Player player = (Player) sender;
+
         Game game = GameManager.getInstance().getGame(player.getLocation());
         if (game == null) {
             player.sendMessage(MessageConfig.getMessage("not_in_arena"));
@@ -91,14 +89,12 @@ public class UserCommands {
 
     @Command(name = "mw.vote", usage = "/mw vote <arena>", description = "Stops the game", inGameOnly = true)
     public void voteCommand(CommandArgs args) {
+
         // TODO more messageconfig
         CommandSender sender = args.getSender();
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(MessageConfig.getPrefix() + "§cYou are not a player");
-            return;
-        }
-
+        if (!senderIsPlayer(sender)) return;
         Player player = (Player) sender;
+
         Game game = GameManager.getInstance().getGame(player.getLocation());
         if (game == null) {
             player.sendMessage(MessageConfig.getMessage("not_in_arena"));
@@ -138,14 +134,12 @@ public class UserCommands {
 
     @Command(name = "mw.quit", inGameOnly = true, usage = "/mw quit", permission = "mw.quit", description = "Quit a game")
     public void onQuit(CommandArgs args) {
+
         // TODO message config
         CommandSender sender = args.getSender();
-        if (!(sender instanceof Player)) {
-            sender.sendMessage(MessageConfig.getPrefix() + "§cYou are not a player");
-            return;
-        }
-
+        if (!senderIsPlayer(sender)) return;
         Player player = (Player) sender;
+
         Game game = GameManager.getInstance().getGame(player.getLocation());
         if (game == null) {
             player.sendMessage(MessageConfig.getMessage("not_in_arena"));
@@ -162,5 +156,12 @@ public class UserCommands {
         }
         player.teleport(endSpawn);
         player.sendMessage(MessageConfig.getMessage("game_quit"));
+    }
+
+    private boolean senderIsPlayer(CommandSender sender) {
+        if (sender instanceof Player) return true;
+
+        sender.sendMessage(MessageConfig.getPrefix() + "§cYou are not a player");
+        return false;
     }
 }
