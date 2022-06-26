@@ -204,7 +204,6 @@ public class GameListener extends GameBoundListener {
             to.addMember(mwPlayer);
 
             p.sendMessage(MessageConfig.getMessage("team_assigned").replace("%team%", to.getFullname()));
-            to.updateIntervals(game.getArena().getInterval(to.getMembers().size()));
             game.startForPlayer(p);
         }
     }
@@ -333,8 +332,6 @@ public class GameListener extends GameBoundListener {
                     getGame().stopGame();
                 });
                 getGame().broadcast(MessageConfig.getMessage("team_offline").replace("%team%", team.getFullname()));
-            } else {
-                team.updateIntervals(game.getArena().getInterval(team.getMembers().size()));
             }
         }
     }
