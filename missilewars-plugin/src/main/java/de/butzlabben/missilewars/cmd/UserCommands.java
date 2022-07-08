@@ -137,7 +137,7 @@ public class UserCommands extends BaseCommand {
         player.sendMessage(MessageConfig.getMessage("vote.success").replace("%map%", arena.get().getDisplayName()));
     }
 
-    @Subcommand("quit")
+    @Subcommand("quit|leave")
     @Description("Quit a game.")
     @Syntax("/mw quit")
     @CommandCompletion("@nothing")
