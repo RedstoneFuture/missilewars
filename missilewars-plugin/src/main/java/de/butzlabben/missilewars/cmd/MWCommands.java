@@ -18,8 +18,8 @@
 
 package de.butzlabben.missilewars.cmd;
 
-import com.pro_crafting.mc.commandframework.Command;
-import com.pro_crafting.mc.commandframework.CommandArgs;
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.*;
 import de.butzlabben.missilewars.Config;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MessageConfig;
@@ -42,12 +42,47 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class MWCommands {
+@CommandAlias("mw|missilewars")
+public class MWCommands extends BaseCommand {
 
-    @Command(name = "mw.paste", usage = "/mw paste <missile>", permission = "mw.paste", description = "Pastes a missile", inGameOnly = true)
-    public void pasteCommand(CommandArgs args) {
+    @Default
+    @Description("Shows information about the MissileWars Plugin.")
+    public void mwCommand(CommandSender sender) {
 
-        CommandSender sender = args.getSender();
+        sender.sendMessage(MessageConfig.getPrefix() + "MissileWars v" + MissileWars.getInstance().version + " by Butzlabben");
+
+        if (sender.hasPermission("mw.quit"))
+            sender.sendMessage(MessageConfig.getPrefix() + "/mw quit -  Quit a game");
+        if (sender.hasPermission("mw.start"))
+            sender.sendMessage(MessageConfig.getPrefix() + "/mw start - Starts the game");
+        if (sender.hasPermission("mw.stop"))
+            sender.sendMessage(MessageConfig.getPrefix() + "/mw stop - Stops the game");
+        if (sender.hasPermission("mw.restart"))
+            sender.sendMessage(MessageConfig.getPrefix() + "/mw start - Restarts the game");
+        if (sender.hasPermission("mw.appendrestart"))
+            sender.sendMessage(MessageConfig.getPrefix()
+                    + "/mw appendrestart - Appends a restart after the next game ends");
+        if (sender.hasPermission("mw.paste"))
+            sender.sendMessage(MessageConfig.getPrefix() + "/mw paste - Pastes a missile");
+        if (sender.hasPermission("mw.reload"))
+            sender.sendMessage(MessageConfig.getPrefix() + "/mw reload - Reloads configurations");
+        if (sender.hasPermission("mw.stats"))
+            sender.sendMessage(MessageConfig.getPrefix() + "/mw stats - Shows stats");
+        if (sender.hasPermission("mw.stats.recommendations"))
+            sender.sendMessage(MessageConfig.getPrefix() + "/mw stats recommendations - Shows recommendations");
+        if (sender.hasPermission("mw.stats.players"))
+            sender.sendMessage(MessageConfig.getPrefix() + "/mw stats players - Shows player list");
+        if (sender.hasPermission("mw.stats.list"))
+            sender.sendMessage(MessageConfig.getPrefix() + "/mw stats list - Lists history of games");
+    }
+
+    @Subcommand("paste")
+    @Description("Pastes a missile.")
+    @Syntax("/mw paste <missile>")
+    @CommandCompletion("@nothing")
+    @CommandPermission("mw.paste")
+    public void pasteCommand(CommandSender sender, String[] args) {
+
         if (!senderIsPlayer(sender)) return;
         Player player = (Player) sender;
 
@@ -57,8 +92,8 @@ public class MWCommands {
             return;
         }
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < args.length(); i++) {
-            sb.append(args.getArgs(i).replaceAll("&.", ""));
+        for (int i = 0; i < args.length; i++) {
+            sb.append(args[i].replaceAll("&.", ""));
             sb.append(" ");
         }
         Missile m = game.getArena().getMissileConfiguration().getMissileFromName(sb.toString().trim());
@@ -70,10 +105,13 @@ public class MWCommands {
         m.paste(player, mf, game);
     }
 
-    @Command(name = "mw.start", usage = "/mw start", permission = "mw.start", description = "Starts the game", inGameOnly = true)
-    public void startCommand(CommandArgs args) {
+    @Subcommand("start")
+    @Description("Starts the game.")
+    @Syntax("/mw start")
+    @CommandCompletion("@nothing")
+    @CommandPermission("mw.start")
+    public void startCommand(CommandSender sender, String[] args) {
 
-        CommandSender sender = args.getSender();
         if (!senderIsPlayer(sender)) return;
         Player player = (Player) sender;
 
@@ -110,10 +148,13 @@ public class MWCommands {
         }
     }
 
-    @Command(name = "mw.stop", usage = "/mw stop", permission = "mw.stop", description = "Stops the game", inGameOnly = true)
-    public void stopCommand(CommandArgs args) {
+    @Subcommand("stop")
+    @Description("Stops the game.")
+    @Syntax("/mw stop")
+    @CommandCompletion("@nothing")
+    @CommandPermission("mw.stop")
+    public void stopCommand(CommandSender sender, String[] args) {
 
-        CommandSender sender = args.getSender();
         if (!senderIsPlayer(sender)) return;
         Player player = (Player) sender;
 
@@ -126,11 +167,13 @@ public class MWCommands {
         Bukkit.getScheduler().runTask(MissileWars.getInstance(), game::stopGame);
     }
 
+    @Subcommand("restart")
+    @Description("Restarts the game.")
+    @Syntax("/mw restart")
+    @CommandCompletion("@nothing")
+    @CommandPermission("mw.restart")
+    public void restartCommand(CommandSender sender, String[] args) {
 
-    @Command(name = "mw.restart", usage = "/mw restart", permission = "mw.restart", description = "Restarts the game", inGameOnly = true)
-    public void restartCommand(CommandArgs args) {
-
-        CommandSender sender = args.getSender();
         if (!senderIsPlayer(sender)) return;
         Player player = (Player) sender;
 
@@ -148,48 +191,23 @@ public class MWCommands {
         });
     }
 
-    @Command(name = "mw.appendrestart", usage = "/mw appendrestart", permission = "mw.appendrestart", description = "Appends a restart after the next game ends")
-    public void appendRestartCommand(CommandArgs args) {
+    @Subcommand("appendrestart")
+    @Description("Appends a restart after the next game ends.")
+    @Syntax("/mw appendrestart")
+    @CommandCompletion("@nothing")
+    @CommandPermission("mw.appendrestart")
+    public void appendRestartCommand(CommandSender sender, String[] args) {
+
         GameManager.getInstance().getGames().values().forEach(Game::appendRestart);
-        args.getSender().sendMessage(MessageConfig.getMessage("restart_after_game"));
+        sender.sendMessage(MessageConfig.getMessage("restart_after_game"));
     }
 
-    @Command(name = "mw", aliases = "missilewars", usage = "/mw", description = "Shows information about the MissileWars Plugin")
-    public void mwCommand(CommandArgs args) {
-
-        CommandSender sender = args.getSender();
-
-        sender.sendMessage(MessageConfig.getPrefix() + "MissileWars v" + MissileWars.getInstance().version + " by Butzlabben");
-
-        if (sender.hasPermission("mw.quit"))
-            sender.sendMessage(MessageConfig.getPrefix() + "/mw quit -  Quit a game");
-        if (sender.hasPermission("mw.start"))
-            sender.sendMessage(MessageConfig.getPrefix() + "/mw start - Starts the game");
-        if (sender.hasPermission("mw.stop"))
-            sender.sendMessage(MessageConfig.getPrefix() + "/mw stop - Stops the game");
-        if (sender.hasPermission("mw.restart"))
-            sender.sendMessage(MessageConfig.getPrefix() + "/mw start - Restarts the game");
-        if (sender.hasPermission("mw.appendrestart"))
-            sender.sendMessage(MessageConfig.getPrefix()
-                    + "/mw appendrestart - Appends a restart after the next game ends");
-        if (sender.hasPermission("mw.paste"))
-            sender.sendMessage(MessageConfig.getPrefix() + "/mw paste - Pastes a missile");
-        if (sender.hasPermission("mw.reload"))
-            sender.sendMessage(MessageConfig.getPrefix() + "/mw reload - Reloads configurations");
-        if (sender.hasPermission("mw.stats"))
-            sender.sendMessage(MessageConfig.getPrefix() + "/mw stats - Shows stats");
-        if (sender.hasPermission("mw.stats.recommendations"))
-            sender.sendMessage(MessageConfig.getPrefix() + "/mw stats recommendations - Shows recommendations");
-        if (sender.hasPermission("mw.stats.players"))
-            sender.sendMessage(MessageConfig.getPrefix() + "/mw stats players - Shows player list");
-        if (sender.hasPermission("mw.stats.list"))
-            sender.sendMessage(MessageConfig.getPrefix() + "/mw stats list - Lists history of games");
-    }
-
-    @Command(name = "mw.reload", permission = "mw.reload", usage = "/mw reload")
-    public void onReload(CommandArgs args) {
-
-        CommandSender sender = args.getSender();
+    @Subcommand("reload")
+    @Description("Reload the plugin.")
+    @Syntax("/mw reload")
+    @CommandCompletion("@nothing")
+    @CommandPermission("mw.reload")
+    public void onReload(CommandSender sender, String[] args) {
 
         Config.load();
         MessageConfig.load();
@@ -197,10 +215,12 @@ public class MWCommands {
         sender.sendMessage(MessageConfig.getPrefix() + "Reloaded configs");
     }
 
-    @Command(name = "mw.debug", permission = "mw.debug", usage = "/mw debug")
-    public void onDebug(CommandArgs args) {
-
-        CommandSender sender = args.getSender();
+    @Subcommand("debug")
+    @Description("Show debug info.")
+    @Syntax("/mw debug")
+    @CommandCompletion("@nothing")
+    @CommandPermission("mw.debug")
+    public void onDebug(CommandSender sender, String[] args) {
 
         int i = 0;
         Logger.NORMAL.log("Starting to print debug information for MissileWars v" + MissileWars.getInstance().version);
@@ -211,10 +231,12 @@ public class MWCommands {
         sender.sendMessage(MessageConfig.getPrefix() + "Printed debug message into the log file");
     }
 
-    @Command(name = "mw.restartall", permission = "mw.reload", usage = "/mw restartall")
-    public void onRestartAll(CommandArgs args) {
-
-        CommandSender sender = args.getSender();
+    @Subcommand("restartall")
+    @Description("Restart all games.")
+    @Syntax("/mw restartall")
+    @CommandCompletion("@nothing")
+    @CommandPermission("mw.reload")
+    public void onRestartAll(CommandSender sender, String[] args) {
 
         sender.sendMessage(MessageConfig.getPrefix() + "§cWarning - Restarting all games. This may take a while");
         List<Lobby> arenaPropertiesList = GameManager.getInstance().getGames().values()
