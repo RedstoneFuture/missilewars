@@ -43,6 +43,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @CommandAlias("mw|missilewars")
+@Subcommand("stats")
 public class StatsCommands extends BaseCommand {
 
     private final static int MAX_FIGHT_DRAW_PERCENTAGE = 15;
@@ -51,7 +52,7 @@ public class StatsCommands extends BaseCommand {
     private final SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
     private final SimpleDateFormat preciseFormat = new SimpleDateFormat("hh:mm dd.MM.yyyy");
 
-    @Subcommand("stats")
+    @Default
     @Description("Shows stats.")
     @Syntax("/mw stats [from] [arena]")
     @CommandPermission("mw.stats")
@@ -104,7 +105,7 @@ public class StatsCommands extends BaseCommand {
         player.openInventory(inv.getInventory(player));
     }
 
-    @Subcommand("stats recommendations")
+    @Subcommand("recommendations")
     @Description("Shows recommendations.")
     @Syntax("/mw stats recommendations [from] [arena]")
     @CommandPermission("mw.stats.recommendations")
@@ -144,7 +145,7 @@ public class StatsCommands extends BaseCommand {
         }
     }
 
-    @Subcommand("stats players")
+    @Subcommand("players")
     @Description("Shows player list.")
     @Syntax("/mw stats players [from] [arena]")
     @CommandPermission("mw.stats.players")
@@ -162,7 +163,7 @@ public class StatsCommands extends BaseCommand {
         playerGuiFactory.openWhenReady(player);
     }
 
-    @Subcommand("stats list")
+    @Subcommand("list")
     @Description("Lists history of games.")
     @Syntax("/mw stats list [from] [arena]")
     @CommandPermission("mw.stats.list")
