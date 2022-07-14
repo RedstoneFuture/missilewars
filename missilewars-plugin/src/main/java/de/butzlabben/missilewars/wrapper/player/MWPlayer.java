@@ -19,7 +19,7 @@
 package de.butzlabben.missilewars.wrapper.player;
 
 import de.butzlabben.missilewars.game.Game;
-import de.butzlabben.missilewars.util.GameRandomizer;
+import de.butzlabben.missilewars.util.PlayerEquipmentRandomizer;
 import de.butzlabben.missilewars.wrapper.game.Team;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -42,14 +42,13 @@ public class MWPlayer implements Runnable {
     final long id = NEXT_ID.getAndIncrement();
     private final UUID uuid;
     private final Game game;
-    int i = -1;
     @Setter private Team team;
-    private GameRandomizer r;
-    @Setter private int period;
+    private PlayerEquipmentRandomizer randomGameEquipment;
 
     public MWPlayer(Player player, Game game) {
         this.uuid = player.getUniqueId();
         this.game = game;
+        this.randomGameEquipment = new PlayerEquipmentRandomizer(this, game);
     }
 
     public Player getPlayer() {
@@ -62,18 +61,7 @@ public class MWPlayer implements Runnable {
         Player p = Bukkit.getPlayer(uuid);
         if (p == null || !p.isOnline()) return;
 
-        if (i == -1) {
-            i = period - 10;
-            if (i >= period || i < 0) i = 0;
-        }
-        i++;
-        if (i >= period) {
-            if (r == null)
-                r = new GameRandomizer(game);
-            p.getInventory().addItem(r.getRandomItem());
-            i = 0;
-        }
-        p.setLevel(period - i);
+        randomGameEquipment.tick();
     }
 
     @Override

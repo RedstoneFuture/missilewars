@@ -41,6 +41,8 @@ import de.butzlabben.missilewars.wrapper.abstracts.Lobby;
 import de.butzlabben.missilewars.wrapper.abstracts.MapChooseProcedure;
 import de.butzlabben.missilewars.wrapper.event.GameStartEvent;
 import de.butzlabben.missilewars.wrapper.event.PlayerArenaJoinEvent;
+import de.butzlabben.missilewars.wrapper.game.MissileGameEquipment;
+import de.butzlabben.missilewars.wrapper.game.SpecialGameEquipment;
 import de.butzlabben.missilewars.wrapper.game.Team;
 import de.butzlabben.missilewars.wrapper.player.MWPlayer;
 import de.butzlabben.missilewars.wrapper.stats.FightStats;
@@ -90,10 +92,13 @@ public class Game {
     private GameBoundListener listener;
     private ItemStack customBow;
     private ItemStack customPickaxe;
+    private MissileGameEquipment missileEquipment;
+    private SpecialGameEquipment specialEquipment;
 
     public Game(Lobby lobby) {
-        Logger.BOOT.log("Loading game " + lobby.getDisplayName());
+        Logger.BOOT.log("Loading lobby " + lobby.getName());
         this.lobby = lobby;
+
         if (lobby.getBukkitWorld() == null) {
             Logger.ERROR.log("Lobby world in arena \"" + lobby.getName() + "\" must not be null");
             return;
@@ -172,6 +177,9 @@ public class Game {
         scoreboardManager = new ScoreboardManager(this);
         scoreboardManager.createScoreboard();
 
+        missileEquipment = new MissileGameEquipment(this);
+        specialEquipment = new SpecialGameEquipment(this);
+
         Logger.DEBUG.log("Making game ready");
         ++fights;
         if (fights >= Config.getFightRestart())
@@ -214,10 +222,6 @@ public class Game {
         timestart = System.currentTimeMillis();
 
         applyForAllPlayers(this::startForPlayer);
-
-        // Set intervals
-        team1.updateIntervals(arena.getInterval(team1.getMembers().size()));
-        team2.updateIntervals(arena.getInterval(team2.getMembers().size()));
 
         // Change MOTD
         if (!Config.isMultipleLobbies())
@@ -386,7 +390,7 @@ public class Game {
         setPlayerAttributes(player);
 
         playerTasks.put(player.getUniqueId(),
-                Bukkit.getScheduler().runTaskTimer(MissileWars.getInstance(), mwPlayer, 0, 20));
+                Bukkit.getScheduler().runTaskTimer(MissileWars.getInstance(), mwPlayer, 40, 20));
 
     }
 
