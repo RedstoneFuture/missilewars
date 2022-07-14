@@ -259,6 +259,6 @@ public class VersionUtil {
     }
 
     public static boolean isWallSignMaterial(Material material) {
-        return material.name().contains("WALL_SIGN");
+        return material.name().contains("_SIGN");
     }
 }
