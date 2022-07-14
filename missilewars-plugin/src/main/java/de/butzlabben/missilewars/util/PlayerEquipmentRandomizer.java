@@ -25,7 +25,7 @@ import de.butzlabben.missilewars.wrapper.missile.Missile;
 import de.butzlabben.missilewars.wrapper.player.MWPlayer;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Collections;
+import java.util.Random;
 
 /**
  * @author Butzlabben
@@ -39,8 +39,9 @@ public class PlayerEquipmentRandomizer {
     private final Arena arena;
 
     private final int maxGameDuration;
-    private final int defaultIntervalByTeamAmount = 20;
-    private final int defaultFactorByGameTime = 1;
+    private final Random randomizer;
+    private static final int DEFAULT_INTERVAL_BY_TEAM_AMOUNT = 20;
+    private static final int DEFAULT_FACTOR_BY_GAME_TIME = 1;
 
     int playerInterval;
     int sendEquipmentCounter = 0;
@@ -50,22 +51,21 @@ public class PlayerEquipmentRandomizer {
         this.mwPlayer = mwPlayer;
         this.game = game;
         this.arena = game.getArena();
+        randomizer = new Random();
         maxGameDuration = game.getArena().getGameDuration() * 60;
 
         setPlayerInterval(getStartInterval() + 1);
     }
 
-    public void nextPeriod() {
+    public void tick() {
 
-        playerInterval--;
-        mwPlayer.getPlayer().setLevel(playerInterval);
+        setPlayerInterval(playerInterval - 1);
 
         if (playerInterval <= 0) {
 
             sendRandomGameEquipment();
             setPlayerInterval((int) Math.ceil(getIntervalByTeamAmount() * getFactorByGameTime()));
         }
-
     }
 
     private void setPlayerInterval(Integer playerInterval) {
@@ -81,20 +81,21 @@ public class PlayerEquipmentRandomizer {
     private void sendRandomGameEquipment() {
 
         ItemStack item;
+        int randomID;
 
         // switch between type of "items":
         // after 2 missile items, you get one special item
         if (sendEquipmentCounter >= 2) {
 
-            Collections.shuffle(game.getSpecialEquipment().getSpecialEquipmentList());
-            item = game.getSpecialEquipment().getSpecialEquipmentList().get(0);
+            randomID = randomizer.nextInt(game.getSpecialEquipment().getSpecialEquipmentList().size());
+            item = game.getSpecialEquipment().getSpecialEquipmentList().get(randomID);
 
             sendEquipmentCounter = 0;
 
         } else {
 
-            Collections.shuffle(game.getMissileEquipment().getMissileEquipmentList());
-            Missile missile = game.getMissileEquipment().getMissileEquipmentList().get(0);
+            randomID = randomizer.nextInt(game.getMissileEquipment().getMissileEquipmentList().size());
+            Missile missile = game.getMissileEquipment().getMissileEquipmentList().get(randomID);
             item = missile.getItem();
 
         }
@@ -125,8 +126,8 @@ public class PlayerEquipmentRandomizer {
     private int getIntervalByTeamAmount() {
 
         if (arena.getInterval().getIntervalsByTeamAmount().isEmpty()) {
-            Logger.WARN.log("The given interval mapping in \"" + arena.getName() + "\" is empty. Choosing default value " + defaultIntervalByTeamAmount + ".");
-            return defaultIntervalByTeamAmount;
+            Logger.WARN.log("The given interval mapping in \"" + arena.getName() + "\" is empty. Choosing default value " + DEFAULT_INTERVAL_BY_TEAM_AMOUNT + ".");
+            return DEFAULT_INTERVAL_BY_TEAM_AMOUNT;
         }
 
         int teamSize = mwPlayer.getTeam().getMembers().size();
@@ -137,7 +138,7 @@ public class PlayerEquipmentRandomizer {
         }
 
         Logger.DEBUG.log("No interval value for map \"" + arena.getName() + "\" could be detected based on the team amount of " + teamSize + ". Please define at least one a interval value for a minimal team amount of 1.");
-        return defaultIntervalByTeamAmount;
+        return DEFAULT_INTERVAL_BY_TEAM_AMOUNT;
     }
 
     /**
@@ -150,8 +151,8 @@ public class PlayerEquipmentRandomizer {
     private double getFactorByGameTime() {
 
         if (arena.getInterval().getIntervalFactorByGameTime().isEmpty()) {
-            Logger.WARN.log("The given interval factor mapping in \"" + arena.getName() + "\" is empty. Choosing default value " + defaultFactorByGameTime + ".");
-            return defaultFactorByGameTime;
+            Logger.WARN.log("The given interval factor mapping in \"" + arena.getName() + "\" is empty. Choosing default value " + DEFAULT_FACTOR_BY_GAME_TIME + ".");
+            return DEFAULT_FACTOR_BY_GAME_TIME;
         }
 
         int seconds = game.getTimer().getSeconds();
@@ -162,7 +163,7 @@ public class PlayerEquipmentRandomizer {
         }
 
         Logger.DEBUG.log("No interval factor value for map \"" + arena.getName() + "\" could be detected based on the game time of " + seconds + ". Please define at least one a interval value for a minimal team amount of " + maxGameDuration + ".");
-        return defaultFactorByGameTime;
+        return DEFAULT_FACTOR_BY_GAME_TIME;
     }
 
 }

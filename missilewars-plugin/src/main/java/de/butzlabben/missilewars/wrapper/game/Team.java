@@ -233,7 +233,7 @@ public class Team {
         }
     }
 
-    // TODO
+    // TODO Review for necessity (of an alternative), completeness and refactoring
     public void updateIntervals(int newInterval) {
         if (newInterval < currentInterval && currentInterval != 0) {
             getGame().broadcast(MessageConfig.getMessage("team_buffed").replace("%team%", getFullname()));

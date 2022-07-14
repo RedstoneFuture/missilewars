@@ -61,7 +61,7 @@ public class MWPlayer implements Runnable {
         Player p = Bukkit.getPlayer(uuid);
         if (p == null || !p.isOnline()) return;
 
-        randomGameEquipment.nextPeriod();
+        randomGameEquipment.tick();
     }
 
     @Override
