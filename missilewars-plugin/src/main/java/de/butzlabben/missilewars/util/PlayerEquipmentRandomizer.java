@@ -74,9 +74,10 @@ public class PlayerEquipmentRandomizer {
     }
 
     /**
-     * This method randomly shuffles the game equipment list and gives
-     * the player the first item of that list. The ratio is 2:1 between
-     * missiles and special items.
+     * This method gives the player a random item of one of the two
+     * game equipment lists. The two lists alternate: after two
+     * missiles from the MissileEquipmentList, the player gets a
+     * special item from the SpecialEquipmentList.
      */
     private void sendRandomGameEquipment() {
 
