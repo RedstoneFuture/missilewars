@@ -43,12 +43,12 @@ public class Config {
     private static final File DIR = MissileWars.getInstance().getDataFolder();
     private static final File FILE = new File(DIR, "config.yml");
     private static YamlConfiguration cfg;
-    private static boolean newConfig = false;
+    private static boolean isNewConfig = false;
 
     public static void load() {
 
-        // check or create the directory and the file
-        newConfig = SetupUtil.isNewConfig(DIR, FILE);
+        // check if the directory and the file exists or create it new
+        isNewConfig = SetupUtil.isNewConfig(DIR, FILE);
 
         // try to load the config
         cfg = SetupUtil.getLoadedConfig(FILE);
@@ -114,7 +114,7 @@ public class Config {
         cfg.addDefault("sidebar.member_list_style", "%team_color%%playername%");
         cfg.addDefault("sidebar.member_list_max", "4");
 
-        if (newConfig) {
+        if (isNewConfig) {
             List<String> sidebarList = new ArrayList<>();
 
             sidebarList.add("§7Time left:");
