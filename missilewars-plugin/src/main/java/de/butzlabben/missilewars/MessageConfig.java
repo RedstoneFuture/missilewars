@@ -18,11 +18,11 @@
 
 package de.butzlabben.missilewars;
 
+import de.butzlabben.missilewars.util.SetupUtil;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.io.File;
 
 
 /**
@@ -34,32 +34,15 @@ public class MessageConfig {
     private static final File DIR = MissileWars.getInstance().getDataFolder();
     private static final File FILE = new File(DIR, "messages.yml");
     private static YamlConfiguration cfg;
+    private static boolean newConfig = false;
 
     public static void load() {
 
-        // check if the directory "/MissileWars" exists
-        if (!DIR.exists()) {
-            DIR.mkdirs();
-        }
-
-        // check if the config file exists
-        if (!FILE.exists()) {
-            try {
-                FILE.createNewFile();
-            } catch (IOException e) {
-                Logger.ERROR.log("Could not create messages.yml!");
-                e.printStackTrace();
-            }
-        }
+        // check or create the directory and the file
+        newConfig = SetupUtil.isNewConfig(DIR, FILE);
 
         // try to load the config
-        try {
-            cfg = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(FILE), StandardCharsets.UTF_8));
-        } catch (FileNotFoundException e) {
-            Logger.ERROR.log("Couldn't load messages.yml");
-            e.printStackTrace();
-            return;
-        }
+        cfg = SetupUtil.getLoadedConfig(FILE);
 
         // copy the config input
         cfg.options().copyDefaults(true);
@@ -68,7 +51,7 @@ public class MessageConfig {
         addDefaults();
 
         // re-save the config with only validated options
-        saveConfig();
+        SetupUtil.safeFile(FILE, cfg);
     }
 
     private static void addDefaults() {
@@ -139,15 +122,6 @@ public class MessageConfig {
         cfg.addDefault("vote.finished", "The map %map% &7was elected");
         cfg.addDefault("vote.gui", "Vote for a map");
 
-    }
-
-    private static void saveConfig() {
-        try {
-            cfg.save(FILE);
-        } catch (IOException e) {
-            Logger.ERROR.log("Could not save messages.yml!");
-            e.printStackTrace();
-        }
     }
 
     public static String getMessage(String path) {
