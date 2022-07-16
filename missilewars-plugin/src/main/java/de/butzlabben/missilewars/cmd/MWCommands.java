@@ -123,7 +123,10 @@ public class MWCommands {
             return;
         }
 
-        Bukkit.getScheduler().runTask(MissileWars.getInstance(), game::stopGame);
+        // TODO more arguments to get "game.sendGameResult();"
+        Bukkit.getScheduler().runTask(MissileWars.getInstance(), () -> {
+            if (game.getState() == GameState.INGAME) game.stopGame();
+        });
     }
 
 
@@ -142,8 +145,7 @@ public class MWCommands {
         }
 
         Bukkit.getScheduler().runTask(MissileWars.getInstance(), () -> {
-            if (game.getState() == GameState.INGAME)
-                game.stopGame();
+            if (game.getState() == GameState.INGAME) game.stopGame();
             game.reset();
         });
     }
