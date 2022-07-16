@@ -56,12 +56,9 @@ public class MWCommands {
             player.sendMessage(MessageConfig.getMessage("not_in_arena"));
             return;
         }
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < args.length(); i++) {
-            sb.append(args.getArgs(i).replaceAll("&.", ""));
-            sb.append(" ");
-        }
-        Missile m = game.getArena().getMissileConfiguration().getMissileFromName(sb.toString().trim());
+
+        String arguments = getAllNextArgumentsAsString(args, false);
+        Missile m = game.getArena().getMissileConfiguration().getMissileFromName(arguments.trim());
         if (m == null) {
             player.sendMessage(MessageConfig.getPrefix() + "§cUnknown missile");
             return;
@@ -228,5 +225,27 @@ public class MWCommands {
 
         sender.sendMessage(MessageConfig.getPrefix() + "§cYou are not a player");
         return false;
+    }
+
+    /**
+     * This method returns all next command arguments as one String line.
+     * Separated with a " " between the arguments. It also removes all
+     * unnecessary "&" signs.
+     *
+     * @param args Argument Array
+     * @return (String) all next arguments
+     */
+    private String getAllNextArgumentsAsString(CommandArgs args, boolean filterColorCode) {
+        StringBuilder sb = new StringBuilder();
+        String arguments;
+
+        for (int i = 0; i < args.length(); i++) {
+            sb.append(" ");
+        }
+        arguments = sb.toString();
+
+        if (filterColorCode) arguments.replaceAll("&.", "");
+
+        return arguments;
     }
 }
