@@ -39,8 +39,8 @@ import de.butzlabben.missilewars.wrapper.abstracts.Arena;
 import de.butzlabben.missilewars.wrapper.abstracts.GameWorld;
 import de.butzlabben.missilewars.wrapper.abstracts.Lobby;
 import de.butzlabben.missilewars.wrapper.abstracts.MapChooseProcedure;
-import de.butzlabben.missilewars.wrapper.event.GameEndEvent;
 import de.butzlabben.missilewars.wrapper.event.GameStartEvent;
+import de.butzlabben.missilewars.wrapper.event.GameStopEvent;
 import de.butzlabben.missilewars.wrapper.event.PlayerArenaJoinEvent;
 import de.butzlabben.missilewars.wrapper.game.MissileGameEquipment;
 import de.butzlabben.missilewars.wrapper.game.SpecialGameEquipment;
@@ -274,7 +274,7 @@ public class Game {
         }
 
         Logger.DEBUG.log("Stopped completely");
-        Bukkit.getPluginManager().callEvent(new GameEndEvent(this));
+        Bukkit.getPluginManager().callEvent(new GameStopEvent(this));
     }
 
     public void reset() {

@@ -21,11 +21,11 @@ package de.butzlabben.missilewars.wrapper.event;
 import de.butzlabben.missilewars.game.Game;
 import org.bukkit.event.HandlerList;
 
-public class GameEndEvent extends GameEvent {
+public class GameStopEvent extends GameEvent {
 
     public final static HandlerList handlers = new HandlerList();
 
-    public GameEndEvent(Game game) {
+    public GameStopEvent(Game game) {
         super(game);
     }
 
