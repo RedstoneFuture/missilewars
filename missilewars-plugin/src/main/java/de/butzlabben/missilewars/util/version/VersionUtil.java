@@ -43,14 +43,51 @@ public class VersionUtil {
     private VersionUtil() {
     }
 
-    public static void setUnbreakable(ItemStack is) {
-        ItemMeta im = is.getItemMeta();
-        if (getVersion() >= 11) {
-            im.setUnbreakable(true);
-        } else {
-//            im.spigot().setUnbreakable(true);
+    public static int getVersion() {
+
+        if (version == 0) {
+            // Detect version
+            String v = Bukkit.getVersion();
+            if (v.contains("1.20")) version = 20;
+            else if (v.contains("1.19")) version = 19;
+            else if (v.contains("1.18")) version = 18;
+            else if (v.contains("1.17")) version = 17;
+            else if (v.contains("1.16")) version = 16;
+            else if (v.contains("1.15")) version = 15;
+            else if (v.contains("1.14")) version = 14;
+            else if (v.contains("1.13")) version = 13;
+            else if (v.contains("1.12")) version = 12;
+            else if (v.contains("1.11")) version = 11;
+            else if (v.contains("1.10")) version = 10;
+            else if (v.contains("1.9")) version = 9;
+            else if (v.contains("1.8")) version = 8;
+            else if (v.contains("1.7")) version = 7;
+            else if (v.contains("1.6")) version = 6;
+            else if (v.contains("1.5")) version = 5;
+            else if (v.contains("1.4")) version = 4;
+            else if (v.contains("1.3")) version = 3;
         }
-        is.setItemMeta(im);
+
+        if (version == 0) {
+            Logger.WARN.log("Unknown version: " + Bukkit.getVersion());
+            Logger.WARN.log("Choosing version 1.12.2");
+            version = 12;
+        }
+        return version;
+    }
+
+    public static void sendTitle(Player p, String title, String subtitle) {
+        if (getVersion() > 8) {
+            try {
+                Method m = p.getClass().getMethod("sendTitle", String.class, String.class);
+                m.invoke(p, title, subtitle);
+            } catch (Exception e) {
+                Logger.ERROR.log("Couldn't send title to player");
+                e.printStackTrace();
+            }
+        } else {
+            p.sendMessage(MessageConfig.getPrefix() + title + " " + subtitle);
+        }
     }
 
     public static void playFireball(Player p, Location loc) {
@@ -88,22 +125,14 @@ public class VersionUtil {
             p.playSound(p.getLocation(), sound("ENTITY_WITHER_DEATH"), 100, 0);
     }
 
-    public static void restart() {
-        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart");
-    }
-
-    public static void sendTitle(Player p, String title, String subtitle) {
-        if (getVersion() > 8) {
-            try {
-                Method m = p.getClass().getMethod("sendTitle", String.class, String.class);
-                m.invoke(p, title, subtitle);
-            } catch (Exception e) {
-                Logger.ERROR.log("Couldn't send title to player");
-                e.printStackTrace();
-            }
-        } else {
-            p.sendMessage(MessageConfig.getPrefix() + title + " " + subtitle);
+    private static Sound sound(String s) {
+        Sound sound = null;
+        try {
+            sound = Sound.valueOf(s);
+        } catch (Exception e) {
+            Logger.ERROR.log("Couldn't find sound " + s);
         }
+        return sound;
     }
 
     public static Material getFireball() {
@@ -133,6 +162,17 @@ public class VersionUtil {
         }
     }
 
+    public static boolean isMonsterEgg(Material material) {
+        if (material == null)
+            return false;
+        String name = material.name();
+        if (name.equals("EGG"))
+            return false;
+        if (name.contains("SPAWN_EGG"))
+            return true;
+        return name.equals("MONSTER_EGG");
+    }
+
     public static Material getPortal() {
         if (getVersion() < 13)
             return Material.valueOf("PORTAL");
@@ -145,82 +185,6 @@ public class VersionUtil {
             return Material.valueOf("SUNFLOWER");
         else
             return Material.valueOf("DOUBLE_PLANT");
-    }
-
-    public static int getVersion() {
-        if (version == 0) {
-            // Detect version
-            String v = Bukkit.getVersion();
-            if (v.contains("1.20"))
-                version = 20;
-            else if (v.contains("1.19"))
-                version = 19;
-            else if (v.contains("1.18"))
-                version = 18;
-            else if (v.contains("1.17"))
-                version = 17;
-            else if (v.contains("1.16"))
-                version = 16;
-            else if (v.contains("1.15"))
-                version = 15;
-            else if (v.contains("1.14"))
-                version = 14;
-            else if (v.contains("1.13"))
-                version = 13;
-            else if (v.contains("1.12"))
-                version = 12;
-            else if (v.contains("1.11"))
-                version = 11;
-            else if (v.contains("1.10"))
-                version = 10;
-            else if (v.contains("1.9"))
-                version = 9;
-            else if (v.contains("1.8"))
-                version = 8;
-            else if (v.contains("1.7"))
-                version = 7;
-            else if (v.contains("1.6"))
-                version = 6;
-            else if (v.contains("1.5"))
-                version = 5;
-            else if (v.contains("1.4"))
-                version = 4;
-            else if (v.contains("1.3"))
-                version = 3;
-        }
-        if (version == 0) {
-            Logger.WARN.log("Unknown version: " + Bukkit.getVersion());
-            Logger.WARN.log("Choosing version 1.12.2");
-            version = 12;
-        }
-        return version;
-    }
-
-    private static Sound sound(String s) {
-        Sound sound = null;
-        try {
-            sound = Sound.valueOf(s);
-        } catch (Exception e) {
-            Logger.ERROR.log("Couldn't find sound " + s);
-        }
-        return sound;
-    }
-
-    public static boolean isStainedGlassPane(Material material) {
-        if (material == null)
-            return false;
-        return material.name().contains("STAINED_GLASS_PANE");
-    }
-
-    public static boolean isMonsterEgg(Material material) {
-        if (material == null)
-            return false;
-        String name = material.name();
-        if (name.equals("EGG"))
-            return false;
-        if (name.contains("SPAWN_EGG"))
-            return true;
-        return name.equals("MONSTER_EGG");
     }
 
     @SuppressWarnings("deprecation")
@@ -237,6 +201,12 @@ public class VersionUtil {
         im.setDisplayName(team.getFullname());
         is.setItemMeta(im);
         return is;
+    }
+
+    public static boolean isStainedGlassPane(Material material) {
+        if (material == null)
+            return false;
+        return material.name().contains("STAINED_GLASS_PANE");
     }
 
     @SuppressWarnings("deprecation")
@@ -260,5 +230,19 @@ public class VersionUtil {
 
     public static boolean isWallSignMaterial(Material material) {
         return material.name().contains("_SIGN");
+    }
+
+    public static void setUnbreakable(ItemStack is) {
+        ItemMeta im = is.getItemMeta();
+        if (getVersion() >= 11) {
+            im.setUnbreakable(true);
+        } else {
+//            im.spigot().setUnbreakable(true);
+        }
+        is.setItemMeta(im);
+    }
+
+    public static void restart() {
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "restart");
     }
 }
