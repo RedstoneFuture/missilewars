@@ -45,7 +45,7 @@ import java.io.File;
 public class Missile {
 
     private final String schematic;
-    @Getter private final String displayName;
+    private final String displayName;
     private final EntityType egg;
     private final int down;
     private final int dist;
@@ -96,6 +96,13 @@ public class Missile {
         return schematic;
     }
 
+    public String getDisplayName() {
+        String name = displayName;
+        name = name.replace("%schematic_name%", getSchematicName(false))
+                .replace("%schematic_name_compact%", getSchematicName(true));
+        return name;
+    }
+
     public EntityType getType() {
         return egg;
     }
@@ -120,7 +127,7 @@ public class Missile {
             is.setAmount(1);
         }
         ItemMeta im = is.getItemMeta();
-        im.setDisplayName(displayName);
+        im.setDisplayName(getDisplayName());
         is.setItemMeta(im);
         return is;
     }
