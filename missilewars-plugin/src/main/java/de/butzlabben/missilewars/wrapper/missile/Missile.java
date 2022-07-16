@@ -45,7 +45,7 @@ import java.io.File;
 public class Missile {
 
     private final String schematic;
-    @Getter private final String name;
+    @Getter private final String displayName;
     private final EntityType egg;
     private final int down;
     private final int dist;
@@ -77,15 +77,23 @@ public class Missile {
             PasteProvider.getPaster().pasteMissile(getSchematic(), pastePos, rotation, loc.getWorld(),
                     game.getPlayer(p).getTeam());
         } catch (Exception e) {
-            Logger.ERROR.log("Could not load " + name);
+            Logger.ERROR.log("Could not load " + displayName);
             e.printStackTrace();
         }
     }
 
     public File getSchematic() {
         File pluginDir = MissileWars.getInstance().getDataFolder();
-        File file = new File(pluginDir, "missiles/" + schematic);
+        File file = new File(pluginDir, "missiles/" + getSchematicName(false));
         return file;
+    }
+
+    public String getSchematicName(boolean withoutExtension) {
+        if (withoutExtension) {
+            return schematic.replace(".schematic", "")
+                    .replace(".schem", "");
+        }
+        return schematic;
     }
 
     public EntityType getType() {
@@ -112,7 +120,7 @@ public class Missile {
             is.setAmount(1);
         }
         ItemMeta im = is.getItemMeta();
-        im.setDisplayName(name);
+        im.setDisplayName(displayName);
         is.setItemMeta(im);
         return is;
     }
