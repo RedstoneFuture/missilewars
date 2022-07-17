@@ -25,11 +25,13 @@
         <groupId>de.butzlabben</groupId>
         <version>1.0</version>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>1_12</artifactId>
 
     <dependencies>
+        <!-- WorldEdit API -->
         <dependency>
             <groupId>com.sk89q</groupId>
             <artifactId>worldedit</artifactId>

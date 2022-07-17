@@ -31,11 +31,12 @@
     <artifactId>1_13_FAWE</artifactId>
 
     <dependencies>
+        <!-- FAWE API -->
         <dependency>
             <groupId>com.sk98q.worldedit</groupId>
             <artifactId>FastAsnycWorldEdit</artifactId>
-            <scope>system</scope>
             <version>1.0</version>
+            <scope>system</scope>
             <systemPath>${pom.basedir}/lib/FastAsyncWorldEdit.jar</systemPath>
         </dependency>
     </dependencies>

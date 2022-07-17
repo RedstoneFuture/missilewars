@@ -18,8 +18,8 @@
 
 package de.butzlabben.missilewars.cmd;
 
-import com.pro_crafting.mc.commandframework.Command;
-import com.pro_crafting.mc.commandframework.CommandArgs;
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.*;
 import de.butzlabben.missilewars.Config;
 import de.butzlabben.missilewars.MessageConfig;
 import de.butzlabben.missilewars.game.Arenas;
@@ -36,12 +36,16 @@ import org.bukkit.entity.Player;
 
 import java.util.Optional;
 
-public class UserCommands {
+@CommandAlias("mw|missilewars")
+public class UserCommands extends BaseCommand {
 
-    @Command(name = "mw.change", usage = "/mw change <1|2>", permission = "mw.change", description = "Changes your team", inGameOnly = true)
-    public void changeCommand(CommandArgs args) {
+    @Subcommand("change")
+    @Description("Changes your team.")
+    @Syntax("/mw change <1|2>")
+    @CommandCompletion("@range:1-2")
+    @CommandPermission("mw.change")
+    public void changeCommand(CommandSender sender, String[] args) {
 
-        CommandSender sender = args.getSender();
         if (!senderIsPlayer(sender)) return;
         Player player = (Player) sender;
 
@@ -56,18 +60,18 @@ public class UserCommands {
             return;
         }
 
-        if (args.length() != 1) {
+        if (args.length != 1) {
             player.sendMessage(MessageConfig.getPrefix() + "§c/mw vote <arena>");
             return;
         }
 
-        if (args.length() != 1) {
+        if (args.length != 1) {
             player.sendMessage(MessageConfig.getPrefix() + "§c/mw change <1|2>");
             return;
         }
         try {
             MWPlayer mwPlayer = game.getPlayer(player);
-            int teamNumber = Integer.parseInt(args.getArgs(0));
+            int teamNumber = Integer.parseInt(args[0]);
             Team to = teamNumber == 1 ? game.getTeam1() : game.getTeam2();
             int otherCount = to.getEnemyTeam().getMembers().size() - 1;
             int toCount = to.getMembers().size() + 1;
@@ -86,12 +90,13 @@ public class UserCommands {
         }
     }
 
-
-    @Command(name = "mw.vote", usage = "/mw vote <arena>", description = "Stops the game", inGameOnly = true)
-    public void voteCommand(CommandArgs args) {
+    @Subcommand("vote")
+    @Description("Stops the game.")
+    @Syntax("/mw vote <arena>")
+    @CommandPermission("mw.vote")
+    public void voteCommand(CommandSender sender, String[] args) {
 
         // TODO more messageconfig
-        CommandSender sender = args.getSender();
         if (!senderIsPlayer(sender)) return;
         Player player = (Player) sender;
 
@@ -116,12 +121,12 @@ public class UserCommands {
             return;
         }
 
-        if (args.length() != 1) {
+        if (args.length != 1) {
             player.sendMessage(MessageConfig.getPrefix() + "§c/mw vote <arena>");
             return;
         }
 
-        String arenaName = args.getArgs(0);
+        String arenaName = args[0];
         Optional<Arena> arena = Arenas.getFromName(arenaName);
         if (!game.getVotes().containsKey(arenaName) || !arena.isPresent()) {
             player.sendMessage(MessageConfig.getPrefix() + "§cNo map with this title was found");
@@ -132,11 +137,14 @@ public class UserCommands {
         player.sendMessage(MessageConfig.getMessage("vote.success").replace("%map%", arena.get().getDisplayName()));
     }
 
-    @Command(name = "mw.quit", inGameOnly = true, usage = "/mw quit", permission = "mw.quit", description = "Quit a game")
-    public void onQuit(CommandArgs args) {
+    @Subcommand("quit|leave")
+    @Description("Quit a game.")
+    @Syntax("/mw quit")
+    @CommandCompletion("@nothing")
+    @CommandPermission("mw.quit")
+    public void onQuit(CommandSender sender, String[] args) {
 
         // TODO message config
-        CommandSender sender = args.getSender();
         if (!senderIsPlayer(sender)) return;
         Player player = (Player) sender;
 

@@ -18,8 +18,8 @@
 
 package de.butzlabben.missilewars.cmd;
 
-import com.pro_crafting.mc.commandframework.Command;
-import com.pro_crafting.mc.commandframework.CommandArgs;
+import co.aikar.commands.BaseCommand;
+import co.aikar.commands.annotation.*;
 import de.butzlabben.missilewars.Config;
 import de.butzlabben.missilewars.MessageConfig;
 import de.butzlabben.missilewars.inventory.CustomInv;
@@ -42,7 +42,9 @@ import java.time.Duration;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class StatsCommands {
+@CommandAlias("mw|missilewars")
+@Subcommand("stats")
+public class StatsCommands extends BaseCommand {
 
     private final static int MAX_FIGHT_DRAW_PERCENTAGE = 15;
     private final static int MIN_FIGHT_DURATION = 5;
@@ -50,48 +52,12 @@ public class StatsCommands {
     private final SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
     private final SimpleDateFormat preciseFormat = new SimpleDateFormat("hh:mm dd.MM.yyyy");
 
-    @Command(name = "mw.stats.recommendations", permission = "mw.stats.recommendations", inGameOnly = true, usage = "/mw stats recommendations [from] [arena]")
-    public void onRecommendations(CommandArgs args) {
+    @Default
+    @Description("Shows stats.")
+    @Syntax("/mw stats [from] [arena]")
+    @CommandPermission("mw.stats")
+    public void onStats(CommandSender sender, String[] args) {
 
-        CommandSender sender = args.getSender();
-        if (!senderIsPlayer(sender)) return;
-        Player player = (Player) sender;
-
-        StatsFetcher fetcher = getFetcher(player, args);
-        if (fetcher == null) return;
-        SavedStats avgStatsWithDraws = fetcher.getAverageSavedStats(false);
-        SavedStats avgStatsWithoutDraws = fetcher.getAverageSavedStats(true);
-        List<String> recommendations = new ArrayList<>();
-        int gameCount = fetcher.getGameCount();
-
-        double avgWins = avgStatsWithoutDraws.getTeamWon();
-        if (Math.abs(avgWins - 1) > MAX_AVIATION_WIN) {
-            recommendations.add("It could be, that your map is biased to one team, as wins are not equally distributed");
-        }
-
-        int draws = fetcher.getDrawFights();
-        if ((((double) draws / (double) gameCount) * 100) > MAX_FIGHT_DRAW_PERCENTAGE) {
-            recommendations.add("Increase the game_length option. More than 15% of your games are draws");
-        }
-
-        Duration duration = Duration.ofMillis(avgStatsWithoutDraws.getTimeElapsed());
-        if (((double) duration.getSeconds() / 60.0) <= MIN_FIGHT_DURATION) {
-            recommendations.add("Remove some overpowered features. The average game length at won games is under 5 minutes");
-        }
-        // TODO implement more features
-
-        if (recommendations.size() == 0) {
-            player.sendMessage(MessageConfig.getPrefix() + "§aThere are currently no recommendations, everything seems fine :)");
-        } else {
-            player.sendMessage(MessageConfig.getPrefix() + "§7=====[ §eMissileWars recommendations §7]=====");
-            recommendations.forEach(str -> player.sendMessage(MessageConfig.getPrefix() + str));
-        }
-    }
-
-    @Command(name = "mw.stats", permission = "mw.stats", inGameOnly = true, usage = "/mw stats [from] [arena]")
-    public void onStats(CommandArgs args) {
-
-        CommandSender sender = args.getSender();
         if (!senderIsPlayer(sender)) return;
         Player player = (Player) sender;
 
@@ -139,10 +105,52 @@ public class StatsCommands {
         player.openInventory(inv.getInventory(player));
     }
 
-    @Command(name = "mw.stats.players", permission = "mw.stats.players", inGameOnly = true, usage = "/mw stats players [from] [arena]")
-    public void onPlayers(CommandArgs args) {
+    @Subcommand("recommendations")
+    @Description("Shows recommendations.")
+    @Syntax("/mw stats recommendations [from] [arena]")
+    @CommandPermission("mw.stats.recommendations")
+    public void onRecommendations(CommandSender sender, String[] args) {
 
-        CommandSender sender = args.getSender();
+        if (!senderIsPlayer(sender)) return;
+        Player player = (Player) sender;
+
+        StatsFetcher fetcher = getFetcher(player, args);
+        if (fetcher == null) return;
+        SavedStats avgStatsWithDraws = fetcher.getAverageSavedStats(false);
+        SavedStats avgStatsWithoutDraws = fetcher.getAverageSavedStats(true);
+        List<String> recommendations = new ArrayList<>();
+        int gameCount = fetcher.getGameCount();
+
+        double avgWins = avgStatsWithoutDraws.getTeamWon();
+        if (Math.abs(avgWins - 1) > MAX_AVIATION_WIN) {
+            recommendations.add("It could be, that your map is biased to one team, as wins are not equally distributed");
+        }
+
+        int draws = fetcher.getDrawFights();
+        if ((((double) draws / (double) gameCount) * 100) > MAX_FIGHT_DRAW_PERCENTAGE) {
+            recommendations.add("Increase the game_length option. More than 15% of your games are draws");
+        }
+
+        Duration duration = Duration.ofMillis(avgStatsWithoutDraws.getTimeElapsed());
+        if (((double) duration.getSeconds() / 60.0) <= MIN_FIGHT_DURATION) {
+            recommendations.add("Remove some overpowered features. The average game length at won games is under 5 minutes");
+        }
+        // TODO implement more features
+
+        if (recommendations.size() == 0) {
+            player.sendMessage(MessageConfig.getPrefix() + "§aThere are currently no recommendations, everything seems fine :)");
+        } else {
+            player.sendMessage(MessageConfig.getPrefix() + "§7=====[ §eMissileWars recommendations §7]=====");
+            recommendations.forEach(str -> player.sendMessage(MessageConfig.getPrefix() + str));
+        }
+    }
+
+    @Subcommand("players")
+    @Description("Shows player list.")
+    @Syntax("/mw stats players [from] [arena]")
+    @CommandPermission("mw.stats.players")
+    public void onPlayers(CommandSender sender, String[] args) {
+
         if (!senderIsPlayer(sender)) return;
         Player player = (Player) sender;
 
@@ -155,10 +163,12 @@ public class StatsCommands {
         playerGuiFactory.openWhenReady(player);
     }
 
-    @Command(name = "mw.stats.list", permission = "mw.stats.list", inGameOnly = true, usage = "/mw stats list [from] [arena]")
-    public void onList(CommandArgs args) {
+    @Subcommand("list")
+    @Description("Lists history of games.")
+    @Syntax("/mw stats list [from] [arena]")
+    @CommandPermission("mw.stats.list")
+    public void onList(CommandSender sender, String[] args) {
 
-        CommandSender sender = args.getSender();
         if (!senderIsPlayer(sender)) return;
         Player player = (Player) sender;
 
@@ -176,22 +186,22 @@ public class StatsCommands {
         creator.show(player);
     }
 
-    private StatsFetcher getFetcher(Player player, CommandArgs args) {
+    private StatsFetcher getFetcher(Player player, String[] args) {
         if (!Config.isFightStatsEnabled()) {
             player.sendMessage(MessageConfig.getPrefix() + "§cFightStats are not enabled!");
             return null;
         }
         Date from = new Date(0);
         String arena = "";
-        if (args.length() > 0) {
+        if (args.length > 0) {
             try {
-                from = format.parse(args.getArgs(0));
+                from = format.parse(args[0]);
             } catch (ParseException e) {
                 player.sendMessage(MessageConfig.getPrefix() + "§cPlease use the date format dd.MM.yyyy");
                 return null;
             }
-            if (args.length() > 1) {
-                arena = args.getArgs(1);
+            if (args.length > 1) {
+                arena = args[1];
             }
         }
 

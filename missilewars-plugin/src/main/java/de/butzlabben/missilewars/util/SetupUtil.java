@@ -23,10 +23,12 @@ import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.wrapper.abstracts.Arena;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.Enumeration;
 import java.util.jar.JarEntry;
@@ -43,6 +45,53 @@ public class SetupUtil {
     private static final int BUFFER_SIZE = 4096;
 
     private SetupUtil() {
+    }
+
+    public static boolean isNewConfig(File dir, File file) {
+        String fileName = file.getName();
+
+        // check if the directory exists
+        if (!dir.exists()) {
+            dir.mkdirs();
+        }
+
+        // check if the config file exists
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                Logger.ERROR.log("Could not create " + fileName + "!");
+                e.printStackTrace();
+            }
+            return true;
+        }
+
+        return false;
+    }
+
+    public static YamlConfiguration getLoadedConfig(File file) {
+        String fileName = file.getName();
+        YamlConfiguration cfg;
+
+        try {
+            cfg = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8));
+        } catch (FileNotFoundException e) {
+            Logger.ERROR.log("Couldn't load " + fileName + "!");
+            e.printStackTrace();
+            return null;
+        }
+        return cfg;
+    }
+
+    public static void safeFile(File file, YamlConfiguration cfg) {
+        String fileName = file.getName();
+
+        try {
+            cfg.save(file);
+        } catch (IOException e) {
+            Logger.ERROR.log("Could not save " + fileName + "!");
+            e.printStackTrace();
+        }
     }
 
     public static void checkShields() {

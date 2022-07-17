@@ -19,6 +19,7 @@
 package de.butzlabben.missilewars;
 
 import de.butzlabben.missilewars.game.GameManager;
+import de.butzlabben.missilewars.util.SetupUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -26,8 +27,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,34 +43,15 @@ public class Config {
     private static final File DIR = MissileWars.getInstance().getDataFolder();
     private static final File FILE = new File(DIR, "config.yml");
     private static YamlConfiguration cfg;
-    private static boolean configNew = false;
+    private static boolean isNewConfig = false;
 
     public static void load() {
 
-        // check if the directory "/MissileWars" exists
-        if (!DIR.exists()) {
-            DIR.mkdirs();
-        }
-
-        // check if the config file exists
-        if (!FILE.exists()) {
-            try {
-                FILE.createNewFile();
-            } catch (IOException e) {
-                Logger.ERROR.log("Could not create config.yml!");
-                e.printStackTrace();
-            }
-            configNew = true;
-        }
+        // check if the directory and the file exists or create it new
+        isNewConfig = SetupUtil.isNewConfig(DIR, FILE);
 
         // try to load the config
-        try {
-            cfg = YamlConfiguration.loadConfiguration(new InputStreamReader(new FileInputStream(FILE), StandardCharsets.UTF_8));
-        } catch (FileNotFoundException e) {
-            Logger.ERROR.log("Couldn't load config.yml");
-            e.printStackTrace();
-            return;
-        }
+        cfg = SetupUtil.getLoadedConfig(FILE);
 
         // copy the config input
         cfg.options().copyDefaults(true);
@@ -79,7 +60,7 @@ public class Config {
         addDefaults();
 
         // re-save the config with only validated options
-        saveConfig();
+        SetupUtil.safeFile(FILE, cfg);
     }
 
     private static void addDefaults() {
@@ -133,7 +114,7 @@ public class Config {
         cfg.addDefault("sidebar.member_list_style", "%team_color%%playername%");
         cfg.addDefault("sidebar.member_list_max", "4");
 
-        if (configNew) {
+        if (isNewConfig) {
             List<String> sidebarList = new ArrayList<>();
 
             sidebarList.add("§7Time left:");
@@ -144,15 +125,6 @@ public class Config {
             sidebarList.add("%team2% §7» %team2_color%%team2_amount%");
 
             cfg.set("sidebar.entries", sidebarList);
-        }
-    }
-
-    private static void saveConfig() {
-        try {
-            cfg.save(FILE);
-        } catch (IOException e) {
-            Logger.ERROR.log("Could not save config.yml!");
-            e.printStackTrace();
         }
     }
 
