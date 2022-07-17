@@ -43,6 +43,7 @@ public class Arena {
     @SerializedName("game_spawn") private GameSpawnConfiguration spawn = new GameSpawnConfiguration();
     @SerializedName("game_respawn") private GameRespawnConfiguration respawn = new GameRespawnConfiguration();
     @SerializedName("do_tile_drops") private boolean doTileDrops = false;
+    @SerializedName("keep_inventory") private boolean keepInventory = false;
     @SerializedName("max_height") private int maxHeight = 170;
     @SerializedName("death_height") private int deathHeight = 65;
     @SerializedName("max_spectators") private int maxSpectators = -1;
