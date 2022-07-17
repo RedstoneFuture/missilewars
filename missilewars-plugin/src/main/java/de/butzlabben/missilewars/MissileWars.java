@@ -18,7 +18,7 @@
 
 package de.butzlabben.missilewars;
 
-import com.pro_crafting.mc.commandframework.CommandFramework;
+import co.aikar.commands.PaperCommandManager;
 import de.butzlabben.missilewars.cmd.MWCommands;
 import de.butzlabben.missilewars.cmd.StatsCommands;
 import de.butzlabben.missilewars.cmd.UserCommands;
@@ -54,7 +54,6 @@ public class MissileWars extends JavaPlugin {
 
     private static MissileWars instance;
     public final String version = getDescription().getVersion();
-    private CommandFramework framework;
     private SignRepository signRepository;
 
     private boolean foundFAWE;
@@ -93,17 +92,8 @@ public class MissileWars extends JavaPlugin {
         SignRepository repository = SignRepository.load();
         this.signRepository = repository;
 
-        Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
-        Bukkit.getPluginManager().registerEvents(new ClickListener(), this);
-        Bukkit.getPluginManager().registerEvents(new ManageListener(), this);
-
-        Logger.BOOT.log("Registering commands");
-        framework = new CommandFramework(this);
-        framework.registerCommands(new MWCommands());
-        framework.registerCommands(new StatsCommands());
-        framework.registerCommands(new UserCommands());
-        // TODO make more admin commands usable with console by adding more optional arguments like game name etc.
-        framework.setInGameOnlyMessage(MessageConfig.getPrefix() + "§cYou are not a player");
+        registerEvents();
+        registerCommands();
 
         Arenas.load();
         SetupUtil.checkShields();
@@ -140,6 +130,31 @@ public class MissileWars extends JavaPlugin {
         deleteTempWorlds();
 
         ConnectionHolder.close();
+    }
+
+    /**
+     * This method registers all events of the missilewars event listener.
+     */
+    private void registerEvents() {
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
+        Bukkit.getPluginManager().registerEvents(new ClickListener(), this);
+        Bukkit.getPluginManager().registerEvents(new ManageListener(), this);
+    }
+
+    /**
+     * This method loads the command manager and registers the missilewars commands.
+     */
+    private void registerCommands() {
+        Logger.BOOT.log("Registering commands");
+
+        // Using the Paper Command Manager does not mean the plugin requires Paper.
+        // It simply lets it take advantage of Paper specific features if available,
+        // such as Asynchronous Tab Completions.
+        PaperCommandManager manager = new PaperCommandManager(this);
+
+        manager.registerCommand(new MWCommands());
+        manager.registerCommand(new StatsCommands());
+        manager.registerCommand(new UserCommands());
     }
 
     /**

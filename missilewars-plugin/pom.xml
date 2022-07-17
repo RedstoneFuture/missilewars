@@ -32,6 +32,13 @@
 
     <artifactId>missilewars-plugin</artifactId>
 
+    <repositories>
+        <repository>
+            <id>aikar</id>
+            <url>https://repo.aikar.co/content/groups/aikar/</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>de.butzlabben</groupId>
@@ -66,13 +73,11 @@
             <version>2.11.0</version>
         </dependency>
 
-
-        <!-- https://mvnrepository.com/artifact/com.pro-crafting.mc/commandframework -->
+        <!-- https://github.com/aikar/commands -->
         <dependency>
-            <groupId>com.pro-crafting.mc</groupId>
-            <artifactId>commandframework</artifactId>
-            <version>0.2.1</version>
-            <scope>compile</scope>
+            <groupId>co.aikar</groupId>
+            <artifactId>acf-paper</artifactId>
+            <version>0.5.1-SNAPSHOT</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core -->
