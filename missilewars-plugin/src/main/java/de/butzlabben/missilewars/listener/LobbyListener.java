@@ -35,6 +35,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -51,15 +52,15 @@ public class LobbyListener extends GameBoundListener {
     }
 
     @EventHandler
-    public void onInteract(PlayerInteractEvent e) {
-        if (!isInLobbyArea(e.getPlayer().getLocation())) return;
+    public void onInteract(PlayerInteractEvent event) {
+        if (!isInLobbyArea(event.getPlayer().getLocation())) return;
 
-        Player p = e.getPlayer();
+        Player p = event.getPlayer();
         if (p.getGameMode() == GameMode.CREATIVE) return;
-        e.setCancelled(true);
-        if (e.getItem() == null) return;
+        event.setCancelled(true);
+        if (event.getItem() == null) return;
 
-        if (VersionUtil.isStainedGlassPane(e.getItem().getType())) {
+        if (VersionUtil.isStainedGlassPane(event.getItem().getType())) {
 
             if (!p.hasPermission("mw.change")) return;
 
@@ -68,7 +69,7 @@ public class LobbyListener extends GameBoundListener {
                 return;
             }
 
-            String displayName = e.getItem().getItemMeta().getDisplayName();
+            String displayName = event.getItem().getItemMeta().getDisplayName();
             if (displayName.equals(getGame().getTeam1().getFullname())) {
                 p.performCommand("mw change 1");
                 getGame().getScoreboardManager().updateScoreboard();
@@ -77,7 +78,7 @@ public class LobbyListener extends GameBoundListener {
                 getGame().getScoreboardManager().updateScoreboard();
             }
 
-        } else if (e.getItem().getType() == Material.NETHER_STAR) {
+        } else if (event.getItem().getType() == Material.NETHER_STAR) {
             VoteInventory inventory = new VoteInventory(getGame().getLobby().getArenas());
             p.openInventory(inventory.getInventory(p));
         }
@@ -85,11 +86,11 @@ public class LobbyListener extends GameBoundListener {
     }
 
     @EventHandler
-    public void onJoin(PlayerArenaJoinEvent e) {
-        Game game = e.getGame();
+    public void onJoin(PlayerArenaJoinEvent event) {
+        Game game = event.getGame();
         if (game != getGame()) return;
 
-        Player p = e.getPlayer();
+        Player p = event.getPlayer();
         MWPlayer mw = game.addPlayer(p);
 
         PlayerDataProvider.getInstance().storeInventory(p);
@@ -137,26 +138,26 @@ public class LobbyListener extends GameBoundListener {
     }
 
     @EventHandler
-    public void onDamage(EntityDamageEvent e) {
-        if (isInLobbyArea(e.getEntity().getLocation())) {
-            e.setCancelled(true);
-        }
+    public void onDamage(EntityDamageEvent event) {
+        if (!isInLobbyArea(event.getEntity().getLocation())) return;
+
+        event.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onRespawn(PlayerRespawnEvent event) {
+        if (!isInLobbyArea(event.getPlayer().getLocation())) return;
+
+        event.setRespawnLocation(getGame().getLobby().getSpawnPoint());
     }
 
     @EventHandler
-    public void onRespawn(PlayerRespawnEvent e) {
-        if (isInLobbyArea(e.getPlayer().getLocation())) {
-            e.setRespawnLocation(getGame().getLobby().getSpawnPoint());
-        }
-    }
+    public void onInventoryClick(InventoryClickEvent event) {
+        if (!(event.getWhoClicked() instanceof Player)) return;
 
-    @EventHandler
-    public void onInventoryClick(InventoryClickEvent e) {
-        if (!(e.getWhoClicked() instanceof Player)) return;
+        Player p = (Player) event.getWhoClicked();
+        if (!isInLobbyArea(p.getLocation())) return;
 
-        Player p = (Player) e.getWhoClicked();
-        if (isInLobbyArea(p.getLocation()))
-            if (p.getGameMode() != GameMode.CREATIVE && !p.isOp())
-                e.setCancelled(true);
+        if (p.getGameMode() != GameMode.CREATIVE) event.setCancelled(true);
     }
 }

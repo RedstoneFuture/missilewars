@@ -44,11 +44,11 @@ public class EndListener extends GameBoundListener {
 
     @SuppressWarnings("deprecation")
     @EventHandler
-    public void onJoin(PlayerArenaJoinEvent e) {
-        Game game = e.getGame();
+    public void onJoin(PlayerArenaJoinEvent event) {
+        Game game = event.getGame();
         if (game != getGame()) return;
 
-        Player p = e.getPlayer();
+        Player p = event.getPlayer();
         PlayerDataProvider.getInstance().storeInventory(p);
         p.sendMessage(MessageConfig.getMessage("spectator"));
 
@@ -59,31 +59,30 @@ public class EndListener extends GameBoundListener {
         game.addPlayer(p);
     }
 
-    @EventHandler(priority = EventPriority.LOW)
-    public void onRespawn(PlayerRespawnEvent e) {
-        if (isInLobbyArea(e.getRespawnLocation())) {
-            e.setRespawnLocation(getGame().getArena().getSpectatorSpawn());
-        }
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onRespawn(PlayerRespawnEvent event) {
+        if (!isInGameWorld(event.getPlayer().getLocation())) return;
+
+        event.setRespawnLocation(getGame().getArena().getSpectatorSpawn());
     }
 
-    @SuppressWarnings("deprecation")
-    @EventHandler
-    public void onDeath(PlayerDeathEvent e) {
-        if (!isInLobbyArea(e.getEntity().getLocation())) return;
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onDeath(PlayerDeathEvent event) {
+        if (!isInGameWorld(event.getEntity().getLocation())) return;
 
-        Player p = e.getEntity();
-        p.setHealth(p.getMaxHealth());
-        p.teleport(getGame().getArena().getSpectatorSpawn());
-        e.setDeathMessage(null);
+        Player player = event.getEntity();
+        if (getGame().getArena().isAutoRespawn()) getGame().autoRespawnPlayer(player);
+
+        event.setDeathMessage(null);
     }
 
     @EventHandler
-    public void onClick(InventoryClickEvent e) {
-        if (!(e.getWhoClicked() instanceof Player)) return;
+    public void onClick(InventoryClickEvent event) {
+        if (!(event.getWhoClicked() instanceof Player)) return;
 
-        Player p = (Player) e.getWhoClicked();
+        Player p = (Player) event.getWhoClicked();
         if (isInGameWorld(p.getLocation()))
             if (p.getGameMode() != GameMode.CREATIVE && !p.isOp())
-                e.setCancelled(true);
+                event.setCancelled(true);
     }
 }

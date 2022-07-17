@@ -66,34 +66,34 @@ public class GameListener extends GameBoundListener {
     }
 
     @EventHandler
-    public void onMove(PlayerMoveEvent e) {
-        if (!isInGameWorld(e.getTo())) return;
+    public void onMove(PlayerMoveEvent event) {
+        if (!isInGameWorld(event.getTo())) return;
 
-        Player p = e.getPlayer();
-        if ((e.getTo().getBlockY() >= getGame().getArena().getMaxHeight()) && (p.getGameMode() == GameMode.SURVIVAL)) {
-            p.teleport(e.getFrom());
+        Player p = event.getPlayer();
+        if ((event.getTo().getBlockY() >= getGame().getArena().getMaxHeight()) && (p.getGameMode() == GameMode.SURVIVAL)) {
+            p.teleport(event.getFrom());
             p.sendMessage(MessageConfig.getMessage("not_higher"));
-        } else if ((e.getTo().getBlockY() <= getGame().getArena().getDeathHeight()) && (p.getGameMode() == GameMode.SURVIVAL)) {
+        } else if ((event.getTo().getBlockY() <= getGame().getArena().getDeathHeight()) && (p.getGameMode() == GameMode.SURVIVAL)) {
             p.setLastDamageCause(new EntityDamageEvent(p, EntityDamageEvent.DamageCause.FALL, 20));
             p.damage(20.0D);
         }
-        if (!getGame().isInGameArea(e.getTo())) {
-            e.setCancelled(true);
-            Vector addTo = e.getFrom().toVector().subtract(e.getTo().toVector()).multiply(3);
+        if (!getGame().isInGameArea(event.getTo())) {
+            event.setCancelled(true);
+            Vector addTo = event.getFrom().toVector().subtract(event.getTo().toVector()).multiply(3);
             addTo.setY(0);
-            p.teleport(e.getFrom().add(addTo));
+            p.teleport(event.getFrom().add(addTo));
             p.sendMessage(MessageConfig.getMessage("arena_leave"));
         }
     }
 
     @EventHandler
-    public void onExplode(EntityExplodeEvent e) {
-        if (!isInGameWorld(e.getLocation())) return;
+    public void onExplode(EntityExplodeEvent event) {
+        if (!isInGameWorld(event.getLocation())) return;
 
         Game game = getGame();
 
-        if (e.getEntity().getType() == EntityType.FIREBALL && !game.getArena().getFireballConfiguration().isDestroysPortal())
-            e.blockList().removeIf(b -> b.getType() == VersionUtil.getPortal());
+        if (event.getEntity().getType() == EntityType.FIREBALL && !game.getArena().getFireballConfiguration().isDestroysPortal())
+            event.blockList().removeIf(b -> b.getType() == VersionUtil.getPortal());
     }
 
     @EventHandler
@@ -115,23 +115,23 @@ public class GameListener extends GameBoundListener {
     }
 
     @EventHandler
-    public void onInteract(PlayerInteractEvent e) {
-        if (!isInGameWorld(e.getPlayer().getLocation())) return;
-        if (e.getItem() == null) return;
-        if (e.getAction() != Action.RIGHT_CLICK_AIR && e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+    public void onInteract(PlayerInteractEvent event) {
+        if (!isInGameWorld(event.getPlayer().getLocation())) return;
+        if (event.getItem() == null) return;
+        if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 
-        Player player = e.getPlayer();
-        ItemStack itemStack = e.getItem();
+        Player player = event.getPlayer();
+        ItemStack itemStack = event.getItem();
         Game game = getGame();
 
         // missile spawn with using of a missile spawn egg
         if (VersionUtil.isMonsterEgg(itemStack.getType())) {
-            e.setCancelled(true);
+            event.setCancelled(true);
 
             // Can missiles only be spawned if the item interaction was performed on a block (no air)?
             boolean isOnlyBlockPlaceable = game.getArena().getMissileConfiguration().isOnlyBlockPlaceable();
             if (isOnlyBlockPlaceable) {
-                if (e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+                if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
             }
 
             // Are missiles only allowed to spawn inside the arena, between the two arena spawn points?
@@ -157,8 +157,8 @@ public class GameListener extends GameBoundListener {
 
         // shield spawn with using of a missile spawn egg
         if (itemStack.getType() == VersionUtil.getFireball()) {
-            int amount = e.getItem().getAmount();
-            e.getItem().setAmount(amount - 1);
+            int amount = event.getItem().getAmount();
+            event.getItem().setAmount(amount - 1);
 
             if (amount == 1 && VersionUtil.getVersion() == 8) {
                 player.getInventory().remove(VersionUtil.getFireball());
@@ -176,11 +176,11 @@ public class GameListener extends GameBoundListener {
     }
 
     @EventHandler
-    public void onJoin(PlayerArenaJoinEvent e) {
-        Game game = e.getGame();
+    public void onJoin(PlayerArenaJoinEvent event) {
+        Game game = event.getGame();
         if (game != getGame()) return;
 
-        Player p = e.getPlayer();
+        Player p = event.getPlayer();
         MWPlayer mwPlayer = game.addPlayer(p);
         PlayerDataProvider.getInstance().storeInventory(p);
         p.getInventory().clear();
@@ -209,110 +209,95 @@ public class GameListener extends GameBoundListener {
     }
 
     @EventHandler
-    public void onThrow(ProjectileLaunchEvent e) {
-        if (!isInGameWorld(e.getEntity().getLocation())) return;
+    public void onThrow(ProjectileLaunchEvent event) {
+        if (!isInGameWorld(event.getEntity().getLocation())) return;
 
         Game game = getGame();
-        if (e.getEntity() instanceof Snowball) {
-            Snowball ball = (Snowball) e.getEntity();
+        if (event.getEntity() instanceof Snowball) {
+            Snowball ball = (Snowball) event.getEntity();
             if (ball.getShooter() instanceof Player) {
                 Shield shield = new Shield((Player) ball.getShooter(), game.getArena().getShieldConfiguration());
-                shield.onThrow(e);
+                shield.onThrow(event);
             }
         }
     }
 
     @EventHandler
-    public void onDamage(EntityDamageByEntityEvent e) {
-        if (!isInGameWorld(e.getEntity().getLocation())) return;
-        if (!(e.getEntity() instanceof Player)) return;
+    public void onDamage(EntityDamageByEntityEvent event) {
+        if (!isInGameWorld(event.getEntity().getLocation())) return;
+        if (!(event.getEntity() instanceof Player)) return;
       
-        Player p = (Player) e.getEntity();
-        if (e.getDamager() instanceof Projectile) {
-            Projectile pj = (Projectile) e.getDamager();
+        Player p = (Player) event.getEntity();
+        if (event.getDamager() instanceof Projectile) {
+            Projectile pj = (Projectile) event.getDamager();
             Player shooter = (Player) pj.getShooter();
             if (Objects.requireNonNull(getGame().getPlayer(shooter)).getTeam() == Objects.requireNonNull(getGame().getPlayer(p)).getTeam()) {
                 shooter.sendMessage(MessageConfig.getMessage("hurt_teammates"));
-                e.setCancelled(true);
+                event.setCancelled(true);
             }
             return;
         }
-        if (e.getDamager() instanceof Player) {
-            Player d = (Player) e.getDamager();
+        if (event.getDamager() instanceof Player) {
+            Player d = (Player) event.getDamager();
             if (Objects.requireNonNull(getGame().getPlayer(d)).getTeam() == Objects.requireNonNull(getGame().getPlayer(p)).getTeam()) {
                 d.sendMessage(MessageConfig.getMessage("hurt_teammates"));
-                e.setCancelled(true);
+                event.setCancelled(true);
             }
         }
     }
 
     @EventHandler(priority = EventPriority.HIGH)
-    public void onRespawn(PlayerRespawnEvent e) {
-        if (!isInGameWorld(e.getPlayer().getLocation())) return;
+    public void onRespawn(PlayerRespawnEvent event) {
+        if (!isInGameWorld(event.getPlayer().getLocation())) return;
 
-        Game game = getGame();
-        Player player = e.getPlayer();
+        Player player = event.getPlayer();
+        Team team = getGame().getPlayer(player).getTeam();
 
-        Team t = Objects.requireNonNull(getGame().getPlayer(player)).getTeam();
-        if (t != null) {
-            e.setRespawnLocation(t.getSpawn());
+        if (team != null) {
+            event.setRespawnLocation(team.getSpawn());
+            getGame().sendGameItems(player, true);
+            getGame().setPlayerAttributes(player);
+
             FallProtectionConfiguration fallProtection = getGame().getArena().getFallProtection();
-            if (fallProtection.isEnabled())
+            if (fallProtection.isEnabled()) {
                 new RespawnGoldBlock(player, fallProtection.getDuration(), fallProtection.isMessageOnlyOnStart(), getGame());
+            }
         } else {
-            e.setRespawnLocation(getGame().getArena().getSpectatorSpawn());
+            event.setRespawnLocation(getGame().getArena().getSpectatorSpawn());
         }
-
-        game.sendGameItems(player, true);
-        game.setPlayerAttributes(player);
     }
 
-    @EventHandler
-    public void onDeath(PlayerDeathEvent e) {
+    @EventHandler(priority = EventPriority.HIGH)
+    public void onDeath(PlayerDeathEvent event) {
+        if (!isInGameWorld(event.getEntity().getLocation())) return;
 
-        // check if the player is in a game world
-        if (!isInGameWorld(e.getEntity().getLocation())) return;
+        Player player = event.getEntity();
+        if (getGame().getArena().isAutoRespawn()) getGame().autoRespawnPlayer(player);
 
-        Game game = getGame();
-        Player p = e.getEntity();
-
-        e.setDeathMessage(null);
-        // delete vanilla death message
-        String deathBroadcastMessage = null;
-
-        MWPlayer player = getGame().getPlayer(p);
-        assert player != null;
-
-        if (game.getArena().isAutoRespawn()) Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> p.spigot().respawn(), 20L);
-
-        // spectator respawn for people there are not in a team
-        if (player.getTeam() == null) {
-            p.setHealth(p.getMaxHealth());
-            p.teleport(getGame().getArena().getSpectatorSpawn());
-            return;
-        }
+        event.setDeathMessage(null);
 
         // check the death cause for choice the death message
-        if (p.getLastDamageCause() != null) {
+        String deathBroadcastMessage;
+        if (player.getLastDamageCause() != null) {
 
-            EntityDamageEvent.DamageCause damageCause = p.getLastDamageCause().getCause();
+            EntityDamageEvent.DamageCause damageCause = player.getLastDamageCause().getCause();
 
             if (damageCause == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION || damageCause == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
-                deathBroadcastMessage = MessageConfig.getNativeMessage("died_explosion").replace("%player%", p.getDisplayName());
+                deathBroadcastMessage = MessageConfig.getNativeMessage("died_explosion").replace("%player%", player.getDisplayName());
             } else {
-                deathBroadcastMessage = MessageConfig.getNativeMessage("died").replace("%player%", p.getDisplayName());
+                deathBroadcastMessage = MessageConfig.getNativeMessage("died").replace("%player%", player.getDisplayName());
             }
-        }
 
-        getGame().broadcast(deathBroadcastMessage);
+            getGame().broadcast(deathBroadcastMessage);
+        }
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onLeave(PlayerArenaLeaveEvent e) {
-        Game game = e.getGame();
+    public void onLeave(PlayerArenaLeaveEvent event) {
+        Game game = event.getGame();
         if (game != getGame()) return;
 
-        MWPlayer player = getGame().getPlayer(e.getPlayer());
+        MWPlayer player = getGame().getPlayer(event.getPlayer());
         if (player == null) return;
         BukkitTask task = game.getPlayerTasks().get(player.getUuid());
         if (task != null) task.cancel();
@@ -320,8 +305,8 @@ public class GameListener extends GameBoundListener {
         Team team = player.getTeam();
         if (team != null) {
             getGame().broadcast(
-                    MessageConfig.getMessage("player_left").replace("%player%", e.getPlayer().getDisplayName()));
-            team.removeMember(getGame().getPlayer(e.getPlayer()));
+                    MessageConfig.getMessage("player_left").replace("%player%", event.getPlayer().getDisplayName()));
+            team.removeMember(getGame().getPlayer(event.getPlayer()));
 
             int teamSize = team.getMembers().size();
             if (teamSize == 0) {

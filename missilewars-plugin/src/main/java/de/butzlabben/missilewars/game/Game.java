@@ -477,6 +477,15 @@ public class Game {
 
     }
 
+    /**
+     * This method respawns the player after short time.
+     *
+     * @param player the target player
+     */
+    public void autoRespawnPlayer(Player player) {
+        Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> player.spigot().respawn(), 20L);
+    }
+
     public void setArena(Arena arena) {
         Preconditions.checkNotNull(arena);
         if (this.arena != null) {
