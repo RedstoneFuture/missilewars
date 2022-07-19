@@ -58,7 +58,8 @@ public class GameTimer extends Timer {
                 broadcast(MessageConfig.getMessage("game_ends_in_seconds").replace("%seconds%", Integer.toString(seconds)));
                 break;
             case 0:
-                getGame().stopGame();
+                game.sendGameResult();
+                game.stopGame();
                 break;
             default:
                 break;

@@ -40,6 +40,7 @@ import de.butzlabben.missilewars.wrapper.abstracts.GameWorld;
 import de.butzlabben.missilewars.wrapper.abstracts.Lobby;
 import de.butzlabben.missilewars.wrapper.abstracts.MapChooseProcedure;
 import de.butzlabben.missilewars.wrapper.event.GameStartEvent;
+import de.butzlabben.missilewars.wrapper.event.GameStopEvent;
 import de.butzlabben.missilewars.wrapper.event.PlayerArenaJoinEvent;
 import de.butzlabben.missilewars.wrapper.game.MissileGameEquipment;
 import de.butzlabben.missilewars.wrapper.game.SpecialGameEquipment;
@@ -80,7 +81,7 @@ public class Game {
     private final HashMap<UUID, BukkitTask> playerTasks = new HashMap<>();
     private Timer timer;
     private BukkitTask bt;
-    private GameState state = GameState.LOBBY;
+    private GameState state;
     private Team team1;
     private Team team2;
     private boolean ready = false;
@@ -126,10 +127,6 @@ public class Game {
 
         players.clear();
 
-        GameBoundListener listener = new LobbyListener(this);
-        Bukkit.getPluginManager().registerEvents(listener, MissileWars.getInstance());
-        this.listener = listener;
-
         team1 = new Team(lobby.getTeam1Name(), lobby.getTeam1Color(), this);
         team2 = new Team(lobby.getTeam2Name(), lobby.getTeam2Color(), this);
       
@@ -149,9 +146,12 @@ public class Game {
         if (!Config.isMultipleLobbies()) MotdManager.getInstance().updateMOTD(this);
 
         Logger.DEBUG.log("Start timer");
+
         stopTimer();
+        updateGameListener(new LobbyListener(this));
         timer = new LobbyTimer(this, lobby.getLobbyTime());
         bt = Bukkit.getScheduler().runTaskTimer(MissileWars.getInstance(), timer, 0, 20);
+        state = GameState.LOBBY;
 
         if (Config.isSetup()) {
             Logger.WARN.log("Did not fully initialize lobby " + lobby.getName() + " as the plugin is in setup mode");
@@ -191,6 +191,13 @@ public class Game {
         createGameItems();
     }
 
+    private void updateGameListener(GameBoundListener listener) {
+        if (listener != null) HandlerList.unregisterAll(listener);
+
+        Bukkit.getPluginManager().registerEvents(listener, MissileWars.getInstance());
+        this.listener = listener;
+    }
+
     public Scoreboard getScoreboard() {
         return scoreboardManager.board;
     }
@@ -209,16 +216,11 @@ public class Game {
         }
 
         stopTimer();
+        updateGameListener(new GameListener(this));
         timer = new GameTimer(this);
         bt = Bukkit.getScheduler().runTaskTimer(MissileWars.getInstance(), timer, 5, 20);
-
-        HandlerList.unregisterAll(listener);
-
-        GameBoundListener listener = new GameListener(this);
-        Bukkit.getPluginManager().registerEvents(listener, MissileWars.getInstance());
-        this.listener = listener;
-
         state = GameState.INGAME;
+
         timestart = System.currentTimeMillis();
 
         applyForAllPlayers(this::startForPlayer);
@@ -240,7 +242,7 @@ public class Game {
             return;
 
         Logger.DEBUG.log("Stopping");
-        state = GameState.END;
+
         for (BukkitTask bt : playerTasks.values()) {
             bt.cancel();
         }
@@ -256,18 +258,10 @@ public class Game {
         }
 
         stopTimer();
-        HandlerList.unregisterAll(listener);
-        GameBoundListener listener = new EndListener(this);
-
-        try {
-            Bukkit.getPluginManager().registerEvents(listener, MissileWars.getInstance());
-        } catch (Exception ignored) {
-        }
-
-        this.listener = listener;
-
+        updateGameListener(new EndListener(this));
         timer = new EndTimer(this);
         bt = Bukkit.getScheduler().runTaskTimer(MissileWars.getInstance(), timer, 5, 20);
+        state = GameState.END;
 
         // Change MOTD
         if (!Config.isMultipleLobbies()) {
@@ -280,6 +274,7 @@ public class Game {
         }
 
         Logger.DEBUG.log("Stopped completely");
+        Bukkit.getPluginManager().callEvent(new GameStopEvent(this));
     }
 
     public void reset() {
