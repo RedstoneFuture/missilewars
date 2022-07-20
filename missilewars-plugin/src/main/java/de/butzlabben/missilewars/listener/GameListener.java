@@ -272,14 +272,14 @@ public class GameListener extends GameBoundListener {
         if (!isInGameWorld(event.getEntity().getLocation())) return;
 
         Player player = event.getEntity();
-        if (getGame().getArena().isAutoRespawn()) getGame().autoRespawnPlayer(player);
-
-        event.setDeathMessage(null);
+        Team team = getGame().getPlayer(player).getTeam();
 
         // check the death cause for choice the death message
-        String deathBroadcastMessage;
-        if (player.getLastDamageCause() != null) {
+        if (team != null) {
 
+            if (player.getLastDamageCause() == null) return;
+
+            String deathBroadcastMessage;
             EntityDamageEvent.DamageCause damageCause = player.getLastDamageCause().getCause();
 
             if (damageCause == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION || damageCause == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
@@ -290,6 +290,9 @@ public class GameListener extends GameBoundListener {
 
             getGame().broadcast(deathBroadcastMessage);
         }
+
+        event.setDeathMessage(null);
+        if (getGame().getArena().isAutoRespawn()) getGame().autoRespawnPlayer(player);
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
