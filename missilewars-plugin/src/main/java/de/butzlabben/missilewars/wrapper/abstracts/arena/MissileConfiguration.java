@@ -70,9 +70,9 @@ public class MissileConfiguration {
     }
 
     public Missile getMissileFromName(String name) {
-        for (Missile m : missiles) {
-            if (m.getName().equalsIgnoreCase(name) || m.getName().replaceAll("§.", "").equalsIgnoreCase(name))
-                return m;
+        String filteredName = name.replaceAll("§.", "");
+        for (Missile missile : missiles) {
+            if (missile.getSchematicName(false).equalsIgnoreCase(filteredName)) return missile;
         }
         return null;
     }
@@ -82,7 +82,7 @@ public class MissileConfiguration {
         for (Missile missile : missiles) {
             File schematic = missile.getSchematic();
             if (!schematic.exists()) {
-                Logger.WARN.log(missile.getName() + " §7has no schematic. Removing this missile");
+                Logger.WARN.log(missile.getDisplayName() + " §7has no schematic. Removing this missile");
                 toRemove.add(missile);
             }
         }
