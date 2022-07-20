@@ -482,7 +482,7 @@ public class Game {
      *
      * @param player the target player
      */
-    public void autoRespawnPlayer(Player player) {
+    public static void autoRespawnPlayer(Player player) {
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> player.spigot().respawn(), 20L);
     }
 

@@ -71,9 +71,9 @@ public class EndListener extends GameBoundListener {
         if (!isInGameWorld(event.getEntity().getLocation())) return;
 
         Player player = event.getEntity();
-        if (getGame().getArena().isAutoRespawn()) getGame().autoRespawnPlayer(player);
 
         event.setDeathMessage(null);
+        if (getGame().getArena().isAutoRespawn()) getGame().autoRespawnPlayer(player);
     }
 
     @EventHandler
