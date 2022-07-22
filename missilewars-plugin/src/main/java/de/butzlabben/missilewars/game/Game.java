@@ -45,12 +45,15 @@ import de.butzlabben.missilewars.wrapper.event.PlayerArenaJoinEvent;
 import de.butzlabben.missilewars.wrapper.game.MissileGameEquipment;
 import de.butzlabben.missilewars.wrapper.game.SpecialGameEquipment;
 import de.butzlabben.missilewars.wrapper.game.Team;
+import de.butzlabben.missilewars.wrapper.missile.Missile;
+import de.butzlabben.missilewars.wrapper.missile.MissileFacing;
 import de.butzlabben.missilewars.wrapper.player.MWPlayer;
 import de.butzlabben.missilewars.wrapper.stats.FightStats;
 import lombok.Getter;
 import lombok.ToString;
 import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
@@ -479,6 +482,53 @@ public class Game {
      */
     public static void autoRespawnPlayer(Player player) {
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> player.spigot().respawn(), 20L);
+    }
+
+    /**
+     * This method spawns the missile for the player.
+     *
+     * @param player the executing player
+     */
+    public void spawnMissile(Player player, ItemStack itemStack) {
+
+        // Are missiles only allowed to spawn inside the arena, between the two arena spawn points?
+        boolean isOnlyBetweenSpawnPlaceable = this.arena.getMissileConfiguration().isOnlyBetweenSpawnPlaceable();
+        if (isOnlyBetweenSpawnPlaceable) {
+            if (!this.arena.isInBetween(player.getLocation().toVector(), this.arena.getPlane1(), this.arena.getPlane2())) {
+                player.sendMessage(MessageConfig.getMessage("missile_place_deny"));
+                return;
+            }
+        }
+
+        Missile missile = this.arena.getMissileConfiguration().getMissileFromName(itemStack.getItemMeta().getDisplayName());
+        if (missile == null) {
+            player.sendMessage(MessageConfig.getMessage("invalid_missile"));
+            return;
+        }
+        itemStack.setAmount(itemStack.getAmount() - 1);
+        player.setItemInHand(itemStack);
+        missile.paste(player, MissileFacing.getFacingPlayer(player, this.arena.getMissileConfiguration()), this);
+    }
+
+    /**
+     * This method spawns the fireball for the player.
+     *
+     * @param player the executing player
+     */
+    public void spawnFireball(Player player, ItemStack itemStack) {
+        int amount = itemStack.getAmount();
+        itemStack.setAmount(amount - 1);
+
+        if (amount == 1 && VersionUtil.getVersion() == 8) {
+            player.getInventory().remove(VersionUtil.getFireball());
+        }
+
+        Fireball fb = player.launchProjectile(Fireball.class);
+        fb.setVelocity(player.getLocation().getDirection().multiply(2.5D));
+        VersionUtil.playFireball(player, fb.getLocation());
+        fb.setYield(3F);
+        fb.setIsIncendiary(true);
+        fb.setBounce(false);
     }
 
     public void setArena(Arena arena) {
