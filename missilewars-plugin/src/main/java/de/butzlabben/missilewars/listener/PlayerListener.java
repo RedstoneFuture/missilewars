@@ -62,36 +62,40 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onFoodLevelChange(FoodLevelChangeEvent e) {
-        Game game = getGame(e.getEntity().getLocation());
-        if (game != null)
-            e.setCancelled(true);
+    public void onFoodLevelChange(FoodLevelChangeEvent event) {
+        Game game = getGame(event.getEntity().getLocation());
+        if (game == null) return;
+
+        event.setCancelled(true);
     }
 
     @EventHandler
-    public void onBlockPlace(BlockPlaceEvent e) {
-        Game game = getGame(e.getPlayer().getLocation());
-        if (game != null && e.getPlayer().getGameMode() != GameMode.CREATIVE)
-            e.setBuild(false);
+    public void onBlockPlace(BlockPlaceEvent event) {
+        Game game = getGame(event.getPlayer().getLocation());
+        if (game == null) return;
+
+        if (event.getPlayer().getGameMode() != GameMode.CREATIVE) event.setBuild(false);
     }
 
     @EventHandler
-    public void onDrop(PlayerDropItemEvent e) {
-        Game game = getGame(e.getPlayer().getLocation());
-        if (game != null)
-            e.setCancelled(true);
+    public void onDrop(PlayerDropItemEvent event) {
+        Game game = getGame(event.getPlayer().getLocation());
+        if (game == null) return;
+
+        event.setCancelled(true);
     }
 
     @EventHandler
-    public void onPickup(PlayerPickupItemEvent e) {
-        Game game = getGame(e.getPlayer().getLocation());
-        if (game != null)
-            e.setCancelled(true);
+    public void onPickup(PlayerPickupItemEvent event) {
+        Game game = getGame(event.getPlayer().getLocation());
+        if (game == null) return;
+
+        event.setCancelled(true);
     }
 
     @EventHandler
-    public void onQuit(PlayerQuitEvent e) {
-        Player p = e.getPlayer();
+    public void onQuit(PlayerQuitEvent event) {
+        Player p = event.getPlayer();
 
         Game game = getGame(p.getLocation());
         if (game != null) {
@@ -153,6 +157,34 @@ public class PlayerListener implements Listener {
         MissileWars.getInstance().getSignRepository().getSigns(game).forEach(MWSign::update);
     }
 
+    // cancel anvil interaction to block renaming, and thus changing missiles
+    @EventHandler
+    public void onClick(InventoryClickEvent event) {
+        Game game = getGame(event.getWhoClicked().getLocation());
+        if (game != null) {
+            if (event.getInventory().getType() == InventoryType.ANVIL) {
+                event.setCancelled(true);
+            }
+        }
+    }
+
+    // Internal stuff
+
+    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
+    public void onMaxPlayers(PrePlayerArenaJoinEvent event) {
+        if (event.getGame().getPlayers().size() >= event.getGame().getLobby().getMaxSize() && event.getGame().getState() == GameState.LOBBY)
+            event.setCancelled(true);
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPreJoin(PrePlayerArenaJoinEvent event) {
+        Logger.DEBUG.log("PrePlayerArenaJoinEvent: " + event.getPlayer().getName());
+        Bukkit.getScheduler().runTask(MissileWars.getInstance(), () -> Bukkit.getPluginManager()
+                .callEvent(new PlayerArenaJoinEvent(event.getPlayer(), event.getGame())));
+    }
+
+    // Debugging staff
+
     @EventHandler
     public void onPlayerArenaJoin(PlayerArenaJoinEvent event) {
         Logger.DEBUG.log("PlayerArenaJoinEvent: " + event.getPlayer().getName());
@@ -171,12 +203,6 @@ public class PlayerListener implements Listener {
 
     /**
      * Checks if cancelled and spits out events
-     *
-     * @param player
-     * @param from
-     * @param to
-     *
-     * @return
      */
     private boolean checkJoinOrLeave(Player player, Game from, Game to) {
         if (to != null && to != from) {
@@ -192,28 +218,4 @@ public class PlayerListener implements Listener {
         return false;
     }
 
-    // cancel anvil interaction to block renaming, and thus changing missiles
-    @EventHandler
-    public void onClick(InventoryClickEvent event) {
-        Game game = getGame(event.getWhoClicked().getLocation());
-        if (game != null) {
-            if (event.getInventory().getType() == InventoryType.ANVIL) {
-                event.setCancelled(true);
-            }
-        }
-    }
-
-    // Internal stuff
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onMaxPlayers(PrePlayerArenaJoinEvent event) {
-        if (event.getGame().getPlayers().size() >= event.getGame().getLobby().getMaxSize() && event.getGame().getState() == GameState.LOBBY)
-            event.setCancelled(true);
-    }
-
-    // Internal stuff
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onPreJoin(PrePlayerArenaJoinEvent event) {
-        Logger.DEBUG.log("PrePlayerArenaJoinEvent: " + event.getPlayer().getName());
-        Bukkit.getScheduler().runTask(MissileWars.getInstance(), () -> Bukkit.getPluginManager().callEvent(new PlayerArenaJoinEvent(event.getPlayer(), event.getGame())));
-    }
 }
