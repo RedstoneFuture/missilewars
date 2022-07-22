@@ -54,7 +54,7 @@ public class PlayerEquipmentRandomizer {
         randomizer = new Random();
         maxGameDuration = game.getArena().getGameDuration() * 60;
 
-        setPlayerInterval(getStartInterval() + 1);
+        resetPlayerInterval();
     }
 
     public void tick() {
@@ -68,6 +68,20 @@ public class PlayerEquipmentRandomizer {
         }
     }
 
+    /**
+     * This method reset the countdown for the player equipment
+     * randomizer.
+     */
+    public void resetPlayerInterval() {
+        setPlayerInterval(getStartInterval());
+    }
+
+    /**
+     * This method set the countdown for the player equipment
+     * randomizer to a specified value.
+     *
+     * @param playerInterval (Integer) the target interval status
+     */
     private void setPlayerInterval(Integer playerInterval) {
         this.playerInterval = playerInterval;
         mwPlayer.getPlayer().setLevel(playerInterval);
@@ -114,7 +128,7 @@ public class PlayerEquipmentRandomizer {
      * @return (int) the interval in seconds
      */
     private int getStartInterval() {
-        return arena.getInterval().getStart();
+        return arena.getInterval().getStart() + 1;
     }
 
     /**
