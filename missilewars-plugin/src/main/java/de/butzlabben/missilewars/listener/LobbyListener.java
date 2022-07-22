@@ -55,34 +55,37 @@ public class LobbyListener extends GameBoundListener {
     public void onInteract(PlayerInteractEvent event) {
         if (!isInLobbyArea(event.getPlayer().getLocation())) return;
 
-        Player p = event.getPlayer();
-        if (p.getGameMode() == GameMode.CREATIVE) return;
+        Player player = event.getPlayer();
+        if (player.getGameMode() == GameMode.CREATIVE) return;
+
         event.setCancelled(true);
+
         if (event.getItem() == null) return;
 
         if (VersionUtil.isStainedGlassPane(event.getItem().getType())) {
+            // team switch
 
-            if (!p.hasPermission("mw.change")) return;
+            if (!player.hasPermission("mw.change")) return;
 
             if (getGame().getTimer().getSeconds() < 10) {
-                p.sendMessage(MessageConfig.getMessage("change_team_not_now"));
+                player.sendMessage(MessageConfig.getMessage("change_team_not_now"));
                 return;
             }
 
             String displayName = event.getItem().getItemMeta().getDisplayName();
+
             if (displayName.equals(getGame().getTeam1().getFullname())) {
-                p.performCommand("mw change 1");
-                getGame().getScoreboardManager().updateScoreboard();
+                player.performCommand("mw change 1");
             } else {
-                p.performCommand("mw change 2");
-                getGame().getScoreboardManager().updateScoreboard();
+                player.performCommand("mw change 2");
             }
+            getGame().getScoreboardManager().updateScoreboard();
 
         } else if (event.getItem().getType() == Material.NETHER_STAR) {
+            // vote inventors
             VoteInventory inventory = new VoteInventory(getGame().getLobby().getArenas());
-            p.openInventory(inventory.getInventory(p));
+            player.openInventory(inventory.getInventory(player));
         }
-
     }
 
     @EventHandler
@@ -139,7 +142,10 @@ public class LobbyListener extends GameBoundListener {
 
     @EventHandler
     public void onDamage(EntityDamageEvent event) {
-        if (!isInLobbyArea(event.getEntity().getLocation())) return;
+        if (!(event.getEntity() instanceof Player)) return;
+
+        Player player = (Player) event.getEntity();
+        if (!isInLobbyArea(player.getLocation())) return;
 
         event.setCancelled(true);
     }
@@ -155,9 +161,9 @@ public class LobbyListener extends GameBoundListener {
     public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player)) return;
 
-        Player p = (Player) event.getWhoClicked();
-        if (!isInLobbyArea(p.getLocation())) return;
+        Player player = (Player) event.getWhoClicked();
+        if (!isInLobbyArea(player.getLocation())) return;
 
-        if (p.getGameMode() != GameMode.CREATIVE) event.setCancelled(true);
+        if (player.getGameMode() != GameMode.CREATIVE) event.setCancelled(true);
     }
 }

@@ -77,12 +77,12 @@ public class EndListener extends GameBoundListener {
     }
 
     @EventHandler
-    public void onClick(InventoryClickEvent event) {
+    public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player)) return;
 
-        Player p = (Player) event.getWhoClicked();
-        if (isInGameWorld(p.getLocation()))
-            if (p.getGameMode() != GameMode.CREATIVE && !p.isOp())
-                event.setCancelled(true);
+        Player player = (Player) event.getWhoClicked();
+        if (!isInGameWorld(player.getLocation())) return;
+
+        if (player.getGameMode() != GameMode.CREATIVE) event.setCancelled(true);
     }
 }

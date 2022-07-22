@@ -30,14 +30,14 @@ import de.butzlabben.missilewars.wrapper.event.PlayerArenaLeaveEvent;
 import de.butzlabben.missilewars.wrapper.game.RespawnGoldBlock;
 import de.butzlabben.missilewars.wrapper.game.Shield;
 import de.butzlabben.missilewars.wrapper.game.Team;
-import de.butzlabben.missilewars.wrapper.geometry.Plane;
-import de.butzlabben.missilewars.wrapper.missile.Missile;
-import de.butzlabben.missilewars.wrapper.missile.MissileFacing;
 import de.butzlabben.missilewars.wrapper.player.MWPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
-import org.bukkit.entity.*;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
@@ -51,8 +51,6 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
-
-import java.util.Objects;
 
 /**
  * @author Butzlabben
@@ -90,87 +88,59 @@ public class GameListener extends GameBoundListener {
     public void onExplode(EntityExplodeEvent event) {
         if (!isInGameWorld(event.getLocation())) return;
 
-        Game game = getGame();
+        if (event.getEntity().getType() != EntityType.FIREBALL) return;
+        if (!getGame().getArena().getFireballConfiguration().isDestroysPortal()) return;
 
-        if (event.getEntity().getType() == EntityType.FIREBALL && !game.getArena().getFireballConfiguration().isDestroysPortal())
-            event.blockList().removeIf(b -> b.getType() == VersionUtil.getPortal());
+        event.blockList().removeIf(b -> b.getType() == VersionUtil.getPortal());
     }
 
     @EventHandler
     public void onBlockPhysics(BlockPhysicsEvent event) {
-        Location location = event.getBlock().getLocation();
-        if (!isInGameWorld(location)) return;
-        if (event.getChangedType() != VersionUtil.getPortal()) return;
-        Game game = getGame();
+        if (!isInGameWorld(event.getBlock().getLocation())) return;
 
-        if (game.getArena().getPlane1().distance(location.toVector()) > game.getArena().getPlane2().distance(location.toVector())) {
-            game.getTeam1().setGameResult(GameResult.WIN);
-            game.getTeam2().setGameResult(GameResult.LOSE);
+        if (event.getChangedType() != VersionUtil.getPortal()) return;
+
+        Location location = event.getBlock().getLocation();
+
+        if (getGame().getArena().getPlane1().distance(location.toVector()) > getGame().getArena().getPlane2().distance(location.toVector())) {
+            getGame().getTeam1().setGameResult(GameResult.WIN);
+            getGame().getTeam2().setGameResult(GameResult.LOSE);
         } else {
-            game.getTeam1().setGameResult(GameResult.LOSE);
-            game.getTeam2().setGameResult(GameResult.WIN);
+            getGame().getTeam1().setGameResult(GameResult.LOSE);
+            getGame().getTeam2().setGameResult(GameResult.WIN);
         }
-        game.sendGameResult();
-        game.stopGame();
+        getGame().sendGameResult();
+        getGame().stopGame();
     }
 
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
         if (!isInGameWorld(event.getPlayer().getLocation())) return;
+
         if (event.getItem() == null) return;
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 
         Player player = event.getPlayer();
         ItemStack itemStack = event.getItem();
-        Game game = getGame();
 
         // missile spawn with using of a missile spawn egg
         if (VersionUtil.isMonsterEgg(itemStack.getType())) {
             event.setCancelled(true);
 
             // Can missiles only be spawned if the item interaction was performed on a block (no air)?
-            boolean isOnlyBlockPlaceable = game.getArena().getMissileConfiguration().isOnlyBlockPlaceable();
+            boolean isOnlyBlockPlaceable = getGame().getArena().getMissileConfiguration().isOnlyBlockPlaceable();
             if (isOnlyBlockPlaceable) {
                 if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
             }
 
-            // Are missiles only allowed to spawn inside the arena, between the two arena spawn points?
-            boolean isOnlyBetweenSpawnPlaceable = game.getArena().getMissileConfiguration().isOnlyBetweenSpawnPlaceable();
-            if (isOnlyBetweenSpawnPlaceable) {
-                if (!isInBetween(player.getLocation().toVector(), getGame().getArena().getPlane1(), getGame().getArena().getPlane2())) {
-                    player.sendMessage(MessageConfig.getMessage("missile_place_deny"));
-                    return;
-                }
-            }
-
-            Missile missile = game.getArena().getMissileConfiguration().getMissileFromName(itemStack.getItemMeta().getDisplayName());
-            if (missile == null) {
-                player.sendMessage(MessageConfig.getMessage("invalid_missile"));
-                return;
-            }
-            itemStack.setAmount(itemStack.getAmount() - 1);
-            player.setItemInHand(itemStack);
-            missile.paste(player, MissileFacing.getFacingPlayer(player, game.getArena().getMissileConfiguration()), getGame());
-
+            getGame().spawnMissile(player, itemStack);
             return;
         }
 
-        // shield spawn with using of a missile spawn egg
+        // shield spawn with using of a shield spawn egg
         if (itemStack.getType() == VersionUtil.getFireball()) {
-            int amount = event.getItem().getAmount();
-            event.getItem().setAmount(amount - 1);
 
-            if (amount == 1 && VersionUtil.getVersion() == 8) {
-                player.getInventory().remove(VersionUtil.getFireball());
-            }
-
-            Fireball fb = player.launchProjectile(Fireball.class);
-            fb.setVelocity(player.getLocation().getDirection().multiply(2.5D));
-            VersionUtil.playFireball(player, fb.getLocation());
-            fb.setYield(3F);
-            fb.setIsIncendiary(true);
-            fb.setBounce(false);
-
+            getGame().spawnFireball(player, itemStack);
             return;
         }
     }
@@ -212,37 +182,46 @@ public class GameListener extends GameBoundListener {
     public void onThrow(ProjectileLaunchEvent event) {
         if (!isInGameWorld(event.getEntity().getLocation())) return;
 
-        Game game = getGame();
         if (event.getEntity() instanceof Snowball) {
-            Snowball ball = (Snowball) event.getEntity();
-            if (ball.getShooter() instanceof Player) {
-                Shield shield = new Shield((Player) ball.getShooter(), game.getArena().getShieldConfiguration());
-                shield.onThrow(event);
-            }
+            Snowball snowball = (Snowball) event.getEntity();
+
+            if (!(snowball.getShooter() instanceof Player)) return;
+
+            Player shooter = (Player) snowball.getShooter();
+            Shield shield = new Shield(shooter, getGame().getArena().getShieldConfiguration());
+            shield.onThrow(event);
         }
     }
 
     @EventHandler
     public void onDamage(EntityDamageByEntityEvent event) {
-        if (!isInGameWorld(event.getEntity().getLocation())) return;
         if (!(event.getEntity() instanceof Player)) return;
-      
-        Player p = (Player) event.getEntity();
+
+        Player player = (Player) event.getEntity();
+        if (!isInGameWorld(player.getLocation())) return;
+
+        Player shooter;
         if (event.getDamager() instanceof Projectile) {
-            Projectile pj = (Projectile) event.getDamager();
-            Player shooter = (Player) pj.getShooter();
-            if (Objects.requireNonNull(getGame().getPlayer(shooter)).getTeam() == Objects.requireNonNull(getGame().getPlayer(p)).getTeam()) {
-                shooter.sendMessage(MessageConfig.getMessage("hurt_teammates"));
-                event.setCancelled(true);
-            }
-            return;
-        }
-        if (event.getDamager() instanceof Player) {
-            Player d = (Player) event.getDamager();
-            if (Objects.requireNonNull(getGame().getPlayer(d)).getTeam() == Objects.requireNonNull(getGame().getPlayer(p)).getTeam()) {
-                d.sendMessage(MessageConfig.getMessage("hurt_teammates"));
-                event.setCancelled(true);
-            }
+            Projectile projectile = (Projectile) event.getDamager();
+
+            if (!(projectile.getShooter() instanceof Player)) return;
+
+            shooter = (Player) projectile.getShooter();
+        } else if (event.getDamager() instanceof Player) {
+
+            shooter = (Player) event.getDamager();
+        } else return;
+
+        Team team = getGame().getPlayer(shooter).getTeam();
+        if (team == null) return;
+
+        // same player
+        if (shooter == player) return;
+
+        // same team
+        if (team == getGame().getPlayer(player).getTeam()) {
+            shooter.sendMessage(MessageConfig.getMessage("hurt_teammates"));
+            event.setCancelled(true);
         }
     }
 
@@ -257,6 +236,7 @@ public class GameListener extends GameBoundListener {
             event.setRespawnLocation(team.getSpawn());
             getGame().sendGameItems(player, true);
             getGame().setPlayerAttributes(player);
+            getGame().getPlayer(player).getRandomGameEquipment().resetPlayerInterval();
 
             FallProtectionConfiguration fallProtection = getGame().getArena().getFallProtection();
             if (fallProtection.isEnabled()) {
@@ -324,22 +304,17 @@ public class GameListener extends GameBoundListener {
         }
     }
 
-    // TODO - Analyse, Ingame Check and Crop Cancel Analytic
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player)) return;
-        Player p = (Player) event.getWhoClicked();
-        if (!isInGameWorld(p.getLocation())) return;
 
-        if (p.getGameMode() == GameMode.CREATIVE || p.isOp()) return;
-        if (event.getSlotType() != InventoryType.SlotType.ARMOR) return;
-        event.setCancelled(true);
-    }
+        Player player = (Player) event.getWhoClicked();
+        if (!isInGameWorld(player.getLocation())) return;
 
-    private boolean isInBetween(Vector point, Plane plane1, Plane plane2) {
-        double distanceBetween = plane1.distanceSquared(plane2.getSupport());
-        double distance1 = plane1.distanceSquared(point);
-        double distance2 = plane2.distanceSquared(point);
-        return distanceBetween > distance1 + distance2;
+        if (player.getGameMode() == GameMode.CREATIVE) return;
+
+        if (player.getGameMode() == GameMode.SPECTATOR) event.setCancelled(true);
+        if (event.getClickedInventory().getType() != InventoryType.PLAYER) event.setCancelled(true);
+        if (event.getSlotType() != InventoryType.SlotType.CONTAINER) event.setCancelled(true);
     }
 }
