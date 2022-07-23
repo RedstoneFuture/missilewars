@@ -259,11 +259,11 @@ public class MWCommands extends BaseCommand {
      * @param args Argument Array
      * @return (String) all next arguments
      */
-    private String getAllNextArgumentsAsString(CommandArgs args, boolean filterColorCode) {
+    private String getAllNextArgumentsAsString(String[] args, boolean filterColorCode) {
         StringBuilder sb = new StringBuilder();
         String arguments;
 
-        for (int i = 0; i < args.length(); i++) {
+        for (int i = 0; i < args.length; i++) {
             sb.append(" ");
         }
         arguments = sb.toString();
