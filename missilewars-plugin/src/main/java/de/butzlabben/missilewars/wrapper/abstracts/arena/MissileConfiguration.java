@@ -72,8 +72,9 @@ public class MissileConfiguration {
     public Missile getMissileFromName(String name) {
         String filteredName = name.replaceAll("§.", "");
         for (Missile missile : missiles) {
-            if (missile.getSchematicName(false).equalsIgnoreCase(filteredName)) return missile;
+            if (missile.getSchematicName(true).equalsIgnoreCase(filteredName)) return missile;
         }
+        Logger.WARN.log("Missile not found: " + filteredName);
         return null;
     }
 
