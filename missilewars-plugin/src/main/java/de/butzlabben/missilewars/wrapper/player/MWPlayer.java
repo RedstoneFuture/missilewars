@@ -44,6 +44,7 @@ public class MWPlayer implements Runnable {
     private final Game game;
     @Setter private Team team;
     private PlayerEquipmentRandomizer randomGameEquipment;
+    @Setter private boolean playerInteractEventCancel = false;
 
     public MWPlayer(Player player, Game game) {
         this.uuid = player.getUniqueId();

@@ -48,6 +48,7 @@ import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
@@ -207,9 +208,11 @@ public class GameListener extends GameBoundListener {
             if (!(projectile.getShooter() instanceof Player)) return;
 
             shooter = (Player) projectile.getShooter();
+
         } else if (event.getDamager() instanceof Player) {
 
             shooter = (Player) event.getDamager();
+
         } else return;
 
         Team team = getGame().getPlayer(shooter).getTeam();
@@ -314,7 +317,13 @@ public class GameListener extends GameBoundListener {
         if (player.getGameMode() == GameMode.CREATIVE) return;
 
         if (player.getGameMode() == GameMode.SPECTATOR) event.setCancelled(true);
-        if (event.getClickedInventory().getType() != InventoryType.PLAYER) event.setCancelled(true);
-        if (event.getSlotType() != InventoryType.SlotType.CONTAINER) event.setCancelled(true);
+
+        Inventory clickedInventory = event.getClickedInventory();
+        if (clickedInventory != null) {
+            if (clickedInventory.getType() != InventoryType.PLAYER) event.setCancelled(true);
+        }
+
+        if ((event.getSlotType() != InventoryType.SlotType.CONTAINER) &&
+                (event.getSlotType() != InventoryType.SlotType.QUICKBAR)) event.setCancelled(true);
     }
 }

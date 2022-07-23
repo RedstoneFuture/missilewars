@@ -60,19 +60,26 @@ public class LobbyListener extends GameBoundListener {
 
         event.setCancelled(true);
 
+        // prevent spam with the event handling
+        if (isInteractDelay(player)) return;
+        setInteractDelay(player);
+
         if (event.getItem() == null) return;
 
         if (VersionUtil.isStainedGlassPane(event.getItem().getType())) {
-            // team switch
-
+            // team switch:
             if (!player.hasPermission("mw.change")) return;
 
+            String displayName = event.getItem().getItemMeta().getDisplayName();
+
+            // same team:
+            if (displayName.equals(getGame().getPlayer(player).getTeam().getFullname())) return;
+
+            // time to late:
             if (getGame().getTimer().getSeconds() < 10) {
                 player.sendMessage(MessageConfig.getMessage("change_team_not_now"));
                 return;
             }
-
-            String displayName = event.getItem().getItemMeta().getDisplayName();
 
             if (displayName.equals(getGame().getTeam1().getFullname())) {
                 player.performCommand("mw change 1");
@@ -82,7 +89,7 @@ public class LobbyListener extends GameBoundListener {
             getGame().getScoreboardManager().updateScoreboard();
 
         } else if (event.getItem().getType() == Material.NETHER_STAR) {
-            // vote inventors
+            // vote inventory:
             VoteInventory inventory = new VoteInventory(getGame().getLobby().getArenas());
             player.openInventory(inventory.getInventory(player));
         }
