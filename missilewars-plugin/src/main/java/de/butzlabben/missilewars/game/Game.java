@@ -430,8 +430,13 @@ public class Game {
      */
     public void sendGameItems(Player player, boolean isRespawn) {
 
-        // clear inventory
-        player.getInventory().clear();
+        if (isRespawn) {
+            if (getArena().isKeepInventory()) return;
+
+        } else {
+            // clear inventory
+            player.getInventory().clear();
+        }
 
         // send armor
         ItemStack[] armor = getPlayer(player).getTeam().getTeamArmor();
