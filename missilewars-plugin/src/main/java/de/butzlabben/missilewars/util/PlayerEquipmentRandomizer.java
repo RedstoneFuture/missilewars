@@ -73,7 +73,7 @@ public class PlayerEquipmentRandomizer {
      * randomizer.
      */
     public void resetPlayerInterval() {
-        setPlayerInterval(getStartInterval());
+        setPlayerInterval(getStartInterval() + 1);
     }
 
     /**
@@ -85,6 +85,16 @@ public class PlayerEquipmentRandomizer {
     private void setPlayerInterval(Integer playerInterval) {
         this.playerInterval = playerInterval;
         mwPlayer.getPlayer().setLevel(playerInterval);
+    }
+
+    /**
+     * This method returns the interval after the player receives a new
+     * item at game start.
+     *
+     * @return (int) the interval in seconds
+     */
+    private int getStartInterval() {
+        return arena.getInterval().getStart();
     }
 
     /**
@@ -119,16 +129,6 @@ public class PlayerEquipmentRandomizer {
 
         mwPlayer.getPlayer().getInventory().addItem(item);
         sendEquipmentCounter++;
-    }
-
-    /**
-     * This method returns the interval after the player receives a new
-     * item at game start.
-     *
-     * @return (int) the interval in seconds
-     */
-    private int getStartInterval() {
-        return arena.getInterval().getStart() + 1;
     }
 
     /**
