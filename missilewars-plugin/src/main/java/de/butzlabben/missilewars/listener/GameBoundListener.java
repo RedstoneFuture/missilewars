@@ -55,7 +55,7 @@ public abstract class GameBoundListener implements Listener {
         MWPlayer mwPlayer = getGame().getPlayer(player);
         if (mwPlayer == null) return false;
 
-        return getGame().getPlayer(player).isPlayerInteractEventCancel();
+        return mwPlayer.isPlayerInteractEventCancel();
     }
 
     /**
@@ -68,7 +68,7 @@ public abstract class GameBoundListener implements Listener {
         MWPlayer mwPlayer = getGame().getPlayer(player);
         if (mwPlayer == null) return;
 
-        getGame().getPlayer(player).setPlayerInteractEventCancel(true);
-        Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> getGame().getPlayer(player).setPlayerInteractEventCancel(false), 20);
+        mwPlayer.setPlayerInteractEventCancel(true);
+        Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> mwPlayer.setPlayerInteractEventCancel(false), 20);
     }
 }

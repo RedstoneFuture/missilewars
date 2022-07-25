@@ -69,7 +69,7 @@ public class PlayerEquipmentRandomizer {
     }
 
     /**
-     * This method reset the countdown for the player equipment
+     * This method resets the countdown for the player equipment
      * randomizer.
      */
     public void resetPlayerInterval() {
@@ -77,7 +77,7 @@ public class PlayerEquipmentRandomizer {
     }
 
     /**
-     * This method set the countdown for the player equipment
+     * This method sets the countdown for the player equipment
      * randomizer to a specified value.
      *
      * @param playerInterval (Integer) the target interval status

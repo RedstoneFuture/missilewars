@@ -183,15 +183,14 @@ public class GameListener extends GameBoundListener {
     public void onThrow(ProjectileLaunchEvent event) {
         if (!isInGameWorld(event.getEntity().getLocation())) return;
 
-        if (event.getEntity() instanceof Snowball) {
-            Snowball snowball = (Snowball) event.getEntity();
+        if (!(event.getEntity() instanceof Snowball)) return;
 
-            if (!(snowball.getShooter() instanceof Player)) return;
+        Snowball snowball = (Snowball) event.getEntity();
+        if (!(snowball.getShooter() instanceof Player)) return;
 
-            Player shooter = (Player) snowball.getShooter();
-            Shield shield = new Shield(shooter, getGame().getArena().getShieldConfiguration());
-            shield.onThrow(event);
-        }
+        Player shooter = (Player) snowball.getShooter();
+        Shield shield = new Shield(shooter, getGame().getArena().getShieldConfiguration());
+        shield.onThrow(event);
     }
 
     @EventHandler
@@ -213,7 +212,9 @@ public class GameListener extends GameBoundListener {
 
             shooter = (Player) event.getDamager();
 
-        } else return;
+        } else {
+            return;
+        }
 
         Team team = getGame().getPlayer(shooter).getTeam();
         if (team == null) return;

@@ -67,7 +67,7 @@ public class LobbyListener extends GameBoundListener {
         if (event.getItem() == null) return;
 
         if (VersionUtil.isStainedGlassPane(event.getItem().getType())) {
-            // team switch:
+            // team change:
             if (!player.hasPermission("mw.change")) return;
 
             String displayName = event.getItem().getItemMeta().getDisplayName();
@@ -75,7 +75,7 @@ public class LobbyListener extends GameBoundListener {
             // same team:
             if (displayName.equals(getGame().getPlayer(player).getTeam().getFullname())) return;
 
-            // time to late:
+            // too late for team change:
             if (getGame().getTimer().getSeconds() < 10) {
                 player.sendMessage(MessageConfig.getMessage("change_team_not_now"));
                 return;
