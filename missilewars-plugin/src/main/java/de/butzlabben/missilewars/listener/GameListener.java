@@ -90,7 +90,7 @@ public class GameListener extends GameBoundListener {
         if (!isInGameWorld(event.getLocation())) return;
 
         if (event.getEntity().getType() != EntityType.FIREBALL) return;
-        if (!getGame().getArena().getFireballConfiguration().isDestroysPortal()) return;
+        if (getGame().getArena().getFireballConfiguration().isDestroysPortal()) return;
 
         event.blockList().removeIf(b -> b.getType() == VersionUtil.getPortal());
     }
