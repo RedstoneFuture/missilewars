@@ -22,12 +22,6 @@ import com.google.gson.annotations.SerializedName;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.wrapper.geometry.Area;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -36,10 +30,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
-@RequiredArgsConstructor
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Getter
 @ToString
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class Lobby {
 
     private String name = "lobby0";

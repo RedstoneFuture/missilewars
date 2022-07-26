@@ -22,16 +22,16 @@ import com.google.gson.annotations.SerializedName;
 import de.butzlabben.missilewars.wrapper.abstracts.arena.*;
 import de.butzlabben.missilewars.wrapper.geometry.FlatArea;
 import de.butzlabben.missilewars.wrapper.geometry.Plane;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
+@Getter
+@ToString
 @RequiredArgsConstructor
-@AllArgsConstructor
-@Data
 @Builder(toBuilder = true)
 public class Arena {
 

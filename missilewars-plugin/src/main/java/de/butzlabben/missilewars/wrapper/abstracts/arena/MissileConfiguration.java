@@ -31,8 +31,8 @@ import java.util.*;
 
 
 @Getter
-@RequiredArgsConstructor
 @ToString
+@RequiredArgsConstructor
 public class MissileConfiguration {
 
     // TODO pretty names
