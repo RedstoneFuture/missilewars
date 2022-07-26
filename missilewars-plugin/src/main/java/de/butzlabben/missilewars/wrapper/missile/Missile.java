@@ -18,6 +18,7 @@
 
 package de.butzlabben.missilewars.wrapper.missile;
 
+import com.google.gson.annotations.SerializedName;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.game.Game;
@@ -45,7 +46,7 @@ import java.io.File;
 public class Missile {
 
     private final String schematic;
-    private final String displayName;
+    @SerializedName("name") private final String displayName;
     private final EntityType egg;
     private final int down;
     private final int dist;

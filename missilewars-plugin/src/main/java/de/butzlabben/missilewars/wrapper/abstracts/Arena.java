@@ -72,4 +72,11 @@ public class Arena {
         Vector normal = team1Spawn.toVector().subtract(spawn2);
         return new Plane(spawn2, normal);
     }
+
+    public boolean isInBetween(Vector point, Plane plane1, Plane plane2) {
+        double distanceBetween = plane1.distanceSquared(plane2.getSupport());
+        double distance1 = plane1.distanceSquared(point);
+        double distance2 = plane2.distanceSquared(point);
+        return distanceBetween > distance1 + distance2;
+    }
 }

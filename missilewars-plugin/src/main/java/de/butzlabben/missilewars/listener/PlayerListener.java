@@ -41,8 +41,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.util.Vector;
@@ -155,17 +153,6 @@ public class PlayerListener implements Listener {
         game.removePlayer(mwPlayer);
 
         MissileWars.getInstance().getSignRepository().getSigns(game).forEach(MWSign::update);
-    }
-
-    // cancel anvil interaction to block renaming, and thus changing missiles
-    @EventHandler
-    public void onClick(InventoryClickEvent event) {
-        Game game = getGame(event.getWhoClicked().getLocation());
-        if (game != null) {
-            if (event.getInventory().getType() == InventoryType.ANVIL) {
-                event.setCancelled(true);
-            }
-        }
     }
 
     // Internal stuff
