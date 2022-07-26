@@ -20,18 +20,11 @@ package de.butzlabben.missilewars.listener;
 
 import de.butzlabben.missilewars.Config;
 import de.butzlabben.missilewars.Logger;
-import de.butzlabben.missilewars.MessageConfig;
-import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.GameManager;
-import de.butzlabben.missilewars.game.GameState;
 import de.butzlabben.missilewars.util.MotdManager;
-import de.butzlabben.missilewars.util.PlayerDataProvider;
 import de.butzlabben.missilewars.wrapper.event.PlayerArenaJoinEvent;
 import de.butzlabben.missilewars.wrapper.event.PlayerArenaLeaveEvent;
-import de.butzlabben.missilewars.wrapper.event.PrePlayerArenaJoinEvent;
-import de.butzlabben.missilewars.wrapper.player.MWPlayer;
-import de.butzlabben.missilewars.wrapper.signs.MWSign;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -92,117 +85,121 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onQuit(PlayerQuitEvent event) {
-        Player p = event.getPlayer();
+    public void onJoin(PlayerJoinEvent event) {
+        Game game = getGame(event.getPlayer().getLocation());
+        if (game == null) return;
 
-        Game game = getGame(p.getLocation());
-        if (game != null) {
-
-            if (!game.isIn(game.getLobby().getAfterGameSpawn()))
-                p.teleport(game.getLobby().getAfterGameSpawn());
-            else
-                p.teleport(Config.getFallbackSpawn());
-        }
+        Player player = event.getPlayer();
+        player.teleport(Config.getFallbackSpawn());
     }
 
     @EventHandler
-    public void onJoin(PlayerJoinEvent event) {
-        Player p = event.getPlayer();
+    public void onQuit(PlayerQuitEvent event) {
+        Game game = getGame(event.getPlayer().getLocation());
+        if (game == null) return;
 
-        Game game = getGame(p.getLocation());
-        if (game != null) {
+        Player player = event.getPlayer();
 
-            if (checkJoinOrLeave(p, null, game)) {
-                p.teleport(Config.getFallbackSpawn());
-            }
-        }
+        // old game handling:
+        registerPlayerArenaLeaveEvent(player, game);
+
+        player.teleport(Config.getFallbackSpawn());
     }
 
     @EventHandler
     public void onTeleport(PlayerTeleportEvent event) {
-        Game to = getGame(event.getTo());
-        Game from = getGame(event.getFrom());
-        if (checkJoinOrLeave(event.getPlayer(), from, to)) {
-            event.setCancelled(true);
+        Location from = event.getFrom();
+        Location to = event.getTo();
+        Game gameFrom = getGame(from);
+        Game gameTo = getGame(to);
+
+        // same game:
+        if (gameFrom == gameTo) return;
+
+        Player player = event.getPlayer();
+
+        // old game handling:
+        if (gameFrom != null) registerPlayerArenaLeaveEvent(player, gameFrom);
+
+        // new game handling:
+        if (gameTo != null) {
+            PlayerArenaJoinEvent joinEvent = registerPlayerArenaJoinEvent(player, gameTo);
+            if (joinEvent.isCancelled()) player.teleport(Config.getFallbackSpawn());
         }
     }
 
     @EventHandler
     public void onMove(PlayerMoveEvent event) {
-        Game to = getGame(event.getTo());
-        Game from = getGame(event.getFrom());
+        Location from = event.getFrom();
+        Location to = event.getTo();
+        Game gameFrom = getGame(from);
+        Game gameTo = getGame(to);
 
-        if (checkJoinOrLeave(event.getPlayer(), from, to)) {
-            event.setCancelled(true);
-            Vector addTo = event.getFrom().toVector().subtract(event.getTo().toVector()).multiply(3);
-            addTo.setY(0);
-            event.getPlayer().teleport(event.getFrom().add(addTo));
+        // same game:
+        if (gameFrom == gameTo) return;
+
+        Player player = event.getPlayer();
+
+        // old game handling:
+        if (gameFrom != null) registerPlayerArenaLeaveEvent(player, gameFrom);
+
+        // new game handling:
+        if (gameTo != null) {
+            PlayerArenaJoinEvent joinEvent = registerPlayerArenaJoinEvent(player, gameTo);
+            if (!(joinEvent.isCancelled())) return;
+            if (to != null) knockbackEffect(player, from, to);
         }
-
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-    public void onLeaveWithStuff(PlayerArenaLeaveEvent event) {
-        Game game = event.getGame();
-
-        MWPlayer mwPlayer = game.getPlayer(event.getPlayer());
-        Player player = mwPlayer.getPlayer();
-
-        PlayerDataProvider.getInstance().loadInventory(player);
-
-        game.removePlayer(mwPlayer);
-
-        MissileWars.getInstance().getSignRepository().getSigns(game).forEach(MWSign::update);
-    }
-
-    // Internal stuff
-
-    @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
-    public void onMaxPlayers(PrePlayerArenaJoinEvent event) {
-        if (event.getGame().getPlayers().size() >= event.getGame().getLobby().getMaxSize() && event.getGame().getState() == GameState.LOBBY)
-            event.setCancelled(true);
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-    public void onPreJoin(PrePlayerArenaJoinEvent event) {
-        Logger.DEBUG.log("PrePlayerArenaJoinEvent: " + event.getPlayer().getName());
-        Bukkit.getScheduler().runTask(MissileWars.getInstance(), () -> Bukkit.getPluginManager()
-                .callEvent(new PlayerArenaJoinEvent(event.getPlayer(), event.getGame())));
-    }
-
-    // Debugging staff
-
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerArenaJoin(PlayerArenaJoinEvent event) {
-        Logger.DEBUG.log("PlayerArenaJoinEvent: " + event.getPlayer().getName());
+        event.getGame().updateGameInfo();
+
+        sendEventDebugMessage("PlayerArenaJoin", event.getPlayer());
     }
 
-    @EventHandler
+    @EventHandler(priority = EventPriority.HIGHEST)
     public void onPlayerArenaLeave(PlayerArenaLeaveEvent event) {
-        Logger.DEBUG.log("PlayerArenaLeaveEvent: " + event.getPlayer().getName());
+        event.getGame().updateGameInfo();
+
+        sendEventDebugMessage("PlayerArenaLeave", event.getPlayer());
     }
 
+    private void sendEventDebugMessage(String event, Player player) {
+        String playername = player.getName();
+        String LobbyName = getGame(player.getLocation()).getLobby().getDisplayName();
+        Logger.DEBUG.log(event + ": " + playername + ">>" + LobbyName);
+    }
+
+    private PlayerArenaJoinEvent registerPlayerArenaJoinEvent(Player player, Game game) {
+        PlayerArenaJoinEvent onJoinGame = new PlayerArenaJoinEvent(player, game);
+        Bukkit.getPluginManager().callEvent(onJoinGame);
+        return onJoinGame;
+    }
+
+    private PlayerArenaLeaveEvent registerPlayerArenaLeaveEvent(Player player, Game game) {
+        PlayerArenaLeaveEvent onLeaveGame = new PlayerArenaLeaveEvent(player, game);
+        Bukkit.getPluginManager().callEvent(onLeaveGame);
+        return onLeaveGame;
+    }
+
+    /**
+     * This method gets the game based of the location. It's either inside
+     * the game lobby (representing as an area) or inside the game arena
+     * (representing as a world).
+     *
+     * @param location (Location) of the player
+     * @return the Game Object if existing for the location
+     */
     private Game getGame(Location location) {
         if (GameManager.getInstance() == null) return null;
 
         return GameManager.getInstance().getGame(location);
     }
 
-    /**
-     * Checks if cancelled and spits out events
-     */
-    private boolean checkJoinOrLeave(Player player, Game from, Game to) {
-        if (to != null && to != from) {
-            PrePlayerArenaJoinEvent event = new PrePlayerArenaJoinEvent(player, to);
-            Bukkit.getPluginManager().callEvent(event);
-            if (event.isCancelled()) player.sendMessage(MessageConfig.getMessage("not_enter_arena"));
-            return event.isCancelled();
-        }
-        if (from != null && to != from) {
-            PlayerArenaLeaveEvent event = new PlayerArenaLeaveEvent(player, from);
-            Bukkit.getPluginManager().callEvent(event);
-        }
-        return false;
+    private void knockbackEffect(Player player, Location from, Location to) {
+        Vector addTo = from.toVector().subtract(to.toVector()).multiply(3);
+        addTo.setY(0);
+        player.teleport(from.add(addTo));
     }
-
 }

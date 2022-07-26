@@ -50,11 +50,8 @@ public class LobbyTimer extends Timer implements Runnable {
         if (getGame().getPlayers().values().size() == 0) return;
 
         for (MWPlayer mp : getGame().getPlayers().values()) {
-            if (mp.getPlayer() != null) {
-                mp.getPlayer().setLevel(seconds);
-            } else {
-                getGame().removePlayer(mp);
-            }
+            if (mp.getPlayer() == null) continue;
+            mp.getPlayer().setLevel(seconds);
         }
 
         int size1 = getGame().getTeam1().getMembers().size();

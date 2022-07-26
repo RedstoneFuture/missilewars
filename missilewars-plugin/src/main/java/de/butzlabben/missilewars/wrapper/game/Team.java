@@ -81,7 +81,6 @@ public class Team {
 
         members.removeIf(mp -> mp.getUuid().equals(player.getUuid()));
 
-        game.getScoreboardManager().resetScoreboard();
         p.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
     }
     
@@ -104,7 +103,6 @@ public class Team {
         p.setDisplayName(getColorCode() + p.getName() + "§r");
         p.getInventory().setArmorContents(getTeamArmor());
 
-        game.getScoreboardManager().updateScoreboard();
         p.setScoreboard(game.getScoreboard());
     }
 
