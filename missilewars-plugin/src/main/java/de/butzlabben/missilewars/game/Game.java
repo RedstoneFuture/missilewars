@@ -257,7 +257,6 @@ public class Game {
             Logger.DEBUG.log("Stopping for: " + player.getName());
             player.setGameMode(GameMode.SPECTATOR);
             player.teleport(arena.getSpectatorSpawn());
-            player.setHealth(player.getMaxHealth());
 
         }
 
@@ -319,7 +318,6 @@ public class Game {
         }
 
         if (isSpectatorJoin) {
-
             Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> player.teleport(arena.getSpectatorSpawn()), 2);
             Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> player.setGameMode(GameMode.SPECTATOR), 35);
 
@@ -327,7 +325,6 @@ public class Game {
             player.setDisplayName("§7" + player.getName() + "§r");
 
         } else {
-
             player.getInventory().clear();
             player.setFoodLevel(20);
             player.setHealth(player.getMaxHealth());
@@ -340,10 +337,12 @@ public class Game {
                     .replace("%max_players%", Integer.toString(getLobby().getMaxSize()))
                     .replace("%players%", Integer.toString(getPlayers().values().size()))
                     .replace("%player%", player.getName()));
-
         }
 
+        player.setScoreboard(getScoreboard());
+
         if (state == GameState.LOBBY) {
+
             // team change menu:
             if (player.hasPermission("mw.change")) {
                 player.getInventory().setItem(0, VersionUtil.getGlassPlane(team1));
@@ -354,6 +353,9 @@ public class Game {
             if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPVOTING && arena == null) {
                 player.getInventory().setItem(4, new OrcItem(Material.NETHER_STAR, "§3Vote Map").getItemStack());
             }
+
+        } else if ((state == GameState.INGAME) && (!isSpectatorJoin)) {
+            startForPlayer(player);
         }
     }
 
@@ -379,6 +381,7 @@ public class Game {
             if (state == GameState.INGAME) checkTeamSize(team);
         }
 
+        player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
         removePlayer(mwPlayer);
     }
 
@@ -581,7 +584,7 @@ public class Game {
      *
      * @param player the target player
      */
-    public static void autoRespawnPlayer(Player player) {
+    public void autoRespawnPlayer(Player player) {
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> player.spigot().respawn(), 20L);
     }
 
@@ -753,11 +756,17 @@ public class Game {
     }
 
     public boolean isPlayersMax() {
-        return getPlayers().size() >= getLobby().getMaxSize();
+        int maxSize = getLobby().getMaxSize();
+        int currentSize = team1.getMembers().size() + team2.getMembers().size();
+        return currentSize >= maxSize;
     }
 
-    // TODO
     public boolean isSpectatorsMax() {
-        return false;
+        int maxSize = getArena().getMaxSpectators();
+
+        if (maxSize == -1) return false;
+
+        int currentSize = players.size();
+        return currentSize >= maxSize;
     }
 }

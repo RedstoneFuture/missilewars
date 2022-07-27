@@ -30,7 +30,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
@@ -151,35 +150,43 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerArenaJoin(PlayerArenaJoinEvent event) {
-        event.getGame().updateGameInfo();
-
-        sendEventDebugMessage("PlayerArenaJoin", event.getPlayer());
-    }
-
-    @EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerArenaLeave(PlayerArenaLeaveEvent event) {
-        event.getGame().updateGameInfo();
-
-        sendEventDebugMessage("PlayerArenaLeave", event.getPlayer());
-    }
-
     private void sendEventDebugMessage(String event, Player player) {
         String playername = player.getName();
-        String LobbyName = getGame(player.getLocation()).getLobby().getDisplayName();
-        Logger.DEBUG.log(event + ": " + playername + ">>" + LobbyName);
+
+        if (GameManager.getInstance() == null) {
+            Logger.ERROR.log("No instance found!");
+            return;
+        }
+
+        if (getGame(player.getLocation()) == null) {
+            Logger.ERROR.log("No game found!");
+            return;
+        }
+
+        // Logger.DEBUG.log(event + ": " + playername + " >> " + getGame(player.getLocation()).getLobby().getDisplayName());
     }
 
     private PlayerArenaJoinEvent registerPlayerArenaJoinEvent(Player player, Game game) {
         PlayerArenaJoinEvent onJoinGame = new PlayerArenaJoinEvent(player, game);
         Bukkit.getPluginManager().callEvent(onJoinGame);
+
+        if (!onJoinGame.isCancelled()) {
+            game.updateGameInfo();
+            sendEventDebugMessage("PlayerArenaJoin", player);
+        }
+
         return onJoinGame;
     }
 
     private PlayerArenaLeaveEvent registerPlayerArenaLeaveEvent(Player player, Game game) {
         PlayerArenaLeaveEvent onLeaveGame = new PlayerArenaLeaveEvent(player, game);
         Bukkit.getPluginManager().callEvent(onLeaveGame);
+
+        if (!onLeaveGame.isCancelled()) {
+            game.updateGameInfo();
+            sendEventDebugMessage("PlayerArenaLeave", player);
+        }
+
         return onLeaveGame;
     }
 

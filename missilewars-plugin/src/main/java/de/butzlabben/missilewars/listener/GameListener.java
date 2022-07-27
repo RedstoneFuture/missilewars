@@ -19,7 +19,6 @@
 package de.butzlabben.missilewars.listener;
 
 import de.butzlabben.missilewars.MessageConfig;
-import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.GameResult;
 import de.butzlabben.missilewars.util.version.VersionUtil;
@@ -30,7 +29,6 @@ import de.butzlabben.missilewars.wrapper.game.RespawnGoldBlock;
 import de.butzlabben.missilewars.wrapper.game.Shield;
 import de.butzlabben.missilewars.wrapper.game.Team;
 import de.butzlabben.missilewars.wrapper.player.MWPlayer;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -119,34 +117,6 @@ public class GameListener extends GameBoundListener {
         if (itemStack.getType() == VersionUtil.getFireball()) {
 
             getGame().spawnFireball(player, itemStack);
-            return;
-        }
-    }
-
-    @EventHandler
-    public void onJoin(PlayerArsenaJoinEvent event) {
-
-
-        if (!game.getLobby().isJoinOngoingGame() || game.getPlayers().size() >= game.getLobby().getMaxSize()) {
-            p.sendMessage(MessageConfig.getMessage("spectator"));
-            Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> p.teleport(game.getArena().getSpectatorSpawn()), 2);
-            Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> p.setGameMode(GameMode.SPECTATOR), 35);;
-            p.setDisplayName("§7" + p.getName() + "§r");
-            p.setScoreboard(game.getScoreboard());
-        } else {
-            Team to;
-            int size1 = game.getTeam1().getMembers().size();
-            int size2 = game.getTeam2().getMembers().size();
-            if (size2 < size1)
-                to = getGame().getTeam2();
-            else
-                to = getGame().getTeam1();
-
-            // Adds the player to the new team.
-            to.addMember(mwPlayer);
-
-            p.sendMessage(MessageConfig.getMessage("team_assigned").replace("%team%", to.getFullname()));
-            game.startForPlayer(p);
         }
     }
 
@@ -234,16 +204,16 @@ public class GameListener extends GameBoundListener {
 
             if (player.getLastDamageCause() == null) return;
 
-            String deathBroadcastMessage;
+            String deathBroadcast;
             EntityDamageEvent.DamageCause damageCause = player.getLastDamageCause().getCause();
 
             if (damageCause == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION || damageCause == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
-                deathBroadcastMessage = MessageConfig.getNativeMessage("died_explosion").replace("%player%", player.getDisplayName());
+                deathBroadcast = MessageConfig.getNativeMessage("died_explosion").replace("%player%", player.getDisplayName());
             } else {
-                deathBroadcastMessage = MessageConfig.getNativeMessage("died").replace("%player%", player.getDisplayName());
+                deathBroadcast = MessageConfig.getNativeMessage("died").replace("%player%", player.getDisplayName());
             }
 
-            getGame().broadcast(deathBroadcastMessage);
+            getGame().broadcast(deathBroadcast);
         }
 
         event.setDeathMessage(null);
@@ -297,7 +267,7 @@ public class GameListener extends GameBoundListener {
 
         Player player = event.getPlayer();
 
-        if (getGame().isPlayersMax()) {
+        if ((getGame().getLobby().isJoinOngoingGame()) || (getGame().isPlayersMax())) {
             if (getGame().isSpectatorsMax()) event.setCancelled(true);
             getGame().playerJoinInGame(player, true);
             return;
