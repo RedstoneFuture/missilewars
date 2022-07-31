@@ -18,7 +18,6 @@
 
 package de.butzlabben.missilewars.game;
 
-import com.google.common.base.Preconditions;
 import de.butzlabben.missilewars.Config;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
@@ -105,24 +104,25 @@ public class GameManager {
         }
     }
 
-    public void disableGame(String name) {
-        Preconditions.checkNotNull(name);
-        Game game = getGame(name);
-        if (game == null)
-            return;
+    public void disableGame(String lobbyName) {
+        Game game = getGame(lobbyName);
+        if (game == null) return;
+
         game.resetGame();
-        games.remove(name);
+        games.remove(lobbyName);
+
+        Logger.DEBUG.log("Old Game disabled.");
     }
 
     public void restartGame(Lobby oldLobby) {
-        String name = oldLobby.getName();
-        disableGame(name);
+        String oldLobbyName = oldLobby.getName();
+        disableGame(oldLobbyName);
         try {
             Lobby lobby = Serializer.deserialize(oldLobby.getFile(), Lobby.class);
             lobby.setFile(oldLobby.getFile());
             // Save for possible new values
             Serializer.serialize(oldLobby.getFile(), lobby);
-            games.put(name, new Game(lobby));
+            games.put(oldLobbyName, new Game(lobby));
         } catch (IOException exception) {
             Logger.ERROR.log("Could not load lobby " + oldLobby.getName());
             exception.printStackTrace();
@@ -131,6 +131,10 @@ public class GameManager {
 
     public Game getGame(String name) {
         return games.get(name);
+    }
+
+    public int getGameAmount() {
+        return games.size();
     }
 
     public Game getGame(Location location) {

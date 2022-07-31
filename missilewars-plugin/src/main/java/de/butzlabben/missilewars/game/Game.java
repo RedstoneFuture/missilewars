@@ -195,11 +195,11 @@ public class Game {
         createGameItems();
     }
 
-    private void updateGameListener(GameBoundListener listener) {
+    private void updateGameListener(GameBoundListener newListener) {
         if (listener != null) HandlerList.unregisterAll(listener);
 
-        Bukkit.getPluginManager().registerEvents(listener, MissileWars.getInstance());
-        this.listener = listener;
+        Bukkit.getPluginManager().registerEvents(newListener, MissileWars.getInstance());
+        this.listener = newListener;
     }
 
     public Scoreboard getScoreboard() {
@@ -242,8 +242,7 @@ public class Game {
     }
 
     public void stopGame() {
-        if (Config.isSetup())
-            return;
+        if (Config.isSetup()) return;
 
         Logger.DEBUG.log("Stopping");
 
@@ -399,7 +398,10 @@ public class Game {
     }
 
     public void resetGame() {
-        if (state == GameState.INGAME) stopGame();
+        if (state == GameState.INGAME) {
+            stopGame();
+            return;
+        }
 
         HandlerList.unregisterAll(listener);
 
@@ -464,7 +466,7 @@ public class Game {
      * team members, it also affects spectators.
      */
     private void removePlayer(MWPlayer mwPlayer) {
-        players.remove(mwPlayer);
+        players.remove(mwPlayer.getUuid());
     }
 
     public void broadcast(String message) {
