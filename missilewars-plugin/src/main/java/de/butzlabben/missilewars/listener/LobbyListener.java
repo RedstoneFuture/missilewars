@@ -120,7 +120,11 @@ public class LobbyListener extends GameBoundListener {
     public void onPlayerArenaJoin(PlayerArenaJoinEvent event) {
         if (!isInLobbyArea(event.getPlayer().getLocation())) return;
 
-        if (getGame().isPlayersMax()) event.setCancelled(true);
+        if (getGame().isPlayersMax()) {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage(MessageConfig.getMessage("not_enter_arena"));
+            return;
+        }
 
         Player player = event.getPlayer();
         getGame().playerJoinInGame(player, false);
@@ -133,6 +137,6 @@ public class LobbyListener extends GameBoundListener {
         Player player = event.getPlayer();
         MWPlayer mwPlayer = event.getGame().getPlayer(player);
 
-        getGame().playerLeaveFromGame(mwPlayer);
+        if (mwPlayer != null) getGame().playerLeaveFromGame(mwPlayer);
     }
 }

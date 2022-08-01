@@ -18,6 +18,7 @@
 
 package de.butzlabben.missilewars.listener;
 
+import de.butzlabben.missilewars.MessageConfig;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.wrapper.event.PlayerArenaJoinEvent;
 import de.butzlabben.missilewars.wrapper.event.PlayerArenaLeaveEvent;
@@ -71,7 +72,11 @@ public class EndListener extends GameBoundListener {
     public void onPlayerArenaJoin(PlayerArenaJoinEvent event) {
         if (!isInGameWorld(event.getPlayer().getLocation())) return;
 
-        if (getGame().isSpectatorsMax()) event.setCancelled(true);
+        if (getGame().isSpectatorsMax()) {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage(MessageConfig.getMessage("not_enter_arena"));
+            return;
+        }
 
         Player player = event.getPlayer();
         getGame().playerJoinInGame(player, true);
@@ -84,6 +89,6 @@ public class EndListener extends GameBoundListener {
         Player player = event.getPlayer();
         MWPlayer mwPlayer = event.getGame().getPlayer(player);
 
-        getGame().playerLeaveFromGame(mwPlayer);
+        if (mwPlayer != null) getGame().playerLeaveFromGame(mwPlayer);
     }
 }

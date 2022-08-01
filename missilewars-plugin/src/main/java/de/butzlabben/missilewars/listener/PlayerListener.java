@@ -20,6 +20,7 @@ package de.butzlabben.missilewars.listener;
 
 import de.butzlabben.missilewars.Config;
 import de.butzlabben.missilewars.Logger;
+import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.util.MotdManager;
@@ -35,13 +36,12 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerListPingEvent;
-import org.bukkit.util.Vector;
+import org.bukkit.scheduler.BukkitRunnable;
 
 /**
  * @author Butzlabben
  * @since 01.01.2018
  */
-@SuppressWarnings("deprecation")
 public class PlayerListener implements Listener {
 
     @EventHandler
@@ -89,7 +89,7 @@ public class PlayerListener implements Listener {
         if (game == null) return;
 
         Player player = event.getPlayer();
-        player.teleport(Config.getFallbackSpawn());
+        game.teleportToFallbackSpawn(player);
     }
 
     @EventHandler
@@ -102,7 +102,7 @@ public class PlayerListener implements Listener {
         // old game handling:
         registerPlayerArenaLeaveEvent(player, game);
 
-        player.teleport(Config.getFallbackSpawn());
+        game.teleportToFallbackSpawn(player);
     }
 
     @EventHandler
@@ -120,11 +120,16 @@ public class PlayerListener implements Listener {
         // old game handling:
         if (gameFrom != null) registerPlayerArenaLeaveEvent(player, gameFrom);
 
-        // new game handling:
-        if (gameTo != null) {
-            PlayerArenaJoinEvent joinEvent = registerPlayerArenaJoinEvent(player, gameTo);
-            if (joinEvent.isCancelled()) player.teleport(Config.getFallbackSpawn());
-        }
+        // teleport after a delay between the arena leave and the next area join
+        new BukkitRunnable() {
+            public void run() {
+                // new game handling:
+                if (gameTo != null) {
+                    PlayerArenaJoinEvent joinEvent = registerPlayerArenaJoinEvent(player, gameTo);
+                    if (joinEvent.isCancelled()) gameTo.teleportToFallbackSpawn(player);
+                }
+            }
+        }.runTaskLater(MissileWars.getInstance(), 2);
     }
 
     @EventHandler
@@ -146,24 +151,8 @@ public class PlayerListener implements Listener {
         if (gameTo != null) {
             PlayerArenaJoinEvent joinEvent = registerPlayerArenaJoinEvent(player, gameTo);
             if (!(joinEvent.isCancelled())) return;
-            if (to != null) knockbackEffect(player, from, to);
+            if (to != null) Game.knockbackEffect(player, from, to);
         }
-    }
-
-    private void sendEventDebugMessage(String event, Player player) {
-        String playername = player.getName();
-
-        if (GameManager.getInstance() == null) {
-            Logger.ERROR.log("No instance found!");
-            return;
-        }
-
-        if (getGame(player.getLocation()) == null) {
-            Logger.ERROR.log("No game found!");
-            return;
-        }
-
-        // Logger.DEBUG.log(event + ": " + playername + " >> " + getGame(player.getLocation()).getLobby().getDisplayName());
     }
 
     private PlayerArenaJoinEvent registerPlayerArenaJoinEvent(Player player, Game game) {
@@ -172,7 +161,10 @@ public class PlayerListener implements Listener {
 
         if (!onJoinGame.isCancelled()) {
             game.updateGameInfo();
-            sendEventDebugMessage("PlayerArenaJoin", player);
+            sendEventDebugMessage(player, game);
+            Logger.NORMAL.log(player.getName() + " joint the MW game " + game.getLobby().getName());
+        } else {
+            Logger.DEBUG.log("Canceling game join for " + player.getName());
         }
 
         return onJoinGame;
@@ -184,7 +176,8 @@ public class PlayerListener implements Listener {
 
         if (!onLeaveGame.isCancelled()) {
             game.updateGameInfo();
-            sendEventDebugMessage("PlayerArenaLeave", player);
+            sendEventDebugMessage(player, game);
+            Logger.NORMAL.log(player.getName() + " left the MW game " + game.getLobby().getName());
         }
 
         return onLeaveGame;
@@ -204,9 +197,14 @@ public class PlayerListener implements Listener {
         return GameManager.getInstance().getGame(location);
     }
 
-    private void knockbackEffect(Player player, Location from, Location to) {
-        Vector addTo = from.toVector().subtract(to.toVector()).multiply(3);
-        addTo.setY(0);
-        player.teleport(from.add(addTo));
+    private void sendEventDebugMessage(Player player, Game game) {
+
+        Logger.DEBUG.log("Location: " + player.getLocation());
+        Logger.DEBUG.log("Current game amount: " + GameManager.getInstance().getGameAmount());
+        Logger.DEBUG.log("Lobby: " + game.getLobby().getDisplayName());
+        Logger.DEBUG.log("Arena: " + game.getArena().getDisplayName());
+        Logger.DEBUG.log("Team 1: " + game.getTeam1());
+        Logger.DEBUG.log("Team 2: " + game.getTeam2());
+
     }
 }

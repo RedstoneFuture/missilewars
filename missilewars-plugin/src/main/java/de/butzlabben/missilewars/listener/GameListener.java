@@ -47,13 +47,11 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.util.Vector;
 
 /**
  * @author Butzlabben
  * @since 12.01.2018
  */
-@SuppressWarnings("deprecation")
 public class GameListener extends GameBoundListener {
 
     public GameListener(Game game) {
@@ -244,20 +242,24 @@ public class GameListener extends GameBoundListener {
     public void onMove(PlayerMoveEvent event) {
         if (!isInGameWorld(event.getTo())) return;
 
-        Player p = event.getPlayer();
-        if ((event.getTo().getBlockY() >= getGame().getArena().getMaxHeight()) && (p.getGameMode() == GameMode.SURVIVAL)) {
-            p.teleport(event.getFrom());
-            p.sendMessage(MessageConfig.getMessage("not_higher"));
-        } else if ((event.getTo().getBlockY() <= getGame().getArena().getDeathHeight()) && (p.getGameMode() == GameMode.SURVIVAL)) {
-            p.setLastDamageCause(new EntityDamageEvent(p, EntityDamageEvent.DamageCause.FALL, 20));
-            p.damage(20.0D);
+        Player player = event.getPlayer();
+        if (player.getGameMode() != GameMode.SURVIVAL) return;
+
+        int toY = event.getTo().getBlockY();
+        if (toY > getGame().getArena().getMaxHeight()) {
+            player.teleport(event.getFrom());
+            player.sendMessage(MessageConfig.getMessage("not_higher"));
+        } else if (toY < getGame().getArena().getDeathHeight()) {
+            player.setLastDamageCause(new EntityDamageEvent(player, EntityDamageEvent.DamageCause.FALL, 20));
+            player.damage(20.0D);
         }
+
+        Location from = event.getFrom();
+        Location to = event.getTo();
+
         if (!getGame().isInGameArea(event.getTo())) {
-            event.setCancelled(true);
-            Vector addTo = event.getFrom().toVector().subtract(event.getTo().toVector()).multiply(3);
-            addTo.setY(0);
-            p.teleport(event.getFrom().add(addTo));
-            p.sendMessage(MessageConfig.getMessage("arena_leave"));
+            if (to != null) Game.knockbackEffect(player, from, to);
+            player.sendMessage(MessageConfig.getMessage("arena_leave"));
         }
     }
 
@@ -267,8 +269,12 @@ public class GameListener extends GameBoundListener {
 
         Player player = event.getPlayer();
 
-        if ((getGame().getLobby().isJoinOngoingGame()) || (getGame().isPlayersMax())) {
-            if (getGame().isSpectatorsMax()) event.setCancelled(true);
+        if ((!getGame().getLobby().isJoinOngoingGame()) || (getGame().isPlayersMax())) {
+            if (getGame().isSpectatorsMax()) {
+                event.setCancelled(true);
+                event.getPlayer().sendMessage(MessageConfig.getMessage("not_enter_arena"));
+                return;
+            }
             getGame().playerJoinInGame(player, true);
             return;
         }
@@ -283,6 +289,6 @@ public class GameListener extends GameBoundListener {
         Player player = event.getPlayer();
         MWPlayer mwPlayer = event.getGame().getPlayer(player);
 
-        getGame().playerLeaveFromGame(mwPlayer);
+        if (mwPlayer != null) getGame().playerLeaveFromGame(mwPlayer);
     }
 }
