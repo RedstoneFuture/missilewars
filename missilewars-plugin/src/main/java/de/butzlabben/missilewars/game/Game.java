@@ -43,7 +43,6 @@ import de.butzlabben.missilewars.wrapper.abstracts.Lobby;
 import de.butzlabben.missilewars.wrapper.abstracts.MapChooseProcedure;
 import de.butzlabben.missilewars.wrapper.event.GameStartEvent;
 import de.butzlabben.missilewars.wrapper.event.GameStopEvent;
-import de.butzlabben.missilewars.wrapper.event.PlayerArenaJoinEvent;
 import de.butzlabben.missilewars.wrapper.game.MissileGameEquipment;
 import de.butzlabben.missilewars.wrapper.game.SpecialGameEquipment;
 import de.butzlabben.missilewars.wrapper.game.Team;
@@ -59,10 +58,12 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.util.Vector;
 
 import java.util.HashMap;
 import java.util.List;
@@ -139,13 +140,6 @@ public class Game {
 
         Logger.DEBUG.log("Registering, teleporting, etc. all players");
 
-        for (Player all : Bukkit.getOnlinePlayers()) {
-            if (!isIn(all.getLocation()))
-                continue;
-            Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(),
-                    () -> Bukkit.getPluginManager().callEvent(new PlayerArenaJoinEvent(all, this)), 2);
-        }
-
         // Change MOTD
         if (!Config.isMultipleLobbies()) MotdManager.getInstance().updateMOTD(this);
 
@@ -156,6 +150,8 @@ public class Game {
         timer = new LobbyTimer(this, lobby.getLobbyTime());
         bt = Bukkit.getScheduler().runTaskTimer(MissileWars.getInstance(), timer, 0, 20);
         state = GameState.LOBBY;
+
+        Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> applyForAllPlayers(this::runTeleportEventForPlayer), 2);
 
         if (Config.isSetup()) {
             Logger.WARN.log("Did not fully initialize lobby " + lobby.getName() + " as the plugin is in setup mode");
@@ -255,7 +251,7 @@ public class Game {
 
             Logger.DEBUG.log("Stopping for: " + player.getName());
             player.setGameMode(GameMode.SPECTATOR);
-            player.teleport(arena.getSpectatorSpawn());
+            teleportToArenaSpectatorSpawn(player);
 
         }
 
@@ -304,6 +300,12 @@ public class Game {
         gameWorld.unload();
     }
 
+    /**
+     * This method adds the player to the game.
+     *
+     * @param player the target Player
+     * @param isSpectatorJoin should the player join as spectator or as normal player
+     */
     public void playerJoinInGame(Player player, boolean isSpectatorJoin) {
 
         PlayerDataProvider.getInstance().storeInventory(player);
@@ -312,12 +314,12 @@ public class Game {
         if (state == GameState.LOBBY) {
             assert !isSpectatorJoin : "wrong syntax";
 
-            player.teleport(getLobby().getSpawnPoint());
+            teleportToLobbySpawn(player);
             player.setGameMode(GameMode.ADVENTURE);
         }
 
         if (isSpectatorJoin) {
-            Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> player.teleport(arena.getSpectatorSpawn()), 2);
+            Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> teleportToArenaSpectatorSpawn(player), 2);
             Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> player.setGameMode(GameMode.SPECTATOR), 35);
 
             player.sendMessage(MessageConfig.getMessage("spectator"));
@@ -358,6 +360,11 @@ public class Game {
         }
     }
 
+    /**
+     * This method handles the removal of the player from the game.
+     *
+     * @param mwPlayer the target missilewars player
+     */
     public void playerLeaveFromGame(MWPlayer mwPlayer) {
         Player player = mwPlayer.getPlayer();
         Team team = mwPlayer.getTeam();
@@ -384,6 +391,17 @@ public class Game {
         removePlayer(mwPlayer);
     }
 
+    /**
+     * This method executes the PlayerTeleportEvent to run the basic game join process
+     * after the game is restarted.
+     *
+     * @param player target player
+     */
+    private void runTeleportEventForPlayer(Player player) {
+        Bukkit.getPluginManager().callEvent(new PlayerTeleportEvent(player,
+                Config.getFallbackSpawn(), getLobby().getSpawnPoint()));
+    }
+
     private void checkTeamSize(Team team) {
         int teamSize = team.getMembers().size();
         if (teamSize == 0) {
@@ -407,7 +425,7 @@ public class Game {
 
         stopTimer();
 
-        applyForAllPlayers(player -> player.teleport(lobby.getAfterGameSpawn()));
+        applyForAllPlayers(this::teleportToAfterGameSpawn);
 
         if (gameWorld != null) {
             gameWorld.sendPlayersBack();
@@ -490,7 +508,6 @@ public class Game {
 
         playerTasks.put(player.getUniqueId(),
                 Bukkit.getScheduler().runTaskTimer(MissileWars.getInstance(), mwPlayer, 40, 20));
-
     }
 
     /**
@@ -670,7 +687,7 @@ public class Game {
         if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPVOTING) {
             this.broadcast(MessageConfig.getMessage("vote.finished").replace("%map%", this.arena.getDisplayName()));
         }
-        applyForAllPlayers(p -> p.getInventory().setItem(4, new ItemStack(Material.AIR)));
+        applyForAllPlayers(player -> player.getInventory().setItem(4, new ItemStack(Material.AIR)));
 
         ready = true;
     }
@@ -747,8 +764,15 @@ public class Game {
     public void updateGameInfo() {
         MissileWars.getInstance().getSignRepository().getSigns(this).forEach(MWSign::update);
         getScoreboardManager().resetScoreboard();
+        Logger.DEBUG.log("Updated signs and scoreboard.");
     }
 
+    /**
+     * This method returns the next matching team for the next player to
+     * join. It is always the smaller team.
+     *
+     * @return (Team) the matched team to join
+     */
     public Team getNextTeam() {
         if (team1.getMembers().size() > team2.getMembers().size()) {
             return team2;
@@ -770,5 +794,27 @@ public class Game {
 
         int currentSize = players.size();
         return currentSize >= maxSize;
+    }
+
+    public static void knockbackEffect(Player player, Location from, Location to) {
+        Vector addTo = from.toVector().subtract(to.toVector()).multiply(3);
+        addTo.setY(0);
+        player.teleport(from.add(addTo));
+    }
+
+    public void teleportToFallbackSpawn(Player player) {
+        player.teleport(Config.getFallbackSpawn());
+    }
+
+    public void teleportToLobbySpawn(Player player) {
+        player.teleport(getLobby().getSpawnPoint());
+    }
+
+    public void teleportToArenaSpectatorSpawn(Player player) {
+        player.teleport(getArena().getSpectatorSpawn());
+    }
+
+    public void teleportToAfterGameSpawn(Player player) {
+        player.teleport(getLobby().getAfterGameSpawn());
     }
 }
