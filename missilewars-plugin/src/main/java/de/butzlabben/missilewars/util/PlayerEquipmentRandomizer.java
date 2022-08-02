@@ -177,7 +177,7 @@ public class PlayerEquipmentRandomizer {
             }
         }
 
-        Logger.DEBUG.log("No interval factor value for map \"" + arena.getName() + "\" could be detected based on the game time of " + seconds + ". Please define at least one a interval value for a minimal team amount of " + maxGameDuration + ".");
+        Logger.DEBUG.log("No interval factor value for map \"" + arena.getName() + "\" could be detected based on the game time of " + seconds + " seconds. Please define at least one a interval value for a minimal team amount of " + maxGameDuration + " seconds.");
         return DEFAULT_FACTOR_BY_GAME_TIME;
     }
 
