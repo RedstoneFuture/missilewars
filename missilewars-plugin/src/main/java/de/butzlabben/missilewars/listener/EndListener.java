@@ -19,11 +19,10 @@
 package de.butzlabben.missilewars.listener;
 
 import de.butzlabben.missilewars.MessageConfig;
-import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.game.Game;
-import de.butzlabben.missilewars.util.PlayerDataProvider;
 import de.butzlabben.missilewars.wrapper.event.PlayerArenaJoinEvent;
-import org.bukkit.Bukkit;
+import de.butzlabben.missilewars.wrapper.event.PlayerArenaLeaveEvent;
+import de.butzlabben.missilewars.wrapper.player.MWPlayer;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -40,23 +39,6 @@ public class EndListener extends GameBoundListener {
 
     public EndListener(Game game) {
         super(game);
-    }
-
-    @SuppressWarnings("deprecation")
-    @EventHandler
-    public void onJoin(PlayerArenaJoinEvent event) {
-        Game game = event.getGame();
-        if (game != getGame()) return;
-
-        Player p = event.getPlayer();
-        PlayerDataProvider.getInstance().storeInventory(p);
-        p.sendMessage(MessageConfig.getMessage("spectator"));
-
-        Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> p.teleport(game.getArena().getSpectatorSpawn()), 2);
-
-        Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> p.setGameMode(GameMode.SPECTATOR), 35);
-        p.setDisplayName("§7" + p.getName() + "§r");
-        game.addPlayer(p);
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -84,5 +66,29 @@ public class EndListener extends GameBoundListener {
         if (!isInGameWorld(player.getLocation())) return;
 
         if (player.getGameMode() != GameMode.CREATIVE) event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onPlayerArenaJoin(PlayerArenaJoinEvent event) {
+        if (!isInGameWorld(event.getPlayer().getLocation())) return;
+
+        if (getGame().isSpectatorsMax()) {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage(MessageConfig.getMessage("not_enter_arena"));
+            return;
+        }
+
+        Player player = event.getPlayer();
+        getGame().playerJoinInGame(player, true);
+    }
+
+    @EventHandler
+    public void onPlayerArenaLeave(PlayerArenaLeaveEvent event) {
+        if (!isInGameWorld(event.getPlayer().getLocation())) return;
+
+        Player player = event.getPlayer();
+        MWPlayer mwPlayer = event.getGame().getPlayer(player);
+
+        if (mwPlayer != null) getGame().playerLeaveFromGame(mwPlayer);
     }
 }

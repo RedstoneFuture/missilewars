@@ -19,18 +19,12 @@
 package de.butzlabben.missilewars.listener;
 
 import de.butzlabben.missilewars.MessageConfig;
-import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.game.Game;
-import de.butzlabben.missilewars.inventory.OrcItem;
 import de.butzlabben.missilewars.inventory.VoteInventory;
-import de.butzlabben.missilewars.util.PlayerDataProvider;
 import de.butzlabben.missilewars.util.version.VersionUtil;
-import de.butzlabben.missilewars.wrapper.abstracts.MapChooseProcedure;
 import de.butzlabben.missilewars.wrapper.event.PlayerArenaJoinEvent;
-import de.butzlabben.missilewars.wrapper.game.Team;
+import de.butzlabben.missilewars.wrapper.event.PlayerArenaLeaveEvent;
 import de.butzlabben.missilewars.wrapper.player.MWPlayer;
-import de.butzlabben.missilewars.wrapper.signs.MWSign;
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -96,58 +90,6 @@ public class LobbyListener extends GameBoundListener {
     }
 
     @EventHandler
-    public void onJoin(PlayerArenaJoinEvent event) {
-        Game game = event.getGame();
-        if (game != getGame()) return;
-
-        Player p = event.getPlayer();
-        MWPlayer mw = game.addPlayer(p);
-
-        PlayerDataProvider.getInstance().storeInventory(p);
-
-        p.getInventory().clear();
-        p.setFoodLevel(20);
-        p.setHealth(p.getMaxHealth());
-
-        Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> p.setGameMode(GameMode.ADVENTURE), 10);
-        Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> p.teleport(game.getLobby().getSpawnPoint()), 2);
-
-        Team to;
-
-        int size1 = getGame().getTeam1().getMembers().size();
-        int size2 = getGame().getTeam2().getMembers().size();
-
-        if (size2 < size1) {
-            to = getGame().getTeam2();
-        } else {
-            to = getGame().getTeam1();
-        }
-
-        // Premium version
-        if (p.hasPermission("mw.change")) {
-            p.getInventory().setItem(0, VersionUtil.getGlassPlane(getGame().getTeam1()));
-            p.getInventory().setItem(8, VersionUtil.getGlassPlane(getGame().getTeam2()));
-        }
-
-        if (game.getLobby().getMapChooseProcedure() == MapChooseProcedure.MAPVOTING && game.getArena() == null) {
-            p.getInventory().setItem(4, new OrcItem(Material.NETHER_STAR, "§3Vote Map").getItemStack());
-        }
-
-        // Adds the player to the new team.
-        to.addMember(mw);
-
-        p.sendMessage(MessageConfig.getMessage("team_assigned").replace("%team%", to.getFullname()));
-
-        String name = p.getName();
-        String players = "" + game.getPlayers().values().size();
-        String maxPlayers = "" + game.getLobby().getMaxSize();
-        String message = MessageConfig.getMessage("lobby_joined").replace("%max_players%", maxPlayers).replace("%players%", players).replace("%player%", name);
-        game.broadcast(message);
-
-        MissileWars.getInstance().getSignRepository().getSigns(game).forEach(MWSign::update);
-    }
-
-    @EventHandler
     public void onDamage(EntityDamageEvent event) {
         if (!(event.getEntity() instanceof Player)) return;
 
@@ -172,5 +114,29 @@ public class LobbyListener extends GameBoundListener {
         if (!isInLobbyArea(player.getLocation())) return;
 
         if (player.getGameMode() != GameMode.CREATIVE) event.setCancelled(true);
+    }
+
+    @EventHandler
+    public void onPlayerArenaJoin(PlayerArenaJoinEvent event) {
+        if (!isInLobbyArea(event.getPlayer().getLocation())) return;
+
+        if (getGame().isPlayersMax()) {
+            event.setCancelled(true);
+            event.getPlayer().sendMessage(MessageConfig.getMessage("not_enter_arena"));
+            return;
+        }
+
+        Player player = event.getPlayer();
+        getGame().playerJoinInGame(player, false);
+    }
+
+    @EventHandler
+    public void onPlayerArenaLeave(PlayerArenaLeaveEvent event) {
+        if (!isInLobbyArea(event.getPlayer().getLocation())) return;
+
+        Player player = event.getPlayer();
+        MWPlayer mwPlayer = event.getGame().getPlayer(player);
+
+        if (mwPlayer != null) getGame().playerLeaveFromGame(mwPlayer);
     }
 }
