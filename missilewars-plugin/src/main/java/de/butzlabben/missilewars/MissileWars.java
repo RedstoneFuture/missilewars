@@ -108,7 +108,7 @@ public class MissileWars extends JavaPlugin {
         GameManager.getInstance().getGames().values().forEach(game -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (!game.isIn(player.getLocation())) continue;
-                game.addPlayer(player);
+                game.teleportToLobbySpawn(player);
             }
         });
 
