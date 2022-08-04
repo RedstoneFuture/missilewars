@@ -174,11 +174,9 @@ public class PlayerListener implements Listener {
         PlayerArenaLeaveEvent onLeaveGame = new PlayerArenaLeaveEvent(player, game);
         Bukkit.getPluginManager().callEvent(onLeaveGame);
 
-        if (!onLeaveGame.isCancelled()) {
-            game.updateGameInfo();
-            sendEventDebugMessage(player, game);
-            Logger.NORMAL.log(player.getName() + " left the MW game " + game.getLobby().getName());
-        }
+        game.updateGameInfo();
+        sendEventDebugMessage(player, game);
+        Logger.NORMAL.log(player.getName() + " left the MW game " + game.getLobby().getName());
 
         return onLeaveGame;
     }
