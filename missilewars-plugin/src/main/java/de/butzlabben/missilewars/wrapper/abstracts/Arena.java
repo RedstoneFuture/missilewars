@@ -55,7 +55,7 @@ public class Arena {
     @SerializedName("fall_protection") private FallProtectionConfiguration fallProtection = new FallProtectionConfiguration();
     @SerializedName("money") private MoneyConfiguration money = new MoneyConfiguration();
     @SerializedName("equipment_interval") private EquipmentIntervalConfiguration interval = new EquipmentIntervalConfiguration();
-    @SerializedName("missile_configuration") private MissileConfiguration missileConfiguration = new MissileConfiguration();
+    @SerializedName("missile") private MissileConfiguration missileConfiguration = new MissileConfiguration();
     @SerializedName("spectator_spawn") private Location spectatorSpawn = new Location(null, 0, 100, 0, 90, 0);
     @SerializedName("area") private FlatArea gameArea = new FlatArea(-30, -72, 30, 72);
     @SerializedName("team1_spawn") private Location team1Spawn = new Location(null, 0.5, 100, 45.5, 180, 0);
