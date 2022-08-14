@@ -45,33 +45,30 @@ public class Shield implements Listener {
     private final Player player;
     private final ShieldConfiguration shieldConfiguration;
     private org.bukkit.entity.Snowball ball;
-    
-    public void onThrow(ProjectileLaunchEvent e) {
-        ball = (org.bukkit.entity.Snowball) e.getEntity();
+
+    public void onThrow(ProjectileLaunchEvent event) {
+        ball = (org.bukkit.entity.Snowball) event.getEntity();
         Bukkit.getPluginManager().registerEvents(this, MissileWars.getInstance());
+
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> {
-            try {
-                if (!ball.isDead())
-                    paste();
-                HandlerList.unregisterAll(this);
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
+            if (!ball.isDead()) pasteShield();
+            HandlerList.unregisterAll(this);
         }, shieldConfiguration.getFlyTime());
     }
 
     @EventHandler
-    public void onHit(ProjectileHitEvent e) {
-        if (e.getEntity().equals(ball) || ball == e.getEntity()) {
+    public void onHit(ProjectileHitEvent event) {
+        if (event.getEntity().equals(ball)) {
+            pasteShield();
             HandlerList.unregisterAll(this);
-            paste();
         }
     }
 
-    public void paste() {
+    public void pasteShield() {
         Location loc = ball.getLocation();
         Vector pastePos = new Vector(loc.getX(), loc.getY(), loc.getZ());
-        File schem = new File(MissileWars.getInstance().getDataFolder(), shieldConfiguration.getSchematic());
+        File pluginDir = MissileWars.getInstance().getDataFolder();
+        File schem = new File(pluginDir, "shields/" + shieldConfiguration.getSchematic());
 
         PasteProvider.getPaster().pasteSchematic(schem, pastePos, loc.getWorld());
         VersionUtil.playSnowball(player, player.getLocation());
