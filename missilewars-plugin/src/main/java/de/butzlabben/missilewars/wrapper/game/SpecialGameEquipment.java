@@ -59,11 +59,12 @@ public class SpecialGameEquipment {
      * This method goes through all configured special equipment items
      * and adds them to the list. The higher the defined spawn-occurrence
      * of an item type being set, the more often it will be added to the list.
+     * If the spawn-occurrence is 0, the equipment is skipped.
      */
     private void createSpecialEquipmentList() {
 
         int shieldOccurrence = game.getArena().getShieldConfiguration().getOccurrence();
-        int arrowOccurrence = game.getArena().getArrowOccurrence();
+        int arrowOccurrence = game.getArena().getArrowConfiguration().getOccurrence();
         int fireballOccurrence = game.getArena().getFireballConfiguration().getOccurrence();
 
         for (int i = shieldOccurrence; i > 0; i--) {
@@ -94,7 +95,7 @@ public class SpecialGameEquipment {
      * This method creates the arrow item stack.
      */
     private void createArrow() {
-        arrow = new ItemStack(Material.ARROW, 3);
+        arrow = new ItemStack(Material.ARROW, game.getArena().getArrowConfiguration().getAmount());
     }
 
     /**

@@ -50,7 +50,7 @@ public class Arena {
     @SerializedName("game_duration") private int gameDuration = 30;
     @SerializedName("fireball") private FireballConfiguration fireballConfiguration = new FireballConfiguration();
     @SerializedName("shield") private ShieldConfiguration shieldConfiguration = new ShieldConfiguration();
-    @SerializedName("arrow_occurrence") private int arrowOccurrence = 2;
+    @SerializedName("arrow") private ArrowConfiguration arrowConfiguration = new ArrowConfiguration();
     @SerializedName("save_statistics") private boolean saveStatistics = true;
     @SerializedName("fall_protection") private FallProtectionConfiguration fallProtection = new FallProtectionConfiguration();
     @SerializedName("money") private MoneyConfiguration money = new MoneyConfiguration();
