@@ -39,11 +39,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPhysicsEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -269,7 +265,7 @@ public class GameListener extends GameBoundListener {
 
     @EventHandler
     public void onPlayerArenaJoin(PlayerArenaJoinEvent event) {
-        if (!isInGameWorld(event.getPlayer().getLocation())) return;
+        if (!getGame().isIn(event.getPlayer().getLocation())) return;
 
         Player player = event.getPlayer();
 

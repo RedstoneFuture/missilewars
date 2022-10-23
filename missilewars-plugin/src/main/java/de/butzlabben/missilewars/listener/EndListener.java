@@ -70,7 +70,7 @@ public class EndListener extends GameBoundListener {
 
     @EventHandler
     public void onPlayerArenaJoin(PlayerArenaJoinEvent event) {
-        if (!isInGameWorld(event.getPlayer().getLocation())) return;
+        if (!getGame().isIn(event.getPlayer().getLocation())) return;
 
         if (getGame().isSpectatorsMax()) {
             event.setCancelled(true);
