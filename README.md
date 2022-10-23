@@ -2,7 +2,7 @@
 MissileWars is a famous, fun and fast minigame spigot-plugin for Minecraft
 
 ## Downloads
-You can download the jars in the "Releases" section on GitHub or build them yourself via `mvnw install`.
+You can download the jars in the "[Releases](https://github.com/Butzlabben/missilewars/releases)" section on GitHub or build them yourself via `mvnw install`.
 
 However, if you [buy the resource](https://www.spigotmc.org/resources/62947/
 ) and leave a review, you will also receive an extra map and some more missiles.
