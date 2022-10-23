@@ -22,6 +22,11 @@ import com.google.gson.annotations.SerializedName;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.wrapper.geometry.Area;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -29,12 +34,6 @@ import lombok.ToString;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Getter
 @ToString
@@ -56,7 +55,7 @@ public class Lobby {
     @SerializedName("after_game_spawn") private Location afterGameSpawn = Bukkit.getWorlds().get(0).getSpawnLocation();
     private Area area = Area.defaultAreaAround(Bukkit.getWorlds().get(0).getSpawnLocation());
     @SerializedName("map_choose_procedure") private MapChooseProcedure mapChooseProcedure = MapChooseProcedure.FIRST;
-    @SerializedName("possible_arenas") private List<String> possibleArenas = new ArrayList<String>() {{
+    @SerializedName("possible_arenas") private List<String> possibleArenas = new ArrayList<>() {{
         add("arena0");
     }};
 
@@ -74,7 +73,7 @@ public class Lobby {
     public void checkForWrongArenas() {
         for (String arenaName : possibleArenas) {
             Optional<Arena> arena = Arenas.getFromName(arenaName);
-            if (!arena.isPresent()) {
+            if (arena.isEmpty()) {
                 Logger.WARN.log("Could not find arena with name \"" + arenaName + "\" for lobby \"" + getName() + "\"");
             }
         }

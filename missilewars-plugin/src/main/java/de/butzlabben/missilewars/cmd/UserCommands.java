@@ -19,7 +19,12 @@
 package de.butzlabben.missilewars.cmd;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.*;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.Syntax;
 import de.butzlabben.missilewars.Config;
 import de.butzlabben.missilewars.MessageConfig;
 import de.butzlabben.missilewars.game.Arenas;
@@ -30,11 +35,10 @@ import de.butzlabben.missilewars.wrapper.abstracts.Arena;
 import de.butzlabben.missilewars.wrapper.abstracts.MapChooseProcedure;
 import de.butzlabben.missilewars.wrapper.game.Team;
 import de.butzlabben.missilewars.wrapper.player.MWPlayer;
+import java.util.Optional;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.Optional;
 
 @CommandAlias("mw|missilewars")
 public class UserCommands extends BaseCommand {
@@ -57,11 +61,6 @@ public class UserCommands extends BaseCommand {
 
         if (game.getState() != GameState.LOBBY) {
             player.sendMessage(MessageConfig.getPrefix() + "§cThe game is not in the right state to change your team right now");
-            return;
-        }
-
-        if (args.length != 1) {
-            player.sendMessage(MessageConfig.getPrefix() + "§c/mw vote <arena>");
             return;
         }
 
@@ -128,7 +127,7 @@ public class UserCommands extends BaseCommand {
 
         String arenaName = args[0];
         Optional<Arena> arena = Arenas.getFromName(arenaName);
-        if (!game.getVotes().containsKey(arenaName) || !arena.isPresent()) {
+        if (!game.getVotes().containsKey(arenaName) || arena.isEmpty()) {
             player.sendMessage(MessageConfig.getPrefix() + "§cNo map with this title was found");
             return;
         }
