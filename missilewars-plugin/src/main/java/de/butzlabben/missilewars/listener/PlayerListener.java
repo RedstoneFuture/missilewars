@@ -120,11 +120,10 @@ public class PlayerListener implements Listener {
         // old game handling:
         if (gameFrom != null) registerPlayerArenaLeaveEvent(player, gameFrom);
 
-        // teleport after a delay between the arena leave and the next area join
+        // new game handling (after a delay):
         if (gameTo == null) return;
         new BukkitRunnable() {
             public void run() {
-                // new game handling:
                 PlayerArenaJoinEvent joinEvent = registerPlayerArenaJoinEvent(player, gameTo);
                 if (joinEvent.isCancelled()) gameTo.teleportToFallbackSpawn(player);
             }
@@ -146,12 +145,14 @@ public class PlayerListener implements Listener {
         // old game handling:
         if (gameFrom != null) registerPlayerArenaLeaveEvent(player, gameFrom);
 
-        // new game handling:
-        if (gameTo != null) {
-            PlayerArenaJoinEvent joinEvent = registerPlayerArenaJoinEvent(player, gameTo);
-            if (!joinEvent.isCancelled()) return;
-            if (to != null) Game.knockbackEffect(player, from, to);
-        }
+        // new game handling (after a delay):
+        if (gameTo == null) return;
+        new BukkitRunnable() {
+            public void run() {
+                PlayerArenaJoinEvent joinEvent = registerPlayerArenaJoinEvent(player, gameTo);
+                if (joinEvent.isCancelled()) Game.knockbackEffect(player, from, to);
+            }
+        }.runTaskLater(MissileWars.getInstance(), 2);
     }
 
     private PlayerArenaJoinEvent registerPlayerArenaJoinEvent(Player player, Game game) {
