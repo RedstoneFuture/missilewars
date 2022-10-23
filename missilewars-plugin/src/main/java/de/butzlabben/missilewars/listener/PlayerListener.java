@@ -160,7 +160,7 @@ public class PlayerListener implements Listener {
 
         if (!onJoinGame.isCancelled()) {
             game.updateGameInfo();
-            sendEventDebugMessage(player, game);
+            logEventDebugMessage(player, game);
             Logger.NORMAL.log(player.getName() + " joint the MW game " + game.getLobby().getName());
         } else {
             Logger.DEBUG.log("Canceling game join for " + player.getName());
@@ -174,7 +174,7 @@ public class PlayerListener implements Listener {
         Bukkit.getPluginManager().callEvent(onLeaveGame);
 
         game.updateGameInfo();
-        sendEventDebugMessage(player, game);
+        logEventDebugMessage(player, game);
         Logger.NORMAL.log(player.getName() + " left the MW game " + game.getLobby().getName());
 
         return onLeaveGame;
@@ -194,7 +194,7 @@ public class PlayerListener implements Listener {
         return GameManager.getInstance().getGame(location);
     }
 
-    private void sendEventDebugMessage(Player player, Game game) {
+    private void logEventDebugMessage(Player player, Game game) {
 
         Logger.DEBUG.log("Location: " + player.getLocation());
         Logger.DEBUG.log("Current game amount: " + GameManager.getInstance().getGameAmount());
