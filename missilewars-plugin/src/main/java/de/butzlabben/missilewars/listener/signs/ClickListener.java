@@ -42,7 +42,7 @@ public class ClickListener implements Listener {
             if (VersionUtil.isWallSignMaterial(block.getType())) {
                 Location location = block.getLocation();
                 Optional<MWSign> optional = MissileWars.getInstance().getSignRepository().getSign(location);
-                if (!optional.isPresent())
+                if (optional.isEmpty())
                     return;
                 MWSign sign = optional.get();
                 Game game = GameManager.getInstance().getGame(sign.getLobby());

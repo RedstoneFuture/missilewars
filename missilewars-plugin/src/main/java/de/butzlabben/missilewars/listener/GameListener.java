@@ -42,7 +42,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPhysicsEvent;
-import org.bukkit.event.entity.*;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -57,7 +61,6 @@ import org.bukkit.util.Vector;
  * @author Butzlabben
  * @since 12.01.2018
  */
-@SuppressWarnings("deprecation")
 public class GameListener extends GameBoundListener {
 
     public GameListener(Game game) {
@@ -142,7 +145,6 @@ public class GameListener extends GameBoundListener {
         if (itemStack.getType() == VersionUtil.getFireball()) {
 
             getGame().spawnFireball(player, itemStack);
-            return;
         }
     }
 

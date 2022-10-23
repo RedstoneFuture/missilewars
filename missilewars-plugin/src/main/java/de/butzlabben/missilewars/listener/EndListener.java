@@ -42,7 +42,6 @@ public class EndListener extends GameBoundListener {
         super(game);
     }
 
-    @SuppressWarnings("deprecation")
     @EventHandler
     public void onJoin(PlayerArenaJoinEvent event) {
         Game game = event.getGame();

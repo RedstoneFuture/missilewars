@@ -49,9 +49,18 @@ import de.butzlabben.missilewars.wrapper.missile.Missile;
 import de.butzlabben.missilewars.wrapper.missile.MissileFacing;
 import de.butzlabben.missilewars.wrapper.player.MWPlayer;
 import de.butzlabben.missilewars.wrapper.stats.FightStats;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.ToString;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
@@ -60,12 +69,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Consumer;
 
 /**
  * @author Butzlabben
@@ -547,10 +550,7 @@ public class Game {
             throw new IllegalStateException("The game cannot be started, when 0 missiles are configured");
         }
 
-        this.arena = arena.toBuilder().build();
-        this.arena.setSpectatorSpawn(arena.getSpectatorSpawn().clone());
-        this.arena.setTeam1Spawn(arena.getTeam1Spawn().clone());
-        this.arena.setTeam2Spawn(arena.getTeam2Spawn().clone());
+        this.arena = arena.clone();
 
         // Load world
         this.gameWorld = new GameWorld(this, this.arena.getTemplateWorld());
