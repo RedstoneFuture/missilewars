@@ -147,11 +147,14 @@ public class PlayerListener implements Listener {
         if (gameFrom != null) registerPlayerArenaLeaveEvent(player, gameFrom);
 
         // new game handling:
-        if (gameTo != null) {
-            PlayerArenaJoinEvent joinEvent = registerPlayerArenaJoinEvent(player, gameTo);
-            if (!joinEvent.isCancelled()) return;
-            if (to != null) Game.knockbackEffect(player, from, to);
-        }
+        if (gameTo == null) return;
+        new BukkitRunnable() {
+            public void run() {
+                // new game handling:
+                PlayerArenaJoinEvent joinEvent = registerPlayerArenaJoinEvent(player, gameTo);
+                if (joinEvent.isCancelled()) Game.knockbackEffect(player, from, to);
+            }
+        }.runTaskLater(MissileWars.getInstance(), 2);
     }
 
     private PlayerArenaJoinEvent registerPlayerArenaJoinEvent(Player player, Game game) {
