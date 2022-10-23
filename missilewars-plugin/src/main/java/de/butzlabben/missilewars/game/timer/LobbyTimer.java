@@ -25,7 +25,6 @@ import de.butzlabben.missilewars.util.version.VersionUtil;
 import de.butzlabben.missilewars.wrapper.abstracts.Arena;
 import de.butzlabben.missilewars.wrapper.abstracts.MapChooseProcedure;
 import de.butzlabben.missilewars.wrapper.player.MWPlayer;
-
 import java.util.Map;
 import java.util.Optional;
 
@@ -128,7 +127,7 @@ public class LobbyTimer extends Timer implements Runnable {
         }
         if (mostVotes == null) throw new IllegalStateException("Most votes object was null");
         Optional<Arena> arena = Arenas.getFromName(mostVotes.getKey());
-        if (!arena.isPresent()) throw new IllegalStateException("Voted arena is not present");
+        if (arena.isEmpty()) throw new IllegalStateException("Voted arena is not present");
         game.setArena(arena.get());
     }
 }

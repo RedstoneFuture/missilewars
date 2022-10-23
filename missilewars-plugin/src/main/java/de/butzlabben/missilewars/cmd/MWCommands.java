@@ -19,7 +19,13 @@
 package de.butzlabben.missilewars.cmd;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.*;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Default;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.Syntax;
 import de.butzlabben.missilewars.Config;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MessageConfig;
@@ -33,14 +39,13 @@ import de.butzlabben.missilewars.wrapper.abstracts.Lobby;
 import de.butzlabben.missilewars.wrapper.abstracts.MapChooseProcedure;
 import de.butzlabben.missilewars.wrapper.missile.Missile;
 import de.butzlabben.missilewars.wrapper.missile.MissileFacing;
-import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 @CommandAlias("mw|missilewars")
 public class MWCommands extends BaseCommand {
@@ -138,7 +143,7 @@ public class MWCommands extends BaseCommand {
                 }
                 if (mostVotes == null) throw new IllegalStateException("Most votes object was null");
                 Optional<Arena> arena = Arenas.getFromName(mostVotes.getKey());
-                if (!arena.isPresent()) throw new IllegalStateException("Voted arena is not present");
+                if (arena.isEmpty()) throw new IllegalStateException("Voted arena is not present");
                 game.setArena(arena.get());
                 player.sendMessage(MessageConfig.getPrefix() + "A map was elected. Use \"/mw start\" again to start the round");
             }
