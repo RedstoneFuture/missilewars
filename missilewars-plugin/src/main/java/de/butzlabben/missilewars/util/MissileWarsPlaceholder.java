@@ -60,11 +60,15 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
     public String onRequest(OfflinePlayer offlinePlayer, String params) {
 
         if (params.endsWith("_this")) {
-            if (!offlinePlayer.isOnline()) return "ERROR: No a player!";
+            if (!offlinePlayer.isOnline()) return "§c§oPlayer is not online!";
 
             Player player = offlinePlayer.getPlayer();
             Game playerGame = GameManager.getInstance().getGame(player.getLocation());
-            if (playerGame == null) return "ERROR: Wrong world!";
+
+            if (playerGame == null) {
+                if (params.startsWith("lobby_")) return "§c§oThis is not a lobby area!";
+                if (params.startsWith("arena_")) return "§c§oThis is not a game arena!";
+            }
 
             if (params.startsWith("lobby_")) params.replace("_this", playerGame.getLobby().getName());
             if (params.startsWith("arena_")) params.replace("_this", playerGame.getArena().getName());
@@ -77,7 +81,7 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
             for (Arena arena : lobby.getArenas()) {
 
                 // %missilewars_lobby_displayname_<lobby name or 'this'>%
-                if (params.equalsIgnoreCase("lobby_displayname_" + lobby.getName())){
+                if (params.equalsIgnoreCase("lobby_displayname_" + lobby.getName())) {
                     return lobby.getDisplayName();
                 }
 

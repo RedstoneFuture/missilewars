@@ -122,8 +122,9 @@ public class MissileWars extends JavaPlugin {
         }
 
         // Small check to make sure that PlaceholderAPI is installed
-        if(Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new MissileWarsPlaceholder(this).register();
+            Logger.NORMAL.log("The PlaceholderAPI is installed. New placeholders are provided by MissileWars.");
         }
 
         endTime = System.currentTimeMillis();
