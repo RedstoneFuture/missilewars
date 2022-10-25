@@ -25,8 +25,7 @@ import de.butzlabben.missilewars.cmd.UserCommands;
 import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.listener.PlayerListener;
-import de.butzlabben.missilewars.listener.signs.ClickListener;
-import de.butzlabben.missilewars.listener.signs.ManageListener;
+import de.butzlabben.missilewars.listener.SignListener;
 import de.butzlabben.missilewars.util.ConnectionHolder;
 import de.butzlabben.missilewars.util.MissileWarsPlaceholder;
 import de.butzlabben.missilewars.util.MoneyUtil;
@@ -144,8 +143,7 @@ public class MissileWars extends JavaPlugin {
      */
     private void registerEvents() {
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
-        Bukkit.getPluginManager().registerEvents(new ClickListener(), this);
-        Bukkit.getPluginManager().registerEvents(new ManageListener(), this);
+        Bukkit.getPluginManager().registerEvents(new SignListener(), this);
     }
 
     /**

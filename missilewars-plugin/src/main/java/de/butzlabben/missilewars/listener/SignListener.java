@@ -16,7 +16,7 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.listener.signs;
+package de.butzlabben.missilewars.listener;
 
 import de.butzlabben.missilewars.MessageConfig;
 import de.butzlabben.missilewars.MissileWars;
@@ -25,16 +25,38 @@ import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.util.version.VersionUtil;
 import de.butzlabben.missilewars.wrapper.signs.MWSign;
 import de.butzlabben.missilewars.wrapper.signs.SignRepository;
+import lombok.RequiredArgsConstructor;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.Optional;
 
-public class ManageListener implements Listener {
+@RequiredArgsConstructor
+public class SignListener implements Listener {
+
+    @EventHandler
+    public void onSignClick(PlayerInteractEvent event) {
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            Block block = event.getClickedBlock();
+            if (VersionUtil.isWallSignMaterial(block.getType())) {
+                Location location = block.getLocation();
+                Optional<MWSign> optional = MissileWars.getInstance().getSignRepository().getSign(location);
+                if (optional.isEmpty())
+                    return;
+                MWSign sign = optional.get();
+                Game game = GameManager.getInstance().getGame(sign.getLobby());
+                if (game == null) return;
+                event.getPlayer().teleport(game.getLobby().getSpawnPoint());
+            }
+        }
+    }
 
     @EventHandler
     public void onSignChange(SignChangeEvent event) {
@@ -62,7 +84,7 @@ public class ManageListener implements Listener {
     }
 
     @EventHandler
-    public void onBreak(BlockBreakEvent event) {
+    public void onSignBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         if (player.hasPermission("mw.sign.manage")) {
             Block block = event.getBlock();
