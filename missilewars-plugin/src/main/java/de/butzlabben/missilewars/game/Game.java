@@ -28,10 +28,10 @@ import de.butzlabben.missilewars.game.timer.GameTimer;
 import de.butzlabben.missilewars.game.timer.LobbyTimer;
 import de.butzlabben.missilewars.game.timer.Timer;
 import de.butzlabben.missilewars.inventory.OrcItem;
-import de.butzlabben.missilewars.listener.EndListener;
 import de.butzlabben.missilewars.listener.GameBoundListener;
-import de.butzlabben.missilewars.listener.GameListener;
-import de.butzlabben.missilewars.listener.LobbyListener;
+import de.butzlabben.missilewars.listener.game.EndListener;
+import de.butzlabben.missilewars.listener.game.GameListener;
+import de.butzlabben.missilewars.listener.game.LobbyListener;
 import de.butzlabben.missilewars.util.MotdManager;
 import de.butzlabben.missilewars.util.PlayerDataProvider;
 import de.butzlabben.missilewars.util.ScoreboardManager;
@@ -51,18 +51,9 @@ import de.butzlabben.missilewars.wrapper.missile.MissileFacing;
 import de.butzlabben.missilewars.wrapper.player.MWPlayer;
 import de.butzlabben.missilewars.wrapper.signs.MWSign;
 import de.butzlabben.missilewars.wrapper.stats.FightStats;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.ToString;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
@@ -73,6 +64,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * @author Butzlabben
