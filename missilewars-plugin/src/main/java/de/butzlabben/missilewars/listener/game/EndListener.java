@@ -20,7 +20,6 @@ package de.butzlabben.missilewars.listener.game;
 
 import de.butzlabben.missilewars.MessageConfig;
 import de.butzlabben.missilewars.game.Game;
-import de.butzlabben.missilewars.listener.GameBoundListener;
 import de.butzlabben.missilewars.wrapper.event.PlayerArenaJoinEvent;
 import de.butzlabben.missilewars.wrapper.event.PlayerArenaLeaveEvent;
 import de.butzlabben.missilewars.wrapper.player.MWPlayer;
