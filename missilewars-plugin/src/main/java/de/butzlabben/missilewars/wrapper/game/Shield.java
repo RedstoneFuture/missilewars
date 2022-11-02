@@ -58,10 +58,10 @@ public class Shield implements Listener {
 
     @EventHandler
     public void onHit(ProjectileHitEvent event) {
-        if (event.getEntity().equals(ball)) {
-            pasteShield();
-            HandlerList.unregisterAll(this);
-        }
+        if (!event.getEntity().equals(ball)) return;
+
+        HandlerList.unregisterAll(this);
+        pasteShield();
     }
 
     public void pasteShield() {
