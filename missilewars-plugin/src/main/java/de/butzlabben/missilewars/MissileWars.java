@@ -89,8 +89,7 @@ public class MissileWars extends JavaPlugin {
 
         new File(Config.getLobbiesFolder()).mkdirs();
 
-        SignRepository repository = SignRepository.load();
-        this.signRepository = repository;
+        this.signRepository = SignRepository.load();
 
         registerEvents();
         registerCommands();
