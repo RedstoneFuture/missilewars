@@ -175,6 +175,8 @@ public class MissileWars extends JavaPlugin {
      */
     private void deleteTempWorlds() {
         File[] dirs = Bukkit.getWorldContainer().listFiles();
+        if (dirs == null) return;
+        
         for (File dir : dirs) {
             if (dir.getName().startsWith("mw-")) {
                 try {
