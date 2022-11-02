@@ -18,6 +18,13 @@
 
 package de.butzlabben.missilewars.wrapper.abstracts;
 
+/**
+ * @author Butzlabben
+ * @since 01.01.2018
+ */
 public enum MapChooseProcedure {
-    FIRST, MAPCYCLE, MAPVOTING
+
+    FIRST,
+    MAPCYCLE,
+    MAPVOTING
 }
