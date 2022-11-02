@@ -25,9 +25,9 @@ import de.butzlabben.missilewars.cmd.UserCommands;
 import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.listener.PlayerListener;
-import de.butzlabben.missilewars.listener.signs.ClickListener;
-import de.butzlabben.missilewars.listener.signs.ManageListener;
+import de.butzlabben.missilewars.listener.SignListener;
 import de.butzlabben.missilewars.util.ConnectionHolder;
+import de.butzlabben.missilewars.util.MissileWarsPlaceholder;
 import de.butzlabben.missilewars.util.MoneyUtil;
 import de.butzlabben.missilewars.util.SetupUtil;
 import de.butzlabben.missilewars.util.stats.PreFetcher;
@@ -108,7 +108,7 @@ public class MissileWars extends JavaPlugin {
         GameManager.getInstance().getGames().values().forEach(game -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (!game.isIn(player.getLocation())) continue;
-                game.addPlayer(player);
+                game.teleportToLobbySpawn(player);
             }
         });
 
@@ -118,6 +118,12 @@ public class MissileWars extends JavaPlugin {
 
         if (Config.isPrefetchPlayers()) {
             PreFetcher.preFetchPlayers(new StatsFetcher(new Date(0L), ""));
+        }
+
+        // Small check to make sure that PlaceholderAPI is installed
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new MissileWarsPlaceholder(this).register();
+            Logger.NORMAL.log("The PlaceholderAPI is installed. New placeholders are provided by MissileWars.");
         }
 
         endTime = System.currentTimeMillis();
@@ -137,8 +143,7 @@ public class MissileWars extends JavaPlugin {
      */
     private void registerEvents() {
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
-        Bukkit.getPluginManager().registerEvents(new ClickListener(), this);
-        Bukkit.getPluginManager().registerEvents(new ManageListener(), this);
+        Bukkit.getPluginManager().registerEvents(new SignListener(), this);
     }
 
     /**

@@ -30,7 +30,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -68,7 +67,7 @@ public class Team {
             return game.getTeam2();
         return game.getTeam1();
     }
-    
+
     public void removeMember(MWPlayer player) {
         if (!isMember(player)) return;
 
@@ -80,11 +79,8 @@ public class Team {
         }
 
         members.removeIf(mp -> mp.getUuid().equals(player.getUuid()));
-
-        game.getScoreboardManager().resetScoreboard();
-        p.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
     }
-    
+
     public void addMember(MWPlayer player) {
         if (isMember(player)) return;
 
@@ -103,9 +99,6 @@ public class Team {
         player.setTeam(this);
         p.setDisplayName(getColorCode() + p.getName() + "§r");
         p.getInventory().setArmorContents(getTeamArmor());
-
-        game.getScoreboardManager().updateScoreboard();
-        p.setScoreboard(game.getScoreboard());
     }
 
     public String getFullname() {
@@ -233,7 +226,7 @@ public class Team {
         }
     }
 
-    // TODO Review for necessity (of an alternative), completeness and refactoring
+    // TODO Add new team buffer
     public void updateIntervals(int newInterval) {
         if (newInterval < currentInterval && currentInterval != 0) {
             getGame().broadcast(MessageConfig.getMessage("team_buffed").replace("%team%", getFullname()));

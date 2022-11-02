@@ -19,21 +19,25 @@
 package de.butzlabben.missilewars.wrapper.abstracts;
 
 import com.google.gson.annotations.SerializedName;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.*;
+import de.butzlabben.missilewars.wrapper.abstracts.arena.EquipmentIntervalConfiguration;
+import de.butzlabben.missilewars.wrapper.abstracts.arena.FallProtectionConfiguration;
+import de.butzlabben.missilewars.wrapper.abstracts.arena.FireballConfiguration;
+import de.butzlabben.missilewars.wrapper.abstracts.arena.GameRespawnConfiguration;
+import de.butzlabben.missilewars.wrapper.abstracts.arena.GameSpawnConfiguration;
+import de.butzlabben.missilewars.wrapper.abstracts.arena.MissileConfiguration;
+import de.butzlabben.missilewars.wrapper.abstracts.arena.MoneyConfiguration;
+import de.butzlabben.missilewars.wrapper.abstracts.arena.ShieldConfiguration;
 import de.butzlabben.missilewars.wrapper.geometry.FlatArea;
 import de.butzlabben.missilewars.wrapper.geometry.Plane;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 
 @Getter
 @ToString
-@RequiredArgsConstructor
-@Builder(toBuilder = true)
-public class Arena {
+public class Arena implements Cloneable {
 
     private String name = "arena0";
     @SerializedName("display_name") private String displayName = "&eDefault map";
@@ -56,10 +60,23 @@ public class Arena {
     @SerializedName("money") private MoneyConfiguration money = new MoneyConfiguration();
     @SerializedName("equipment_interval") private EquipmentIntervalConfiguration interval = new EquipmentIntervalConfiguration();
     @SerializedName("missile") private MissileConfiguration missileConfiguration = new MissileConfiguration();
-    @SerializedName("spectator_spawn") private Location spectatorSpawn = new Location(null, 0, 100, 0, 90, 0);
     @SerializedName("area") private FlatArea gameArea = new FlatArea(-30, -72, 30, 72);
-    @SerializedName("team1_spawn") private Location team1Spawn = new Location(null, 0.5, 100, 45.5, 180, 0);
-    @SerializedName("team2_spawn") private Location team2Spawn = new Location(null, 0.5, 100, -45.5, 0, 0);
+    
+    @SerializedName("spectator_spawn")
+    @Setter
+    private Location spectatorSpawn = new Location(null, 0, 100, 0, 90, 0);
+    
+    @SerializedName("team1_spawn")
+    @Setter
+    private Location team1Spawn = new Location(null, 0.5, 100, 45.5, 180, 0);
+    
+    @SerializedName("team2_spawn")
+    @Setter
+    private Location team2Spawn = new Location(null, 0.5, 100, -45.5, 0, 0);
+    
+    public Arena() {
+
+    }
 
     public Plane getPlane1() {
         Vector spawn1 = team1Spawn.toVector();
@@ -78,5 +95,19 @@ public class Arena {
         double distance1 = plane1.distanceSquared(point);
         double distance2 = plane2.distanceSquared(point);
         return distanceBetween > distance1 + distance2;
+    }
+
+    @Override
+    public Arena clone() {
+        try {
+            Arena clone = (Arena) super.clone();
+            clone.spectatorSpawn = spectatorSpawn.clone();
+            clone.team1Spawn = team1Spawn.clone();
+            clone.team2Spawn = team2Spawn.clone();
+
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

@@ -28,10 +28,10 @@ public class MathUtil {
      * As long as the difference is smaller than 1.0E-8D, it will return true. This value was chosen, as
      * {@link org.bukkit.util.Vector#equals(Object)} uses a more losen tolerance.
      *
-     * @param value1
-     * @param value2
+     * @param value1 the first double
+     * @param value2 the second double
      *
-     * @return
+     * @return true if the double values are close enough to be considered equal
      */
     public static boolean closeEnoughEquals(final double value1, final double value2) {
         return Math.abs(value1 - value2) < 1.0E-8D;
