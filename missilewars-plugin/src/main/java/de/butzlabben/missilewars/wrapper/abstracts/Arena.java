@@ -19,14 +19,7 @@
 package de.butzlabben.missilewars.wrapper.abstracts;
 
 import com.google.gson.annotations.SerializedName;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.EquipmentIntervalConfiguration;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.FallProtectionConfiguration;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.FireballConfiguration;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.GameRespawnConfiguration;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.GameSpawnConfiguration;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.MissileConfiguration;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.MoneyConfiguration;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.ShieldConfiguration;
+import de.butzlabben.missilewars.wrapper.abstracts.arena.*;
 import de.butzlabben.missilewars.wrapper.geometry.FlatArea;
 import de.butzlabben.missilewars.wrapper.geometry.Plane;
 import lombok.Getter;
