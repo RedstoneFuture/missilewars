@@ -28,7 +28,7 @@ public enum Logger {
 
     BOOT("[MW] Boot | "),
     BOOTDONE("[MW] Boot | "),
-    NORMAL("[MW] "),
+    NORMAL("[MW] Info | "),
     SUCCESS("[MW] Success | "),
     WARN("[MW] Warn | "),
     ERROR("[MW] Error | "),
