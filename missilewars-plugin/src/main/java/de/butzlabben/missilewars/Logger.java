@@ -27,12 +27,12 @@ import org.bukkit.Bukkit;
 public enum Logger {
 
     BOOT("[MW] Boot | "),
-    SUCCESS("[MW] Success | "),
-    NORMAL("[MW] "),
-    DEBUG("[MW] Debug | "),
     BOOTDONE("[MW] Boot | "),
+    NORMAL("[MW] "),
+    SUCCESS("[MW] Success | "),
     WARN("[MW] Warn | "),
-    ERROR("[MW] Error | ");
+    ERROR("[MW] Error | "),
+    DEBUG("[MW] Debug | ");
 
     private final String prefix;
 
@@ -41,11 +41,9 @@ public enum Logger {
     }
 
     public void log(String msg) {
-        if (this == DEBUG && !Config.debug()) {
-            return;
-        }
-        if (this == BOOTDONE)
-            msg = msg + " [§aDONE§r]";
+        if (this == DEBUG && !Config.debug()) return;
+
+        if (this == BOOTDONE) msg = msg + " [§aDONE§r]";
         Bukkit.getConsoleSender().sendMessage(prefix + msg);
     }
 }
