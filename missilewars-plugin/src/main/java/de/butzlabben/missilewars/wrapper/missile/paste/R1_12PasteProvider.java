@@ -23,10 +23,15 @@ import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.missile.paste.r1_12.R1_12Paster;
 import de.butzlabben.missilewars.util.version.ColorConverter;
 import de.butzlabben.missilewars.wrapper.game.Team;
-import java.io.File;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
 
+import java.io.File;
+
+/**
+ * @author Butzlabben
+ * @since 23.09.2018
+ */
 public class R1_12PasteProvider implements Paster {
 
     R1_12Paster paster = new R1_12Paster();
