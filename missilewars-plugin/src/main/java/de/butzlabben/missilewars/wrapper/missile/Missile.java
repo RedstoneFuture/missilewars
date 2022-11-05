@@ -103,11 +103,7 @@ public class Missile {
                 .replace("%schematic_name_compact%", getSchematicName(true));
         return name;
     }
-
-    public EntityType getType() {
-        return egg;
-    }
-
+    
     /**
      * This method provides the missile spawn item based on the
      * mob spawn item specification in the arena configuration.

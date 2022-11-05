@@ -18,7 +18,6 @@
 
 package de.butzlabben.missilewars.wrapper.abstracts.arena;
 
-import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -26,10 +25,8 @@ import lombok.ToString;
 @Getter
 @ToString
 @RequiredArgsConstructor
-public class ShieldConfiguration {
+public class ArrowConfiguration {
 
-    private String name = "Shield";
-    private String schematic = "shield.schematic";
-    private int occurrence = 1;
-    @SerializedName("fly_time") private int flyTime = 20;
+    private int occurrence = 2;
+    private int amount = 3;
 }

@@ -19,14 +19,7 @@
 package de.butzlabben.missilewars.wrapper.abstracts;
 
 import com.google.gson.annotations.SerializedName;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.EquipmentIntervalConfiguration;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.FallProtectionConfiguration;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.FireballConfiguration;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.GameRespawnConfiguration;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.GameSpawnConfiguration;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.MissileConfiguration;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.MoneyConfiguration;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.ShieldConfiguration;
+import de.butzlabben.missilewars.wrapper.abstracts.arena.*;
 import de.butzlabben.missilewars.wrapper.geometry.FlatArea;
 import de.butzlabben.missilewars.wrapper.geometry.Plane;
 import lombok.Getter;
@@ -38,10 +31,6 @@ import org.bukkit.util.Vector;
 @Getter
 @ToString
 public class Arena implements Cloneable {
-
-    @SerializedName("spectator_spawn")
-    @Setter
-    private Location spectatorSpawn = new Location(null, 0, 100, 0, 90, 0);
 
     private String name = "arena0";
     @SerializedName("display_name") private String displayName = "&eDefault map";
@@ -58,20 +47,26 @@ public class Arena implements Cloneable {
     @SerializedName("game_duration") private int gameDuration = 30;
     @SerializedName("fireball") private FireballConfiguration fireballConfiguration = new FireballConfiguration();
     @SerializedName("shield") private ShieldConfiguration shieldConfiguration = new ShieldConfiguration();
-    @SerializedName("arrow_occurrence") private int arrowOccurrence = 2;
+    @SerializedName("arrow") private ArrowConfiguration arrowConfiguration = new ArrowConfiguration();
     @SerializedName("save_statistics") private boolean saveStatistics = true;
     @SerializedName("fall_protection") private FallProtectionConfiguration fallProtection = new FallProtectionConfiguration();
     @SerializedName("money") private MoneyConfiguration money = new MoneyConfiguration();
     @SerializedName("equipment_interval") private EquipmentIntervalConfiguration interval = new EquipmentIntervalConfiguration();
-    @SerializedName("missile_configuration") private MissileConfiguration missileConfiguration = new MissileConfiguration();
+    @SerializedName("missile") private MissileConfiguration missileConfiguration = new MissileConfiguration();
+    @SerializedName("area") private FlatArea gameArea = new FlatArea(-30, -72, 30, 72);
+    
+    @SerializedName("spectator_spawn")
+    @Setter
+    private Location spectatorSpawn = new Location(null, 0, 100, 0, 90, 0);
+    
     @SerializedName("team1_spawn")
     @Setter
     private Location team1Spawn = new Location(null, 0.5, 100, 45.5, 180, 0);
-    @SerializedName("area") private FlatArea gameArea = new FlatArea(-30, -72, 30, 72);
+    
     @SerializedName("team2_spawn")
     @Setter
     private Location team2Spawn = new Location(null, 0.5, 100, -45.5, 0, 0);
-
+    
     public Arena() {
 
     }

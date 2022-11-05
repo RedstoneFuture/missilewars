@@ -22,13 +22,7 @@ import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.util.version.VersionUtil;
 import de.butzlabben.missilewars.wrapper.abstracts.arena.ShieldConfiguration;
 import de.butzlabben.missilewars.wrapper.missile.paste.PasteProvider;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.io.IOUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -38,6 +32,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.util.Vector;
+
+import java.io.File;
 
 /**
  * @author Butzlabben
@@ -50,42 +46,29 @@ public class Shield implements Listener {
     private final ShieldConfiguration shieldConfiguration;
     private org.bukkit.entity.Snowball ball;
 
-    public static String getContent(String uri) throws IOException {
-        URL url = new URL(uri);
-        URLConnection con = url.openConnection();
-        con.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-        InputStream in = con.getInputStream();
-        String encoding = con.getContentEncoding();
-        encoding = encoding == null ? "UTF-8" : encoding;
-        return IOUtils.toString(in, encoding);
-    }
-
-    public void onThrow(ProjectileLaunchEvent e) {
-        ball = (org.bukkit.entity.Snowball) e.getEntity();
+    public void onThrow(ProjectileLaunchEvent event) {
+        ball = (org.bukkit.entity.Snowball) event.getEntity();
         Bukkit.getPluginManager().registerEvents(this, MissileWars.getInstance());
+
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> {
-            try {
-                if (!ball.isDead())
-                    paste();
-                HandlerList.unregisterAll(this);
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
+            if (!ball.isDead()) pasteShield();
+            HandlerList.unregisterAll(this);
         }, shieldConfiguration.getFlyTime());
     }
 
     @EventHandler
-    public void onHit(ProjectileHitEvent e) {
-        if (e.getEntity().equals(ball) || ball == e.getEntity()) {
-            HandlerList.unregisterAll(this);
-            paste();
-        }
+    public void onHit(ProjectileHitEvent event) {
+        if (!event.getEntity().equals(ball)) return;
+
+        HandlerList.unregisterAll(this);
+        pasteShield();
     }
 
-    public void paste() {
+    public void pasteShield() {
         Location loc = ball.getLocation();
         Vector pastePos = new Vector(loc.getX(), loc.getY(), loc.getZ());
-        File schem = new File(MissileWars.getInstance().getDataFolder(), shieldConfiguration.getSchematic());
+        File pluginDir = MissileWars.getInstance().getDataFolder();
+        File schem = new File(pluginDir, "shields/" + shieldConfiguration.getSchematic());
 
         PasteProvider.getPaster().pasteSchematic(schem, pastePos, loc.getWorld());
         VersionUtil.playSnowball(player, player.getLocation());
