@@ -23,14 +23,10 @@ import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.wrapper.abstracts.Arena;
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.*;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -39,8 +35,6 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * @author Butzlabben
@@ -104,9 +98,9 @@ public class SetupUtil {
         for (Arena arena : Arenas.getArenas()) {
             File file = new File(MissileWars.getInstance().getDataFolder(), arena.getShieldConfiguration().getSchematic());
             if (!file.isFile()) {
-                Logger.BOOT.log("Copying default shield schematic");
-
                 String resource = "shield.schematic";
+
+                Logger.BOOT.log("Copying default shield schematic (" + resource + ")");
                 copyFile(resource, file.getPath());
 
             }
@@ -116,16 +110,15 @@ public class SetupUtil {
     public static void checkMap(String worldName) {
         File file = new File(Config.getArenaFolder() + "/" + worldName);
         if (!file.isDirectory()) {
+            String resource = "MissileWars-Arena.zip";
 
             Logger.WARN.log("There was no map found with the name \"" + worldName + "\"");
-            Logger.BOOT.log("Copying default map");
-
-            String resource = "MissileWars-Arena.zip";
+            Logger.BOOT.log("Copying default map (" + resource + ")");
 
             try {
                 copyZip(resource, file.getPath());
             } catch (IOException e) {
-                Logger.ERROR.log("Unable to copy new map");
+                Logger.ERROR.log("Unable to copy new map!");
                 e.printStackTrace();
             }
         }
@@ -133,12 +126,10 @@ public class SetupUtil {
 
     public static void checkMissiles() {
         File file = new File(MissileWars.getInstance().getDataFolder(), "missiles");
-
-        // check if the directory "/missiles" exists
         if (!file.isDirectory()) {
-            Logger.BOOT.log("Copying default missiles folder");
-
             String resource = "missiles.zip";
+
+            Logger.BOOT.log("Copying default missiles folder (" + resource + ")");
 
             try {
                 copyZip(resource, file.getPath());
@@ -209,7 +200,6 @@ public class SetupUtil {
      *
      * @param zipIn    the input stream
      * @param filePath
-     *
      * @throws IOException
      */
     private static void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
