@@ -113,6 +113,6 @@ public class SignListener implements Listener {
     }
 
     private boolean hasManageSignPermission(Player player) {
-        return (player.hasPermission("mw.sign.manage"));
+        return player.hasPermission("mw.sign.manage");
     }
 }
