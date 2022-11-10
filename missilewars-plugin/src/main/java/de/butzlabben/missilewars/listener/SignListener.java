@@ -25,8 +25,6 @@ import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.util.version.VersionUtil;
 import de.butzlabben.missilewars.wrapper.signs.MWSign;
 import de.butzlabben.missilewars.wrapper.signs.SignRepository;
-import lombok.RequiredArgsConstructor;
-import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -38,71 +36,83 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.Optional;
 
-@RequiredArgsConstructor
 public class SignListener implements Listener {
+
+    private static final String KEY_SIGN_HEADLINE = "[missilewars]";
 
     @EventHandler
     public void onSignClick(PlayerInteractEvent event) {
-        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            Block block = event.getClickedBlock();
-            if (VersionUtil.isWallSignMaterial(block.getType())) {
-                Location location = block.getLocation();
-                Optional<MWSign> optional = MissileWars.getInstance().getSignRepository().getSign(location);
-                if (optional.isEmpty())
-                    return;
-                MWSign sign = optional.get();
-                Game game = GameManager.getInstance().getGame(sign.getLobby());
-                if (game == null) return;
-                event.getPlayer().teleport(game.getLobby().getSpawnPoint());
-            }
-        }
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+
+        Block block = event.getClickedBlock();
+        if (!VersionUtil.isWallSignMaterial(block.getType())) return;
+
+        SignRepository repository = MissileWars.getInstance().getSignRepository();
+        Optional<MWSign> optional = repository.getSign(block.getLocation());
+        if (optional.isEmpty()) return;
+
+        MWSign sign = optional.get();
+        Game game = GameManager.getInstance().getGame(sign.getLobby());
+        if (game == null) return;
+
+        event.getPlayer().teleport(game.getLobby().getSpawnPoint());
     }
 
     @EventHandler
     public void onSignChange(SignChangeEvent event) {
+        Block block = event.getBlock();
+        if (!VersionUtil.isWallSignMaterial(block.getType())) return;
+
         Player player = event.getPlayer();
-        if (!VersionUtil.isWallSignMaterial(event.getBlock().getType()))
-            return;
-        if (player.hasPermission("mw.sign.manage")) {
-            String headLine = event.getLine(0).toLowerCase();
-            if (headLine.equals("[missilewars]")) {
-                String lobbyName = event.getLine(1);
-                Game game = GameManager.getInstance().getGame(lobbyName);
-                if (game == null) {
-                    player.sendMessage(MessageConfig.getPrefix() + "§cCould not find lobby \"" + lobbyName + "\"");
-                    event.setCancelled(true);
-                } else {
-                    SignRepository signRepository = MissileWars.getInstance().getSignRepository();
-                    MWSign sign = new MWSign(event.getBlock().getLocation(), lobbyName);
-                    sign.update();
-                    signRepository.getSigns().add(new MWSign(event.getBlock().getLocation(), lobbyName));
-                    signRepository.saveData();
-                    player.sendMessage(MessageConfig.getPrefix() + "Sign was successfully created and connected");
-                }
-            }
+        if (!hasManageSignPermission(player)) return;
+
+        String headLine = event.getLine(0).toLowerCase();
+        if (!headLine.equals(KEY_SIGN_HEADLINE)) return;
+
+        String lobbyName = event.getLine(1);
+        Game game = GameManager.getInstance().getGame(lobbyName);
+
+        if (game != null) {
+            MWSign sign = new MWSign(event.getBlock().getLocation(), lobbyName);
+            sign.update();
+
+            SignRepository signRepository = MissileWars.getInstance().getSignRepository();
+            signRepository.getSigns().add(sign);
+            signRepository.saveData();
+
+            player.sendMessage(MessageConfig.getPrefix() + "Sign was successfully created and connected");
+        } else {
+            player.sendMessage(MessageConfig.getPrefix() + "§cCould not find lobby \"" + lobbyName + "\"");
+            event.setCancelled(true);
         }
     }
 
     @EventHandler
     public void onSignBreak(BlockBreakEvent event) {
+        Block block = event.getBlock();
+        if (!VersionUtil.isWallSignMaterial(block.getType())) return;
+
         Player player = event.getPlayer();
-        if (player.hasPermission("mw.sign.manage")) {
-            Block block = event.getBlock();
-            if (VersionUtil.isWallSignMaterial(block.getType())) {
-                SignRepository repository = MissileWars.getInstance().getSignRepository();
-                Optional<MWSign> optional = repository.getSign(block.getLocation());
-                if (optional.isPresent()) {
-                    if (player.isSneaking()) {
-                        MWSign sign = optional.get();
-                        repository.getSigns().remove(sign);
-                        repository.saveData();
-                        player.sendMessage(MessageConfig.getPrefix() + "You have successfully removed this missilewars sign");
-                    } else {
-                        player.sendMessage(MessageConfig.getPrefix() + "§cYou have to be sneaking in order to remove this sign");
-                        event.setCancelled(true);
-                    }
-                }
-            }
+        if (!hasManageSignPermission(player)) return;
+
+        SignRepository repository = MissileWars.getInstance().getSignRepository();
+        Optional<MWSign> optional = repository.getSign(block.getLocation());
+        if (optional.isEmpty()) return;
+
+        if (player.isSneaking()) {
+            MWSign sign = optional.get();
+
+            repository.getSigns().remove(sign);
+            repository.saveData();
+
+            player.sendMessage(MessageConfig.getPrefix() + "You have successfully removed this missilewars sign");
+        } else {
+            player.sendMessage(MessageConfig.getPrefix() + "§cYou have to be sneaking in order to remove this sign");
+            event.setCancelled(true);
         }
+    }
+
+    private boolean hasManageSignPermission(Player player) {
+        return player.hasPermission("mw.sign.manage");
     }
 }
