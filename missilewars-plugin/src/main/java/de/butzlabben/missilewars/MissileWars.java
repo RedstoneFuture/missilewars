@@ -89,8 +89,7 @@ public class MissileWars extends JavaPlugin {
 
         new File(Config.getLobbiesFolder()).mkdirs();
 
-        SignRepository repository = SignRepository.load();
-        this.signRepository = repository;
+        this.signRepository = SignRepository.load();
 
         registerEvents();
         registerCommands();
@@ -176,6 +175,8 @@ public class MissileWars extends JavaPlugin {
      */
     private void deleteTempWorlds() {
         File[] dirs = Bukkit.getWorldContainer().listFiles();
+        if (dirs == null) return;
+        
         for (File dir : dirs) {
             if (dir.getName().startsWith("mw-")) {
                 try {

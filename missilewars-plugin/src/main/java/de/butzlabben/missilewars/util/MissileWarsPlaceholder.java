@@ -50,7 +50,7 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
         return "0.0.1";
     }
 
-    // This is required or else PlaceholderAPI will unregister the Expansion on reload
+    // This is required or else PlaceholderAPI will unregister the expansion on reload
     @Override
     public boolean persist() {
         return true;
@@ -98,7 +98,7 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
             }
         }
 
-        // Placeholder is unknown by the Expansion
+        // Placeholder is unknown by the expansion
         return null;
     }
 

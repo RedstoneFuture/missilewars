@@ -20,24 +20,30 @@ package de.butzlabben.missilewars.wrapper.missile.paste;
 
 import de.butzlabben.missilewars.Config;
 import de.butzlabben.missilewars.MissileWars;
+import de.butzlabben.missilewars.missile.paste.r1_13.fawe.R1_13Paster;
 import de.butzlabben.missilewars.util.version.ColorConverter;
 import de.butzlabben.missilewars.wrapper.game.Team;
-import java.io.File;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
 
+import java.io.File;
+
+/**
+ * @author Butzlabben
+ * @since 23.09.2018
+ */
 public class R1_13FawePasteProvider implements Paster {
 
-    de.butzlabben.missilewars.missile.paste.r1_13.fawe.R1_13Paster platformPaster = new de.butzlabben.missilewars.missile.paste.r1_13.fawe.R1_13Paster();
+    R1_13Paster paster = new R1_13Paster();
 
     @Override
     public void pasteMissile(File schematic, Vector position, int rotation, World world, Team team) {
-        platformPaster.pasteMissile(schematic, position, rotation, world, ColorConverter.getGlassFromColorCode(team.getColorCode()),
+        paster.pasteMissile(schematic, position, rotation, world, ColorConverter.getGlassFromColorCode(team.getColorCode()),
                 Config.getReplaceRadius(), Config.getStartReplace(), MissileWars.getInstance(), Config.getReplaceTicks());
     }
 
     @Override
     public void pasteSchematic(File schematic, Vector position, World world) {
-        platformPaster.pasteSchematic(schematic, position, world);
+        paster.pasteSchematic(schematic, position, world);
     }
 }

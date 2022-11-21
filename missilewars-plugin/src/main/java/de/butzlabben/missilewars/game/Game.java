@@ -88,7 +88,7 @@ public class Game {
     private final HashMap<UUID, BukkitTask> playerTasks = new HashMap<>();
     private Timer timer;
     private BukkitTask bt;
-    private GameState state;
+    private GameState state = GameState.LOBBY;
     private Team team1;
     private Team team2;
     private boolean ready = false;
@@ -140,8 +140,7 @@ public class Game {
 
         Logger.DEBUG.log("Registering, teleporting, etc. all players");
 
-        // Change MOTD
-        if (!Config.isMultipleLobbies()) MotdManager.getInstance().updateMOTD(this);
+        updateMOTD();
 
         Logger.DEBUG.log("Start timer");
 
@@ -198,6 +197,12 @@ public class Game {
         this.listener = newListener;
     }
 
+    private void updateMOTD() {
+        if (!Config.isMultipleLobbies()) {
+            MotdManager.getInstance().updateMOTD(this);
+        }
+    }
+
     public Scoreboard getScoreboard() {
         return scoreboardManager.board;
     }
@@ -225,9 +230,7 @@ public class Game {
 
         applyForAllPlayers(this::startForPlayer);
 
-        // Change MOTD
-        if (!Config.isMultipleLobbies())
-            MotdManager.getInstance().updateMOTD(this);
+        updateMOTD();
 
         Bukkit.getPluginManager().callEvent(new GameStartEvent(this));
     }
@@ -261,10 +264,7 @@ public class Game {
         bt = Bukkit.getScheduler().runTaskTimer(MissileWars.getInstance(), timer, 5, 20);
         state = GameState.END;
 
-        // Change MOTD
-        if (!Config.isMultipleLobbies()) {
-            MotdManager.getInstance().updateMOTD(this);
-        }
+        updateMOTD();
 
         if (getArena().isSaveStatistics()) {
             FightStats stats = new FightStats(this);
