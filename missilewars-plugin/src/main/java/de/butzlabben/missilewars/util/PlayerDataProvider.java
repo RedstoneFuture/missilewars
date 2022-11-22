@@ -84,4 +84,13 @@ public class PlayerDataProvider {
     public File getPathFromUUID(UUID uuid) {
         return new File(playerDataDirectory, uuid.toString() + ".yml");
     }
+
+    public static void applyDefaultValues(Player player) {
+        player.getInventory().clear();
+        player.setExp(0);
+        player.setLevel(0);
+        player.setHealth(player.getMaxHealth());
+        player.setFoodLevel(20);
+        player.setGameMode(GameMode.SURVIVAL);
+    }
 }

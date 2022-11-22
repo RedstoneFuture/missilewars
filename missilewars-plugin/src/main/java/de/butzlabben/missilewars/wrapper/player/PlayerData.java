@@ -82,16 +82,7 @@ public class PlayerData implements ConfigurationSerializable {
         player.setFoodLevel(foodLevel);
         player.setGameMode(gameMode);
     }
-
-    public static void applyDefault(Player player) {
-        player.getInventory().clear();
-        player.setExp(0);
-        player.setLevel(0);
-        player.setHealth(player.getMaxHealth());
-        player.setFoodLevel(20);
-        player.setGameMode(GameMode.SURVIVAL);
-    }
-
+    
     public void saveToFile(String file) {
         YamlConfiguration config = new YamlConfiguration();
         config.set("data", this);
