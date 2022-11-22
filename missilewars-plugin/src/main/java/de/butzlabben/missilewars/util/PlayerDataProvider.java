@@ -21,6 +21,7 @@ package de.butzlabben.missilewars.util;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.wrapper.player.PlayerData;
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -31,11 +32,11 @@ public class PlayerDataProvider {
 
     private static final PlayerDataProvider instance = new PlayerDataProvider();
     private final HashMap<UUID, PlayerData> data = new HashMap<>();
-    private final File playerDataFile;
+    private final File playerDataDirectory;
 
     private PlayerDataProvider() {
-        playerDataFile = new File(MissileWars.getInstance().getDataFolder(), "data");
-        playerDataFile.mkdirs();
+        playerDataDirectory = new File(MissileWars.getInstance().getDataFolder(), "data");
+        playerDataDirectory.mkdirs();
     }
 
     public static PlayerDataProvider getInstance() {
@@ -70,7 +71,7 @@ public class PlayerDataProvider {
         if (playerData != null) {
             playerData.apply(player);
         } else {
-            PlayerData.applyDefault(player);
+            applyDefaultValues(player);
             Logger.WARN.log("Could not find inventory for " + uuid);
             return;
         }
@@ -81,6 +82,6 @@ public class PlayerDataProvider {
     }
 
     public File getPathFromUUID(UUID uuid) {
-        return new File(playerDataFile, uuid.toString() + ".yml");
+        return new File(playerDataDirectory, uuid.toString() + ".yml");
     }
 }
