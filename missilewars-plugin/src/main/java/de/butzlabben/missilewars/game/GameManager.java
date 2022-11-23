@@ -18,11 +18,11 @@
 
 package de.butzlabben.missilewars.game;
 
-import de.butzlabben.missilewars.Config;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
+import de.butzlabben.missilewars.configuration.Config;
+import de.butzlabben.missilewars.configuration.Lobby;
 import de.butzlabben.missilewars.util.serialization.Serializer;
-import de.butzlabben.missilewars.wrapper.abstracts.Lobby;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

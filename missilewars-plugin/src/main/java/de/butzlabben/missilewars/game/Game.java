@@ -19,10 +19,25 @@
 package de.butzlabben.missilewars.game;
 
 import com.google.common.base.Preconditions;
-import de.butzlabben.missilewars.Config;
 import de.butzlabben.missilewars.Logger;
-import de.butzlabben.missilewars.MessageConfig;
 import de.butzlabben.missilewars.MissileWars;
+import de.butzlabben.missilewars.configuration.Config;
+import de.butzlabben.missilewars.configuration.Lobby;
+import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.arena.Arena;
+import de.butzlabben.missilewars.event.GameStartEvent;
+import de.butzlabben.missilewars.event.GameStopEvent;
+import de.butzlabben.missilewars.game.enums.GameResult;
+import de.butzlabben.missilewars.game.enums.GameState;
+import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
+import de.butzlabben.missilewars.game.equipment.MissileGameEquipment;
+import de.butzlabben.missilewars.game.equipment.SpecialGameEquipment;
+import de.butzlabben.missilewars.game.misc.MotdManager;
+import de.butzlabben.missilewars.game.misc.ScoreboardManager;
+import de.butzlabben.missilewars.game.missile.Missile;
+import de.butzlabben.missilewars.game.missile.MissileFacing;
+import de.butzlabben.missilewars.game.signs.MWSign;
+import de.butzlabben.missilewars.game.stats.FightStats;
 import de.butzlabben.missilewars.game.timer.EndTimer;
 import de.butzlabben.missilewars.game.timer.GameTimer;
 import de.butzlabben.missilewars.game.timer.LobbyTimer;
@@ -32,25 +47,10 @@ import de.butzlabben.missilewars.listener.game.EndListener;
 import de.butzlabben.missilewars.listener.game.GameBoundListener;
 import de.butzlabben.missilewars.listener.game.GameListener;
 import de.butzlabben.missilewars.listener.game.LobbyListener;
-import de.butzlabben.missilewars.util.MotdManager;
+import de.butzlabben.missilewars.player.MWPlayer;
 import de.butzlabben.missilewars.util.PlayerDataProvider;
-import de.butzlabben.missilewars.util.ScoreboardManager;
 import de.butzlabben.missilewars.util.serialization.Serializer;
 import de.butzlabben.missilewars.util.version.VersionUtil;
-import de.butzlabben.missilewars.wrapper.abstracts.Arena;
-import de.butzlabben.missilewars.wrapper.abstracts.GameWorld;
-import de.butzlabben.missilewars.wrapper.abstracts.Lobby;
-import de.butzlabben.missilewars.wrapper.abstracts.MapChooseProcedure;
-import de.butzlabben.missilewars.wrapper.event.GameStartEvent;
-import de.butzlabben.missilewars.wrapper.event.GameStopEvent;
-import de.butzlabben.missilewars.wrapper.game.MissileGameEquipment;
-import de.butzlabben.missilewars.wrapper.game.SpecialGameEquipment;
-import de.butzlabben.missilewars.wrapper.game.Team;
-import de.butzlabben.missilewars.wrapper.missile.Missile;
-import de.butzlabben.missilewars.wrapper.missile.MissileFacing;
-import de.butzlabben.missilewars.wrapper.player.MWPlayer;
-import de.butzlabben.missilewars.wrapper.signs.MWSign;
-import de.butzlabben.missilewars.wrapper.stats.FightStats;
 import lombok.Getter;
 import lombok.ToString;
 import org.bukkit.*;
@@ -322,7 +322,7 @@ public class Game {
             Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> teleportToArenaSpectatorSpawn(player), 2);
             Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> player.setGameMode(GameMode.SPECTATOR), 35);
 
-            player.sendMessage(MessageConfig.getMessage("spectator"));
+            player.sendMessage(Messages.getMessage("spectator"));
             player.setDisplayName("§7" + player.getName() + "§r");
 
         } else {
@@ -332,9 +332,9 @@ public class Game {
 
             Team team = getNextTeam();
             team.addMember(mwPlayer);
-            player.sendMessage(MessageConfig.getMessage("team_assigned").replace("%team%", team.getFullname()));
+            player.sendMessage(Messages.getMessage("team_assigned").replace("%team%", team.getFullname()));
 
-            broadcast(MessageConfig.getMessage("lobby_joined")
+            broadcast(Messages.getMessage("lobby_joined")
                     .replace("%max_players%", Integer.toString(getLobby().getMaxSize()))
                     .replace("%players%", Integer.toString(getPlayers().values().size()))
                     .replace("%player%", player.getName()));
@@ -374,7 +374,7 @@ public class Game {
             if (task != null) task.cancel();
 
             if (team != null) {
-                broadcast(MessageConfig.getMessage("player_left")
+                broadcast(Messages.getMessage("player_left")
                         .replace("%team%", team.getFullname())
                         .replace("%player%", player.getName()));
             }
@@ -411,7 +411,7 @@ public class Game {
                 sendGameResult();
                 stopGame();
             });
-            broadcast(MessageConfig.getMessage("team_offline").replace("%team%", team.getFullname()));
+            broadcast(Messages.getMessage("team_offline").replace("%team%", team.getFullname()));
         }
     }
 
@@ -618,14 +618,14 @@ public class Game {
         boolean isOnlyBetweenSpawnPlaceable = this.arena.getMissileConfiguration().isOnlyBetweenSpawnPlaceable();
         if (isOnlyBetweenSpawnPlaceable) {
             if (!this.arena.isInBetween(player.getLocation().toVector(), this.arena.getPlane1(), this.arena.getPlane2())) {
-                player.sendMessage(MessageConfig.getMessage("missile_place_deny"));
+                player.sendMessage(Messages.getMessage("missile_place_deny"));
                 return;
             }
         }
 
         Missile missile = this.arena.getMissileConfiguration().getMissileFromName(itemStack.getItemMeta().getDisplayName());
         if (missile == null) {
-            player.sendMessage(MessageConfig.getMessage("invalid_missile"));
+            player.sendMessage(Messages.getMessage("invalid_missile"));
             return;
         }
         itemStack.setAmount(itemStack.getAmount() - 1);
@@ -682,7 +682,7 @@ public class Game {
         }
 
         if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPVOTING) {
-            this.broadcast(MessageConfig.getMessage("vote.finished").replace("%map%", this.arena.getDisplayName()));
+            this.broadcast(Messages.getMessage("vote.finished").replace("%map%", this.arena.getDisplayName()));
         }
         applyForAllPlayers(player -> player.getInventory().setItem(4, new ItemStack(Material.AIR)));
 
@@ -739,16 +739,16 @@ public class Game {
         String subTitle;
 
         if (team1.getGameResult() == GameResult.WIN) {
-            title = MessageConfig.getNativeMessage("game_result.title_won").replace("%team%", team1.getName());
-            subTitle = MessageConfig.getNativeMessage("game_result.subtitle_won");
+            title = Messages.getNativeMessage("game_result.title_won").replace("%team%", team1.getName());
+            subTitle = Messages.getNativeMessage("game_result.subtitle_won");
 
         } else if (team2.getGameResult() == GameResult.WIN) {
-            title = MessageConfig.getNativeMessage("game_result.title_won").replace("%team%", team2.getName());
-            subTitle = MessageConfig.getNativeMessage("game_result.subtitle_won");
+            title = Messages.getNativeMessage("game_result.title_won").replace("%team%", team2.getName());
+            subTitle = Messages.getNativeMessage("game_result.subtitle_won");
 
         } else {
-            title = MessageConfig.getNativeMessage("game_result.title_draw");
-            subTitle = MessageConfig.getNativeMessage("game_result.subtitle_draw");
+            title = Messages.getNativeMessage("game_result.title_draw");
+            subTitle = Messages.getNativeMessage("game_result.subtitle_draw");
 
         }
 

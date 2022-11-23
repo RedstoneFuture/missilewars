@@ -19,22 +19,24 @@
 package de.butzlabben.missilewars;
 
 import co.aikar.commands.PaperCommandManager;
-import de.butzlabben.missilewars.cmd.MWCommands;
-import de.butzlabben.missilewars.cmd.StatsCommands;
-import de.butzlabben.missilewars.cmd.UserCommands;
+import de.butzlabben.missilewars.commands.MWCommands;
+import de.butzlabben.missilewars.commands.StatsCommands;
+import de.butzlabben.missilewars.commands.UserCommands;
+import de.butzlabben.missilewars.configuration.Config;
+import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.game.GameManager;
+import de.butzlabben.missilewars.game.misc.MissileWarsPlaceholder;
+import de.butzlabben.missilewars.game.signs.CheckRunnable;
+import de.butzlabben.missilewars.game.signs.SignRepository;
+import de.butzlabben.missilewars.game.stats.StatsFetcher;
 import de.butzlabben.missilewars.listener.PlayerListener;
 import de.butzlabben.missilewars.listener.SignListener;
 import de.butzlabben.missilewars.util.ConnectionHolder;
-import de.butzlabben.missilewars.util.MissileWarsPlaceholder;
 import de.butzlabben.missilewars.util.MoneyUtil;
 import de.butzlabben.missilewars.util.SetupUtil;
 import de.butzlabben.missilewars.util.stats.PreFetcher;
 import de.butzlabben.missilewars.util.version.VersionUtil;
-import de.butzlabben.missilewars.wrapper.signs.CheckRunnable;
-import de.butzlabben.missilewars.wrapper.signs.SignRepository;
-import de.butzlabben.missilewars.wrapper.stats.StatsFetcher;
 import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 import org.bstats.bukkit.Metrics;
@@ -84,7 +86,7 @@ public class MissileWars extends JavaPlugin {
         deleteTempWorlds();
 
         Config.load();
-        MessageConfig.load();
+        Messages.load();
         SetupUtil.checkMissiles();
 
         new File(Config.getLobbiesFolder()).mkdirs();

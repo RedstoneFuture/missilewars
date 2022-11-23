@@ -20,7 +20,7 @@ package de.butzlabben.missilewars.listener.game;
 
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.game.Game;
-import de.butzlabben.missilewars.wrapper.player.MWPlayer;
+import de.butzlabben.missilewars.player.MWPlayer;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

@@ -18,13 +18,13 @@
 
 package de.butzlabben.missilewars.listener;
 
-import de.butzlabben.missilewars.MessageConfig;
 import de.butzlabben.missilewars.MissileWars;
+import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.GameManager;
+import de.butzlabben.missilewars.game.signs.MWSign;
+import de.butzlabben.missilewars.game.signs.SignRepository;
 import de.butzlabben.missilewars.util.version.VersionUtil;
-import de.butzlabben.missilewars.wrapper.signs.MWSign;
-import de.butzlabben.missilewars.wrapper.signs.SignRepository;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -80,9 +80,9 @@ public class SignListener implements Listener {
             signRepository.getSigns().add(sign);
             signRepository.saveData();
 
-            player.sendMessage(MessageConfig.getPrefix() + "Sign was successfully created and connected");
+            player.sendMessage(Messages.getPrefix() + "Sign was successfully created and connected");
         } else {
-            player.sendMessage(MessageConfig.getPrefix() + "§cCould not find lobby \"" + lobbyName + "\"");
+            player.sendMessage(Messages.getPrefix() + "§cCould not find lobby \"" + lobbyName + "\"");
             event.setCancelled(true);
         }
     }
@@ -105,9 +105,9 @@ public class SignListener implements Listener {
             repository.getSigns().remove(sign);
             repository.saveData();
 
-            player.sendMessage(MessageConfig.getPrefix() + "You have successfully removed this missilewars sign");
+            player.sendMessage(Messages.getPrefix() + "You have successfully removed this missilewars sign");
         } else {
-            player.sendMessage(MessageConfig.getPrefix() + "§cYou have to be sneaking in order to remove this sign");
+            player.sendMessage(Messages.getPrefix() + "§cYou have to be sneaking in order to remove this sign");
             event.setCancelled(true);
         }
     }
