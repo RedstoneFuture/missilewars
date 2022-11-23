@@ -21,66 +21,76 @@ package de.butzlabben.missilewars.util;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.wrapper.player.PlayerData;
+import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.UUID;
-import org.bukkit.entity.Player;
 
 public class PlayerDataProvider {
 
-    private static final PlayerDataProvider ourInstance = new PlayerDataProvider();
-
-    private final String path = "data";
+    private static final PlayerDataProvider instance = new PlayerDataProvider();
     private final HashMap<UUID, PlayerData> data = new HashMap<>();
+    private final File playerDataDirectory;
 
     private PlayerDataProvider() {
+        playerDataDirectory = new File(MissileWars.getInstance().getDataFolder(), "data");
+        playerDataDirectory.mkdirs();
     }
 
     public static PlayerDataProvider getInstance() {
-        return ourInstance;
+        return instance;
     }
 
     public void storeInventory(Player player) {
-        if (hasData(player.getUniqueId()))
-            return;
+        UUID uuid = player.getUniqueId();
+        if (data.containsKey(uuid)) return;
+
+        File file = getPathFromUUID(uuid);
+        if (file.exists() && file.isFile()) return;
+
         PlayerData playerData = new PlayerData(player);
-        data.put(player.getUniqueId(), playerData);
-        playerData.saveToFile(getPathFromUUID(player.getUniqueId()).getPath());
+        data.put(uuid, playerData);
+        playerData.saveToFile(file.getPath());
     }
 
     public void loadInventory(Player player) {
-        PlayerData data;
+        UUID uuid = player.getUniqueId();
+        PlayerData playerData = null;
         File file = getPathFromUUID(player.getUniqueId());
-        if (this.data.containsKey(player.getUniqueId())) {
-            data = this.data.remove(player.getUniqueId());
+
+        // getting data
+        if (data.containsKey(uuid)) {
+            playerData = data.get(uuid);
+        } else if (file.exists()) {
+            playerData = PlayerData.loadFromFile(file);
+        }
+
+        // applying data
+        if (playerData != null) {
+            playerData.apply(player);
         } else {
-            if (file.exists()) {
-                data = PlayerData.loadFromFile(file);
-            } else {
-                player.getInventory().clear();
-                player.setLevel(0);
-                Logger.WARN.log("Could not find inventory for " + player.getUniqueId());
-                return;
-            }
+            applyDefaultValues(player);
+            Logger.WARN.log("Could not find inventory for " + uuid);
+            return;
         }
-        if (file.exists())
-            file.delete();
-        if (data != null) {
-            data.apply(player);
-        }
+
+        // deleting old data
+        if (data.containsKey(uuid)) data.remove(uuid);
+        if (file.exists()) file.delete();
     }
 
     public File getPathFromUUID(UUID uuid) {
-        File file = new File(MissileWars.getInstance().getDataFolder(), path);
-        file.mkdirs();
-        return new File(file, uuid.toString() + ".yml");
+        return new File(playerDataDirectory, uuid.toString() + ".yml");
     }
 
-    public boolean hasData(UUID uuid) {
-        if (data.containsKey(uuid))
-            return true;
-        File file = getPathFromUUID(uuid);
-        return file.exists() && file.isFile();
-
+    public static void applyDefaultValues(Player player) {
+        player.getInventory().clear();
+        player.setExp(0);
+        player.setLevel(0);
+        player.setHealth(player.getMaxHealth());
+        player.setFoodLevel(20);
+        player.setGameMode(GameMode.SURVIVAL);
     }
 }

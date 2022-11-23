@@ -20,11 +20,6 @@ package de.butzlabben.missilewars.wrapper.player;
 
 import com.google.common.base.Preconditions;
 import de.butzlabben.missilewars.util.version.VersionUtil;
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.ToString;
 import org.bukkit.GameMode;
@@ -32,6 +27,12 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 @ToString
 @AllArgsConstructor
@@ -58,8 +59,10 @@ public class PlayerData implements ConfigurationSerializable {
 
     public static PlayerData loadFromFile(File file) {
         Preconditions.checkArgument(file.isFile(), file.getAbsolutePath() + " is not a file");
+
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(file);
         PlayerData data;
+
         if (VersionUtil.getVersion() > 12) {
             data = yamlConfiguration.getSerializable("data", PlayerData.class);
         } else {
@@ -69,7 +72,9 @@ public class PlayerData implements ConfigurationSerializable {
     }
 
     public void apply(Player player) {
-        Preconditions.checkArgument(player.getUniqueId().equals(uuid));
+        Preconditions.checkArgument(player.getUniqueId().equals(uuid),
+                player + " is not the user of this data (data UUID: " + uuid + ")");
+
         player.getInventory().setContents(contents);
         player.setExp(exp);
         player.setLevel(expLevel);
@@ -77,12 +82,13 @@ public class PlayerData implements ConfigurationSerializable {
         player.setFoodLevel(foodLevel);
         player.setGameMode(gameMode);
     }
-
+    
     public void saveToFile(String file) {
-        YamlConfiguration yamlConfiguration = new YamlConfiguration();
-        yamlConfiguration.set("data", this);
+        YamlConfiguration config = new YamlConfiguration();
+        config.set("data", this);
+
         try {
-            yamlConfiguration.save(file);
+            config.save(file);
         } catch (IOException e) {
             e.printStackTrace();
         }
