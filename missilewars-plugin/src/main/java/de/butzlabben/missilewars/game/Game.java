@@ -293,8 +293,8 @@ public class Game {
 
     public void disableGameOnServerStop() {
 
-        for (MWPlayer player : players.values()) {
-            playerLeaveFromGame(player);
+        for (MWPlayer mwPlayer : players.values()) {
+            teleportToFallbackSpawn(mwPlayer.getPlayer());
         }
 
         gameWorld.unload();
