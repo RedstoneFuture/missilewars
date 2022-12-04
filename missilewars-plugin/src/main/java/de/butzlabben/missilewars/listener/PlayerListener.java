@@ -98,10 +98,7 @@ public class PlayerListener implements Listener {
         if (game == null) return;
 
         Player player = event.getPlayer();
-
-        // old game handling:
-        registerPlayerArenaLeaveEvent(player, game);
-
+        
         game.teleportToFallbackSpawn(player);
     }
 
