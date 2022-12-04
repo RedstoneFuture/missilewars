@@ -18,16 +18,12 @@
 
 package de.butzlabben.missilewars.util;
 
-import de.butzlabben.missilewars.Config;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import de.butzlabben.missilewars.configuration.Config;
 import org.bukkit.Bukkit;
+
+import java.sql.*;
 
 /**
  * @author Butzlabben

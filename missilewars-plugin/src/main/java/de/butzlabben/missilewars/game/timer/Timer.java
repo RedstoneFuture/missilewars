@@ -19,7 +19,7 @@
 package de.butzlabben.missilewars.game.timer;
 
 import de.butzlabben.missilewars.game.Game;
-import de.butzlabben.missilewars.wrapper.player.MWPlayer;
+import de.butzlabben.missilewars.player.MWPlayer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Sound;

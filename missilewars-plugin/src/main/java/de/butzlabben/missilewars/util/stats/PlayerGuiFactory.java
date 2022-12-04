@@ -19,31 +19,27 @@
 package de.butzlabben.missilewars.util.stats;
 
 import com.mojang.authlib.GameProfile;
-import de.butzlabben.missilewars.Config;
 import de.butzlabben.missilewars.Logger;
-import de.butzlabben.missilewars.MessageConfig;
 import de.butzlabben.missilewars.MissileWars;
+import de.butzlabben.missilewars.configuration.Config;
+import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.game.stats.PlayerStats;
+import de.butzlabben.missilewars.game.stats.PlayerStatsComparator;
 import de.butzlabben.missilewars.inventory.OrcItem;
 import de.butzlabben.missilewars.inventory.pages.PageGUICreator;
 import de.butzlabben.missilewars.util.version.VersionUtil;
-import de.butzlabben.missilewars.wrapper.stats.PlayerStats;
-import de.butzlabben.missilewars.wrapper.stats.PlayerStatsComparator;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ForkJoinPool;
-import java.util.stream.Collectors;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ForkJoinPool;
+import java.util.stream.Collectors;
 
 @Getter
 public class PlayerGuiFactory {
@@ -76,7 +72,7 @@ public class PlayerGuiFactory {
         int currentSize = names.size();
         if (realSize > currentSize) {
             if (Config.isContactAuth()) {
-                player.sendMessage(MessageConfig.getPrefix() + "Fetching not cached player names: " + currentSize + "/" + realSize);
+                player.sendMessage(Messages.getPrefix() + "Fetching not cached player names: " + currentSize + "/" + realSize);
                 ForkJoinPool.commonPool().execute(() -> {
                     List<UUID> missing = getMissingUUIDs();
                     int maxFetches = Math.min(missing.size(), MAX_FETCHES);

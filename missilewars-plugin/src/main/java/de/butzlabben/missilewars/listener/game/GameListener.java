@@ -18,17 +18,17 @@
 
 package de.butzlabben.missilewars.listener.game;
 
-import de.butzlabben.missilewars.MessageConfig;
+import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.arena.FallProtectionConfiguration;
+import de.butzlabben.missilewars.event.PlayerArenaJoinEvent;
+import de.butzlabben.missilewars.event.PlayerArenaLeaveEvent;
 import de.butzlabben.missilewars.game.Game;
-import de.butzlabben.missilewars.game.GameResult;
+import de.butzlabben.missilewars.game.Team;
+import de.butzlabben.missilewars.game.enums.GameResult;
+import de.butzlabben.missilewars.game.misc.RespawnGoldBlock;
+import de.butzlabben.missilewars.game.misc.Shield;
+import de.butzlabben.missilewars.player.MWPlayer;
 import de.butzlabben.missilewars.util.version.VersionUtil;
-import de.butzlabben.missilewars.wrapper.abstracts.arena.FallProtectionConfiguration;
-import de.butzlabben.missilewars.wrapper.event.PlayerArenaJoinEvent;
-import de.butzlabben.missilewars.wrapper.event.PlayerArenaLeaveEvent;
-import de.butzlabben.missilewars.wrapper.game.RespawnGoldBlock;
-import de.butzlabben.missilewars.wrapper.game.Shield;
-import de.butzlabben.missilewars.wrapper.game.Team;
-import de.butzlabben.missilewars.wrapper.player.MWPlayer;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
@@ -163,7 +163,7 @@ public class GameListener extends GameBoundListener {
 
         // same team
         if (team == getGame().getPlayer(player).getTeam()) {
-            shooter.sendMessage(MessageConfig.getMessage("hurt_teammates"));
+            shooter.sendMessage(Messages.getMessage("hurt_teammates"));
             event.setCancelled(true);
         }
     }
@@ -206,9 +206,9 @@ public class GameListener extends GameBoundListener {
             EntityDamageEvent.DamageCause damageCause = player.getLastDamageCause().getCause();
 
             if (damageCause == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION || damageCause == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
-                deathBroadcast = MessageConfig.getNativeMessage("died_explosion").replace("%player%", player.getDisplayName());
+                deathBroadcast = Messages.getNativeMessage("died_explosion").replace("%player%", player.getDisplayName());
             } else {
-                deathBroadcast = MessageConfig.getNativeMessage("died").replace("%player%", player.getDisplayName());
+                deathBroadcast = Messages.getNativeMessage("died").replace("%player%", player.getDisplayName());
             }
 
             getGame().broadcast(deathBroadcast);
@@ -248,7 +248,7 @@ public class GameListener extends GameBoundListener {
         int toY = event.getTo().getBlockY();
         if (toY > getGame().getArena().getMaxHeight()) {
             player.teleport(event.getFrom());
-            player.sendMessage(MessageConfig.getMessage("not_higher"));
+            player.sendMessage(Messages.getMessage("not_higher"));
         } else if (toY < getGame().getArena().getDeathHeight()) {
             player.setLastDamageCause(new EntityDamageEvent(player, EntityDamageEvent.DamageCause.FALL, 20));
             player.damage(20.0D);
@@ -259,7 +259,7 @@ public class GameListener extends GameBoundListener {
 
         if (!getGame().isInGameArea(event.getTo())) {
             if (to != null) Game.knockbackEffect(player, from, to);
-            player.sendMessage(MessageConfig.getMessage("arena_leave"));
+            player.sendMessage(Messages.getMessage("arena_leave"));
         }
     }
 
@@ -272,7 +272,7 @@ public class GameListener extends GameBoundListener {
         if ((!getGame().getLobby().isJoinOngoingGame()) || (getGame().isPlayersMax())) {
             if (getGame().isSpectatorsMax()) {
                 event.setCancelled(true);
-                event.getPlayer().sendMessage(MessageConfig.getMessage("not_enter_arena"));
+                event.getPlayer().sendMessage(Messages.getMessage("not_enter_arena"));
                 return;
             }
             getGame().playerJoinInGame(player, true);

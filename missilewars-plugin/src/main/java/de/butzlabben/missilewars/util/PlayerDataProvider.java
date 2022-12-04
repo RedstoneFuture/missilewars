@@ -20,7 +20,7 @@ package de.butzlabben.missilewars.util;
 
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
-import de.butzlabben.missilewars.wrapper.player.PlayerData;
+import de.butzlabben.missilewars.player.PlayerData;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 

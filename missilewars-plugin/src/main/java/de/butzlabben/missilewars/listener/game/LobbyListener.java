@@ -18,13 +18,13 @@
 
 package de.butzlabben.missilewars.listener.game;
 
-import de.butzlabben.missilewars.MessageConfig;
+import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.event.PlayerArenaJoinEvent;
+import de.butzlabben.missilewars.event.PlayerArenaLeaveEvent;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.inventory.VoteInventory;
+import de.butzlabben.missilewars.player.MWPlayer;
 import de.butzlabben.missilewars.util.version.VersionUtil;
-import de.butzlabben.missilewars.wrapper.event.PlayerArenaJoinEvent;
-import de.butzlabben.missilewars.wrapper.event.PlayerArenaLeaveEvent;
-import de.butzlabben.missilewars.wrapper.player.MWPlayer;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -71,7 +71,7 @@ public class LobbyListener extends GameBoundListener {
 
             // too late for team change:
             if (getGame().getTimer().getSeconds() < 10) {
-                player.sendMessage(MessageConfig.getMessage("change_team_not_now"));
+                player.sendMessage(Messages.getMessage("change_team_not_now"));
                 return;
             }
 
@@ -122,7 +122,7 @@ public class LobbyListener extends GameBoundListener {
 
         if (getGame().isPlayersMax()) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(MessageConfig.getMessage("not_enter_arena"));
+            event.getPlayer().sendMessage(Messages.getMessage("not_enter_arena"));
             return;
         }
 

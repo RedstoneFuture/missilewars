@@ -19,23 +19,19 @@
 package de.butzlabben.missilewars.util.stats;
 
 import com.mojang.authlib.GameProfile;
-import de.butzlabben.missilewars.Config;
 import de.butzlabben.missilewars.Logger;
+import de.butzlabben.missilewars.configuration.Config;
+import de.butzlabben.missilewars.game.stats.StatsFetcher;
 import de.butzlabben.missilewars.inventory.OrcItem;
 import de.butzlabben.missilewars.inventory.pages.InventoryPage;
 import de.butzlabben.missilewars.inventory.pages.PageGUICreator;
 import de.butzlabben.missilewars.util.version.VersionUtil;
-import de.butzlabben.missilewars.wrapper.stats.StatsFetcher;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
+
+import java.util.*;
 
 public class PreFetcher {
 

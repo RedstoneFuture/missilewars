@@ -18,13 +18,14 @@
 
 package de.butzlabben.missilewars.game.timer;
 
-import de.butzlabben.missilewars.MessageConfig;
+import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.arena.Arena;
 import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.game.Game;
+import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
+import de.butzlabben.missilewars.player.MWPlayer;
 import de.butzlabben.missilewars.util.version.VersionUtil;
-import de.butzlabben.missilewars.wrapper.abstracts.Arena;
-import de.butzlabben.missilewars.wrapper.abstracts.MapChooseProcedure;
-import de.butzlabben.missilewars.wrapper.player.MWPlayer;
+
 import java.util.Map;
 import java.util.Optional;
 
@@ -66,7 +67,7 @@ public class LobbyTimer extends Timer implements Runnable {
             if (size1 + size2 < getGame().getLobby().getMinSize()) {
                 seconds = startTime;
                 remaining = 90;
-                broadcast(MessageConfig.getMessage("not_enough_players"));
+                broadcast(Messages.getMessage("not_enough_players"));
                 return;
             }
         }
@@ -80,22 +81,22 @@ public class LobbyTimer extends Timer implements Runnable {
             case 3:
             case 2:
             case 1:
-                broadcast(MessageConfig.getMessage("game_starts_in").replace("%seconds%", Integer.toString(seconds)));
+                broadcast(Messages.getMessage("game_starts_in").replace("%seconds%", Integer.toString(seconds)));
                 playPling();
                 break;
             case 10:
                 checkVote();
-                broadcast(MessageConfig.getMessage("game_starts_in").replace("%seconds%", Integer.toString(seconds)));
+                broadcast(Messages.getMessage("game_starts_in").replace("%seconds%", Integer.toString(seconds)));
                 playPling();
                 break;
             case 0:
                 int diff = size1 - size2;
                 if (diff >= 2 || diff <= -2) {
-                    broadcast(MessageConfig.getMessage("teams_unequal"));
+                    broadcast(Messages.getMessage("teams_unequal"));
                     seconds = startTime;
                     return;
                 }
-                broadcast(MessageConfig.getMessage("game_starts"));
+                broadcast(Messages.getMessage("game_starts"));
                 playPling();
                 getGame().startGame();
                 return;

@@ -19,8 +19,8 @@
 package de.butzlabben.missilewars.util.version;
 
 import de.butzlabben.missilewars.Logger;
-import de.butzlabben.missilewars.MessageConfig;
-import de.butzlabben.missilewars.wrapper.game.Team;
+import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.game.Team;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -86,7 +86,7 @@ public class VersionUtil {
                 e.printStackTrace();
             }
         } else {
-            p.sendMessage(MessageConfig.getPrefix() + title + " " + subtitle);
+            p.sendMessage(Messages.getPrefix() + title + " " + subtitle);
         }
     }
 

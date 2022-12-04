@@ -18,6 +18,7 @@
 
 package de.butzlabben.missilewars;
 
+import de.butzlabben.missilewars.configuration.Config;
 import org.bukkit.Bukkit;
 
 /**
