@@ -26,6 +26,7 @@ import lombok.Getter;
 import lombok.ToString;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.GameRule;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.entity.Entity;
@@ -134,8 +135,9 @@ public class GameWorld {
             Logger.DEBUG.log("Loading new gameworld");
             World world = Bukkit.createWorld(new WorldCreator(worldName));
             Bukkit.getWorlds().add(world);
-            world.setGameRuleValue("doTileDrops", String.valueOf(game.getArena().isDoTileDrops()));
-            world.setGameRuleValue("keepInventory", String.valueOf(game.getArena().isKeepInventory()));
+            
+            world.setGameRule(GameRule.DO_TILE_DROPS, game.getArena().isDoTileDrops());
+            world.setGameRule(GameRule.KEEP_INVENTORY, game.getArena().isKeepInventory());
         }
     }
 
