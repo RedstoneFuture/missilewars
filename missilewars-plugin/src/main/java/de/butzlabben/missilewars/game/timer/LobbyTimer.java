@@ -49,9 +49,9 @@ public class LobbyTimer extends Timer implements Runnable {
     public void tick() {
         if (getGame().getPlayers().size() == 0) return;
 
-        for (MWPlayer mp : getGame().getPlayers().values()) {
-            if (mp.getPlayer() == null) continue;
-            mp.getPlayer().setLevel(seconds);
+        for (MWPlayer mwPlayer : getGame().getPlayers().values()) {
+            if (mwPlayer.getPlayer() == null) continue;
+            mwPlayer.getPlayer().setLevel(seconds);
         }
 
         int size1 = getGame().getTeam1().getMembers().size();
@@ -108,8 +108,8 @@ public class LobbyTimer extends Timer implements Runnable {
     }
 
     private void playPling() {
-        for (MWPlayer p : getGame().getPlayers().values()) {
-            VersionUtil.playPling(p.getPlayer());
+        for (MWPlayer mwPlayer : getGame().getPlayers().values()) {
+            VersionUtil.playPling(mwPlayer.getPlayer());
         }
     }
 

@@ -142,14 +142,14 @@ public class ScoreboardManager {
                 int playerCounter = 0;
 
                 // list all team members
-                for (MWPlayer player : placeholderTeam.getMembers()) {
+                for (MWPlayer mwPlayer : placeholderTeam.getMembers()) {
 
                     // limit check
                     if (playerCounter >= MEMBER_LIST_MAX_SIZE) {
                         break;
                     }
 
-                    String playerName = player.getPlayer().getName();
+                    String playerName = mwPlayer.getPlayer().getName();
                     String teamColor = placeholderTeam.getColor();
 
                     replacedLine = MEMBER_LIST_STYLE.replace("%playername%", playerName)

@@ -488,9 +488,9 @@ public class Game {
     }
 
     public void broadcast(String message) {
-        for (MWPlayer player : players.values()) {
-            Player p = player.getPlayer();
-            if (p != null && p.isOnline()) p.sendMessage(message);
+        for (MWPlayer mwPlayer : players.values()) {
+            Player player = mwPlayer.getPlayer();
+            if (player != null && player.isOnline()) player.sendMessage(message);
         }
     }
 
@@ -704,21 +704,21 @@ public class Game {
     public void sendGameResult() {
 
         for (Player player : gameWorld.getWorld().getPlayers()) {
-            MWPlayer missileWarsPlayer = getPlayer(player);
+            MWPlayer mwPlayer = getPlayer(player);
 
             // team member of team 1
-            if (team1.isMember(missileWarsPlayer)) {
-                team1.sendMoney(missileWarsPlayer);
-                team1.sendGameResultTitle(missileWarsPlayer);
-                team1.sendGameResultSound(missileWarsPlayer);
+            if (team1.isMember(mwPlayer)) {
+                team1.sendMoney(mwPlayer);
+                team1.sendGameResultTitle(mwPlayer);
+                team1.sendGameResultSound(mwPlayer);
                 continue;
             }
 
             // team member of team 2
-            if (team2.isMember(missileWarsPlayer)) {
-                team2.sendMoney(missileWarsPlayer);
-                team2.sendGameResultTitle(missileWarsPlayer);
-                team2.sendGameResultSound(missileWarsPlayer);
+            if (team2.isMember(mwPlayer)) {
+                team2.sendMoney(mwPlayer);
+                team2.sendGameResultTitle(mwPlayer);
+                team2.sendGameResultSound(mwPlayer);
                 continue;
             }
 

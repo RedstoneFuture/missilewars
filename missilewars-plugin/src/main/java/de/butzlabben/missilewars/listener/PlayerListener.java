@@ -98,7 +98,6 @@ public class PlayerListener implements Listener {
         if (game == null) return;
 
         Player player = event.getPlayer();
-        
         game.teleportToFallbackSpawn(player);
     }
 
