@@ -121,12 +121,12 @@ public class Game {
         }
 
         if (lobby.getPossibleArenas().size() == 0) {
-            Logger.ERROR.log(("At least one valid arena must be set at lobby " + lobby.getName()));
+            Logger.ERROR.log("At least one valid arena must be set at lobby " + lobby.getName());
             return;
         }
 
         if (lobby.getPossibleArenas().stream().noneMatch(a -> Arenas.getFromName(a).isPresent())) {
-            Logger.ERROR.log(("None of the specified arenas match a real arena for the lobby " + lobby.getName()));
+            Logger.ERROR.log("None of the specified arenas match a real arena for the lobby " + lobby.getName());
             return;
         }
 
