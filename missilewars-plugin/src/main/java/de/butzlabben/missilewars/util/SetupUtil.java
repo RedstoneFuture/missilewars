@@ -147,7 +147,7 @@ public class SetupUtil {
                 InputStream in = MissileWars.getInstance().getResource(resource);
                 Files.copy(in, file.toPath());
             } catch (IOException e) {
-                System.err.println("Wasn't able to create Config");
+                Logger.ERROR.log("Wasn't able to create Config");
                 e.printStackTrace();
             }
         }

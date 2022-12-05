@@ -497,7 +497,7 @@ public class Game {
     public void startForPlayer(Player player) {
         MWPlayer mwPlayer = getPlayer(player);
         if (mwPlayer == null) {
-            System.err.println("[MissileWars] Error starting game at player " + player.getName());
+            Logger.ERROR.log("Error starting game at player " + player.getName());
             return;
         }
 

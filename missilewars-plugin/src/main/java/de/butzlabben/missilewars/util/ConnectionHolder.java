@@ -63,7 +63,7 @@ public class ConnectionHolder {
         synchronized (lock) {
             try {
                 if (connection == null || connection.isClosed()) {
-                    System.err.println("[MySQL] Connection does not exist or was already closed");
+                    Logger.ERROR.log("[MySQL] Connection does not exist or was already closed");
                     return;
                 }
                 connection.close();
