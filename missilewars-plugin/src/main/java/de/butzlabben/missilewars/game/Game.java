@@ -789,7 +789,7 @@ public class Game {
 
         if (maxSize == -1) return false;
 
-        int currentSize = players.size();
+        int currentSize = players.size() - (team1.getMembers().size() + team2.getMembers().size());
         return currentSize >= maxSize;
     }
 
