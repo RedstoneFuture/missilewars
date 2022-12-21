@@ -145,8 +145,8 @@ public class RespawnGoldBlock implements Listener {
 
     @EventHandler
     public void onSneak(PlayerToggleSneakEvent e) {
-        Player p = e.getPlayer();
-        if (p == player && (map.size() != 0) && (p.isSneaking())) {
+        Player eventPlayer = e.getPlayer();
+        if (eventPlayer == player && (map.size() != 0) && (eventPlayer.isSneaking())) {
             for (Location loc : map.keySet()) {
                 loc.getBlock().setType(map.get(loc).getKey());
                 BlockSetterProvider.getBlockDataSetter().setData(loc.getBlock(), map.get(loc).getValue());
@@ -154,7 +154,7 @@ public class RespawnGoldBlock implements Listener {
             map.clear();
             Bukkit.getScheduler().cancelTask(task);
             HandlerList.unregisterAll(this);
-            p.sendMessage(Messages.getMessage("fall_protection_deactivated"));
+            eventPlayer.sendMessage(Messages.getMessage("fall_protection_deactivated"));
         }
     }
 }

@@ -103,14 +103,14 @@ public class FightStats {
 
             if (fightID == -1)
                 return;
-            for (MWPlayer player : players) {
-                if (player.getTeam() != null) {
+            for (MWPlayer mwPlayer : players) {
+                if (mwPlayer.getTeam() != null) {
                     PreparedStatement statement = ConnectionHolder.prepareStatement("INSERT INTO " + Config.getFightMembersTable() + " (fid, player, team) VALUES "
                             + " (?, ?, ?)");
                     statement.setInt(1, fightID);
-                    statement.setString(2, player.getUuid().toString());
+                    statement.setString(2, mwPlayer.getUuid().toString());
 
-                    if (player.getTeam() == game.getTeam1())
+                    if (mwPlayer.getTeam() == game.getTeam1())
                         statement.setInt(3, 1);
                     else
                         statement.setInt(3, 2);

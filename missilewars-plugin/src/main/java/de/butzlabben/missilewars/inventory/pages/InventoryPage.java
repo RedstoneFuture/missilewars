@@ -18,6 +18,7 @@
 
 package de.butzlabben.missilewars.inventory.pages;
 
+import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.inventory.OrcInventory;
 import de.butzlabben.missilewars.inventory.OrcItem;
 import de.butzlabben.missilewars.util.version.VersionUtil;
@@ -62,7 +63,7 @@ public class InventoryPage extends OrcInventory {
 
     public void addItem(OrcItem item) {
         if (i > 36) {
-            System.err.println("More items than allowed in page view");
+            Logger.ERROR.log("More items than allowed in page view");
             return;
         }
         addItem(i, item);

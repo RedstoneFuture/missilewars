@@ -67,37 +67,37 @@ public class Team {
         return game.getTeam1();
     }
 
-    public void removeMember(MWPlayer player) {
-        if (!isMember(player)) return;
+    public void removeMember(MWPlayer mwPlayer) {
+        if (!isMember(mwPlayer)) return;
 
-        Player p = player.getPlayer();
-        player.setTeam(null);
+        Player player = mwPlayer.getPlayer();
+        mwPlayer.setTeam(null);
 
-        if (p != null) {
-            p.setDisplayName("§7" + p.getName() + "§r");
+        if (player != null) {
+            player.setDisplayName("§7" + player.getName() + "§r");
         }
 
-        members.removeIf(mp -> mp.getUuid().equals(player.getUuid()));
+        members.removeIf(mp -> mp.getUuid().equals(mwPlayer.getUuid()));
     }
 
-    public void addMember(MWPlayer player) {
-        if (isMember(player)) return;
+    public void addMember(MWPlayer mwPlayer) {
+        if (isMember(mwPlayer)) return;
 
         // Already in a team?
-        if (player.getTeam() != null) {
-            player.getTeam().removeMember(player);
+        if (mwPlayer.getTeam() != null) {
+            mwPlayer.getTeam().removeMember(mwPlayer);
         }
 
-        Player p = player.getPlayer();
-        if (p == null) {
-            Logger.WARN.log("Could not add player " + player.getUuid().toString() + " to a team because he went offline");
+        Player player = mwPlayer.getPlayer();
+        if (player == null) {
+            Logger.WARN.log("Could not add player " + mwPlayer.getUuid().toString() + " to a team because he went offline");
             return;
         }
 
-        members.add(player);
-        player.setTeam(this);
-        p.setDisplayName(getColorCode() + p.getName() + "§r");
-        p.getInventory().setArmorContents(getTeamArmor());
+        members.add(mwPlayer);
+        mwPlayer.setTeam(this);
+        player.setDisplayName(getColorCode() + player.getName() + "§r");
+        player.getInventory().setArmorContents(getTeamArmor());
     }
 
     public String getFullname() {
@@ -147,15 +147,15 @@ public class Team {
         return this.teamArmor;
     }
 
-    public boolean isMember(MWPlayer player) {
-        return members.contains(player);
+    public boolean isMember(MWPlayer mwPlayer) {
+        return members.contains(mwPlayer);
     }
 
     /**
      * This method sends all team members the money for playing the game
      * with a specific amount for win and lose.
      */
-    public void sendMoney(MWPlayer missileWarsPlayer) {
+    public void sendMoney(MWPlayer mwPlayer) {
         int money;
 
         switch (gameResult) {
@@ -173,14 +173,14 @@ public class Team {
                 break;
         }
 
-        MoneyUtil.giveMoney(missileWarsPlayer.getUuid(), money);
+        MoneyUtil.giveMoney(mwPlayer.getUuid(), money);
     }
 
     /**
      * This method sends all team members the title / subtitle of the
      * game result.
      */
-    public void sendGameResultTitle(MWPlayer missileWarsPlayer) {
+    public void sendGameResultTitle(MWPlayer mwPlayer) {
         String title;
         String subTitle;
 
@@ -203,22 +203,22 @@ public class Team {
                 break;
         }
 
-        VersionUtil.sendTitle(missileWarsPlayer.getPlayer(), title, subTitle);
+        VersionUtil.sendTitle(mwPlayer.getPlayer(), title, subTitle);
     }
 
     /**
      * This method sends all team members the end-sound of the
      * game result.
      */
-    public void sendGameResultSound(MWPlayer missileWarsPlayer) {
+    public void sendGameResultSound(MWPlayer mwPlayer) {
 
         switch (gameResult) {
             case WIN:
-                VersionUtil.playPling(missileWarsPlayer.getPlayer());
+                VersionUtil.playPling(mwPlayer.getPlayer());
                 break;
             case LOSE:
             case DRAW:
-                VersionUtil.playDraw(missileWarsPlayer.getPlayer());
+                VersionUtil.playDraw(mwPlayer.getPlayer());
                 break;
             default:
                 break;

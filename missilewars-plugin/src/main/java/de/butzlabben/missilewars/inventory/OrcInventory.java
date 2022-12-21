@@ -18,14 +18,16 @@
 
 package de.butzlabben.missilewars.inventory;
 
-import java.util.HashMap;
-import java.util.Map.Entry;
-import java.util.Objects;
+import de.butzlabben.missilewars.Logger;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.inventory.Inventory;
+
+import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.Objects;
 
 @Getter
 public abstract class OrcInventory {
@@ -112,7 +114,7 @@ public abstract class OrcInventory {
             if (entry.getKey() >= 0 && entry.getKey() < size) {
                 inv.setItem(entry.getKey(), entry.getValue().getItemStack(p));
             } else {
-                System.err.println("There is a problem with a configured Item!");
+                Logger.ERROR.log("There is a problem with a configured Item!");
             }
         }
 
@@ -136,7 +138,7 @@ public abstract class OrcInventory {
             if (entry.getKey() >= 0 && entry.getKey() < size) {
                 inv.setItem(entry.getKey(), entry.getValue().getItemStack());
             } else {
-                System.err.println("There is a problem with a configured Item!");
+                Logger.ERROR.log("There is a problem with a configured Item!");
             }
         }
         return inv;

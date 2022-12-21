@@ -121,12 +121,12 @@ public class Game {
         }
 
         if (lobby.getPossibleArenas().size() == 0) {
-            Logger.ERROR.log(("At least one valid arena must be set at lobby " + lobby.getName()));
+            Logger.ERROR.log("At least one valid arena must be set at lobby " + lobby.getName());
             return;
         }
 
         if (lobby.getPossibleArenas().stream().noneMatch(a -> Arenas.getFromName(a).isPresent())) {
-            Logger.ERROR.log(("None of the specified arenas match a real arena for the lobby " + lobby.getName()));
+            Logger.ERROR.log("None of the specified arenas match a real arena for the lobby " + lobby.getName());
             return;
         }
 
@@ -292,11 +292,11 @@ public class Game {
     }
 
     public void disableGameOnServerStop() {
-
-        for (MWPlayer player : players.values()) {
-            playerLeaveFromGame(player);
+        
+        for (MWPlayer mwPlayer : players.values()) {
+            teleportToFallbackSpawn(mwPlayer.getPlayer());
         }
-
+        
         gameWorld.unload();
     }
 
@@ -488,16 +488,16 @@ public class Game {
     }
 
     public void broadcast(String message) {
-        for (MWPlayer player : players.values()) {
-            Player p = player.getPlayer();
-            if (p != null && p.isOnline()) p.sendMessage(message);
+        for (MWPlayer mwPlayer : players.values()) {
+            Player player = mwPlayer.getPlayer();
+            if (player != null && player.isOnline()) player.sendMessage(message);
         }
     }
 
     public void startForPlayer(Player player) {
         MWPlayer mwPlayer = getPlayer(player);
         if (mwPlayer == null) {
-            System.err.println("[MissileWars] Error starting game at player " + player.getName());
+            Logger.ERROR.log("Error starting game at player " + player.getName());
             return;
         }
 
@@ -704,21 +704,21 @@ public class Game {
     public void sendGameResult() {
 
         for (Player player : gameWorld.getWorld().getPlayers()) {
-            MWPlayer missileWarsPlayer = getPlayer(player);
+            MWPlayer mwPlayer = getPlayer(player);
 
             // team member of team 1
-            if (team1.isMember(missileWarsPlayer)) {
-                team1.sendMoney(missileWarsPlayer);
-                team1.sendGameResultTitle(missileWarsPlayer);
-                team1.sendGameResultSound(missileWarsPlayer);
+            if (team1.isMember(mwPlayer)) {
+                team1.sendMoney(mwPlayer);
+                team1.sendGameResultTitle(mwPlayer);
+                team1.sendGameResultSound(mwPlayer);
                 continue;
             }
 
             // team member of team 2
-            if (team2.isMember(missileWarsPlayer)) {
-                team2.sendMoney(missileWarsPlayer);
-                team2.sendGameResultTitle(missileWarsPlayer);
-                team2.sendGameResultSound(missileWarsPlayer);
+            if (team2.isMember(mwPlayer)) {
+                team2.sendMoney(mwPlayer);
+                team2.sendGameResultTitle(mwPlayer);
+                team2.sendGameResultSound(mwPlayer);
                 continue;
             }
 
@@ -789,7 +789,7 @@ public class Game {
 
         if (maxSize == -1) return false;
 
-        int currentSize = players.size();
+        int currentSize = players.size() - (team1.getMembers().size() + team2.getMembers().size());
         return currentSize >= maxSize;
     }
 
