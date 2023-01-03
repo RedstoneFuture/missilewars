@@ -151,7 +151,7 @@ public class PlayerListener implements Listener {
         }.runTaskLater(MissileWars.getInstance(), 2);
     }
 
-    private PlayerArenaJoinEvent registerPlayerArenaJoinEvent(Player player, Game game) {
+    public PlayerArenaJoinEvent registerPlayerArenaJoinEvent(Player player, Game game) {
         PlayerArenaJoinEvent onJoinGame = new PlayerArenaJoinEvent(player, game);
         Bukkit.getPluginManager().callEvent(onJoinGame);
 
@@ -166,7 +166,7 @@ public class PlayerListener implements Listener {
         return onJoinGame;
     }
 
-    private PlayerArenaLeaveEvent registerPlayerArenaLeaveEvent(Player player, Game game) {
+    public PlayerArenaLeaveEvent registerPlayerArenaLeaveEvent(Player player, Game game) {
         PlayerArenaLeaveEvent onLeaveGame = new PlayerArenaLeaveEvent(player, game);
         Bukkit.getPluginManager().callEvent(onLeaveGame);
 
