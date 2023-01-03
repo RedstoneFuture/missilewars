@@ -166,6 +166,15 @@ public class Config {
 
         return location;
     }
+    
+    public static void setFallbackSpawn(Location spawnLocation) {
+        cfg.set("fallback_spawn.world", spawnLocation.getWorld().getName());
+        cfg.set("fallback_spawn.x", spawnLocation.getX());
+        cfg.set("fallback_spawn.y", spawnLocation.getY());
+        cfg.set("fallback_spawn.z", spawnLocation.getZ());
+        cfg.set("fallback_spawn.yaw", spawnLocation.getYaw());
+        cfg.set("fallback_spawn.pitch", spawnLocation.getPitch());
+    }
 
     public static YamlConfiguration getConfig() {
         return cfg;
