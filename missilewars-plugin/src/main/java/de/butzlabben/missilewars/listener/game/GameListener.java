@@ -83,6 +83,7 @@ public class GameListener extends GameBoundListener {
             getGame().getTeam1().setGameResult(GameResult.LOSE);
             getGame().getTeam2().setGameResult(GameResult.WIN);
         }
+        
         getGame().sendGameResult();
         getGame().stopGame();
     }
