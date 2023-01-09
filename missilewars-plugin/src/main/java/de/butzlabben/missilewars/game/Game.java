@@ -242,7 +242,7 @@ public class Game {
 
     public void stopGame() {
         if (Config.isSetup()) return;
-
+        
         Logger.DEBUG.log("Stopping");
 
         for (BukkitTask bt : playerTasks.values()) {
@@ -284,7 +284,7 @@ public class Game {
             return;
         }
 
-        GameManager.getInstance().restartGame(lobby);
+        GameManager.getInstance().restartGame(lobby, false);
     }
 
     public void appendRestart() {
@@ -416,11 +416,6 @@ public class Game {
     }
 
     public void resetGame() {
-        if (state == GameState.INGAME) {
-            stopGame();
-            return;
-        }
-
         HandlerList.unregisterAll(listener);
 
         stopTimer();
@@ -436,9 +431,6 @@ public class Game {
         if (scoreboardManager != null) {
             scoreboardManager.removeScoreboard();
         }
-
-        team1 = null;
-        team2 = null;
     }
 
     public boolean isInLobbyArea(Location location) {
