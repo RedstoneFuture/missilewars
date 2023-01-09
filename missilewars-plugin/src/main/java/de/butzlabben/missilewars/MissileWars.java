@@ -20,6 +20,7 @@ package de.butzlabben.missilewars;
 
 import co.aikar.commands.PaperCommandManager;
 import de.butzlabben.missilewars.commands.MWCommands;
+import de.butzlabben.missilewars.commands.SetupCommands;
 import de.butzlabben.missilewars.commands.StatsCommands;
 import de.butzlabben.missilewars.commands.UserCommands;
 import de.butzlabben.missilewars.configuration.Config;
@@ -59,6 +60,9 @@ public class MissileWars extends JavaPlugin {
     private SignRepository signRepository;
 
     private boolean foundFAWE;
+    
+    private PlayerListener playerListener;
+    private SignListener signListener;
 
     public MissileWars() {
         instance = this;
@@ -99,7 +103,7 @@ public class MissileWars extends JavaPlugin {
         Arenas.load();
         SetupUtil.checkShields();
 
-        GameManager.getInstance().loadGames();
+        GameManager.getInstance().loadGamesOnStartup();
 
         new Metrics(this, 3749);
 
@@ -143,8 +147,11 @@ public class MissileWars extends JavaPlugin {
      * This method registers all events of the missilewars event listener.
      */
     private void registerEvents() {
-        Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
-        Bukkit.getPluginManager().registerEvents(new SignListener(), this);
+        playerListener = new PlayerListener();
+        signListener = new SignListener();
+
+        Bukkit.getPluginManager().registerEvents(playerListener, this);
+        Bukkit.getPluginManager().registerEvents(signListener, this);
     }
 
     /**
@@ -157,10 +164,11 @@ public class MissileWars extends JavaPlugin {
         // It simply lets it take advantage of Paper specific features if available,
         // such as Asynchronous Tab Completions.
         PaperCommandManager manager = new PaperCommandManager(this);
-
+        
         manager.registerCommand(new MWCommands());
         manager.registerCommand(new StatsCommands());
         manager.registerCommand(new UserCommands());
+        manager.registerCommand(new SetupCommands());
     }
 
     /**
@@ -219,5 +227,13 @@ public class MissileWars extends JavaPlugin {
             }
             Logger.BOOT.log("Other authors: " + sb);
         }
+    }
+
+    public PlayerListener getPlayerListener() {
+        return playerListener;
+    }
+
+    public SignListener getSignListener() {
+        return signListener;
     }
 }
