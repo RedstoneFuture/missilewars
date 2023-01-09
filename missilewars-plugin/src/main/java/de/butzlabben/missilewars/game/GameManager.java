@@ -43,8 +43,16 @@ public class GameManager {
         games.values().forEach(Game::disableGameOnServerStop);
         games.clear();
     }
+    
+    public void restartAll() {
+        games.values().forEach(game -> restartGame(game.getLobby(), false));
+    }
 
-    public void loadGames() {
+    /**
+     * This method is for starting up the server. The game lobby configurations
+     * are loaded here.
+     */
+    public void loadGamesOnStartup() {
         File[] lobbyFiles = null;
         if (Config.isMultipleLobbies()) {
             lobbyFiles = new File(Config.getLobbiesFolder()).listFiles();
@@ -72,59 +80,80 @@ public class GameManager {
             lobbyFiles = new File[] {file};
         }
 
-        loadGames(lobbyFiles);
-    }
-
-    private void loadGames(File[] lobbyFileList) {
-
-        for (File lobbyFile : lobbyFileList) {
-            if (lobbyFile == null)
-                continue;
+        for (File lobbyFile : lobbyFiles) {
+            if (lobbyFile == null) continue;
             if (!lobbyFile.getName().endsWith(".yml") && !lobbyFile.getName().endsWith(".yaml")) continue;
 
-            Logger.BOOT.log("Loading lobby " + lobbyFile.getName());
-            try {
-                Lobby lobby = Serializer.deserialize(lobbyFile, Lobby.class);
-                if (lobby == null) {
-                    Logger.ERROR.log("Could not load lobby " + lobbyFile.getName());
-                    continue;
-                }
-                Game potentialOtherGame = getGame(lobby.getName());
-                if (potentialOtherGame != null) {
-                    Logger.ERROR.log("A lobby with the same name was already loaded. Names of lobbies must be unique, this lobby will not be loaded");
-                    continue;
-                }
-                lobby.setFile(lobbyFile);
-                restartGame(lobby);
-                Logger.BOOTDONE.log("Loaded lobby " + lobbyFile.getName());
-            } catch (IOException exception) {
-                Logger.ERROR.log("Could not load lobby " + lobbyFile.getName());
-                exception.printStackTrace();
-            }
+            debugStart(lobbyFile);
         }
     }
 
-    public void disableGame(String lobbyName) {
-        Game game = getGame(lobbyName);
-        if (game == null) return;
-
-        game.resetGame();
-        games.remove(lobbyName);
-
-        Logger.DEBUG.log("Old Game disabled.");
+    /**
+     * This method attempts to read the game lobby configuration and build a game
+     * from it. Config mistakes are recognized and the config is saved again.
+     * 
+     * @param lobbyFile (File) the arena configuration file
+     */
+    private void debugStart(File lobbyFile) {
+        Logger.BOOT.log("Try to loading lobby of \"" + lobbyFile.getName() + "\"");
+        
+        try {
+            Lobby lobby = Serializer.deserialize(lobbyFile, Lobby.class);
+            
+            if (lobby == null) {
+                Logger.ERROR.log("Could not load lobby of \"" + lobbyFile.getName() + "\"");
+                return;
+            }
+            
+            if (getGame(lobby.getName()) != null) {
+                Logger.ERROR.log("A lobby with the same name was already loaded. Names of lobbies must be unique, this lobby will not be loaded");
+                return;
+            }
+            
+            lobby.setFile(lobbyFile);
+            restartGame(lobby, false);
+            
+        } catch (IOException exception) {
+            Logger.ERROR.log("Could not load lobby of \"" + lobbyFile.getName() + "\"");
+            exception.printStackTrace();
+        }
     }
 
-    public void restartGame(Lobby oldLobby) {
-        String oldLobbyName = oldLobby.getName();
-        disableGame(oldLobbyName);
+    /**
+     * This method (re)starts a MissileWars game.
+     * 
+     * @param targetLobby (Lobby) the existing lobby of the game
+     * @param forceStart true, if it should also (re)start, if it's not an automatically
+     *                   starting game according to the lobby configuration
+     */
+    public void restartGame(Lobby targetLobby, boolean forceStart) {
+        if (!targetLobby.isAutoLoad() && !forceStart) return;
+
+        String targetLobbyName = targetLobby.getName();
+        
+        // reset the old game
+        Game game = getGame(targetLobbyName);
+        if (game != null) {
+            game.resetGame();
+        }
+
+        // delete the old game from the list
+        if (games.get(targetLobbyName) != null) {
+            games.remove(targetLobby);
+        }
+
+        Logger.DEBUG.log("Old Game disabled.");
+        
+        // read the game lobby configuration and build a new game and lobby from it
         try {
-            Lobby lobby = Serializer.deserialize(oldLobby.getFile(), Lobby.class);
-            lobby.setFile(oldLobby.getFile());
-            // Save for possible new values
-            Serializer.serialize(oldLobby.getFile(), lobby);
-            games.put(oldLobbyName, new Game(lobby));
+            Lobby lobby = Serializer.deserialize(targetLobby.getFile(), Lobby.class);
+            lobby.setFile(targetLobby.getFile());
+            
+            Logger.BOOTDONE.log("Reloaded lobby \"" + targetLobbyName + "\" (" + targetLobby.getFile().getName() + ")");
+            games.put(targetLobbyName, new Game(lobby));
+            
         } catch (IOException exception) {
-            Logger.ERROR.log("Could not load lobby " + oldLobby.getName());
+            Logger.ERROR.log("Could not load lobby of \"" + targetLobby.getFile().getName() + "\"");
             exception.printStackTrace();
         }
     }
