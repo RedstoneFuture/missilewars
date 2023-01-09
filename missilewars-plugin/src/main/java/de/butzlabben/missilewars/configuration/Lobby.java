@@ -45,6 +45,7 @@ public class Lobby {
 
     private String name = "lobby0";
     @SerializedName("display_name") private String displayName = "&eDefault game";
+    @SerializedName("auto_load") private boolean autoLoad = true;
     @SerializedName("world") private String world = Bukkit.getWorlds().get(0).getName();
     @SerializedName("lobby_time") private int lobbyTime = 60;
     @SerializedName("join_ongoing_game") private boolean joinOngoingGame = false;
@@ -54,8 +55,8 @@ public class Lobby {
     @SerializedName("team1_color") private String team1Color = "&c";
     @SerializedName("team2_name") private String team2Name = "Team2";
     @SerializedName("team2_color") private String team2Color = "&a";
-    @SerializedName("spawn_point") private Location spawnPoint = Bukkit.getWorlds().get(0).getSpawnLocation();
-    @SerializedName("after_game_spawn") private Location afterGameSpawn = Bukkit.getWorlds().get(0).getSpawnLocation();
+    @Setter @SerializedName("spawn_point") private Location spawnPoint = Bukkit.getWorlds().get(0).getSpawnLocation();
+    @Setter @SerializedName("after_game_spawn") private Location afterGameSpawn = Bukkit.getWorlds().get(0).getSpawnLocation();
     private Area area = Area.defaultAreaAround(Bukkit.getWorlds().get(0).getSpawnLocation());
     @SerializedName("map_choose_procedure") private MapChooseProcedure mapChooseProcedure = MapChooseProcedure.FIRST;
     @SerializedName("possible_arenas") private List<String> possibleArenas = new ArrayList<>() {{
