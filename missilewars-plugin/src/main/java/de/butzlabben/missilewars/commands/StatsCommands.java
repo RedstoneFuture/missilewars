@@ -19,7 +19,10 @@
 package de.butzlabben.missilewars.commands;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.*;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Default;
+import co.aikar.commands.annotation.Subcommand;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.game.stats.PlayerStats;
@@ -53,8 +56,6 @@ public class StatsCommands extends BaseCommand {
     private final SimpleDateFormat preciseFormat = new SimpleDateFormat("hh:mm dd.MM.yyyy");
 
     @Default
-    @Description("Shows stats.")
-    @Syntax("/mw stats [from] [arena]")
     @CommandPermission("mw.stats")
     public void onStats(CommandSender sender, String[] args) {
 
@@ -106,8 +107,6 @@ public class StatsCommands extends BaseCommand {
     }
 
     @Subcommand("recommendations")
-    @Description("Shows recommendations.")
-    @Syntax("/mw stats recommendations [from] [arena]")
     @CommandPermission("mw.stats.recommendations")
     public void onRecommendations(CommandSender sender, String[] args) {
 
@@ -146,8 +145,6 @@ public class StatsCommands extends BaseCommand {
     }
 
     @Subcommand("players")
-    @Description("Shows player list.")
-    @Syntax("/mw stats players [from] [arena]")
     @CommandPermission("mw.stats.players")
     public void onPlayers(CommandSender sender, String[] args) {
 
@@ -164,8 +161,6 @@ public class StatsCommands extends BaseCommand {
     }
 
     @Subcommand("list")
-    @Description("Lists history of games.")
-    @Syntax("/mw stats list [from] [arena]")
     @CommandPermission("mw.stats.list")
     public void onList(CommandSender sender, String[] args) {
 

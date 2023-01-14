@@ -47,35 +47,29 @@ public class MWCommands extends BaseCommand {
     public void mwCommand(CommandSender sender) {
 
         sender.sendMessage(Messages.getPrefix() + "MissileWars v" + MissileWars.getInstance().version + " by Butzlabben");
+        
+        sendHelpMessage(sender, "mw.vote", "/mw vote", "Vote for a arena.");
+        sendHelpMessage(sender, "mw.change", "/mw change <1|2>", "Changes your team.");
+        sendHelpMessage(sender, "mw.quit", "/mw quit", "Quit a game.");
+        
+        sendHelpMessage(sender, "mw.stats", "/mw stats [from] [arena]", "Shows stats.");
+        sendHelpMessage(sender, "mw.stats.recommendations", "/mw stats recommendations [from] [arena]", "Shows recommendations.");
+        sendHelpMessage(sender, "mw.stats.players", "/mw stats players [from] [arena]", "Shows player list.");
+        sendHelpMessage(sender, "mw.stats.list", "/mw stats list [from] [arena]", "Lists history of games.");
+        
+        sendHelpMessage(sender, "mw.listgames", "/mw listgames", "List the active games.");
+        sendHelpMessage(sender, "mw.paste", "/mw paste <missile>", "Pastes a missile.");
+        sendHelpMessage(sender, "mw.start", "/mw start", "Starts the game.");
+        sendHelpMessage(sender, "mw.stop", "/mw stop [lobby]", "Stops the game.");
+        sendHelpMessage(sender, "mw.appendrestart", "/mw appendrestart", "Appends a restart after the next game ends.");
+        sendHelpMessage(sender, "mw.reload", "/mw reload", "Reload the plugin.");
+        sendHelpMessage(sender, "mw.debug", "/mw debug", "Show debug info.");
+        sendHelpMessage(sender, "mw.restartall", "/mw restartall", "Restart all games.");
 
-        if (sender.hasPermission("mw.quit"))
-            sender.sendMessage(Messages.getPrefix() + "/mw quit -  Quit a game");
-        if (sender.hasPermission("mw.start"))
-            sender.sendMessage(Messages.getPrefix() + "/mw start - Starts the game");
-        if (sender.hasPermission("mw.stop"))
-            sender.sendMessage(Messages.getPrefix() + "/mw stop - Stops the game");
-        if (sender.hasPermission("mw.restart"))
-            sender.sendMessage(Messages.getPrefix() + "/mw restart - Restarts the game");
-        if (sender.hasPermission("mw.appendrestart"))
-            sender.sendMessage(Messages.getPrefix()
-                    + "/mw appendrestart - Appends a restart after the next game ends");
-        if (sender.hasPermission("mw.paste"))
-            sender.sendMessage(Messages.getPrefix() + "/mw paste - Pastes a missile");
-        if (sender.hasPermission("mw.reload"))
-            sender.sendMessage(Messages.getPrefix() + "/mw reload - Reloads configurations");
-        if (sender.hasPermission("mw.stats"))
-            sender.sendMessage(Messages.getPrefix() + "/mw stats - Shows stats");
-        if (sender.hasPermission("mw.stats.recommendations"))
-            sender.sendMessage(Messages.getPrefix() + "/mw stats recommendations - Shows recommendations");
-        if (sender.hasPermission("mw.stats.players"))
-            sender.sendMessage(Messages.getPrefix() + "/mw stats players - Shows player list");
-        if (sender.hasPermission("mw.stats.list"))
-            sender.sendMessage(Messages.getPrefix() + "/mw stats list - Lists history of games");
+        sendHelpMessage(sender, "mw.setup", "/mw setup <main|lobby|area>", "Setup the game lobby and game area.");
     }
-
+    
     @Subcommand("listgames|list|games")
-    @Description("List the active games.")
-    @Syntax("/mw listgames")
     @CommandCompletion("@nothing")
     @CommandPermission("mw.listgames")
     public void listgamesCommand(CommandSender sender, String[] args) {
@@ -96,8 +90,6 @@ public class MWCommands extends BaseCommand {
     }
     
     @Subcommand("paste")
-    @Description("Pastes a missile.")
-    @Syntax("/mw paste <missile>")
     @CommandCompletion("@nothing")
     @CommandPermission("mw.paste")
     public void pasteCommand(CommandSender sender, String[] args) {
@@ -132,8 +124,6 @@ public class MWCommands extends BaseCommand {
     }
 
     @Subcommand("start")
-    @Description("Starts the game.")
-    @Syntax("/mw start")
     @CommandCompletion("@nothing")
     @CommandPermission("mw.start")
     public void startCommand(CommandSender sender, String[] args) {
@@ -181,8 +171,6 @@ public class MWCommands extends BaseCommand {
     }
 
     @Subcommand("stop")
-    @Description("Stops the game.")
-    @Syntax("/mw stop [lobby]")
     @CommandCompletion("@nothing")
     @CommandPermission("mw.stop")
     public void stopCommand(CommandSender sender, String[] args) {
@@ -216,8 +204,6 @@ public class MWCommands extends BaseCommand {
     }
     
     @Subcommand("appendrestart")
-    @Description("Appends a restart after the next game ends.")
-    @Syntax("/mw appendrestart")
     @CommandCompletion("@nothing")
     @CommandPermission("mw.appendrestart")
     public void appendrestartCommand(CommandSender sender, String[] args) {
@@ -241,8 +227,6 @@ public class MWCommands extends BaseCommand {
     }
 
     @Subcommand("reload")
-    @Description("Reload the plugin.")
-    @Syntax("/mw reload")
     @CommandCompletion("@nothing")
     @CommandPermission("mw.reload")
     public void reloadCommand(CommandSender sender, String[] args) {
@@ -262,8 +246,6 @@ public class MWCommands extends BaseCommand {
     }
 
     @Subcommand("debug")
-    @Description("Show debug info.")
-    @Syntax("/mw debug")
     @CommandCompletion("@nothing")
     @CommandPermission("mw.debug")
     public void debugCommand(CommandSender sender, String[] args) {
@@ -286,10 +268,8 @@ public class MWCommands extends BaseCommand {
     }
 
     @Subcommand("restartall")
-    @Description("Restart all games.")
-    @Syntax("/mw restartall")
     @CommandCompletion("@nothing")
-    @CommandPermission("mw.reload")
+    @CommandPermission("mw.restartall")
     public void restartallCommand(CommandSender sender, String[] args) {
 
         if (!senderIsPlayer(sender)) return;
@@ -316,5 +296,12 @@ public class MWCommands extends BaseCommand {
 
         sender.sendMessage(Messages.getPrefix() + "§cYou are not a player");
         return false;
+    }
+    
+    static void sendHelpMessage(CommandSender sender, String permission, String command, String description) {
+        if (sender instanceof Player) {
+            if (!sender.hasPermission(permission)) return;
+        }
+        sender.sendMessage(Messages.getPrefix() + command + " - " + description);
     }
 }

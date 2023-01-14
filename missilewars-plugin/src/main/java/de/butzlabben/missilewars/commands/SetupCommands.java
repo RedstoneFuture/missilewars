@@ -35,8 +35,6 @@ public class SetupCommands extends BaseCommand {
     private Player player;
 
     @Default
-    @Description("Setup the game lobby and game area.")
-    @Syntax("/mw stats <main|lobby|area>")
     @CommandPermission("mw.setup")
     public void setupCommands(CommandSender sender, String[] args) {
         sender.sendMessage(Messages.getPrefix() + "§fSetup usage: §7/mw stats <main|lobby|area>");

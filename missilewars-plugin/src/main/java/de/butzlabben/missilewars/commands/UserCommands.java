@@ -19,7 +19,10 @@
 package de.butzlabben.missilewars.commands;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.*;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Subcommand;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.configuration.arena.Arena;
@@ -37,10 +40,52 @@ import java.util.Optional;
 
 @CommandAlias("mw|missilewars")
 public class UserCommands extends BaseCommand {
+    
+    @Subcommand("vote")
+    @CommandPermission("mw.vote")
+    public void voteCommand(CommandSender sender, String[] args) {
 
+        if (!MWCommands.senderIsPlayer(sender)) return;
+        Player player = (Player) sender;
+
+        if (args.length > 0) {
+            player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
+            return;
+        }
+
+        Game game = GameManager.getInstance().getGame(player.getLocation());
+        if (game == null) {
+            player.sendMessage(Messages.getMessage("not_in_arena"));
+            return;
+        }
+
+        if (game.getState() != GameState.LOBBY) {
+            player.sendMessage(Messages.getPrefix() + "§cThe game is not in the right state to vote right now");
+            return;
+        }
+
+        if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING) {
+            player.sendMessage(Messages.getPrefix() + "§cYou can't vote in this game");
+            return;
+        }
+
+        if (game.getArena() != null) {
+            player.sendMessage(Messages.getPrefix() + "§cA map was already elected");
+            return;
+        }
+
+        String arenaName = args[0];
+        Optional<Arena> arena = Arenas.getFromName(arenaName);
+        if (!game.getVotes().containsKey(arenaName) || arena.isEmpty()) {
+            player.sendMessage(Messages.getPrefix() + "§cNo map with this title was found");
+            return;
+        }
+
+        game.getVotes().put(arenaName, game.getVotes().get(arenaName) + 1);
+        player.sendMessage(Messages.getMessage("vote.success").replace("%map%", arena.get().getDisplayName()));
+    }
+    
     @Subcommand("change")
-    @Description("Changes your team.")
-    @Syntax("/mw change <1|2>")
     @CommandCompletion("@range:1-2")
     @CommandPermission("mw.change")
     public void changeCommand(CommandSender sender, String[] args) {
@@ -84,56 +129,8 @@ public class UserCommands extends BaseCommand {
             player.sendMessage(Messages.getPrefix() + "§c/mw change <1|2>");
         }
     }
-
-    @Subcommand("vote")
-    @Description("Stops the game.")
-    @Syntax("/mw vote <arena>")
-    @CommandPermission("mw.vote")
-    public void voteCommand(CommandSender sender, String[] args) {
-
-        if (!MWCommands.senderIsPlayer(sender)) return;
-        Player player = (Player) sender;
-
-        if (args.length > 0) {
-            player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
-            return;
-        }
-
-        Game game = GameManager.getInstance().getGame(player.getLocation());
-        if (game == null) {
-            player.sendMessage(Messages.getMessage("not_in_arena"));
-            return;
-        }
-
-        if (game.getState() != GameState.LOBBY) {
-            player.sendMessage(Messages.getPrefix() + "§cThe game is not in the right state to vote right now");
-            return;
-        }
-
-        if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING) {
-            player.sendMessage(Messages.getPrefix() + "§cYou can't vote in this game");
-            return;
-        }
-
-        if (game.getArena() != null) {
-            player.sendMessage(Messages.getPrefix() + "§cA map was already elected");
-            return;
-        }
-        
-        String arenaName = args[0];
-        Optional<Arena> arena = Arenas.getFromName(arenaName);
-        if (!game.getVotes().containsKey(arenaName) || arena.isEmpty()) {
-            player.sendMessage(Messages.getPrefix() + "§cNo map with this title was found");
-            return;
-        }
-
-        game.getVotes().put(arenaName, game.getVotes().get(arenaName) + 1);
-        player.sendMessage(Messages.getMessage("vote.success").replace("%map%", arena.get().getDisplayName()));
-    }
-
+    
     @Subcommand("quit|leave")
-    @Description("Quit a game.")
-    @Syntax("/mw quit")
     @CommandCompletion("@nothing")
     @CommandPermission("mw.quit")
     public void quitCommand(CommandSender sender, String[] args) {
