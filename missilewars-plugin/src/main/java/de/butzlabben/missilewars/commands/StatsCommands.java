@@ -58,7 +58,7 @@ public class StatsCommands extends BaseCommand {
     @CommandPermission("mw.stats")
     public void onStats(CommandSender sender, String[] args) {
 
-        if (!senderIsPlayer(sender)) return;
+        if (!MWCommands.senderIsPlayer(sender)) return;
         Player player = (Player) sender;
 
         StatsFetcher fetcher = getFetcher(player, args);
@@ -111,7 +111,7 @@ public class StatsCommands extends BaseCommand {
     @CommandPermission("mw.stats.recommendations")
     public void onRecommendations(CommandSender sender, String[] args) {
 
-        if (!senderIsPlayer(sender)) return;
+        if (!MWCommands.senderIsPlayer(sender)) return;
         Player player = (Player) sender;
 
         StatsFetcher fetcher = getFetcher(player, args);
@@ -151,7 +151,7 @@ public class StatsCommands extends BaseCommand {
     @CommandPermission("mw.stats.players")
     public void onPlayers(CommandSender sender, String[] args) {
 
-        if (!senderIsPlayer(sender)) return;
+        if (!MWCommands.senderIsPlayer(sender)) return;
         Player player = (Player) sender;
 
         StatsFetcher fetcher = getFetcher(player, args);
@@ -169,7 +169,7 @@ public class StatsCommands extends BaseCommand {
     @CommandPermission("mw.stats.list")
     public void onList(CommandSender sender, String[] args) {
 
-        if (!senderIsPlayer(sender)) return;
+        if (!MWCommands.senderIsPlayer(sender)) return;
         Player player = (Player) sender;
 
         StatsFetcher fetcher = getFetcher(player, args);
@@ -212,12 +212,5 @@ public class StatsCommands extends BaseCommand {
         }
         player.sendMessage(Messages.getPrefix() + "Loading data...");
         return fetcher;
-    }
-
-    private boolean senderIsPlayer(CommandSender sender) {
-        if (sender instanceof Player) return true;
-
-        sender.sendMessage(Messages.getPrefix() + "§cYou are not a player");
-        return false;
     }
 }

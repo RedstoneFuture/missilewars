@@ -20,6 +20,7 @@ package de.butzlabben.missilewars;
 
 import co.aikar.commands.PaperCommandManager;
 import de.butzlabben.missilewars.commands.MWCommands;
+import de.butzlabben.missilewars.commands.SetupCommands;
 import de.butzlabben.missilewars.commands.StatsCommands;
 import de.butzlabben.missilewars.commands.UserCommands;
 import de.butzlabben.missilewars.configuration.Config;
@@ -167,7 +168,7 @@ public class MissileWars extends JavaPlugin {
         manager.registerCommand(new MWCommands());
         manager.registerCommand(new StatsCommands());
         manager.registerCommand(new UserCommands());
-        //manager.registerCommand(new SetupCommands());
+        manager.registerCommand(new SetupCommands());
     }
 
     /**
