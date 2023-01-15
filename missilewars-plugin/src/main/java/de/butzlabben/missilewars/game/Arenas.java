@@ -72,8 +72,7 @@ public class Arenas {
                     continue;
                 }
                 SetupUtil.checkMap(arena.getTemplateWorld());
-                // Save for possible new values
-                Serializer.serialize(config, arena);
+                arena.updateConfig();
                 arenas.add(arena);
             } catch (IOException exception) {
                 Logger.ERROR.log("Could not load config for arena " + config.getName());

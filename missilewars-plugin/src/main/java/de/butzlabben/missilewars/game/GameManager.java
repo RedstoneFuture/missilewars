@@ -150,6 +150,7 @@ public class GameManager {
         try {
             Lobby lobby = Serializer.deserialize(targetLobby.getFile(), Lobby.class);
             lobby.setFile(targetLobby.getFile());
+            lobby.updateConfig();
 
             Logger.BOOTDONE.log("Reloaded lobby \"" + targetLobbyName + "\" (" + targetLobby.getFile().getName() + ")");
             addGame(targetLobbyName, new Game(lobby));
