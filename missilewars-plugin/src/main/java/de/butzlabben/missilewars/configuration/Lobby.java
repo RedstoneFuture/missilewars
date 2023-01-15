@@ -24,6 +24,7 @@ import de.butzlabben.missilewars.configuration.arena.Arena;
 import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
 import de.butzlabben.missilewars.util.geometry.Area;
+import de.butzlabben.missilewars.util.serialization.Serializer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -33,6 +34,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -90,5 +92,21 @@ public class Lobby {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
+    }
+    
+    public void updateConfig() {
+        try {
+            Serializer.serialize(file, this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
+    public Location getAreaMinLocation() {
+        return new Location(getBukkitWorld(), area.getMinX(), area.getMinY(), area.getMinZ());
+    }
+
+    public Location getAreaMaxLocation() {
+        return new Location(getBukkitWorld(), area.getMaxX(), area.getMaxY(), area.getMaxZ());
     }
 }
