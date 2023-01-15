@@ -59,14 +59,14 @@ public class MWCommands extends BaseCommand {
         
         sendHelpMessage(sender, "mw.listgames", "/mw listgames", "List the active games.");
         sendHelpMessage(sender, "mw.paste", "/mw paste <missile>", "Pastes a missile.");
-        sendHelpMessage(sender, "mw.start", "/mw start", "Starts the game.");
+        sendHelpMessage(sender, "mw.start", "/mw start [lobby]", "Starts the game.");
         sendHelpMessage(sender, "mw.stop", "/mw stop [lobby]", "Stops the game.");
-        sendHelpMessage(sender, "mw.appendrestart", "/mw appendrestart", "Appends a restart after the next game ends.");
+        sendHelpMessage(sender, "mw.appendrestart", "/mw appendrestart [lobby]", "Appends a restart after the next game ends.");
         sendHelpMessage(sender, "mw.reload", "/mw reload", "Reload the plugin.");
         sendHelpMessage(sender, "mw.debug", "/mw debug", "Show debug info.");
         sendHelpMessage(sender, "mw.restartall", "/mw restartall", "Restart all games.");
 
-        sendHelpMessage(sender, "mw.setup", "/mw setup <main|lobby|area>", "Setup the game lobby and game area.");
+        sendHelpMessage(sender, "mw.setup", "/mw setup <main|lobby|arena> <value> <set|teleport> [lobby]", "Setup the MW Locations or the lobby/arena locations.");
     }
     
     @Subcommand("listgames|list|games")
@@ -124,22 +124,32 @@ public class MWCommands extends BaseCommand {
     }
 
     @Subcommand("start")
-    @CommandCompletion("@nothing")
+    @CommandCompletion("@games")
     @CommandPermission("mw.start")
     public void startCommand(CommandSender sender, String[] args) {
 
         if (!senderIsPlayer(sender)) return;
         Player player = (Player) sender;
 
-        if (args.length > 0) {
+        if (args.length > 1) {
             player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
             return;
         }
 
-        Game game = GameManager.getInstance().getGame(player.getLocation());
-        if (game == null) {
-            player.sendMessage(Messages.getMessage("not_in_arena"));
-            return;
+        // Check optional game argument:
+        Game game;
+        if (args.length == 1) {
+            game = GameManager.getInstance().getGame(args[0]);
+            if (game == null) {
+                player.sendMessage(Messages.getPrefix() + "§cGame not found.");
+                return;
+            }
+        } else {
+            game = GameManager.getInstance().getGame(player.getLocation());
+            if (game == null) {
+                player.sendMessage(Messages.getMessage("not_in_arena"));
+                return;
+            }
         }
         
         if (game.getState() != GameState.LOBBY) {
@@ -171,7 +181,7 @@ public class MWCommands extends BaseCommand {
     }
 
     @Subcommand("stop")
-    @CommandCompletion("@nothing")
+    @CommandCompletion("@games")
     @CommandPermission("mw.stop")
     public void stopCommand(CommandSender sender, String[] args) {
 
@@ -182,7 +192,8 @@ public class MWCommands extends BaseCommand {
             player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
             return;
         }
-        
+
+        // Check optional game argument:
         Game game;
         if (args.length == 1) {
             game = GameManager.getInstance().getGame(args[0]);
@@ -204,22 +215,32 @@ public class MWCommands extends BaseCommand {
     }
     
     @Subcommand("appendrestart")
-    @CommandCompletion("@nothing")
+    @CommandCompletion("@games")
     @CommandPermission("mw.appendrestart")
     public void appendrestartCommand(CommandSender sender, String[] args) {
 
         if (!senderIsPlayer(sender)) return;
         Player player = (Player) sender;
 
-        if (args.length > 0) {
+        if (args.length > 1) {
             player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
             return;
         }
 
-        Game game = GameManager.getInstance().getGame(player.getLocation());
-        if (game == null) {
-            player.sendMessage(Messages.getMessage("not_in_arena"));
-            return;
+        // Check optional game argument:
+        Game game;
+        if (args.length == 1) {
+            game = GameManager.getInstance().getGame(args[0]);
+            if (game == null) {
+                player.sendMessage(Messages.getPrefix() + "§cGame not found.");
+                return;
+            }
+        } else {
+            game = GameManager.getInstance().getGame(player.getLocation());
+            if (game == null) {
+                player.sendMessage(Messages.getMessage("not_in_arena"));
+                return;
+            }
         }
         
         GameManager.getInstance().getGames().values().forEach(Game::appendRestart);
@@ -279,16 +300,10 @@ public class MWCommands extends BaseCommand {
             player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
             return;
         }
-
-        Game game = GameManager.getInstance().getGame(player.getLocation());
-        if (game == null) {
-            player.sendMessage(Messages.getMessage("not_in_arena"));
-            return;
-        }
-
+        
         sender.sendMessage(Messages.getPrefix() + "§cWarning - Restarting all games. This may take a while");
         GameManager.getInstance().restartAll();
-        sender.sendMessage(Messages.getPrefix() + "Reloaded configs");
+        sender.sendMessage(Messages.getPrefix() + "Restarted all games.");
     }
     
     static boolean senderIsPlayer(CommandSender sender) {

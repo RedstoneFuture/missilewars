@@ -58,6 +58,7 @@ public class MissileWars extends JavaPlugin {
     private static MissileWars instance;
     public final String version = getDescription().getVersion();
     private SignRepository signRepository;
+    public PaperCommandManager commandManager;
 
     private boolean foundFAWE;
     
@@ -163,12 +164,12 @@ public class MissileWars extends JavaPlugin {
         // Using the Paper Command Manager does not mean the plugin requires Paper.
         // It simply lets it take advantage of Paper specific features if available,
         // such as Asynchronous Tab Completions.
-        PaperCommandManager manager = new PaperCommandManager(this);
+        commandManager = new PaperCommandManager(this);
         
-        manager.registerCommand(new MWCommands());
-        manager.registerCommand(new StatsCommands());
-        manager.registerCommand(new UserCommands());
-        manager.registerCommand(new SetupCommands());
+        commandManager.registerCommand(new MWCommands());
+        commandManager.registerCommand(new StatsCommands());
+        commandManager.registerCommand(new UserCommands());
+        commandManager.registerCommand(new SetupCommands());
     }
 
     /**

@@ -42,6 +42,7 @@ import java.util.Optional;
 public class UserCommands extends BaseCommand {
     
     @Subcommand("vote")
+    @CommandCompletion("@nothing")
     @CommandPermission("mw.vote")
     public void voteCommand(CommandSender sender, String[] args) {
 

@@ -29,7 +29,9 @@ import org.bukkit.Location;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 @Getter
 public class GameManager {
@@ -150,7 +152,7 @@ public class GameManager {
             lobby.setFile(targetLobby.getFile());
             
             Logger.BOOTDONE.log("Reloaded lobby \"" + targetLobbyName + "\" (" + targetLobby.getFile().getName() + ")");
-            games.put(targetLobbyName, new Game(lobby));
+            addGame(targetLobbyName, new Game(lobby));
             
         } catch (IOException exception) {
             Logger.ERROR.log("Could not load lobby of \"" + targetLobby.getFile().getName() + "\"");
@@ -160,6 +162,12 @@ public class GameManager {
 
     public Game getGame(String name) {
         return games.get(name);
+    }
+    
+    public void addGame(String name, Game game) {
+        games.put(name, game);
+        List<String> gameNames = new ArrayList<>(games.keySet());
+        MissileWars.getInstance().commandManager.getCommandCompletions().registerCompletion("games", c -> gameNames);
     }
 
     public int getGameAmount() {

@@ -66,6 +66,7 @@ public class Arenas {
             if (!config.getName().endsWith(".yml") && !config.getName().endsWith(".yaml")) continue;
             try {
                 Arena arena = Serializer.deserialize(config, Arena.class);
+                arena.setFile(config);
                 if (getFromName(arena.getName()).isPresent()) {
                     Logger.WARN.log("There are several arenas configured with the name \"" + arena.getName() + "\". Arenas must have a unique name");
                     continue;

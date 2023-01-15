@@ -37,17 +37,17 @@ public class SetupCommands extends BaseCommand {
     @Default
     @CommandPermission("mw.setup")
     public void setupCommands(CommandSender sender, String[] args) {
-        sender.sendMessage(Messages.getPrefix() + "§fSetup usage: §7/mw stats <main|lobby|area>");
+        sender.sendMessage(Messages.getPrefix() + "§fSetup usage: §7/mw setup <main|lobby|arena> <value> <set|teleport> [lobby]");
     }
 
     @Subcommand("main")
-    @Description("Main Setup")
     public class mainSetupCommands extends BaseCommand {
 
         @Subcommand("fallbackspawn")
         public class fallbackspawnSetup extends BaseCommand {
 
             @Subcommand("set")
+            @CommandCompletion("@nothing")
             public void set(CommandSender sender, String[] args) {
                 if (!senderIsPlayer(sender)) return;
                 
@@ -56,6 +56,7 @@ public class SetupCommands extends BaseCommand {
             }
 
             @Subcommand("teleport|tp")
+            @CommandCompletion("@nothing")
             public void teleport(CommandSender sender, String[] args) {
                 if (!senderIsPlayer(sender)) return;
                 
@@ -67,126 +68,83 @@ public class SetupCommands extends BaseCommand {
     }
     
     @Subcommand("lobby")
-    @Description("Setup the lobby")
     public class lobbySetupCommands extends BaseCommand {
 
         @Subcommand("spawnpoint")
         public class spawnpointSetup extends BaseCommand {
-            
+
             @Subcommand("set")
+            @CommandCompletion("@games")
             public void set(CommandSender sender, String[] args) {
                 if (!senderIsPlayer(sender)) return;
-                if (!isValidGame()) return;
+                if (!isValidGame(args)) return;
 
                 game.getLobby().setSpawnPoint(player.getLocation());
+                game.getLobby().updateConfig();
                 player.sendMessage(Messages.getPrefix() + "§fSet new 'spawnPoint' to " + player.getLocation() + ".");
             }
 
             @Subcommand("teleport|tp")
+            @CommandCompletion("@games")
             public void teleport(CommandSender sender, String[] args) {
                 if (!senderIsPlayer(sender)) return;
-                if (!isValidGame()) return;
+                if (!isValidGame(args)) return;
 
                 player.teleport(game.getLobby().getSpawnPoint());
                 player.sendMessage(Messages.getPrefix() + "§fTeleported to 'spawnPoint'.");
             }
-            
+
         }
 
         @Subcommand("aftergamespawn")
         public class aftergamespawnSetup extends BaseCommand {
 
             @Subcommand("set")
+            @CommandCompletion("@games")
             public void set(CommandSender sender, String[] args) {
                 if (!senderIsPlayer(sender)) return;
-                if (!isValidGame()) return;
+                if (!isValidGame(args)) return;
 
                 game.getLobby().setAfterGameSpawn(player.getLocation());
+                game.getLobby().updateConfig();
                 player.sendMessage(Messages.getPrefix() + "§fSet new 'afterGameSpawn' to " + player.getLocation() + ".");
             }
 
             @Subcommand("teleport|tp")
+            @CommandCompletion("@games")
             public void teleport(CommandSender sender, String[] args) {
                 if (!senderIsPlayer(sender)) return;
-                if (!isValidGame()) return;
+                if (!isValidGame(args)) return;
 
                 player.teleport(game.getLobby().getAfterGameSpawn());
                 player.sendMessage(Messages.getPrefix() + "§fTeleported to 'afterGameSpawn'.");
             }
 
         }
-
-        @Subcommand("area")
-        public class areaSetup extends BaseCommand {
-
-            @Subcommand("set")
-            public class set extends BaseCommand {
-
-                @Subcommand("pos1")
-                public void pos1(CommandSender sender, String[] args) {
-                    if (!senderIsPlayer(sender)) return;
-                    if (!isValidGame()) return;
-
-                    game.getLobby().setAfterGameSpawn(player.getLocation());
-                    player.sendMessage(Messages.getPrefix() + "§fSet new 'afterGameSpawn' to " + player.getLocation() + ".");
-                }
-
-                @Subcommand("pos2")
-                public void pos2(CommandSender sender, String[] args) {
-                    if (!senderIsPlayer(sender)) return;
-                    if (!isValidGame()) return;
-
-                    game.getLobby().setAfterGameSpawn(player.getLocation());
-                    player.sendMessage(Messages.getPrefix() + "§fSet new 'afterGameSpawn' to " + player.getLocation() + ".");
-                }
-                
-            }
-
-            @Subcommand("teleport|tp")
-            public class teleport extends BaseCommand {
-
-                @Subcommand("pos1")
-                public void pos1(CommandSender sender, String[] args) {
-                    if (!senderIsPlayer(sender)) return;
-                    if (!isValidGame()) return;
-
-                    game.getLobby().setAfterGameSpawn(player.getLocation());
-                    player.sendMessage(Messages.getPrefix() + "§fSet new 'afterGameSpawn' to " + player.getLocation() + ".");
-                }
-
-                @Subcommand("pos2")
-                public void pos2(CommandSender sender, String[] args) {
-                    if (!senderIsPlayer(sender)) return;
-                    if (!isValidGame()) return;
-
-                    game.getLobby().setAfterGameSpawn(player.getLocation());
-                    player.sendMessage(Messages.getPrefix() + "§fSet new 'afterGameSpawn' to " + player.getLocation() + ".");
-                }
-                
-            }
-        }
     }
-
+        
     @Subcommand("arena")
-    @Description("Setup the arena")
     public class arenaSetupCommands extends BaseCommand {
 
         @Subcommand("spectatorspawn")
         public class spectatorspawnSetup extends BaseCommand {
 
             @Subcommand("set")
+            @CommandCompletion("@games")
             public void set(CommandSender sender, String[] args) {
                 if (!senderIsPlayer(sender)) return;
-                if (!isValidGame()) return;
+                if (!isValidGame(args)) return;
 
                 game.getArena().setSpectatorSpawn(player.getLocation());
+                game.getArena().updateConfig();
                 player.sendMessage(Messages.getPrefix() + "§fSet new 'spectatorSpawn' to " + player.getLocation() + ".");
             }
 
             @Subcommand("teleport|tp")
+            @CommandCompletion("@games")
             public void teleport(CommandSender sender, String[] args) {
                 if (!senderIsPlayer(sender)) return;
-                if (!isValidGame()) return;
+                if (!isValidGame(args)) return;
 
                 player.teleport(game.getArena().getSpectatorSpawn());
                 player.sendMessage(Messages.getPrefix() + "§fTeleported to 'spectatorSpawn'.");
@@ -198,18 +156,21 @@ public class SetupCommands extends BaseCommand {
         public class team1spawnSetup extends BaseCommand {
 
             @Subcommand("set")
+            @CommandCompletion("@games")
             public void set(CommandSender sender, String[] args) {
                 if (!senderIsPlayer(sender)) return;
-                if (!isValidGame()) return;
+                if (!isValidGame(args)) return;
 
                 game.getArena().setTeam1Spawn(player.getLocation());
+                game.getArena().updateConfig();
                 player.sendMessage(Messages.getPrefix() + "§fSet new 'team1Spawn' to " + player.getLocation() + ".");
             }
 
             @Subcommand("teleport|tp")
+            @CommandCompletion("@games")
             public void teleport(CommandSender sender, String[] args) {
                 if (!senderIsPlayer(sender)) return;
-                if (!isValidGame()) return;
+                if (!isValidGame(args)) return;
 
                 player.teleport(game.getArena().getTeam1Spawn());
                 player.sendMessage(Messages.getPrefix() + "§fTeleported to 'team1Spawn'.");
@@ -221,18 +182,21 @@ public class SetupCommands extends BaseCommand {
         public class team2spawnSetup extends BaseCommand {
 
             @Subcommand("set")
+            @CommandCompletion("@games")
             public void set(CommandSender sender, String[] args) {
                 if (!senderIsPlayer(sender)) return;
-                if (!isValidGame()) return;
+                if (!isValidGame(args)) return;
 
                 game.getArena().setTeam2Spawn(player.getLocation());
+                game.getArena().updateConfig();
                 player.sendMessage(Messages.getPrefix() + "§fSet new 'team2Spawn' to " + player.getLocation() + ".");
             }
 
             @Subcommand("teleport|tp")
+            @CommandCompletion("@games")
             public void teleport(CommandSender sender, String[] args) {
                 if (!senderIsPlayer(sender)) return;
-                if (!isValidGame()) return;
+                if (!isValidGame(args)) return;
 
                 player.teleport(game.getArena().getTeam2Spawn());
                 player.sendMessage(Messages.getPrefix() + "§fTeleported to 'team2Spawn'.");
@@ -256,20 +220,30 @@ public class SetupCommands extends BaseCommand {
         sender.sendMessage(Messages.getPrefix() + "§cYou are not a player");
         return false;
     }
-
+    
     /**
      * This method checks if the player execute the command on a valid
      * game world (lobby or area).
      *
      * @return true, if it's a MissileWars game world
      */
-    private boolean isValidGame() {
-        game = GameManager.getInstance().getGame(player.getLocation());
-
-        if (game != null) return true;
-
-        player.sendMessage(Messages.getMessage("not_in_arena"));
-        return false;
+    private boolean isValidGame(String[] args) {
+        
+        // Check optional game argument:
+        if (args.length == 1) {
+            game = GameManager.getInstance().getGame(args[0]);
+            if (game == null) {
+                player.sendMessage(Messages.getPrefix() + "§cGame not found.");
+                return false;
+            }
+        } else {
+            game = GameManager.getInstance().getGame(player.getLocation());
+            if (game == null) {
+                player.sendMessage(Messages.getMessage("not_in_arena"));
+                return false;
+            }
+        }
+        
+        return true;
     }
-    
 }
