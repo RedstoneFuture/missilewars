@@ -242,7 +242,7 @@ public class Game {
 
     public void stopGame() {
         if (Config.isSetup()) return;
-        
+
         Logger.DEBUG.log("Stopping");
 
         for (BukkitTask bt : playerTasks.values()) {
@@ -277,7 +277,7 @@ public class Game {
 
     public void reset() {
         if (Config.isSetup()) return;
-        
+
         if (restart) {
             Bukkit.getServer().spigot().restart();
             return;
@@ -291,11 +291,11 @@ public class Game {
     }
 
     public void disableGameOnServerStop() {
-        
+
         for (MWPlayer mwPlayer : players.values()) {
             teleportToFallbackSpawn(mwPlayer.getPlayer());
         }
-        
+
         gameWorld.unload();
     }
 

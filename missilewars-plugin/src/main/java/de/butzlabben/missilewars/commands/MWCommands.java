@@ -47,16 +47,16 @@ public class MWCommands extends BaseCommand {
     public void mwCommand(CommandSender sender) {
 
         sender.sendMessage(Messages.getPrefix() + "MissileWars v" + MissileWars.getInstance().version + " by Butzlabben");
-        
+
         sendHelpMessage(sender, "mw.vote", "/mw vote", "Vote for a arena.");
         sendHelpMessage(sender, "mw.change", "/mw change <1|2>", "Changes your team.");
         sendHelpMessage(sender, "mw.quit", "/mw quit", "Quit a game.");
-        
+
         sendHelpMessage(sender, "mw.stats", "/mw stats [from] [arena]", "Shows stats.");
         sendHelpMessage(sender, "mw.stats.recommendations", "/mw stats recommendations [from] [arena]", "Shows recommendations.");
         sendHelpMessage(sender, "mw.stats.players", "/mw stats players [from] [arena]", "Shows player list.");
         sendHelpMessage(sender, "mw.stats.list", "/mw stats list [from] [arena]", "Lists history of games.");
-        
+
         sendHelpMessage(sender, "mw.listgames", "/mw listgames", "List the active games.");
         sendHelpMessage(sender, "mw.paste", "/mw paste <missile>", "Pastes a missile.");
         sendHelpMessage(sender, "mw.start", "/mw start [lobby]", "Starts the game.");
@@ -73,22 +73,22 @@ public class MWCommands extends BaseCommand {
     @CommandCompletion("@nothing")
     @CommandPermission("mw.listgames")
     public void listgamesCommand(CommandSender sender, String[] args) {
-        
+
         sender.sendMessage(Messages.getPrefix() + "Current games:");
-        
+
         for (Game game : GameManager.getInstance().getGames().values()) {
             sender.sendMessage("§e " + game.getLobby().getName() + "§7 -- Name: »" + game.getLobby().getDisplayName() + "§7« | Status: " + game.getState());
             sender.sendMessage("§8 - §f" + "Load with startup: §7" + game.getLobby().isAutoLoad());
             sender.sendMessage("§8 - §f" + "Current Arena: §7" + game.getArena().getName() + "§7 -- Name: »" + game.getArena().getDisplayName() + "§7«");
             sender.sendMessage("§8 - §f" + "Total players: §7" + game.getPlayers().size() + "x");
-            sender.sendMessage("§8 - §f" + "Team 1: §7" + game.getTeam1().getColor() + game.getTeam1().getName() 
+            sender.sendMessage("§8 - §f" + "Team 1: §7" + game.getTeam1().getColor() + game.getTeam1().getName()
                     + " §7with " + game.getTeam1().getMembers().size() + " players");
             sender.sendMessage("§8 - §f" + "Team 2: §7" + game.getTeam2().getColor() + game.getTeam2().getName()
                     + " §7with " + game.getTeam2().getMembers().size() + " players");
         }
-        
+
     }
-    
+
     @Subcommand("paste")
     @CommandCompletion("@nothing")
     @CommandPermission("mw.paste")
@@ -96,12 +96,12 @@ public class MWCommands extends BaseCommand {
 
         if (!senderIsPlayer(sender)) return;
         Player player = (Player) sender;
-        
+
         if (args.length < 1) {
             player.sendMessage(Messages.getPrefix() + "§cMissile needed.");
             return;
         }
-        
+
         if (args.length > 1) {
             player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
             return;
@@ -112,13 +112,13 @@ public class MWCommands extends BaseCommand {
             player.sendMessage(Messages.getMessage("not_in_arena"));
             return;
         }
-        
+
         Missile missile = game.getArena().getMissileConfiguration().getMissileFromName(args[0]);
         if (missile == null) {
             player.sendMessage(Messages.getPrefix() + "§cUnknown missile.");
             return;
         }
-        
+
         MissileFacing missileFacing = MissileFacing.getFacingPlayer(player, game.getArena().getMissileConfiguration());
         missile.paste(player, missileFacing, game);
     }
@@ -151,12 +151,12 @@ public class MWCommands extends BaseCommand {
                 return;
             }
         }
-        
+
         if (game.getState() != GameState.LOBBY) {
             player.sendMessage(Messages.getPrefix() + "§cGame already started");
             return;
         }
-        
+
         if (game.isReady())
             game.startGame();
         else {
@@ -208,12 +208,12 @@ public class MWCommands extends BaseCommand {
                 return;
             }
         }
-        
+
         game.getTeam1().setGameResult(GameResult.DRAW);
         game.getTeam2().setGameResult(GameResult.DRAW);
         if (game.getState() == GameState.INGAME) game.stopGame();
     }
-    
+
     @Subcommand("appendrestart")
     @CommandCompletion("@games")
     @CommandPermission("mw.appendrestart")
@@ -242,7 +242,7 @@ public class MWCommands extends BaseCommand {
                 return;
             }
         }
-        
+
         GameManager.getInstance().getGames().values().forEach(Game::appendRestart);
         sender.sendMessage(Messages.getMessage("restart_after_game"));
     }
@@ -259,7 +259,7 @@ public class MWCommands extends BaseCommand {
             player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
             return;
         }
-        
+
         Config.load();
         Messages.load();
         Arenas.load();
@@ -278,7 +278,7 @@ public class MWCommands extends BaseCommand {
             player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
             return;
         }
-        
+
         int i = 0;
         Logger.NORMAL.log("Starting to print debug information for MissileWars v" + MissileWars.getInstance().version);
         for (Game game : GameManager.getInstance().getGames().values()) {
@@ -300,19 +300,19 @@ public class MWCommands extends BaseCommand {
             player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
             return;
         }
-        
+
         sender.sendMessage(Messages.getPrefix() + "§cWarning - Restarting all games. This may take a while");
         GameManager.getInstance().restartAll();
         sender.sendMessage(Messages.getPrefix() + "Restarted all games.");
     }
-    
+
     static boolean senderIsPlayer(CommandSender sender) {
         if (sender instanceof Player) return true;
 
         sender.sendMessage(Messages.getPrefix() + "§cYou are not a player");
         return false;
     }
-    
+
     static void sendHelpMessage(CommandSender sender, String permission, String command, String description) {
         if (sender instanceof Player) {
             if (!sender.hasPermission(permission)) return;

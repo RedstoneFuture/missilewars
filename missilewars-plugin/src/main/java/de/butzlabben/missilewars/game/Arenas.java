@@ -59,7 +59,7 @@ public class Arenas {
                 Bukkit.getPluginManager().disablePlugin(MissileWars.getInstance());
                 return;
             }
-            files = new File[] {defaultArena};
+            files = new File[]{defaultArena};
         }
 
         for (File config : files) {

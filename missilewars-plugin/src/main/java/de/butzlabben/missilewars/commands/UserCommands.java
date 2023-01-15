@@ -40,7 +40,7 @@ import java.util.Optional;
 
 @CommandAlias("mw|missilewars")
 public class UserCommands extends BaseCommand {
-    
+
     @Subcommand("vote")
     @CommandCompletion("@nothing")
     @CommandPermission("mw.vote")
@@ -85,7 +85,7 @@ public class UserCommands extends BaseCommand {
         game.getVotes().put(arenaName, game.getVotes().get(arenaName) + 1);
         player.sendMessage(Messages.getMessage("vote.success").replace("%map%", arena.get().getDisplayName()));
     }
-    
+
     @Subcommand("change")
     @CommandCompletion("@range:1-2")
     @CommandPermission("mw.change")
@@ -109,7 +109,7 @@ public class UserCommands extends BaseCommand {
             player.sendMessage(Messages.getPrefix() + "§cThe game is not in the right state to change your team right now");
             return;
         }
-        
+
         try {
             MWPlayer mwPlayer = game.getPlayer(player);
             int teamNumber = Integer.parseInt(args[0]);
@@ -130,7 +130,7 @@ public class UserCommands extends BaseCommand {
             player.sendMessage(Messages.getPrefix() + "§c/mw change <1|2>");
         }
     }
-    
+
     @Subcommand("quit|leave")
     @CommandCompletion("@nothing")
     @CommandPermission("mw.quit")
@@ -149,7 +149,7 @@ public class UserCommands extends BaseCommand {
             player.sendMessage(Messages.getMessage("not_in_arena"));
             return;
         }
-        
+
         MissileWars.getInstance().getPlayerListener().registerPlayerArenaLeaveEvent(player, game);
         game.teleportToFallbackSpawn(player);
     }

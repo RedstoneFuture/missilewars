@@ -61,7 +61,7 @@ public class MissileWars extends JavaPlugin {
     public PaperCommandManager commandManager;
 
     private boolean foundFAWE;
-    
+
     private PlayerListener playerListener;
     private SignListener signListener;
 
@@ -165,7 +165,7 @@ public class MissileWars extends JavaPlugin {
         // It simply lets it take advantage of Paper specific features if available,
         // such as Asynchronous Tab Completions.
         commandManager = new PaperCommandManager(this);
-        
+
         commandManager.registerCommand(new MWCommands());
         commandManager.registerCommand(new StatsCommands());
         commandManager.registerCommand(new UserCommands());
@@ -187,7 +187,7 @@ public class MissileWars extends JavaPlugin {
     private void deleteTempWorlds() {
         File[] dirs = Bukkit.getWorldContainer().listFiles();
         if (dirs == null) return;
-        
+
         for (File dir : dirs) {
             if (dir.getName().startsWith("mw-")) {
                 try {

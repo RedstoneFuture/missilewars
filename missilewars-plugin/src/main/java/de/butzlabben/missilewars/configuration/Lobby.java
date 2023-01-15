@@ -93,7 +93,7 @@ public class Lobby {
                 .map(Optional::get)
                 .collect(Collectors.toList());
     }
-    
+
     public void updateConfig() {
         try {
             Serializer.serialize(file, this);
@@ -101,7 +101,7 @@ public class Lobby {
             throw new RuntimeException(e);
         }
     }
-    
+
     public Location getAreaMinLocation() {
         return new Location(getBukkitWorld(), area.getMinX(), area.getMinY(), area.getMinZ());
     }

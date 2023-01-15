@@ -50,7 +50,7 @@ public class SetupCommands extends BaseCommand {
             @CommandCompletion("@nothing")
             public void set(CommandSender sender, String[] args) {
                 if (!senderIsPlayer(sender)) return;
-                
+
                 Config.setFallbackSpawn(player.getLocation());
                 player.sendMessage(Messages.getPrefix() + "§fSet new 'fallbackSpawn' to " + player.getLocation() + ".");
             }
@@ -59,14 +59,14 @@ public class SetupCommands extends BaseCommand {
             @CommandCompletion("@nothing")
             public void teleport(CommandSender sender, String[] args) {
                 if (!senderIsPlayer(sender)) return;
-                
+
                 player.teleport(Config.getFallbackSpawn());
                 player.sendMessage(Messages.getPrefix() + "§fTeleported to 'fallbackSpawn'.");
             }
 
         }
     }
-    
+
     @Subcommand("lobby")
     public class lobbySetupCommands extends BaseCommand {
 
@@ -122,7 +122,7 @@ public class SetupCommands extends BaseCommand {
 
         }
     }
-        
+
     @Subcommand("arena")
     public class arenaSetupCommands extends BaseCommand {
 
@@ -204,7 +204,7 @@ public class SetupCommands extends BaseCommand {
 
         }
     }
-    
+
     /**
      * This method checks if the command sender is a valid ingame player.
      * 
@@ -216,11 +216,11 @@ public class SetupCommands extends BaseCommand {
             player = (Player) sender;
             return true;
         }
-        
+
         sender.sendMessage(Messages.getPrefix() + "§cYou are not a player");
         return false;
     }
-    
+
     /**
      * This method checks if the player execute the command on a valid
      * game world (lobby or area).
@@ -228,7 +228,7 @@ public class SetupCommands extends BaseCommand {
      * @return true, if it's a MissileWars game world
      */
     private boolean isValidGame(String[] args) {
-        
+
         // Check optional game argument:
         if (args.length == 1) {
             game = GameManager.getInstance().getGame(args[0]);
@@ -243,7 +243,7 @@ public class SetupCommands extends BaseCommand {
                 return false;
             }
         }
-        
+
         return true;
     }
 }
