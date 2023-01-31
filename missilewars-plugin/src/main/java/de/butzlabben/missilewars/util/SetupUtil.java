@@ -108,7 +108,7 @@ public class SetupUtil {
     }
 
     public static void checkMap(String worldName) {
-        File file = new File(Config.getArenaFolder() + "/" + worldName);
+        File file = new File(Config.getArenasFolder() + worldName);
         if (!file.isDirectory()) {
             String resource = "MissileWars-Arena.zip";
 
@@ -125,7 +125,7 @@ public class SetupUtil {
     }
 
     public static void checkMissiles() {
-        File file = new File(MissileWars.getInstance().getDataFolder(), "missiles");
+        File file = new File(Config.getMissilesFolder());
         if (!file.isDirectory()) {
             String resource = "missiles.zip";
 

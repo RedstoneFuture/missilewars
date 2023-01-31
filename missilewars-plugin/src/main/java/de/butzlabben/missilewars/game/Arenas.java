@@ -40,7 +40,7 @@ public class Arenas {
     public static void load() {
         arenas.clear();
 
-        File folder = new File(Config.getArenaFolder());
+        File folder = new File(Config.getArenasFolder());
 
         // Creates the folder "/arena", if not existing
         folder.mkdirs();

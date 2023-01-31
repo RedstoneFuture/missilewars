@@ -121,7 +121,7 @@ public class GameWorld {
                 i++;
             } while (file.exists() || file.isDirectory());
 
-            File newFile = new File(Config.getArenaFolder() + "/" + templateName);
+            File newFile = new File(Config.getArenasFolder() + templateName);
 
             try {
                 FileUtils.copyDirectory(newFile, file);
