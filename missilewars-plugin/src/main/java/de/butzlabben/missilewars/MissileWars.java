@@ -125,13 +125,9 @@ public class MissileWars extends JavaPlugin {
         if (Config.isPrefetchPlayers()) {
             PreFetcher.preFetchPlayers(new StatsFetcher(new Date(0L), ""));
         }
-
-        // Small check to make sure that PlaceholderAPI is installed
-        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
-            new MissileWarsPlaceholder(this).register();
-            Logger.NORMAL.log("The PlaceholderAPI is installed. New placeholders are provided by MissileWars.");
-        }
-
+        
+        checkPlaceholderAPI();
+        
         endTime = System.currentTimeMillis();
         Logger.SUCCESS.log("MissileWars was enabled in " + (endTime - startTime) + "ms");
     }
@@ -143,7 +139,18 @@ public class MissileWars extends JavaPlugin {
 
         ConnectionHolder.close();
     }
-
+    
+    /**
+     * This method checks if the PlaceholderAPI is installed. When it is 
+     * installed, a message is sent to the log.
+     */
+    private void checkPlaceholderAPI() {
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new MissileWarsPlaceholder(this).register();
+            Logger.NORMAL.log("The PlaceholderAPI is installed. New placeholders are provided by MissileWars.");
+        }
+    }
+    
     /**
      * This method registers all events of the missilewars event listener.
      */
