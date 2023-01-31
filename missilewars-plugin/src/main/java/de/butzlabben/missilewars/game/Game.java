@@ -276,15 +276,14 @@ public class Game {
     }
 
     public void reset() {
-        if (Config.isSetup())
-            return;
+        if (Config.isSetup()) return;
 
         if (restart) {
             Bukkit.getServer().spigot().restart();
             return;
         }
 
-        GameManager.getInstance().restartGame(lobby);
+        GameManager.getInstance().restartGame(lobby, false);
     }
 
     public void appendRestart() {
@@ -292,11 +291,11 @@ public class Game {
     }
 
     public void disableGameOnServerStop() {
-        
+
         for (MWPlayer mwPlayer : players.values()) {
             teleportToFallbackSpawn(mwPlayer.getPlayer());
         }
-        
+
         gameWorld.unload();
     }
 
@@ -416,11 +415,6 @@ public class Game {
     }
 
     public void resetGame() {
-        if (state == GameState.INGAME) {
-            stopGame();
-            return;
-        }
-
         HandlerList.unregisterAll(listener);
 
         stopTimer();
@@ -436,9 +430,6 @@ public class Game {
         if (scoreboardManager != null) {
             scoreboardManager.removeScoreboard();
         }
-
-        team1 = null;
-        team2 = null;
     }
 
     public boolean isInLobbyArea(Location location) {

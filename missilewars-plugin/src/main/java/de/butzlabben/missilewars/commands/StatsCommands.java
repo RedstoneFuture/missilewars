@@ -53,12 +53,10 @@ public class StatsCommands extends BaseCommand {
     private final SimpleDateFormat preciseFormat = new SimpleDateFormat("hh:mm dd.MM.yyyy");
 
     @Default
-    @Description("Shows stats.")
-    @Syntax("/mw stats [from] [arena]")
     @CommandPermission("mw.stats")
     public void onStats(CommandSender sender, String[] args) {
 
-        if (!senderIsPlayer(sender)) return;
+        if (!MWCommands.senderIsPlayer(sender)) return;
         Player player = (Player) sender;
 
         StatsFetcher fetcher = getFetcher(player, args);
@@ -106,12 +104,11 @@ public class StatsCommands extends BaseCommand {
     }
 
     @Subcommand("recommendations")
-    @Description("Shows recommendations.")
-    @Syntax("/mw stats recommendations [from] [arena]")
+    @CommandCompletion("@nothing")
     @CommandPermission("mw.stats.recommendations")
     public void onRecommendations(CommandSender sender, String[] args) {
 
-        if (!senderIsPlayer(sender)) return;
+        if (!MWCommands.senderIsPlayer(sender)) return;
         Player player = (Player) sender;
 
         StatsFetcher fetcher = getFetcher(player, args);
@@ -146,12 +143,11 @@ public class StatsCommands extends BaseCommand {
     }
 
     @Subcommand("players")
-    @Description("Shows player list.")
-    @Syntax("/mw stats players [from] [arena]")
+    @CommandCompletion("@nothing")
     @CommandPermission("mw.stats.players")
     public void onPlayers(CommandSender sender, String[] args) {
 
-        if (!senderIsPlayer(sender)) return;
+        if (!MWCommands.senderIsPlayer(sender)) return;
         Player player = (Player) sender;
 
         StatsFetcher fetcher = getFetcher(player, args);
@@ -164,12 +160,11 @@ public class StatsCommands extends BaseCommand {
     }
 
     @Subcommand("list")
-    @Description("Lists history of games.")
-    @Syntax("/mw stats list [from] [arena]")
+    @CommandCompletion("@nothing")
     @CommandPermission("mw.stats.list")
     public void onList(CommandSender sender, String[] args) {
 
-        if (!senderIsPlayer(sender)) return;
+        if (!MWCommands.senderIsPlayer(sender)) return;
         Player player = (Player) sender;
 
         StatsFetcher fetcher = getFetcher(player, args);
@@ -212,12 +207,5 @@ public class StatsCommands extends BaseCommand {
         }
         player.sendMessage(Messages.getPrefix() + "Loading data...");
         return fetcher;
-    }
-
-    private boolean senderIsPlayer(CommandSender sender) {
-        if (sender instanceof Player) return true;
-
-        sender.sendMessage(Messages.getPrefix() + "§cYou are not a player");
-        return false;
     }
 }

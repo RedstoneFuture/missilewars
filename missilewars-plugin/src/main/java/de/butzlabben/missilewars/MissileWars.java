@@ -20,6 +20,7 @@ package de.butzlabben.missilewars;
 
 import co.aikar.commands.PaperCommandManager;
 import de.butzlabben.missilewars.commands.MWCommands;
+import de.butzlabben.missilewars.commands.SetupCommands;
 import de.butzlabben.missilewars.commands.StatsCommands;
 import de.butzlabben.missilewars.commands.UserCommands;
 import de.butzlabben.missilewars.configuration.Config;
@@ -57,8 +58,12 @@ public class MissileWars extends JavaPlugin {
     private static MissileWars instance;
     public final String version = getDescription().getVersion();
     private SignRepository signRepository;
+    public PaperCommandManager commandManager;
 
     private boolean foundFAWE;
+
+    private PlayerListener playerListener;
+    private SignListener signListener;
 
     public MissileWars() {
         instance = this;
@@ -99,7 +104,7 @@ public class MissileWars extends JavaPlugin {
         Arenas.load();
         SetupUtil.checkShields();
 
-        GameManager.getInstance().loadGames();
+        GameManager.getInstance().loadGamesOnStartup();
 
         new Metrics(this, 3749);
 
@@ -143,8 +148,11 @@ public class MissileWars extends JavaPlugin {
      * This method registers all events of the missilewars event listener.
      */
     private void registerEvents() {
-        Bukkit.getPluginManager().registerEvents(new PlayerListener(), this);
-        Bukkit.getPluginManager().registerEvents(new SignListener(), this);
+        playerListener = new PlayerListener();
+        signListener = new SignListener();
+
+        Bukkit.getPluginManager().registerEvents(playerListener, this);
+        Bukkit.getPluginManager().registerEvents(signListener, this);
     }
 
     /**
@@ -156,11 +164,12 @@ public class MissileWars extends JavaPlugin {
         // Using the Paper Command Manager does not mean the plugin requires Paper.
         // It simply lets it take advantage of Paper specific features if available,
         // such as Asynchronous Tab Completions.
-        PaperCommandManager manager = new PaperCommandManager(this);
+        commandManager = new PaperCommandManager(this);
 
-        manager.registerCommand(new MWCommands());
-        manager.registerCommand(new StatsCommands());
-        manager.registerCommand(new UserCommands());
+        commandManager.registerCommand(new MWCommands());
+        commandManager.registerCommand(new StatsCommands());
+        commandManager.registerCommand(new UserCommands());
+        commandManager.registerCommand(new SetupCommands());
     }
 
     /**
@@ -178,7 +187,7 @@ public class MissileWars extends JavaPlugin {
     private void deleteTempWorlds() {
         File[] dirs = Bukkit.getWorldContainer().listFiles();
         if (dirs == null) return;
-        
+
         for (File dir : dirs) {
             if (dir.getName().startsWith("mw-")) {
                 try {
@@ -219,5 +228,13 @@ public class MissileWars extends JavaPlugin {
             }
             Logger.BOOT.log("Other authors: " + sb);
         }
+    }
+
+    public PlayerListener getPlayerListener() {
+        return playerListener;
+    }
+
+    public SignListener getSignListener() {
+        return signListener;
     }
 }

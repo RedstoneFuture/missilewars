@@ -19,8 +19,11 @@
 package de.butzlabben.missilewars.commands;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.*;
-import de.butzlabben.missilewars.configuration.Config;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Subcommand;
+import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.configuration.arena.Arena;
 import de.butzlabben.missilewars.game.Arenas;
@@ -30,7 +33,6 @@ import de.butzlabben.missilewars.game.Team;
 import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
 import de.butzlabben.missilewars.player.MWPlayer;
-import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -39,61 +41,18 @@ import java.util.Optional;
 @CommandAlias("mw|missilewars")
 public class UserCommands extends BaseCommand {
 
-    @Subcommand("change")
-    @Description("Changes your team.")
-    @Syntax("/mw change <1|2>")
-    @CommandCompletion("@range:1-2")
-    @CommandPermission("mw.change")
-    public void changeCommand(CommandSender sender, String[] args) {
-
-        if (!senderIsPlayer(sender)) return;
-        Player player = (Player) sender;
-
-        Game game = GameManager.getInstance().getGame(player.getLocation());
-        if (game == null) {
-            player.sendMessage(Messages.getMessage("not_in_arena"));
-            return;
-        }
-
-        if (game.getState() != GameState.LOBBY) {
-            player.sendMessage(Messages.getPrefix() + "§cThe game is not in the right state to change your team right now");
-            return;
-        }
-
-        if (args.length != 1) {
-            player.sendMessage(Messages.getPrefix() + "§c/mw change <1|2>");
-            return;
-        }
-        try {
-            MWPlayer mwPlayer = game.getPlayer(player);
-            int teamNumber = Integer.parseInt(args[0]);
-            Team to = teamNumber == 1 ? game.getTeam1() : game.getTeam2();
-            int otherCount = to.getEnemyTeam().getMembers().size() - 1;
-            int toCount = to.getMembers().size() + 1;
-            int diff = toCount - otherCount;
-            if (diff > 1) {
-                player.sendMessage(Messages.getMessage("cannot_change_difference"));
-                return;
-            }
-
-            // Remove the player from the old team and add him to the new team
-            to.addMember(mwPlayer);
-
-            player.sendMessage(Messages.getMessage("team_changed").replace("%team%", to.getFullname()));
-        } catch (NumberFormatException exception) {
-            player.sendMessage(Messages.getPrefix() + "§c/mw change <1|2>");
-        }
-    }
-
     @Subcommand("vote")
-    @Description("Stops the game.")
-    @Syntax("/mw vote <arena>")
+    @CommandCompletion("@nothing")
     @CommandPermission("mw.vote")
     public void voteCommand(CommandSender sender, String[] args) {
 
-        // TODO more messageconfig
-        if (!senderIsPlayer(sender)) return;
+        if (!MWCommands.senderIsPlayer(sender)) return;
         Player player = (Player) sender;
+
+        if (args.length > 0) {
+            player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
+            return;
+        }
 
         Game game = GameManager.getInstance().getGame(player.getLocation());
         if (game == null) {
@@ -116,11 +75,6 @@ public class UserCommands extends BaseCommand {
             return;
         }
 
-        if (args.length != 1) {
-            player.sendMessage(Messages.getPrefix() + "§c/mw vote <arena>");
-            return;
-        }
-
         String arenaName = args[0];
         Optional<Arena> arena = Arenas.getFromName(arenaName);
         if (!game.getVotes().containsKey(arenaName) || arena.isEmpty()) {
@@ -132,39 +86,71 @@ public class UserCommands extends BaseCommand {
         player.sendMessage(Messages.getMessage("vote.success").replace("%map%", arena.get().getDisplayName()));
     }
 
-    @Subcommand("quit|leave")
-    @Description("Quit a game.")
-    @Syntax("/mw quit")
-    @CommandCompletion("@nothing")
-    @CommandPermission("mw.quit")
-    public void onQuit(CommandSender sender, String[] args) {
+    @Subcommand("change")
+    @CommandCompletion("@range:1-2")
+    @CommandPermission("mw.change")
+    public void changeCommand(CommandSender sender, String[] args) {
 
-        // TODO message config
-        if (!senderIsPlayer(sender)) return;
+        if (!MWCommands.senderIsPlayer(sender)) return;
         Player player = (Player) sender;
+
+        if (args.length > 0) {
+            player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
+            return;
+        }
 
         Game game = GameManager.getInstance().getGame(player.getLocation());
         if (game == null) {
             player.sendMessage(Messages.getMessage("not_in_arena"));
             return;
         }
-        MWPlayer mwPlayer = game.getPlayer(player);
-        if (mwPlayer == null) {
-            player.sendMessage(Messages.getPrefix() + "§cYou are not a member in this arena. Something went wrong pretty badly :(");
+
+        if (game.getState() != GameState.LOBBY) {
+            player.sendMessage(Messages.getPrefix() + "§cThe game is not in the right state to change your team right now");
             return;
         }
-        Location endSpawn = game.getLobby().getAfterGameSpawn();
-        if (GameManager.getInstance().getGame(endSpawn) != null) {
-            endSpawn = Config.getFallbackSpawn();
+
+        try {
+            MWPlayer mwPlayer = game.getPlayer(player);
+            int teamNumber = Integer.parseInt(args[0]);
+            Team to = teamNumber == 1 ? game.getTeam1() : game.getTeam2();
+            int otherCount = to.getEnemyTeam().getMembers().size() - 1;
+            int toCount = to.getMembers().size() + 1;
+            int diff = toCount - otherCount;
+            if (diff > 1) {
+                player.sendMessage(Messages.getMessage("cannot_change_difference"));
+                return;
+            }
+
+            // Remove the player from the old team and add him to the new team
+            to.addMember(mwPlayer);
+
+            player.sendMessage(Messages.getMessage("team_changed").replace("%team%", to.getFullname()));
+        } catch (NumberFormatException exception) {
+            player.sendMessage(Messages.getPrefix() + "§c/mw change <1|2>");
         }
-        player.teleport(endSpawn);
-        player.sendMessage(Messages.getMessage("game_quit"));
     }
 
-    private boolean senderIsPlayer(CommandSender sender) {
-        if (sender instanceof Player) return true;
+    @Subcommand("quit|leave")
+    @CommandCompletion("@nothing")
+    @CommandPermission("mw.quit")
+    public void quitCommand(CommandSender sender, String[] args) {
 
-        sender.sendMessage(Messages.getPrefix() + "§cYou are not a player");
-        return false;
+        if (!MWCommands.senderIsPlayer(sender)) return;
+        Player player = (Player) sender;
+
+        if (args.length > 0) {
+            player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
+            return;
+        }
+
+        Game game = GameManager.getInstance().getGame(player.getLocation());
+        if (game == null) {
+            player.sendMessage(Messages.getMessage("not_in_arena"));
+            return;
+        }
+
+        MissileWars.getInstance().getPlayerListener().registerPlayerArenaLeaveEvent(player, game);
+        game.teleportToFallbackSpawn(player);
     }
 }

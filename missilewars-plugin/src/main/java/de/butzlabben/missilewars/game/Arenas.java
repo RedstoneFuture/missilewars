@@ -59,20 +59,20 @@ public class Arenas {
                 Bukkit.getPluginManager().disablePlugin(MissileWars.getInstance());
                 return;
             }
-            files = new File[] {defaultArena};
+            files = new File[]{defaultArena};
         }
 
         for (File config : files) {
             if (!config.getName().endsWith(".yml") && !config.getName().endsWith(".yaml")) continue;
             try {
                 Arena arena = Serializer.deserialize(config, Arena.class);
+                arena.setFile(config);
                 if (getFromName(arena.getName()).isPresent()) {
                     Logger.WARN.log("There are several arenas configured with the name \"" + arena.getName() + "\". Arenas must have a unique name");
                     continue;
                 }
                 SetupUtil.checkMap(arena.getTemplateWorld());
-                // Save for possible new values
-                Serializer.serialize(config, arena);
+                arena.updateConfig();
                 arenas.add(arena);
             } catch (IOException exception) {
                 Logger.ERROR.log("Could not load config for arena " + config.getName());

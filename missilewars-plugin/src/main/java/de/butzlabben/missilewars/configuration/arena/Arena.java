@@ -21,11 +21,15 @@ package de.butzlabben.missilewars.configuration.arena;
 import com.google.gson.annotations.SerializedName;
 import de.butzlabben.missilewars.util.geometry.FlatArea;
 import de.butzlabben.missilewars.util.geometry.Plane;
+import de.butzlabben.missilewars.util.serialization.Serializer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
+
+import java.io.File;
+import java.io.IOException;
 
 @Getter
 @ToString
@@ -65,6 +69,8 @@ public class Arena implements Cloneable {
     @SerializedName("team2_spawn")
     @Setter
     private Location team2Spawn = new Location(null, 0.5, 100, -45.5, 0, 0);
+
+    @Setter private transient File file;
     
     public Arena() {
 
@@ -100,6 +106,14 @@ public class Arena implements Cloneable {
             return clone;
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
+        }
+    }
+
+    public void updateConfig() {
+        try {
+            Serializer.serialize(file, this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }

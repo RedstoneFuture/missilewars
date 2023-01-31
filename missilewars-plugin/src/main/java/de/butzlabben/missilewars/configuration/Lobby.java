@@ -24,6 +24,7 @@ import de.butzlabben.missilewars.configuration.arena.Arena;
 import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
 import de.butzlabben.missilewars.util.geometry.Area;
+import de.butzlabben.missilewars.util.serialization.Serializer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -33,6 +34,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -45,6 +47,7 @@ public class Lobby {
 
     private String name = "lobby0";
     @SerializedName("display_name") private String displayName = "&eDefault game";
+    @SerializedName("auto_load") private boolean autoLoad = true;
     @SerializedName("world") private String world = Bukkit.getWorlds().get(0).getName();
     @SerializedName("lobby_time") private int lobbyTime = 60;
     @SerializedName("join_ongoing_game") private boolean joinOngoingGame = false;
@@ -54,8 +57,8 @@ public class Lobby {
     @SerializedName("team1_color") private String team1Color = "&c";
     @SerializedName("team2_name") private String team2Name = "Team2";
     @SerializedName("team2_color") private String team2Color = "&a";
-    @SerializedName("spawn_point") private Location spawnPoint = Bukkit.getWorlds().get(0).getSpawnLocation();
-    @SerializedName("after_game_spawn") private Location afterGameSpawn = Bukkit.getWorlds().get(0).getSpawnLocation();
+    @Setter @SerializedName("spawn_point") private Location spawnPoint = Bukkit.getWorlds().get(0).getSpawnLocation();
+    @Setter @SerializedName("after_game_spawn") private Location afterGameSpawn = Bukkit.getWorlds().get(0).getSpawnLocation();
     private Area area = Area.defaultAreaAround(Bukkit.getWorlds().get(0).getSpawnLocation());
     @SerializedName("map_choose_procedure") private MapChooseProcedure mapChooseProcedure = MapChooseProcedure.FIRST;
     @SerializedName("possible_arenas") private List<String> possibleArenas = new ArrayList<>() {{
@@ -89,5 +92,21 @@ public class Lobby {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
+    }
+
+    public void updateConfig() {
+        try {
+            Serializer.serialize(file, this);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Location getAreaMinLocation() {
+        return new Location(getBukkitWorld(), area.getMinX(), area.getMinY(), area.getMinZ());
+    }
+
+    public Location getAreaMaxLocation() {
+        return new Location(getBukkitWorld(), area.getMaxX(), area.getMaxY(), area.getMaxZ());
     }
 }
