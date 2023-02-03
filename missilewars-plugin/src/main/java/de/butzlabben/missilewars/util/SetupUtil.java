@@ -108,7 +108,8 @@ public class SetupUtil {
     }
 
     public static void checkMap(String worldName) {
-        File file = new File(Config.getArenasFolder() + worldName);
+        File arenasFolder = new File(Config.getArenasFolder());
+        File file = new File(arenasFolder, worldName);
         if (!file.isDirectory()) {
             String resource = "MissileWars-Arena.zip";
 

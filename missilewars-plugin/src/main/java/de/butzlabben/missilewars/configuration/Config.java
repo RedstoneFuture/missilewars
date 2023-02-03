@@ -203,7 +203,7 @@ public class Config {
     }
 
     public static String getArenasFolder() {
-        return cfg.getString("arenas.folder") + "/";
+        return cfg.getString("arenas.folder");
     }
 
     public static boolean isMultipleLobbies() {
@@ -211,7 +211,7 @@ public class Config {
     }
 
     public static String getLobbiesFolder() {
-        return cfg.getString("lobbies.folder") + "/";
+        return cfg.getString("lobbies.folder");
     }
 
     public static String getDefaultLobby() {
@@ -219,7 +219,7 @@ public class Config {
     }
 
     public static String getMissilesFolder() {
-        return cfg.getString("missiles.folder") + "/";
+        return cfg.getString("missiles.folder");
     }
 
     public static int getReplaceTicks() {

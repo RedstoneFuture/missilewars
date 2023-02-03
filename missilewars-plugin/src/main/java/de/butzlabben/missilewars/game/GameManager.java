@@ -59,7 +59,8 @@ public class GameManager {
         if (Config.isMultipleLobbies()) {
             lobbyFiles = new File(Config.getLobbiesFolder()).listFiles();
         } else {
-            File file = new File(Config.getLobbiesFolder() + Config.getDefaultLobby());
+            File lobbiesFolder = new File(Config.getLobbiesFolder());
+            File file = new File(lobbiesFolder, Config.getDefaultLobby());
             if (file.exists()) {
                 lobbyFiles = new File[]{file};
             }
@@ -68,7 +69,8 @@ public class GameManager {
 
         if (lobbyFiles.length == 0) {
             Logger.WARN.log("No lobby configs found. Creating default one");
-            File file = new File(Config.getLobbiesFolder() + Config.getDefaultLobby());
+            File lobbiesFolder = new File(Config.getLobbiesFolder());
+            File file = new File(lobbiesFolder, Config.getDefaultLobby());
             try {
                 file.createNewFile();
                 Serializer.serialize(file, new Lobby());

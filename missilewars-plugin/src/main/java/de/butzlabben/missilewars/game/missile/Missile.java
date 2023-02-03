@@ -84,7 +84,8 @@ public class Missile {
     }
 
     public File getSchematic() {
-        File file = new File(Config.getMissilesFolder() + getSchematicName(false));
+        File missilesFolder = new File(Config.getMissilesFolder());
+        File file = new File(missilesFolder, getSchematicName(false));
         return file;
     }
 
