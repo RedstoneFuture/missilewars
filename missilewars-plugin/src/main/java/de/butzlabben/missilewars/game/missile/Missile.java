@@ -20,7 +20,7 @@ package de.butzlabben.missilewars.game.missile;
 
 import com.google.gson.annotations.SerializedName;
 import de.butzlabben.missilewars.Logger;
-import de.butzlabben.missilewars.MissileWars;
+import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.missile.paste.PasteProvider;
 import de.butzlabben.missilewars.util.version.VersionUtil;
@@ -84,8 +84,8 @@ public class Missile {
     }
 
     public File getSchematic() {
-        File pluginDir = MissileWars.getInstance().getDataFolder();
-        File file = new File(pluginDir, "missiles/" + getSchematicName(false));
+        File missilesFolder = new File(Config.getMissilesFolder());
+        File file = new File(missilesFolder, getSchematicName(false));
         return file;
     }
 

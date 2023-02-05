@@ -78,11 +78,13 @@ public class Config {
 
         cfg.addDefault("restart_after_fights", 10);
 
-        cfg.addDefault("arena_folder", "plugins/MissileWars/arenas");
+        cfg.addDefault("arenas.folder", "plugins/MissileWars/arenas");
 
         cfg.addDefault("lobbies.multiple_lobbies", false);
         cfg.addDefault("lobbies.folder", "plugins/MissileWars/lobbies");
         cfg.addDefault("lobbies.default_lobby", "lobby0.yml");
+
+        cfg.addDefault("missiles.folder", "plugins/MissileWars/missiles");
 
         cfg.addDefault("replace.material", JUKEBOX.name());
         cfg.addDefault("replace.after_ticks", 2);
@@ -200,8 +202,8 @@ public class Config {
         return cfg.getInt("restart_after_fights");
     }
 
-    public static String getArenaFolder() {
-        return cfg.getString("arena_folder") + "/";
+    public static String getArenasFolder() {
+        return cfg.getString("arenas.folder");
     }
 
     public static boolean isMultipleLobbies() {
@@ -209,11 +211,15 @@ public class Config {
     }
 
     public static String getLobbiesFolder() {
-        return cfg.getString("lobbies.folder") + "/";
+        return cfg.getString("lobbies.folder");
     }
 
     public static String getDefaultLobby() {
         return cfg.getString("lobbies.default_lobby");
+    }
+
+    public static String getMissilesFolder() {
+        return cfg.getString("missiles.folder");
     }
 
     public static int getReplaceTicks() {
