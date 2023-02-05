@@ -29,9 +29,7 @@ import org.bukkit.Location;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 @Getter
 public class GameManager {
@@ -167,8 +165,6 @@ public class GameManager {
 
     public void addGame(String name, Game game) {
         games.put(name, game);
-        List<String> gameNames = new ArrayList<>(games.keySet());
-        MissileWars.getInstance().commandManager.getCommandCompletions().registerCompletion("games", c -> gameNames);
     }
 
     public int getGameAmount() {

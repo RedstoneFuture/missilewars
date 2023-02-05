@@ -89,4 +89,12 @@ public class MissileConfiguration {
         }
         missiles.removeAll(toRemove);
     }
+    
+    public List<String> getMissileNames() {
+        List<String> missileNames = new ArrayList<>();
+        for (Missile missile : missiles) {
+            missileNames.add(missile.getSchematicName(true));
+        }
+        return missileNames;
+    }
 }

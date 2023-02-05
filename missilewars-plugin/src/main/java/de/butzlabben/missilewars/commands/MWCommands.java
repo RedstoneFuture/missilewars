@@ -90,7 +90,7 @@ public class MWCommands extends BaseCommand {
     }
 
     @Subcommand("paste")
-    @CommandCompletion("@nothing")
+    @CommandCompletion("@missiles")
     @CommandPermission("mw.paste")
     public void pasteCommand(CommandSender sender, String[] args) {
 
