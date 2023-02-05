@@ -170,7 +170,7 @@ public class MissileWars extends JavaPlugin {
         commandManager.registerCommand(new UserCommands());
         commandManager.registerCommand(new SetupCommands());
     }
-    
+
     /**
      * This method checks if FAWE (FastAsyncWorldEdit) is installed.
      *
