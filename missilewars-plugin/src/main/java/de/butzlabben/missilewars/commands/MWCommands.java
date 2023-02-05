@@ -66,7 +66,7 @@ public class MWCommands extends BaseCommand {
         sendHelpMessage(sender, "mw.debug", "/mw debug", "Show debug info.");
         sendHelpMessage(sender, "mw.restartall", "/mw restartall", "Restart all games.");
 
-        sendHelpMessage(sender, "mw.setup", "/mw setup <main|lobby|arena> <value> <set|teleport> [lobby]", "Setup the MW Locations or the lobby/arena locations.");
+        sendHelpMessage(sender, "mw.setup", "/mw setup <main|lobby|arena> <value> <set|teleport> [lobby]", "Setup the MW locations or the lobby/arena locations.");
     }
     
     @Subcommand("listgames|list|games")
@@ -90,7 +90,7 @@ public class MWCommands extends BaseCommand {
     }
 
     @Subcommand("paste")
-    @CommandCompletion("@nothing")
+    @CommandCompletion("@missiles")
     @CommandPermission("mw.paste")
     public void pasteCommand(CommandSender sender, String[] args) {
 

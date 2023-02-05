@@ -19,10 +19,7 @@
 package de.butzlabben.missilewars;
 
 import co.aikar.commands.PaperCommandManager;
-import de.butzlabben.missilewars.commands.MWCommands;
-import de.butzlabben.missilewars.commands.SetupCommands;
-import de.butzlabben.missilewars.commands.StatsCommands;
-import de.butzlabben.missilewars.commands.UserCommands;
+import de.butzlabben.missilewars.commands.*;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.game.Arenas;
@@ -173,6 +170,8 @@ public class MissileWars extends JavaPlugin {
         // such as Asynchronous Tab Completions.
         commandManager = new PaperCommandManager(this);
 
+        new MWCommandCompletions(commandManager);
+        
         commandManager.registerCommand(new MWCommands());
         commandManager.registerCommand(new StatsCommands());
         commandManager.registerCommand(new UserCommands());
