@@ -19,19 +19,19 @@
 package de.butzlabben.missilewars.util.geometry;
 
 import de.butzlabben.missilewars.configuration.arena.AreaConfiguration;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+@Getter
 public class GameArea {
 
-    final World world;
+    private World world;
+    @Setter private Location position1, position2;
 
-    final Location position1, position2;
-
-    long minX, minY, minZ;
-
-    long maxX, maxY, maxZ;
-    Direction direction;
+    private int minX, minY, minZ;
+    private int maxX, maxY, maxZ;
 
     public GameArea(Location pos1, Location pos2) {
         
@@ -84,57 +84,32 @@ public class GameArea {
         if (position1.getBlockX() < position2.getBlockX()) {
             minX = position1.getBlockX();
             maxX = position2.getBlockX();
+        } else {
+            maxX = position1.getBlockX();
+            minX = position2.getBlockX();
         }
 
         if (position1.getBlockY() < position2.getBlockY()) {
             minY = position1.getBlockY();
             maxY = position2.getBlockY();
+        } else {
+            maxY = position1.getBlockY();
+            minY = position2.getBlockY();
         }
 
         if (position1.getBlockZ() < position2.getBlockZ()) {
             minZ = position1.getBlockZ();
             maxZ = position2.getBlockZ();
+        } else {
+            maxZ = position1.getBlockZ();
+            minZ = position2.getBlockZ();
         }
     }
 
-    public World getWorld() {
-        return world;
-    }
-
-    public Location getPosition1() {
-        return position1;
-    }
-
-    public Location getPosition2() {
-        return position2;
-    }
-
-    public Direction getDirection() {
-        return direction;
-    }
-
-    public long getMinX() {
-        return minX;
-    }
-
-    public long getMinY() {
-        return minY;
-    }
-
-    public long getMinZ() {
-        return minZ;
-    }
-
-    public long getMaxX() {
-        return maxX;
-    }
-
-    public long getMaxY() {
-        return maxY;
-    }
-
-    public long getMaxZ() {
-        return maxZ;
+    public AreaConfiguration getAreaConfiguration() {
+        AreaConfiguration newAreaConfig = new AreaConfiguration(position1.getBlockX(), position1.getBlockY(), position1.getBlockZ(), 
+                position2.getBlockX(), position2.getBlockY(), position2.getBlockZ());
+        return newAreaConfig;
     }
 
     private enum Direction {

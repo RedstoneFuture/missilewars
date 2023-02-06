@@ -49,7 +49,7 @@ public class Lobby {
     private String name = "lobby0";
     @SerializedName("display_name") private String displayName = "&eDefault game";
     @SerializedName("auto_load") private boolean autoLoad = true;
-    @SerializedName("world") private String world = getDefaultWorld().getName();
+    @SerializedName("world") private String worldName = getDefaultWorld().getName();
     @SerializedName("lobby_time") private int lobbyTime = 60;
     @SerializedName("join_ongoing_game") private boolean joinOngoingGame = false;
     @SerializedName("min_size") private int minSize = 2;
@@ -60,19 +60,19 @@ public class Lobby {
     @SerializedName("team2_color") private String team2Color = "&a";
     @Setter @SerializedName("spawn_point") private Location spawnPoint = getDefaultWorld().getSpawnLocation();
     @Setter @SerializedName("after_game_spawn") private Location afterGameSpawn = getDefaultWorld().getSpawnLocation();
-    @SerializedName("area") private AreaConfiguration areaConfig = new AreaConfiguration(-30, 0, -72, 30, 256, 72);
+    @Setter @SerializedName("area") private AreaConfiguration areaConfig = new AreaConfiguration(-30, 0, -72, 30, 256, 72);
     @SerializedName("map_choose_procedure") private MapChooseProcedure mapChooseProcedure = MapChooseProcedure.FIRST;
     @SerializedName("possible_arenas") private List<String> possibleArenas = new ArrayList<>() {{
         add("arena0");
     }};
-    private transient GameArea gameArea = new GameArea(Bukkit.getWorld(world), areaConfig);
 
+    @Setter private transient GameArea area;
     @Setter private transient File file;
 
     public World getBukkitWorld() {
-        World world = Bukkit.getWorld(getWorld());
+        World world = Bukkit.getWorld(getWorldName());
         if (world == null) {
-            Logger.ERROR.log("Could not find any world with the name: " + this.world);
+            Logger.ERROR.log("Could not find any world with the name: " + this.worldName);
             Logger.ERROR.log("Please correct this in the configuration of lobby \"" + name + "\"");
         }
         return world;
@@ -106,9 +106,5 @@ public class Lobby {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public GameArea getArea() {
-        return gameArea;
     }
 }

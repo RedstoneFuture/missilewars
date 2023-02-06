@@ -48,16 +48,16 @@ public class Geometry {
      */
     public static boolean isInsideIn(Location targetLocation, GameArea area) {
 
-        if (!Geometry.bothLocInSameWorld(targetLocation, area.position1)) return false;
+        if (!Geometry.bothLocInSameWorld(targetLocation, area.getPosition1())) return false;
 
-        if (targetLocation.getBlockX() > area.maxX) return false;
-        if (targetLocation.getBlockX() < area.minX) return false;
+        if (targetLocation.getBlockX() > area.getMaxX()) return false;
+        if (targetLocation.getBlockX() < area.getMinX()) return false;
 
-        if (targetLocation.getBlockY() > area.maxY) return false;
-        if (targetLocation.getBlockY() < area.minY) return false;
+        if (targetLocation.getBlockY() > area.getMaxY()) return false;
+        if (targetLocation.getBlockY() < area.getMinY()) return false;
 
-        if (targetLocation.getBlockZ() > area.maxZ) return false;
-        if (targetLocation.getBlockZ() < area.minZ) return false;
+        if (targetLocation.getBlockZ() > area.getMaxZ()) return false;
+        if (targetLocation.getBlockZ() < area.getMinZ()) return false;
 
         return true;
     }

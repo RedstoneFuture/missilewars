@@ -19,6 +19,7 @@
 package de.butzlabben.missilewars.configuration.arena;
 
 import com.google.gson.annotations.SerializedName;
+import de.butzlabben.missilewars.util.geometry.GameArea;
 import de.butzlabben.missilewars.util.serialization.Serializer;
 import lombok.Getter;
 import lombok.Setter;
@@ -53,7 +54,7 @@ public class Arena implements Cloneable {
     @SerializedName("money") private MoneyConfiguration money = new MoneyConfiguration();
     @SerializedName("equipment_interval") private EquipmentIntervalConfiguration interval = new EquipmentIntervalConfiguration();
     @SerializedName("missile") private MissileConfiguration missileConfiguration = new MissileConfiguration();
-    @SerializedName("area") private AreaConfiguration areaConfig = new AreaConfiguration(-30, 0, -72, 30, 256, 72);
+    @Setter @SerializedName("area") private AreaConfiguration areaConfig = new AreaConfiguration(-30, 0, -72, 30, 256, 72);
 
     @SerializedName("spectator_spawn")
     @Setter
@@ -67,6 +68,7 @@ public class Arena implements Cloneable {
     @Setter
     private Location team2Spawn = new Location(null, 0.5, 100, -45.5, 0, 0);
 
+    @Setter private transient GameArea area;
     @Setter private transient File file;
 
     public Arena() {
