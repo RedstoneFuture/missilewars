@@ -19,14 +19,11 @@
 package de.butzlabben.missilewars.configuration.arena;
 
 import com.google.gson.annotations.SerializedName;
-import de.butzlabben.missilewars.util.geometry.FlatArea;
-import de.butzlabben.missilewars.util.geometry.Plane;
 import de.butzlabben.missilewars.util.serialization.Serializer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.bukkit.Location;
-import org.bukkit.util.Vector;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,43 +53,24 @@ public class Arena implements Cloneable {
     @SerializedName("money") private MoneyConfiguration money = new MoneyConfiguration();
     @SerializedName("equipment_interval") private EquipmentIntervalConfiguration interval = new EquipmentIntervalConfiguration();
     @SerializedName("missile") private MissileConfiguration missileConfiguration = new MissileConfiguration();
-    @SerializedName("area") private FlatArea gameArea = new FlatArea(-30, -72, 30, 72);
-    
+    @SerializedName("area") private AreaConfiguration areaConfig = new AreaConfiguration(-30, 0, -72, 30, 256, 72);
+
     @SerializedName("spectator_spawn")
     @Setter
     private Location spectatorSpawn = new Location(null, 0, 100, 0, 90, 0);
-    
+
     @SerializedName("team1_spawn")
     @Setter
     private Location team1Spawn = new Location(null, 0.5, 100, 45.5, 180, 0);
-    
+
     @SerializedName("team2_spawn")
     @Setter
     private Location team2Spawn = new Location(null, 0.5, 100, -45.5, 0, 0);
 
     @Setter private transient File file;
-    
+
     public Arena() {
 
-    }
-
-    public Plane getPlane1() {
-        Vector spawn1 = team1Spawn.toVector();
-        Vector normal = team2Spawn.toVector().subtract(spawn1);
-        return new Plane(spawn1, normal);
-    }
-
-    public Plane getPlane2() {
-        Vector spawn2 = team2Spawn.toVector();
-        Vector normal = team1Spawn.toVector().subtract(spawn2);
-        return new Plane(spawn2, normal);
-    }
-
-    public boolean isInBetween(Vector point, Plane plane1, Plane plane2) {
-        double distanceBetween = plane1.distanceSquared(plane2.getSupport());
-        double distance1 = plane1.distanceSquared(point);
-        double distance2 = plane2.distanceSquared(point);
-        return distanceBetween > distance1 + distance2;
     }
 
     @Override

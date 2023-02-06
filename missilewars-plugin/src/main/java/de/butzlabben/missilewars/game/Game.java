@@ -49,6 +49,8 @@ import de.butzlabben.missilewars.listener.game.GameListener;
 import de.butzlabben.missilewars.listener.game.LobbyListener;
 import de.butzlabben.missilewars.player.MWPlayer;
 import de.butzlabben.missilewars.util.PlayerDataProvider;
+import de.butzlabben.missilewars.util.geometry.GameArea;
+import de.butzlabben.missilewars.util.geometry.Geometry;
 import de.butzlabben.missilewars.util.serialization.Serializer;
 import de.butzlabben.missilewars.util.version.VersionUtil;
 import lombok.Getter;
@@ -94,6 +96,7 @@ public class Game {
     private boolean ready = false;
     private boolean restart = false;
     private GameWorld gameWorld;
+    private GameArea gameArea;
     private long timestart;
     private Arena arena;
     private ScoreboardManager scoreboardManager;
@@ -129,9 +132,7 @@ public class Game {
             Logger.ERROR.log("None of the specified arenas match a real arena for the lobby " + lobby.getName());
             return;
         }
-
-        gameWorld = new GameWorld(this, "");
-
+        
         team1 = new Team(lobby.getTeam1Name(), lobby.getTeam1Color(), this);
         team2 = new Team(lobby.getTeam2Name(), lobby.getTeam2Color(), this);
 
@@ -432,29 +433,46 @@ public class Game {
         }
     }
 
+    /**
+     * This method checks if the location is inside in the lobby area.
+     * 
+     * @param location (Location) the location to be checked
+     * @return true, if it's in the lobby area
+     */
     public boolean isInLobbyArea(Location location) {
-        World world = location.getWorld();
-        if (world == null) return false;
-        if (world.getName().equals(lobby.getWorld())) return lobby.getArea().isInArea(location);
-        return false;
+        if (!Geometry.isInsideIn(location, lobby.getArea())) return false;
+        return true;
     }
 
-
+    /**
+     * This method checks if the location is inside in the game area.
+     *
+     * @param location (Location) the location to be checked
+     * @return true, if it's in the game area
+     */
     public boolean isInGameArea(Location location) {
-        if (isInGameWorld(location)) return arena.getGameArea().isInArea(location);
-        return false;
+        if (!Geometry.isInsideIn(location, gameArea)) return false;
+        return true;
     }
 
+    /**
+     * This method checks if the location is in the game world.
+     *
+     * @param location (Location) the location to be checked
+     * @return true, if it's in the game world
+     */
     public boolean isInGameWorld(Location location) {
-        World world = location.getWorld();
-        if (world == null) return false;
-
-        if (gameWorld != null) {
-            return gameWorld.isWorld(world);
-        }
-        return false;
+        if (!Geometry.isInWorld(location, gameArea.getWorld())) return false;
+        return true;
     }
 
+    /**
+     * This (shortcut) method checks if the location is inside in the lobby 
+     * area or inside in the game world.
+     *
+     * @param location (Location) the location to be checked
+     * @return true, if the statement is correct
+     */
     public boolean isIn(Location location) {
         return isInLobbyArea(location) || isInGameWorld(location);
     }
@@ -608,7 +626,7 @@ public class Game {
         // Are missiles only allowed to spawn inside the arena, between the two arena spawn points?
         boolean isOnlyBetweenSpawnPlaceable = this.arena.getMissileConfiguration().isOnlyBetweenSpawnPlaceable();
         if (isOnlyBetweenSpawnPlaceable) {
-            if (!this.arena.isInBetween(player.getLocation().toVector(), this.arena.getPlane1(), this.arena.getPlane2())) {
+            if (!isInGameArea(player.getLocation())) {
                 player.sendMessage(Messages.getMessage("missile_place_deny"));
                 return;
             }
@@ -657,10 +675,9 @@ public class Game {
         }
 
         this.arena = arena.clone();
-
-        // Load world
-        this.gameWorld = new GameWorld(this, this.arena.getTemplateWorld());
+        this.gameWorld = new GameWorld(this, arena.getTemplateWorld());
         this.gameWorld.load();
+        this.gameArea = new GameArea(gameWorld.getWorld(), arena.getAreaConfig());
 
         try {
             Serializer.setWorldAtAllLocations(this.arena, gameWorld.getWorld());

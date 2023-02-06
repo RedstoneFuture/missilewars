@@ -28,6 +28,7 @@ import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.misc.RespawnGoldBlock;
 import de.butzlabben.missilewars.game.misc.Shield;
 import de.butzlabben.missilewars.player.MWPlayer;
+import de.butzlabben.missilewars.util.geometry.Geometry;
 import de.butzlabben.missilewars.util.version.VersionUtil;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -75,13 +76,16 @@ public class GameListener extends GameBoundListener {
         if (event.getChangedType() != VersionUtil.getPortal()) return;
 
         Location location = event.getBlock().getLocation();
-
-        if (getGame().getArena().getPlane1().distance(location.toVector()) > getGame().getArena().getPlane2().distance(location.toVector())) {
-            getGame().getTeam1().setGameResult(GameResult.WIN);
-            getGame().getTeam2().setGameResult(GameResult.LOSE);
+        
+        Team team1 = getGame().getTeam1();
+        Team team2 = getGame().getTeam2();
+        
+        if (Geometry.isCloser(location, team1.getSpawn(), team2.getSpawn())) {
+            team1.setGameResult(GameResult.LOSE);
+            team2.setGameResult(GameResult.WIN);
         } else {
-            getGame().getTeam1().setGameResult(GameResult.LOSE);
-            getGame().getTeam2().setGameResult(GameResult.WIN);
+            team1.setGameResult(GameResult.WIN);
+            team2.setGameResult(GameResult.LOSE);
         }
         
         getGame().sendGameResult();
