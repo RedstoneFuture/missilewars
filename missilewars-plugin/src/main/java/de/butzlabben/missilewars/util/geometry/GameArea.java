@@ -113,9 +113,9 @@ public class GameArea {
     }
 
     private enum Direction {
+
         NULL,
         NORTH_SOUTH,
-        EAST_WEST;
-
+        EAST_WEST
     }
 }
