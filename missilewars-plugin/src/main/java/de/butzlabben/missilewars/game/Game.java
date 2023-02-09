@@ -675,9 +675,9 @@ public class Game {
         }
 
         this.arena = arena.clone();
-        this.gameWorld = new GameWorld(this, arena.getTemplateWorld());
-        this.gameWorld.load();
-        this.gameArea = new GameArea(gameWorld.getWorld(), arena.getAreaConfig());
+        gameWorld = new GameWorld(this, arena.getTemplateWorld());
+        gameWorld.load();
+        gameArea = new GameArea(gameWorld.getWorld(), arena.getAreaConfig());
 
         try {
             Serializer.setWorldAtAllLocations(this.arena, gameWorld.getWorld());

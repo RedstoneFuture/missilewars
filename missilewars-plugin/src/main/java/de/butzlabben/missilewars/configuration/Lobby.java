@@ -46,10 +46,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class Lobby {
 
+    // The values defined here are only valid if there is no Config yet.
     private String name = "lobby0";
     @SerializedName("display_name") private String displayName = "&eDefault game";
     @SerializedName("auto_load") private boolean autoLoad = true;
-    @SerializedName("world") private String worldName = getDefaultWorld().getName();
+    @SerializedName("world") private String worldName = getBukkitDefaultWorld().getName();
     @SerializedName("lobby_time") private int lobbyTime = 60;
     @SerializedName("join_ongoing_game") private boolean joinOngoingGame = false;
     @SerializedName("min_size") private int minSize = 2;
@@ -58,14 +59,15 @@ public class Lobby {
     @SerializedName("team1_color") private String team1Color = "&c";
     @SerializedName("team2_name") private String team2Name = "Team2";
     @SerializedName("team2_color") private String team2Color = "&a";
-    @Setter @SerializedName("spawn_point") private Location spawnPoint = getDefaultWorld().getSpawnLocation();
-    @Setter @SerializedName("after_game_spawn") private Location afterGameSpawn = getDefaultWorld().getSpawnLocation();
+    @Setter @SerializedName("spawn_point") private Location spawnPoint = getBukkitDefaultWorld().getSpawnLocation();
+    @Setter @SerializedName("after_game_spawn") private Location afterGameSpawn = getBukkitDefaultWorld().getSpawnLocation();
     @Setter @SerializedName("area") private AreaConfiguration areaConfig = new AreaConfiguration(-30, 0, -72, 30, 256, 72);
     @SerializedName("map_choose_procedure") private MapChooseProcedure mapChooseProcedure = MapChooseProcedure.FIRST;
     @SerializedName("possible_arenas") private List<String> possibleArenas = new ArrayList<>() {{
         add("arena0");
     }};
 
+    // These values are only set after the Config has been read.
     @Setter private transient GameArea area;
     @Setter private transient File file;
 
@@ -78,7 +80,7 @@ public class Lobby {
         return world;
     }
     
-    private World getDefaultWorld() {
+    private World getBukkitDefaultWorld() {
         return Bukkit.getWorlds().get(0);
     }
 

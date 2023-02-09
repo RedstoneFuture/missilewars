@@ -33,6 +33,7 @@ import java.io.IOException;
 @ToString
 public class Arena implements Cloneable {
 
+    // The values defined here are only valid if there is no Config yet.
     private String name = "arena0";
     @SerializedName("display_name") private String displayName = "&eDefault map";
     @SerializedName("display_material") private String displayMaterial = "STONE";
@@ -68,6 +69,7 @@ public class Arena implements Cloneable {
     @Setter
     private Location team2Spawn = new Location(null, 0.5, 100, -45.5, 0, 0);
 
+    // These values are only set after the Config has been read.
     @Setter private transient GameArea area;
     @Setter private transient File file;
 
