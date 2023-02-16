@@ -74,7 +74,7 @@ public class Lobby {
     public World getBukkitWorld() {
         World world = Bukkit.getWorld(getWorldName());
         if (world == null) {
-            Logger.ERROR.log("Could not find any world with the name: " + this.worldName);
+            Logger.ERROR.log("Could not find any world with the name: " + worldName);
             Logger.ERROR.log("Please correct this in the configuration of lobby \"" + name + "\"");
         }
         return world;
