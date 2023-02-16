@@ -72,7 +72,7 @@ public class Lobby {
     @Setter private transient File file;
 
     public World getBukkitWorld() {
-        World world = Bukkit.getWorld(getWorldName());
+        World world = Bukkit.getWorld(worldName);
         if (world == null) {
             Logger.ERROR.log("Could not find any world with the name: " + worldName);
             Logger.ERROR.log("Please correct this in the configuration of lobby \"" + name + "\"");
