@@ -97,6 +97,7 @@ public class Game {
     private boolean restart = false;
     private GameWorld gameWorld;
     private GameArea gameArea;
+    private GameArea innerGameArea;
     private long timestart;
     private Arena arena;
     private ScoreboardManager scoreboardManager;
@@ -434,10 +435,10 @@ public class Game {
     }
 
     /**
-     * This method checks if the location is inside in the lobby area.
+     * This method checks if the location is inside in the Lobby-Area.
      * 
      * @param location (Location) the location to be checked
-     * @return true, if it's in the lobby area
+     * @return true, if it's in the Lobby-Area
      */
     public boolean isInLobbyArea(Location location) {
         if (!Geometry.isInsideIn(location, lobby.getArea())) return false;
@@ -445,13 +446,26 @@ public class Game {
     }
 
     /**
-     * This method checks if the location is inside in the game area.
+     * This method checks if the location is inside in the Game-Area.
      *
      * @param location (Location) the location to be checked
-     * @return true, if it's in the game area
+     * @return true, if it's in the Game-Area
      */
     public boolean isInGameArea(Location location) {
         if (!Geometry.isInsideIn(location, gameArea)) return false;
+        return true;
+    }
+
+    /**
+     * This method checks if the location is inside in the Inner Game-Area.
+     * It's the arena from the Team 1 spawn position to the Team 2 spawn 
+     * position ("length") with the same "width" of the (major) Game-Area.
+     *
+     * @param location (Location) the location to be checked
+     * @return true, if it's in the Inner Game-Area
+     */
+    public boolean isInInnerGameArea(Location location) {
+        if (!Geometry.isInsideIn(location, innerGameArea)) return false;
         return true;
     }
 
@@ -467,8 +481,8 @@ public class Game {
     }
 
     /**
-     * This (shortcut) method checks if the location is inside in the lobby 
-     * area or inside in the game world.
+     * This (shortcut) method checks if the location is inside in the
+     * Lobby-Area or inside in the game world.
      *
      * @param location (Location) the location to be checked
      * @return true, if the statement is correct
@@ -626,7 +640,7 @@ public class Game {
         // Are missiles only allowed to spawn inside the arena, between the two arena spawn points?
         boolean isOnlyBetweenSpawnPlaceable = this.arena.getMissileConfiguration().isOnlyBetweenSpawnPlaceable();
         if (isOnlyBetweenSpawnPlaceable) {
-            if (!isInGameArea(player.getLocation())) {
+            if (!isInInnerGameArea(player.getLocation())) {
                 player.sendMessage(Messages.getMessage("missile_place_deny"));
                 return;
             }
@@ -688,6 +702,8 @@ public class Game {
             exception.printStackTrace();
             return;
         }
+        
+        createInnerGameArea();
 
         if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPVOTING) {
             this.broadcast(Messages.getMessage("vote.finished").replace("%map%", this.arena.getDisplayName()));
@@ -695,6 +711,37 @@ public class Game {
         applyForAllPlayers(player -> player.getInventory().setItem(4, new ItemStack(Material.AIR)));
 
         ready = true;
+    }
+
+    private void createInnerGameArea() {
+
+        // If both spawn points are on the X coordinate, the "length" of the Inner Game-Area 
+        // is the distance on X and the "width" of the Inner Game-Area is the width of the 
+        // (major) GameArea. Otherwise, it is the other way around. It is therefore 
+        // independent of the rotation of the GameArea.
+        
+        Location position1, position2;
+        int spawnPos1, spawnPos2;
+        
+        if (team1.getSpawn().getBlockX() == team2.getSpawn().getBlockX()) {
+            
+            spawnPos1 = team1.getSpawn().getBlockZ();
+            spawnPos2 = team2.getSpawn().getBlockZ();
+            
+            position1 = new Location(gameArea.getWorld(), gameArea.getMinX(), gameArea.getMinY(), spawnPos1);
+            position2 = new Location(gameArea.getWorld(), gameArea.getMaxX(), gameArea.getMaxY(), spawnPos2);
+            
+        } else {
+
+            spawnPos1 = team1.getSpawn().getBlockX();
+            spawnPos2 = team2.getSpawn().getBlockX();
+            
+            position1 = new Location(gameArea.getWorld(), spawnPos1, gameArea.getMinY(), gameArea.getMinZ());
+            position2 = new Location(gameArea.getWorld(), spawnPos2, gameArea.getMaxY(), gameArea.getMaxZ());
+            
+        }
+        
+        innerGameArea = new GameArea(position1, position2);
     }
 
     public void applyForAllPlayers(Consumer<Player> consumer) {
