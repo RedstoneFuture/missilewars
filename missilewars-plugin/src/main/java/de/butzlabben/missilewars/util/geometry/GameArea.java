@@ -46,10 +46,10 @@ public class GameArea {
         calculate();
     }
     
-    public GameArea(Location center, int offset, int high) {
+    public GameArea(Location center, int offset, int height) {
         
         if (offset < 1) throw new IllegalArgumentException("The offset must be higher than 0.");
-        if (high < 2) throw new IllegalArgumentException("The high must be higher than 1.");
+        if (height < 2) throw new IllegalArgumentException("The height must be higher than 1.");
         
         this.world = center.getWorld();
         
@@ -59,7 +59,7 @@ public class GameArea {
         long z2 = center.getBlockZ() - offset;
 
         long y1 = center.getBlockY();
-        long y2 = y1 + high;
+        long y2 = y1 + height;
 
         this.position1 = new Location(center.getWorld(), x1, y1, z1);
         this.position2 = new Location(center.getWorld(), x2, y2, z2);
