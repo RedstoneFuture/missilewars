@@ -63,7 +63,7 @@ public class Geometry {
     }
 
     /**
-     * This method checks, if booth locations are in the same world.
+     * This method checks, if both locations are in the same world.
      * 
      * @param pos1 (Location) location 1
      * @param pos2 (Location) location 2
