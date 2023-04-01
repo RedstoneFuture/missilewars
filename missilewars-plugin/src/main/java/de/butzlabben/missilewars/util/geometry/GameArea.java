@@ -33,6 +33,15 @@ public class GameArea {
     private int minX, minY, minZ;
     private int maxX, maxY, maxZ;
 
+    /**
+     * This method creates a new GameArena object.
+     *
+     * The GameArena is a rectangular area. His border (1 block wide) is 
+     * still part of the arena (= inside).
+     *
+     * @param pos1 (Location) one corner of the desired area border
+     * @param pos2 (Location) the opposite corner of the desired area border
+     */
     public GameArea(Location pos1, Location pos2) {
         
         if (!Geometry.bothLocInSameWorld(pos1, pos2)) throw new IllegalArgumentException("Defined positions are not in the same world!");
@@ -45,7 +54,17 @@ public class GameArea {
         
         calculate();
     }
-    
+
+    /**
+     * This method creates a new GameArena object.
+     *
+     * The GameArena is a rectangular area. His border (1 block wide) is 
+     * still part of the arena (= inside).
+     *
+     * @param center (Location) the horizontal center of the desired area; it's also the vertical minimum of the area (the floor)
+     * @param offset (int) the horizontal offset, which should go from the center to the end of the desired area
+     * @param height (int) the height of the desired area
+     */
     public GameArea(Location center, int offset, int height) {
         
         if (offset < 1) throw new IllegalArgumentException("The offset must be higher than 0.");
@@ -66,7 +85,16 @@ public class GameArea {
 
         calculate();
     }
-    
+
+    /**
+     * This method creates a new GameArena object.
+     *
+     * The GameArena is a rectangular area. His border (1 block wide) is 
+     * still part of the arena (= inside).
+     *
+     * @param world (World) the target world for the desired area
+     * @param areaConfig (AreaConfiguration) the loaded Area-Configuration from which the data is taken
+     */
     public GameArea(World world, AreaConfiguration areaConfig) {
         
         this.world = world;
@@ -74,7 +102,7 @@ public class GameArea {
         this.position1 = new Location(world, areaConfig.getMinX(), areaConfig.getMinY(), areaConfig.getMinZ());
         this.position2 = new Location(world, areaConfig.getMaxX(), areaConfig.getMaxY(), areaConfig.getMaxZ());
 
-        if (position1 == position2) throw new IllegalArgumentException("The selected positions do not differ.");
+        if (position1.equals(position2)) throw new IllegalArgumentException("The selected positions do not differ.");
         
         calculate();
     }
