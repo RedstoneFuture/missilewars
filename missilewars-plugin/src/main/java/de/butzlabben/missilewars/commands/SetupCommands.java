@@ -41,10 +41,10 @@ public class SetupCommands extends BaseCommand {
     }
 
     @Subcommand("main")
-    public class mainSetupCommands extends BaseCommand {
+    public class MainSetupCommands extends BaseCommand {
 
         @Subcommand("fallbackspawn")
-        public class fallbackspawnSetup extends BaseCommand {
+        public class FallbackspawnSetup extends BaseCommand {
 
             @Subcommand("set")
             @CommandCompletion("@nothing")
@@ -68,10 +68,10 @@ public class SetupCommands extends BaseCommand {
     }
 
     @Subcommand("lobby")
-    public class lobbySetupCommands extends BaseCommand {
+    public class LobbySetupCommands extends BaseCommand {
 
         @Subcommand("spawnpoint")
-        public class spawnpointSetup extends BaseCommand {
+        public class SpawnpointSetup extends BaseCommand {
 
             @Subcommand("set")
             @CommandCompletion("@games")
@@ -97,7 +97,7 @@ public class SetupCommands extends BaseCommand {
         }
 
         @Subcommand("aftergamespawn")
-        public class aftergamespawnSetup extends BaseCommand {
+        public class AftergamespawnSetup extends BaseCommand {
 
             @Subcommand("set")
             @CommandCompletion("@games")
@@ -123,10 +123,10 @@ public class SetupCommands extends BaseCommand {
         }
 
         @Subcommand("area")
-        public class areaSetup extends BaseCommand {
+        public class AreaSetup extends BaseCommand {
 
             @Subcommand("pos1")
-            public class pos1Setup extends BaseCommand {
+            public class Pos1Setup extends BaseCommand {
 
                 @Subcommand("set")
                 @CommandCompletion("@games")
@@ -153,7 +153,7 @@ public class SetupCommands extends BaseCommand {
             }
 
             @Subcommand("pos2")
-            public class pos2Setup extends BaseCommand {
+            public class Pos2Setup extends BaseCommand {
 
                 @Subcommand("set")
                 @CommandCompletion("@games")
@@ -183,10 +183,10 @@ public class SetupCommands extends BaseCommand {
     }
 
     @Subcommand("arena")
-    public class arenaSetupCommands extends BaseCommand {
+    public class ArenaSetupCommands extends BaseCommand {
 
         @Subcommand("spectatorspawn")
-        public class spectatorspawnSetup extends BaseCommand {
+        public class SpectatorspawnSetup extends BaseCommand {
 
             @Subcommand("set")
             @CommandCompletion("@games")
@@ -212,7 +212,7 @@ public class SetupCommands extends BaseCommand {
         }
 
         @Subcommand("team1spawn")
-        public class team1spawnSetup extends BaseCommand {
+        public class Team1spawnSetup extends BaseCommand {
 
             @Subcommand("set")
             @CommandCompletion("@games")
@@ -238,7 +238,7 @@ public class SetupCommands extends BaseCommand {
         }
 
         @Subcommand("team2spawn")
-        public class team2spawnSetup extends BaseCommand {
+        public class Team2spawnSetup extends BaseCommand {
 
             @Subcommand("set")
             @CommandCompletion("@games")
@@ -264,10 +264,10 @@ public class SetupCommands extends BaseCommand {
         }
 
         @Subcommand("area")
-        public class areaSetup extends BaseCommand {
+        public class AreaSetup extends BaseCommand {
 
             @Subcommand("pos1")
-            public class pos1Setup extends BaseCommand {
+            public class Pos1Setup extends BaseCommand {
 
                 @Subcommand("set")
                 @CommandCompletion("@games")
@@ -294,7 +294,7 @@ public class SetupCommands extends BaseCommand {
             }
 
             @Subcommand("pos2")
-            public class pos2Setup extends BaseCommand {
+            public class Pos2Setup extends BaseCommand {
 
                 @Subcommand("set")
                 @CommandCompletion("@games")
