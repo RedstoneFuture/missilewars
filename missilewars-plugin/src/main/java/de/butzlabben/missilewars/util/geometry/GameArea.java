@@ -52,7 +52,7 @@ public class GameArea {
         this.position1 = pos1;
         this.position2 = pos2;
         
-        calculate();
+        initialize();
     }
 
     /**
@@ -83,7 +83,7 @@ public class GameArea {
         this.position1 = new Location(center.getWorld(), x1, y1, z1);
         this.position2 = new Location(center.getWorld(), x2, y2, z2);
 
-        calculate();
+        initialize();
     }
 
     /**
@@ -104,10 +104,16 @@ public class GameArea {
 
         if (position1.equals(position2)) throw new IllegalArgumentException("The selected positions do not differ.");
         
-        calculate();
+        initialize();
     }
 
-    private void calculate() {
+    /**
+     * This method calculates and saves the MIN and MAX positions 
+     * according to the current values. The assigned MIN and MAX 
+     * information can be used to later compare the GameArea more 
+     * easily with current live positions/areas.
+     */
+    private void initialize() {
 
         if (position1.getBlockX() < position2.getBlockX()) {
             minX = position1.getBlockX();
