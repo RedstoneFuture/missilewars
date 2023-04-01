@@ -36,7 +36,7 @@ public class GameArea {
     public GameArea(Location pos1, Location pos2) {
         
         if (!Geometry.bothLocInSameWorld(pos1, pos2)) throw new IllegalArgumentException("Defined positions are not in the same world!");
-        if (pos1 == pos2) throw new IllegalArgumentException("The selected positions do not differ.");
+        if (pos1.equals(pos2)) throw new IllegalArgumentException("The selected positions do not differ.");
         
         this.world = pos1.getWorld();
         
