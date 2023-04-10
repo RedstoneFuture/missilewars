@@ -30,6 +30,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -57,6 +58,20 @@ public class PlayerData implements ConfigurationSerializable {
         time = System.currentTimeMillis();
     }
 
+    /**
+     * This method is used to load the original player data from the temporary player-data file.
+     */
+    public PlayerData(Map<String, Object> elements) {
+        uuid = UUID.fromString(elements.get("uuid").toString());
+        contents = ((ArrayList<ItemStack>) elements.get("contents")).toArray(new ItemStack[]{});
+        gameMode = GameMode.valueOf(elements.get("gamemode").toString());
+        health = Double.parseDouble(elements.get("health").toString());
+        exp = Float.parseFloat(elements.get("exp").toString());
+        expLevel = Integer.parseInt(elements.get("exp-level").toString());
+        foodLevel = Integer.parseInt(elements.get("food-level").toString());
+        time = Long.parseLong(elements.get("time").toString());
+    }
+
     public static PlayerData loadFromFile(File file) {
         Preconditions.checkArgument(file.isFile(), file.getAbsolutePath() + " is not a file");
 
@@ -68,6 +83,7 @@ public class PlayerData implements ConfigurationSerializable {
         } else {
             data = (PlayerData) yamlConfiguration.get("data");
         }
+
         return data;
     }
 
@@ -95,7 +111,7 @@ public class PlayerData implements ConfigurationSerializable {
     }
 
     /**
-     * This method is used to save the player infos in the temp player-data file.
+     * This method is used to save the original player data in the temporary player-data file.
      */
     @Override
     public Map<String, Object> serialize() {
