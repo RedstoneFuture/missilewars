@@ -146,11 +146,4 @@ public class GameArea {
         return newAreaConfig;
     }
 
-    // currently not used; perhaps useful in the future
-    private enum Direction {
-
-        NULL,
-        NORTH_SOUTH,
-        EAST_WEST
-    }
 }
