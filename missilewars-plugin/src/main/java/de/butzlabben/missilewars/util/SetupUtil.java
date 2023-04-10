@@ -95,13 +95,18 @@ public class SetupUtil {
     }
 
     public static void checkShields() {
+        File shieldFolder = new File(MissileWars.getInstance().getDataFolder(), "shields");
+        if (!shieldFolder.exists()) {
+            shieldFolder.mkdir();
+        }
+
         for (Arena arena : Arenas.getArenas()) {
-            File file = new File(MissileWars.getInstance().getDataFolder(), arena.getShieldConfiguration().getSchematic());
-            if (!file.isFile()) {
+            File shield = new File(shieldFolder, arena.getShieldConfiguration().getSchematic());
+            if (!shield.isFile()) {
                 String resource = "shield.schematic";
 
                 Logger.BOOT.log("Copying default shield schematic (" + resource + ")");
-                copyFile(resource, file.getPath());
+                copyFile(resource, shield.getPath());
 
             }
         }
