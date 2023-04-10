@@ -33,9 +33,7 @@ public class Geometry {
      * @return true, if the statement is correct
      */
     public static boolean isCloser(Location targetLocation, Location closerLocation, Location furtherAwayLocation) {
-        if (targetLocation.distanceSquared(closerLocation) < targetLocation.distanceSquared(furtherAwayLocation)) return true;
-
-        return false;
+        return (targetLocation.distanceSquared(closerLocation) < targetLocation.distanceSquared(furtherAwayLocation));
     }
 
     /**
@@ -83,8 +81,7 @@ public class Geometry {
      * @return true, if the statement is correct
      */
     public static boolean isInWorld(Location targetLocation, World world) {
-        if (targetLocation.getWorld().getName().equals(world.getName())) return true;
-        return false;
+        return (targetLocation.getWorld().getName().equals(world.getName()));
     }
     
 }
