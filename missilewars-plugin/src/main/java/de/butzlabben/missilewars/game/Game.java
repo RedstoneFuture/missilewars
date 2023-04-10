@@ -714,33 +714,38 @@ public class Game {
     }
 
     private void createInnerGameArea() {
+        
+        // Depending on the rotation of the (major) Game-Area, the spawn points 
+        // of both teams are primarily on the X or Z axis opposite each other.
+        // The Inner Game-Area is a copy of the (major) Game-Area, with the X or Z 
+        // axis going only to spawn. The X or Z distance is thus reduced.
+        // So this algorithm allows the spawn points to face each other even if 
+        // they are offset.
 
-        // If both spawn points are on the X coordinate, the "length" of the Inner Game-Area 
-        // is the distance on X and the "width" of the Inner Game-Area is the width of the 
-        // (major) GameArea. Otherwise, it is the other way around. It is therefore 
-        // independent of the rotation of the GameArea.
-        
+        int x1, x2, z1, z2;
         Location position1, position2;
-        int spawnPos1, spawnPos2;
         
-        if (team1.getSpawn().getBlockX() == team2.getSpawn().getBlockX()) {
+        if (gameArea.getDirection() == GameArea.Direction.NORTH_SOUTH) {
             
-            spawnPos1 = team1.getSpawn().getBlockZ();
-            spawnPos2 = team2.getSpawn().getBlockZ();
+            x1 = gameArea.getMinX();
+            x2 = gameArea.getMaxX();
             
-            position1 = new Location(gameArea.getWorld(), gameArea.getMinX(), gameArea.getMinY(), spawnPos1);
-            position2 = new Location(gameArea.getWorld(), gameArea.getMaxX(), gameArea.getMaxY(), spawnPos2);
+            z1 = team1.getSpawn().getBlockZ();
+            z2 = team2.getSpawn().getBlockZ();
             
         } else {
-
-            spawnPos1 = team1.getSpawn().getBlockX();
-            spawnPos2 = team2.getSpawn().getBlockX();
             
-            position1 = new Location(gameArea.getWorld(), spawnPos1, gameArea.getMinY(), gameArea.getMinZ());
-            position2 = new Location(gameArea.getWorld(), spawnPos2, gameArea.getMaxY(), gameArea.getMaxZ());
+            z1 = gameArea.getMinZ();
+            z2 = gameArea.getMaxZ();
+            
+            x1 = team1.getSpawn().getBlockX();
+            x2 = team2.getSpawn().getBlockX();
             
         }
         
+        position1 = new Location(gameArea.getWorld(), x1, gameArea.getMinY(), z1);
+        position2 = new Location(gameArea.getWorld(), x2, gameArea.getMaxY(), z2);
+
         innerGameArea = new GameArea(position1, position2);
     }
 

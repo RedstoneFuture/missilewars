@@ -33,6 +33,8 @@ public class GameArea {
     private int minX, minY, minZ;
     private int maxX, maxY, maxZ;
 
+    private Direction direction;
+    
     /**
      * This method creates a new GameArena object.
      *
@@ -111,10 +113,12 @@ public class GameArea {
      * This method calculates and saves the MIN and MAX positions 
      * according to the current values. The assigned MIN and MAX 
      * information can be used to later compare the GameArea more 
-     * easily with current live positions/areas.
+     * easily with current live positions/areas. In addition, the 
+     * area direction is calculated afterwards.
      */
     private void initialize() {
 
+        // Calculation of min & max X coordinate:
         if (position1.getBlockX() < position2.getBlockX()) {
             minX = position1.getBlockX();
             maxX = position2.getBlockX();
@@ -123,6 +127,7 @@ public class GameArea {
             minX = position2.getBlockX();
         }
 
+        // Calculation of min & max Y coordinate:
         if (position1.getBlockY() < position2.getBlockY()) {
             minY = position1.getBlockY();
             maxY = position2.getBlockY();
@@ -131,12 +136,20 @@ public class GameArea {
             minY = position2.getBlockY();
         }
 
+        // Calculation of min & max Z coordinate:
         if (position1.getBlockZ() < position2.getBlockZ()) {
             minZ = position1.getBlockZ();
             maxZ = position2.getBlockZ();
         } else {
             maxZ = position1.getBlockZ();
             minZ = position2.getBlockZ();
+        }
+
+        // Calculation of area direction:
+        if (getXSize() < getZSize()) {
+            direction = Direction.NORTH_SOUTH;
+        } else {
+            direction = Direction.EAST_WEST;
         }
     }
 
@@ -146,4 +159,43 @@ public class GameArea {
         return newAreaConfig;
     }
 
+    /**
+     * This method defines the horizontal direction / rotation of the 
+     * area based on the alignment of the team spawn points.
+     * 
+     * NORTH-SOUTH = primarily along the Z axis
+     * EAST-WEST = primarily along the X axis
+     */
+    public enum Direction {
+        NORTH_SOUTH,
+        EAST_WEST
+    }
+
+    /**
+     * This method returns the arena length along the X coordinate.
+     * 
+     * @return (Integer) the X size
+     */
+    public int getXSize() {
+        return maxX - minX;
+    }
+
+    /**
+     * This method returns the arena length along the Y coordinate.
+     *
+     * @return (Integer) the Y size
+     */
+    public int getYSize() {
+        return maxY - minY;
+    }
+
+    /**
+     * This method returns the arena length along the Z coordinate.
+     *
+     * @return (Integer) the Z size
+     */
+    public int getZSize() {
+        return maxZ - minZ;
+    }
+    
 }
