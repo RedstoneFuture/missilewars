@@ -36,7 +36,7 @@ public class GameArea {
     /**
      * This method creates a new GameArena object.
      *
-     * The GameArena is a rectangular area. His border (1 block wide) is 
+     * The GameArena is a rectangular area. Its border (1 block wide) is 
      * still part of the arena (= inside).
      *
      * @param pos1 (Location) one corner of the desired area border
@@ -58,7 +58,7 @@ public class GameArea {
     /**
      * This method creates a new GameArena object.
      *
-     * The GameArena is a rectangular area. His border (1 block wide) is 
+     * The GameArena is a rectangular area. Its border (1 block wide) is 
      * still part of the arena (= inside).
      *
      * @param center (Location) the horizontal center of the desired area; it's also the vertical minimum of the area (the floor)
@@ -89,7 +89,7 @@ public class GameArea {
     /**
      * This method creates a new GameArena object.
      *
-     * The GameArena is a rectangular area. His border (1 block wide) is 
+     * The GameArena is a rectangular area. Its border (1 block wide) is 
      * still part of the arena (= inside).
      *
      * @param world (World) the target world for the desired area
