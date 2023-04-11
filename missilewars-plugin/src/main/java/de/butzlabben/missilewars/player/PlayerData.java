@@ -31,6 +31,7 @@ import org.bukkit.inventory.ItemStack;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -38,23 +39,37 @@ import java.util.UUID;
 @AllArgsConstructor
 public class PlayerData implements ConfigurationSerializable {
 
-    private final long time;
     private UUID uuid;
     private ItemStack[] contents;
-    private float exp;
-    private double health;
-    private int expLevel, foodLevel;
     private GameMode gameMode;
+    private double health;
+    private float exp;
+    private int expLevel, foodLevel;
+    private final long time;
 
     public PlayerData(Player player) {
+        uuid = player.getUniqueId();
         contents = player.getInventory().getContents();
+        gameMode = player.getGameMode();
+        health = player.getHealth();
         exp = player.getExp();
         expLevel = player.getLevel();
         foodLevel = player.getFoodLevel();
-        health = player.getHealth();
-        gameMode = player.getGameMode();
-        uuid = player.getUniqueId();
         time = System.currentTimeMillis();
+    }
+
+    /**
+     * This method is used to load the original player data from the temporary player-data file.
+     */
+    public PlayerData(Map<String, Object> elements) {
+        uuid = UUID.fromString(elements.get("uuid").toString());
+        contents = ((List<ItemStack>) elements.get("contents")).toArray(new ItemStack[] {});
+        gameMode = GameMode.valueOf(elements.get("gamemode").toString());
+        health = Double.parseDouble(elements.get("health").toString());
+        exp = Float.parseFloat(elements.get("exp").toString());
+        expLevel = Integer.parseInt(elements.get("exp-level").toString());
+        foodLevel = Integer.parseInt(elements.get("food-level").toString());
+        time = Long.parseLong(elements.get("time").toString());
     }
 
     public static PlayerData loadFromFile(File file) {
@@ -68,6 +83,7 @@ public class PlayerData implements ConfigurationSerializable {
         } else {
             data = (PlayerData) yamlConfiguration.get("data");
         }
+
         return data;
     }
 
@@ -76,13 +92,13 @@ public class PlayerData implements ConfigurationSerializable {
                 player + " is not the user of this data (data UUID: " + uuid + ")");
 
         player.getInventory().setContents(contents);
+        player.setGameMode(gameMode);
+        player.setHealth(Math.min(health, player.getMaxHealth()));
         player.setExp(exp);
         player.setLevel(expLevel);
-        player.setHealth(Math.min(health, player.getMaxHealth()));
         player.setFoodLevel(foodLevel);
-        player.setGameMode(gameMode);
     }
-    
+
     public void saveToFile(String file) {
         YamlConfiguration config = new YamlConfiguration();
         config.set("data", this);
@@ -94,16 +110,19 @@ public class PlayerData implements ConfigurationSerializable {
         }
     }
 
+    /**
+     * This method is used to save the original player data in the temporary player-data file.
+     */
     @Override
     public Map<String, Object> serialize() {
         Map<String, Object> serialized = new HashMap<>();
         serialized.put("uuid", uuid.toString());
+        serialized.put("contents", contents);
         serialized.put("gamemode", gameMode.name());
         serialized.put("health", health);
-        serialized.put("food-level", foodLevel);
         serialized.put("exp", exp);
         serialized.put("exp-level", expLevel);
-        serialized.put("contents", contents);
+        serialized.put("food-level", foodLevel);
         serialized.put("time", time);
         return serialized;
     }
