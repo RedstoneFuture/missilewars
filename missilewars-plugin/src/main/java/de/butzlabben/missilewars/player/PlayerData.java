@@ -19,13 +19,6 @@
 package de.butzlabben.missilewars.player;
 
 import com.google.common.base.Preconditions;
-import de.butzlabben.missilewars.util.version.VersionUtil;
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.ToString;
 import org.bukkit.GameMode;
@@ -34,6 +27,13 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @ToString
 @AllArgsConstructor
@@ -76,15 +76,7 @@ public class PlayerData implements ConfigurationSerializable {
         Preconditions.checkArgument(file.isFile(), file.getAbsolutePath() + " is not a file");
 
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(file);
-        PlayerData data;
-
-        if (VersionUtil.getVersion() > 12) {
-            data = yamlConfiguration.getSerializable("data", PlayerData.class);
-        } else {
-            data = (PlayerData) yamlConfiguration.get("data");
-        }
-
-        return data;
+        return yamlConfiguration.getSerializable("data", PlayerData.class);
     }
 
     public void apply(Player player) {
