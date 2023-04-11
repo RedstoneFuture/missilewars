@@ -18,9 +18,10 @@
 
 package de.butzlabben.missilewars.util.version;
 
+import org.bukkit.block.Block;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import org.bukkit.block.Block;
 
 /**
  * @author Butzlabben
@@ -31,10 +32,7 @@ public class BlockSetterProvider {
     private static final BlockDataSetter blockSetter;
 
     static {
-        if (VersionUtil.getVersion() < 13)
-            blockSetter = new LegacyBlockSetter();
-        else
-            blockSetter = new NewBlockSetter();
+        blockSetter = new NewBlockSetter();
     }
 
     private BlockSetterProvider() {
@@ -64,30 +62,7 @@ public class BlockSetterProvider {
             e.printStackTrace();
         }
     }
-
-    private static class LegacyBlockSetter implements BlockDataSetter {
-
-        @Override
-        public void setData(Block block, Object data) {
-            try {
-                Method m = block.getClass().getMethod("setData", byte.class);
-                m.invoke(block, data);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        public void setData(Block block, Object data, boolean update) {
-            try {
-                Method m = block.getClass().getMethod("setData", byte.class, boolean.class);
-                m.invoke(block, data, update);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
+    
     private static class NewBlockSetter implements BlockDataSetter {
 
         @Override

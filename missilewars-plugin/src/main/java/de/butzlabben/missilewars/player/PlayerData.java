@@ -19,7 +19,6 @@
 package de.butzlabben.missilewars.player;
 
 import com.google.common.base.Preconditions;
-import de.butzlabben.missilewars.util.version.VersionUtil;
 import lombok.AllArgsConstructor;
 import lombok.ToString;
 import org.bukkit.GameMode;
@@ -78,11 +77,7 @@ public class PlayerData implements ConfigurationSerializable {
         YamlConfiguration yamlConfiguration = YamlConfiguration.loadConfiguration(file);
         PlayerData data;
 
-        if (VersionUtil.getVersion() > 12) {
-            data = yamlConfiguration.getSerializable("data", PlayerData.class);
-        } else {
-            data = (PlayerData) yamlConfiguration.get("data");
-        }
+        data = yamlConfiguration.getSerializable("data", PlayerData.class);
 
         return data;
     }

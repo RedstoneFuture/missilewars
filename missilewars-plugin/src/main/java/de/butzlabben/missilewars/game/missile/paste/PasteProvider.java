@@ -32,22 +32,17 @@ public class PasteProvider {
     private static final Paster paster;
 
     static {
-        if (VersionUtil.getVersion() < 13) {
-            paster = new R1_12PasteProvider();
-            Logger.DEBUG.log("Chose 1.12 normal paster");
-        } else {
-            if (MissileWars.getInstance().foundFAWE()) {
-                if (VersionUtil.getVersion() < 16) {
-                    paster = new R1_13FawePasteProvider();
-                    Logger.DEBUG.log("Chose 1.13 FAWE paster");
-                } else {
-                    paster = new R1_16FawePasteProvider();
-                    Logger.DEBUG.log("Chose 1.16 FAWE paster");
-                }
+        if (MissileWars.getInstance().foundFAWE()) {
+            if (VersionUtil.getVersion() < 16) {
+                paster = new R1_13FawePasteProvider();
+                Logger.DEBUG.log("Chose 1.13 FAWE paster");
             } else {
-                paster = new R1_13WEPasteProvider();
-                Logger.DEBUG.log("Chose 1.13 WE paster");
+                paster = new R1_16FawePasteProvider();
+                Logger.DEBUG.log("Chose 1.16 FAWE paster");
             }
+        } else {
+            paster = new R1_13WEPasteProvider();
+            Logger.DEBUG.log("Chose 1.13 WE paster");
         }
     }
 

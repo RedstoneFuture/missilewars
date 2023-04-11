@@ -202,8 +202,8 @@ public class Team {
                 subTitle = null;
                 break;
         }
-
-        VersionUtil.sendTitle(mwPlayer.getPlayer(), title, subTitle);
+        
+        mwPlayer.getPlayer().sendTitle(title, subTitle);
     }
 
     /**

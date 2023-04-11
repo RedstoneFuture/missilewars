@@ -664,11 +664,7 @@ public class Game {
     public void spawnFireball(Player player, ItemStack itemStack) {
         int amount = itemStack.getAmount();
         itemStack.setAmount(amount - 1);
-
-        if (amount == 1 && VersionUtil.getVersion() == 8) {
-            player.getInventory().remove(VersionUtil.getFireball());
-        }
-
+        
         Fireball fb = player.launchProjectile(Fireball.class);
         fb.setVelocity(player.getLocation().getDirection().multiply(2.5D));
         VersionUtil.playFireball(player, fb.getLocation());
@@ -811,8 +807,8 @@ public class Game {
             subTitle = Messages.getNativeMessage("game_result.subtitle_draw");
 
         }
-
-        VersionUtil.sendTitle(player, title, subTitle);
+        
+        player.sendTitle(title, subTitle);
     }
 
     /**
