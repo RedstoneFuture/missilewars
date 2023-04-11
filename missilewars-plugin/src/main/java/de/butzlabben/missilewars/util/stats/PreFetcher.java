@@ -26,12 +26,16 @@ import de.butzlabben.missilewars.inventory.OrcItem;
 import de.butzlabben.missilewars.inventory.pages.InventoryPage;
 import de.butzlabben.missilewars.inventory.pages.PageGUICreator;
 import de.butzlabben.missilewars.util.version.VersionUtil;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
-
-import java.util.*;
 
 public class PreFetcher {
 
@@ -112,7 +116,7 @@ public class PreFetcher {
         }
 
         private PageGUICreator<String> getPreFetchCreator(Collection<String> names) {
-            PageGUICreator<String> creator = new PageGUICreator<>("§ePlayer statistics", names, (item) -> {
+            return new PageGUICreator<>("§ePlayer statistics", names, (item) -> {
                 ItemStack itemStack = new ItemStack(VersionUtil.getPlayerSkullMaterial());
                 SkullMeta sm = (SkullMeta) itemStack.getItemMeta();
                 //noinspection deprecation
@@ -121,7 +125,6 @@ public class PreFetcher {
                 itemStack.setItemMeta(sm);
                 return new OrcItem(itemStack);
             });
-            return creator;
         }
     }
 }

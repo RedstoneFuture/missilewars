@@ -23,6 +23,10 @@ import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.util.version.BlockSetterProvider;
+import de.butzlabben.missilewars.util.version.VersionUtil;
+import java.util.AbstractMap;
+import java.util.HashMap;
+import java.util.Map;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -33,10 +37,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
-
-import java.util.AbstractMap;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author Butzlabben
@@ -112,7 +112,9 @@ public class RespawnGoldBlock implements Listener {
 
     private void setBlock(Block b) {
         if ((b.getType() != Material.GOLD_BLOCK) && (b.getType() == Material.AIR)) {
-            Object data = b.getBlockData();
+            Object data = b.getData();
+            if (VersionUtil.getVersion() >= 13)
+                data = b.getBlockData();
             map.put(b.getLocation(), new AbstractMap.SimpleEntry<>(b.getType(), data));
             b.setType(Material.GOLD_BLOCK);
         }
@@ -136,7 +138,7 @@ public class RespawnGoldBlock implements Listener {
     private void sendFallProtectionMessage() {
         double seconds = (double) duration / 20;
         if ((seconds == Math.floor(seconds)) && !Double.isInfinite(seconds)) {
-            player.sendMessage(Messages.getMessage("fall_protection").replace("%seconds%", "" + (int) seconds));
+            player.sendMessage(Messages.getMessage("fall_protection").replace("%seconds%", Integer.toString((int) seconds)));
         }
     }
 

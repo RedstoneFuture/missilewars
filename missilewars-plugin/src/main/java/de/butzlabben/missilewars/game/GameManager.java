@@ -24,13 +24,12 @@ import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.Lobby;
 import de.butzlabben.missilewars.util.geometry.GameArea;
 import de.butzlabben.missilewars.util.serialization.Serializer;
-import lombok.Getter;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 
 @Getter
 public class GameManager {
@@ -141,9 +140,7 @@ public class GameManager {
         }
 
         // delete the old game from the list
-        if (games.get(targetLobbyName) != null) {
-            games.remove(targetLobby);
-        }
+        games.remove(targetLobbyName);
 
         Logger.DEBUG.log("Old Game disabled.");
 

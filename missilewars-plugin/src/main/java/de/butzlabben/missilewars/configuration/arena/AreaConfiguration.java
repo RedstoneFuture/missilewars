@@ -19,13 +19,13 @@
 package de.butzlabben.missilewars.configuration.arena;
 
 import com.google.gson.annotations.SerializedName;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
-
-import java.util.HashMap;
-import java.util.Map;
+import org.jetbrains.annotations.NotNull;
 
 @Getter
 @ToString
@@ -43,6 +43,7 @@ public class AreaConfiguration implements ConfigurationSerializable {
      * This method is used to save the config entries in the config file.
      */
     @Override
+    @NotNull
     public Map<String, Object> serialize() {
         Map<String, Object> serialized = new HashMap<>();
         serialized.put("min_x", minX);

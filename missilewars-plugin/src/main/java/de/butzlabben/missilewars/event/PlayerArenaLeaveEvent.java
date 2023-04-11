@@ -23,6 +23,7 @@ import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Get's called, when a player has already left an arena
@@ -43,6 +44,7 @@ public class PlayerArenaLeaveEvent extends PlayerEvent {
     }
 
     @Override
+    @NotNull
     public HandlerList getHandlers() {
         return handlers;
     }
