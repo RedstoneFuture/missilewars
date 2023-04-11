@@ -151,8 +151,7 @@ public class VersionUtil {
     }
     
     public static ItemStack getGlassPlane(String colorCode) {
-        ItemStack is = new ItemStack(ColorConverter.getGlassPaneFromColorCode(colorCode));
-        return is;
+        return new ItemStack(ColorConverter.getGlassPaneFromColorCode(colorCode));
     }
 
     public static Material getPlayerSkullMaterial() {
