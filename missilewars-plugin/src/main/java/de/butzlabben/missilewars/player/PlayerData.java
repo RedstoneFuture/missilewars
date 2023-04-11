@@ -63,7 +63,7 @@ public class PlayerData implements ConfigurationSerializable {
      */
     public PlayerData(Map<String, Object> elements) {
         uuid = UUID.fromString(elements.get("uuid").toString());
-        contents = ((ArrayList<ItemStack>) elements.get("contents")).toArray(new ItemStack[]{});
+        contents = ((List<ItemStack>) elements.get("contents")).toArray(new ItemStack[] {});
         gameMode = GameMode.valueOf(elements.get("gamemode").toString());
         health = Double.parseDouble(elements.get("health").toString());
         exp = Float.parseFloat(elements.get("exp").toString());
