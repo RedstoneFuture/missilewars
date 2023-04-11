@@ -55,7 +55,9 @@ public class Geometry {
         if (targetLocation.getBlockY() < area.getMinY()) return false;
 
         if (targetLocation.getBlockZ() > area.getMaxZ()) return false;
-        return targetLocation.getBlockZ() >= area.getMinZ();
+        if (targetLocation.getBlockZ() < area.getMinZ()) return false;
+
+        return true;
     }
 
     /**
