@@ -30,6 +30,7 @@ import de.butzlabben.missilewars.game.signs.SignRepository;
 import de.butzlabben.missilewars.game.stats.StatsFetcher;
 import de.butzlabben.missilewars.listener.PlayerListener;
 import de.butzlabben.missilewars.listener.SignListener;
+import de.butzlabben.missilewars.player.PlayerData;
 import de.butzlabben.missilewars.util.ConnectionHolder;
 import de.butzlabben.missilewars.util.MoneyUtil;
 import de.butzlabben.missilewars.util.SetupUtil;
@@ -39,6 +40,7 @@ import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -124,6 +126,8 @@ public class MissileWars extends JavaPlugin {
         }
         
         checkPlaceholderAPI();
+
+        ConfigurationSerialization.registerClass(PlayerData.class);
         
         endTime = System.currentTimeMillis();
         Logger.SUCCESS.log("MissileWars was enabled in " + (endTime - startTime) + "ms");
