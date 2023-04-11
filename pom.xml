@@ -34,7 +34,6 @@
 
     <modules>
         <module>1_13</module>
-        <module>1_12</module>
         <module>1_13_FAWE</module>
         <module>1_16_FAWE</module>
         <module>missilewars-plugin</module>
