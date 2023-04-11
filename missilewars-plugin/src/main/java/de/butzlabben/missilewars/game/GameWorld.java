@@ -52,13 +52,14 @@ public class GameWorld {
     }
 
     public boolean isWorld(World world) {
-        if (world == null) {
-            return false;
-        }
+        if (world == null) return false;
+
+        if ((worldName == null) || (worldName.isEmpty())) throw new IllegalArgumentException("GameWorld must be loaded first: 'gameWorld.load()'");
         return world.getName().equals(worldName);
     }
 
     public World getWorld() {
+        if ((worldName == null) || (worldName.isEmpty())) throw new IllegalArgumentException("GameWorld must be loaded first: 'gameWorld.load()'");
         return Bukkit.getWorld(worldName);
     }
 

@@ -22,6 +22,7 @@ import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.Lobby;
+import de.butzlabben.missilewars.util.geometry.GameArea;
 import de.butzlabben.missilewars.util.serialization.Serializer;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -150,6 +151,7 @@ public class GameManager {
         try {
             Lobby lobby = Serializer.deserialize(targetLobby.getFile(), Lobby.class);
             lobby.setFile(targetLobby.getFile());
+            lobby.setArea(new GameArea(lobby.getBukkitWorld(), lobby.getAreaConfig()));
             lobby.updateConfig();
 
             Logger.BOOTDONE.log("Reloaded lobby \"" + targetLobbyName + "\" (" + targetLobby.getFile().getName() + ")");

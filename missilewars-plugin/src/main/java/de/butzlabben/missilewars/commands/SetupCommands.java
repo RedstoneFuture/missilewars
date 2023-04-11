@@ -37,14 +37,14 @@ public class SetupCommands extends BaseCommand {
     @Default
     @CommandPermission("mw.setup")
     public void setupCommands(CommandSender sender, String[] args) {
-        sender.sendMessage(Messages.getPrefix() + "§fSetup usage: §7/mw setup <main|lobby|arena> <value> <set|teleport> [lobby]");
+        sender.sendMessage(Messages.getPrefix() + "§fSetup usage: §7/mw setup <main|lobby|arena> ...");
     }
 
     @Subcommand("main")
-    public class mainSetupCommands extends BaseCommand {
+    public class MainSetupCommands extends BaseCommand {
 
         @Subcommand("fallbackspawn")
-        public class fallbackspawnSetup extends BaseCommand {
+        public class FallbackspawnSetup extends BaseCommand {
 
             @Subcommand("set")
             @CommandCompletion("@nothing")
@@ -68,10 +68,10 @@ public class SetupCommands extends BaseCommand {
     }
 
     @Subcommand("lobby")
-    public class lobbySetupCommands extends BaseCommand {
+    public class LobbySetupCommands extends BaseCommand {
 
         @Subcommand("spawnpoint")
-        public class spawnpointSetup extends BaseCommand {
+        public class SpawnpointSetup extends BaseCommand {
 
             @Subcommand("set")
             @CommandCompletion("@games")
@@ -97,7 +97,7 @@ public class SetupCommands extends BaseCommand {
         }
 
         @Subcommand("aftergamespawn")
-        public class aftergamespawnSetup extends BaseCommand {
+        public class AftergamespawnSetup extends BaseCommand {
 
             @Subcommand("set")
             @CommandCompletion("@games")
@@ -121,13 +121,72 @@ public class SetupCommands extends BaseCommand {
             }
 
         }
+
+        @Subcommand("area")
+        public class AreaSetup extends BaseCommand {
+
+            @Subcommand("pos1")
+            public class Pos1Setup extends BaseCommand {
+
+                @Subcommand("set")
+                @CommandCompletion("@games")
+                public void set(CommandSender sender, String[] args) {
+                    if (!senderIsPlayer(sender)) return;
+                    if (!isValidGame(args)) return;
+
+                    game.getLobby().getArea().setPosition1(player.getLocation());
+                    game.getLobby().setAreaConfig(game.getLobby().getArea().getAreaConfiguration());
+                    game.getLobby().updateConfig();
+                    player.sendMessage(Messages.getPrefix() + "§fSet new 'lobby area' (position 1) to " + player.getLocation() + ".");
+                }
+
+                @Subcommand("teleport|tp")
+                @CommandCompletion("@games")
+                public void teleport(CommandSender sender, String[] args) {
+                    if (!senderIsPlayer(sender)) return;
+                    if (!isValidGame(args)) return;
+
+                    player.teleport(game.getLobby().getArea().getPosition1());
+                    player.sendMessage(Messages.getPrefix() + "§fTeleported to 'lobby area' (position 1): " + game.getLobby().getArea().getPosition1().toString());
+                }
+                
+            }
+
+            @Subcommand("pos2")
+            public class Pos2Setup extends BaseCommand {
+
+                @Subcommand("set")
+                @CommandCompletion("@games")
+                public void set(CommandSender sender, String[] args) {
+                    if (!senderIsPlayer(sender)) return;
+                    if (!isValidGame(args)) return;
+
+                    game.getLobby().getArea().setPosition2(player.getLocation());
+                    game.getLobby().setAreaConfig(game.getLobby().getArea().getAreaConfiguration());
+                    game.getLobby().updateConfig();
+                    player.sendMessage(Messages.getPrefix() + "§fSet new 'lobby area' (position 2) to " + player.getLocation() + ".");
+                }
+
+                @Subcommand("teleport|tp")
+                @CommandCompletion("@games")
+                public void teleport(CommandSender sender, String[] args) {
+                    if (!senderIsPlayer(sender)) return;
+                    if (!isValidGame(args)) return;
+
+                    player.teleport(game.getLobby().getArea().getPosition2());
+                    player.sendMessage(Messages.getPrefix() + "§fTeleported to 'lobby area' (position 2): " + game.getLobby().getArea().getPosition2().toString());
+                }
+
+            }
+            
+        }
     }
 
     @Subcommand("arena")
-    public class arenaSetupCommands extends BaseCommand {
+    public class ArenaSetupCommands extends BaseCommand {
 
         @Subcommand("spectatorspawn")
-        public class spectatorspawnSetup extends BaseCommand {
+        public class SpectatorspawnSetup extends BaseCommand {
 
             @Subcommand("set")
             @CommandCompletion("@games")
@@ -153,7 +212,7 @@ public class SetupCommands extends BaseCommand {
         }
 
         @Subcommand("team1spawn")
-        public class team1spawnSetup extends BaseCommand {
+        public class Team1spawnSetup extends BaseCommand {
 
             @Subcommand("set")
             @CommandCompletion("@games")
@@ -179,7 +238,7 @@ public class SetupCommands extends BaseCommand {
         }
 
         @Subcommand("team2spawn")
-        public class team2spawnSetup extends BaseCommand {
+        public class Team2spawnSetup extends BaseCommand {
 
             @Subcommand("set")
             @CommandCompletion("@games")
@@ -200,6 +259,65 @@ public class SetupCommands extends BaseCommand {
 
                 player.teleport(game.getArena().getTeam2Spawn());
                 player.sendMessage(Messages.getPrefix() + "§fTeleported to 'team2Spawn'.");
+            }
+
+        }
+
+        @Subcommand("area")
+        public class AreaSetup extends BaseCommand {
+
+            @Subcommand("pos1")
+            public class Pos1Setup extends BaseCommand {
+
+                @Subcommand("set")
+                @CommandCompletion("@games")
+                public void set(CommandSender sender, String[] args) {
+                    if (!senderIsPlayer(sender)) return;
+                    if (!isValidGame(args)) return;
+
+                    game.getArena().getArea().setPosition1(player.getLocation());
+                    game.getArena().setAreaConfig(game.getArena().getArea().getAreaConfiguration());
+                    game.getArena().updateConfig();
+                    player.sendMessage(Messages.getPrefix() + "§fSet new 'arena area' (position 1) to " + player.getLocation() + ".");
+                }
+
+                @Subcommand("teleport|tp")
+                @CommandCompletion("@games")
+                public void teleport(CommandSender sender, String[] args) {
+                    if (!senderIsPlayer(sender)) return;
+                    if (!isValidGame(args)) return;
+
+                    player.teleport(game.getArena().getArea().getPosition1());
+                    player.sendMessage(Messages.getPrefix() + "§fTeleported to 'arena area' (position 1): " + game.getArena().getArea().getPosition1().toString());
+                }
+
+            }
+
+            @Subcommand("pos2")
+            public class Pos2Setup extends BaseCommand {
+
+                @Subcommand("set")
+                @CommandCompletion("@games")
+                public void set(CommandSender sender, String[] args) {
+                    if (!senderIsPlayer(sender)) return;
+                    if (!isValidGame(args)) return;
+
+                    game.getArena().getArea().setPosition2(player.getLocation());
+                    game.getArena().setAreaConfig(game.getArena().getArea().getAreaConfiguration());
+                    game.getArena().updateConfig();
+                    player.sendMessage(Messages.getPrefix() + "§fSet new 'arena area' (position 2) to " + player.getLocation() + ".");
+                }
+
+                @Subcommand("teleport|tp")
+                @CommandCompletion("@games")
+                public void teleport(CommandSender sender, String[] args) {
+                    if (!senderIsPlayer(sender)) return;
+                    if (!isValidGame(args)) return;
+
+                    player.teleport(game.getArena().getArea().getPosition2());
+                    player.sendMessage(Messages.getPrefix() + "§fTeleported to 'arena area' (position 2): " + game.getArena().getArea().getPosition2().toString());
+                }
+
             }
 
         }

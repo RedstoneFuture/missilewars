@@ -20,10 +20,11 @@ package de.butzlabben.missilewars.configuration;
 
 import com.google.gson.annotations.SerializedName;
 import de.butzlabben.missilewars.Logger;
+import de.butzlabben.missilewars.configuration.arena.AreaConfiguration;
 import de.butzlabben.missilewars.configuration.arena.Arena;
 import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
-import de.butzlabben.missilewars.util.geometry.Area;
+import de.butzlabben.missilewars.util.geometry.GameArea;
 import de.butzlabben.missilewars.util.serialization.Serializer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -45,10 +46,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class Lobby {
 
+    // The values defined here are only valid if there is no Config yet.
     private String name = "lobby0";
     @SerializedName("display_name") private String displayName = "&eDefault game";
     @SerializedName("auto_load") private boolean autoLoad = true;
-    @SerializedName("world") private String world = Bukkit.getWorlds().get(0).getName();
+    @SerializedName("world") private String worldName = getBukkitDefaultWorld().getName();
     @SerializedName("lobby_time") private int lobbyTime = 60;
     @SerializedName("join_ongoing_game") private boolean joinOngoingGame = false;
     @SerializedName("min_size") private int minSize = 2;
@@ -57,23 +59,29 @@ public class Lobby {
     @SerializedName("team1_color") private String team1Color = "&c";
     @SerializedName("team2_name") private String team2Name = "Team2";
     @SerializedName("team2_color") private String team2Color = "&a";
-    @Setter @SerializedName("spawn_point") private Location spawnPoint = Bukkit.getWorlds().get(0).getSpawnLocation();
-    @Setter @SerializedName("after_game_spawn") private Location afterGameSpawn = Bukkit.getWorlds().get(0).getSpawnLocation();
-    private Area area = Area.defaultAreaAround(Bukkit.getWorlds().get(0).getSpawnLocation());
+    @Setter @SerializedName("spawn_point") private Location spawnPoint = getBukkitDefaultWorld().getSpawnLocation();
+    @Setter @SerializedName("after_game_spawn") private Location afterGameSpawn = getBukkitDefaultWorld().getSpawnLocation();
+    @Setter @SerializedName("area") private AreaConfiguration areaConfig = new AreaConfiguration(-30, 0, -30, 30, 256, 30);
     @SerializedName("map_choose_procedure") private MapChooseProcedure mapChooseProcedure = MapChooseProcedure.FIRST;
     @SerializedName("possible_arenas") private List<String> possibleArenas = new ArrayList<>() {{
         add("arena0");
     }};
 
+    // These values are only set after the Config has been read.
+    @Setter private transient GameArea area;
     @Setter private transient File file;
 
     public World getBukkitWorld() {
-        World world = Bukkit.getWorld(getWorld());
+        World world = Bukkit.getWorld(worldName);
         if (world == null) {
-            Logger.ERROR.log("Could not find any world with the name: " + this.world);
+            Logger.ERROR.log("Could not find any world with the name: " + worldName);
             Logger.ERROR.log("Please correct this in the configuration of lobby \"" + name + "\"");
         }
         return world;
+    }
+    
+    private World getBukkitDefaultWorld() {
+        return Bukkit.getWorlds().get(0);
     }
 
     public void checkForWrongArenas() {
@@ -100,13 +108,5 @@ public class Lobby {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public Location getAreaMinLocation() {
-        return new Location(getBukkitWorld(), area.getMinX(), area.getMinY(), area.getMinZ());
-    }
-
-    public Location getAreaMaxLocation() {
-        return new Location(getBukkitWorld(), area.getMaxX(), area.getMaxY(), area.getMaxZ());
     }
 }
