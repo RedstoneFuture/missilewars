@@ -24,6 +24,7 @@ import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.missile.paste.PasteProvider;
 import de.butzlabben.missilewars.util.version.VersionUtil;
+import java.io.File;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Location;
@@ -34,8 +35,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SpawnEggMeta;
 import org.bukkit.material.SpawnEgg;
 import org.bukkit.util.Vector;
-
-import java.io.File;
 
 /**
  * @author Butzlabben
@@ -85,8 +84,7 @@ public class Missile {
 
     public File getSchematic() {
         File missilesFolder = new File(Config.getMissilesFolder());
-        File file = new File(missilesFolder, getSchematicName(false));
-        return file;
+        return new File(missilesFolder, getSchematicName(false));
     }
 
     public String getSchematicName(boolean withoutExtension) {
