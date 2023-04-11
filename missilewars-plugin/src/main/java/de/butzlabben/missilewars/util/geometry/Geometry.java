@@ -55,9 +55,7 @@ public class Geometry {
         if (targetLocation.getBlockY() < area.getMinY()) return false;
 
         if (targetLocation.getBlockZ() > area.getMaxZ()) return false;
-        if (targetLocation.getBlockZ() < area.getMinZ()) return false;
-
-        return true;
+        return targetLocation.getBlockZ() >= area.getMinZ();
     }
 
     /**
@@ -69,8 +67,7 @@ public class Geometry {
      */
     public static boolean bothLocInSameWorld(Location pos1, Location pos2) {
         if ((pos1.getWorld() == null) || (pos2.getWorld() == null)) return false;
-        if (pos1.getWorld().getName().equals(pos2.getWorld().getName())) return true;
-        return false;
+        return pos1.getWorld().getName().equals(pos2.getWorld().getName());
     }
 
     /**

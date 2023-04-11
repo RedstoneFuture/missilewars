@@ -20,6 +20,7 @@ package de.butzlabben.missilewars.event;
 
 import de.butzlabben.missilewars.game.Game;
 import org.bukkit.event.HandlerList;
+import org.jetbrains.annotations.NotNull;
 
 public class GameStartEvent extends GameEvent {
 
@@ -34,6 +35,7 @@ public class GameStartEvent extends GameEvent {
     }
 
     @Override
+    @NotNull
     public HandlerList getHandlers() {
         return handlers;
     }

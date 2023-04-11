@@ -21,12 +21,11 @@ package de.butzlabben.missilewars.util;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.player.PlayerData;
-import org.bukkit.GameMode;
-import org.bukkit.entity.Player;
-
 import java.io.File;
 import java.util.HashMap;
 import java.util.UUID;
+import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
 
 public class PlayerDataProvider {
 
@@ -77,7 +76,7 @@ public class PlayerDataProvider {
         }
 
         // deleting old data
-        if (data.containsKey(uuid)) data.remove(uuid);
+        data.remove(uuid);
         if (file.exists()) file.delete();
     }
 

@@ -26,6 +26,7 @@ import de.butzlabben.missilewars.game.GameManager;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class MissileWarsPlaceholder extends PlaceholderExpansion {
 
@@ -36,16 +37,19 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
     }
 
     @Override
+    @NotNull
     public String getAuthor() {
         return "Daniel Nägele";
     }
 
     @Override
+    @NotNull
     public String getIdentifier() {
         return "missilewars";
     }
 
     @Override
+    @NotNull
     public String getVersion() {
         return "0.0.1";
     }
@@ -70,8 +74,8 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
                 if (params.startsWith("arena_")) return "§c§oThis is not a game arena!";
             }
 
-            if (params.startsWith("lobby_")) params.replace("_this", playerGame.getLobby().getName());
-            if (params.startsWith("arena_")) params.replace("_this", playerGame.getArena().getName());
+            if (params.startsWith("lobby_")) params = params.replace("_this", playerGame.getLobby().getName());
+            if (params.startsWith("arena_")) params = params.replace("_this", playerGame.getArena().getName());
         }
 
 

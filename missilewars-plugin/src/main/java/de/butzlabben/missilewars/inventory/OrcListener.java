@@ -64,8 +64,6 @@ public class OrcListener implements Listener {
 
     @EventHandler
     public void on(InventoryCloseEvent e) {
-        if (e.getInventory() != null) {
-            invs.remove(e.getPlayer().getUniqueId());
-        }
+        invs.remove(e.getPlayer().getUniqueId());
     }
 }

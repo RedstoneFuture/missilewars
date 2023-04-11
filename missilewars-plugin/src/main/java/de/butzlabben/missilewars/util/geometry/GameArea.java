@@ -37,8 +37,8 @@ public class GameArea {
     
     /**
      * This method creates a new GameArena object.
-     *
-     * The GameArena is a rectangular area. Its border (1 block wide) is 
+     * <p>
+     * The GameArena is a rectangular area. Its border (1 block wide) is
      * still part of the arena (= inside).
      *
      * @param pos1 (Location) one corner of the desired area border
@@ -59,7 +59,7 @@ public class GameArea {
 
     /**
      * This method creates a new GameArena object.
-     *
+     * <p>
      * The GameArena is a rectangular area. Its border (1 block wide) is 
      * still part of the arena (= inside).
      *
@@ -90,7 +90,7 @@ public class GameArea {
 
     /**
      * This method creates a new GameArena object.
-     *
+     * <p>
      * The GameArena is a rectangular area. Its border (1 block wide) is 
      * still part of the arena (= inside).
      *
@@ -154,15 +154,14 @@ public class GameArea {
     }
 
     public AreaConfiguration getAreaConfiguration() {
-        AreaConfiguration newAreaConfig = new AreaConfiguration(position1.getBlockX(), position1.getBlockY(), position1.getBlockZ(), 
+        return new AreaConfiguration(position1.getBlockX(), position1.getBlockY(), position1.getBlockZ(),
                 position2.getBlockX(), position2.getBlockY(), position2.getBlockZ());
-        return newAreaConfig;
     }
 
     /**
      * This method defines the horizontal direction / rotation of the 
      * area based on the alignment of the team spawn points.
-     * 
+     * <p>
      * NORTH-SOUTH = primarily along the Z axis
      * EAST-WEST = primarily along the X axis
      */

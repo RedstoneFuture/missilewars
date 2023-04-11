@@ -61,15 +61,6 @@
             <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
 
-        <repository>
-            <id>minecraft-repo</id>
-            <url>https://libraries.minecraft.net/</url>
-        </repository>
-
-        <repository>
-            <id>placeholderapi</id>
-            <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
-        </repository>
     </repositories>
 
     <dependencies>
@@ -103,35 +94,11 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- repo jitpack.io -->
-        <dependency>
-            <groupId>com.github.MilkBowl</groupId>
-            <artifactId>VaultAPI</artifactId>
-            <version>1.7</version>
-            <scope>provided</scope>
-        </dependency>
-
         <!-- repo maven central -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.24</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- repo minecraft-repo -->
-        <dependency>
-            <groupId>com.mojang</groupId>
-            <artifactId>authlib</artifactId>
-            <version>1.5.21</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- repo placeholderapi -->
-        <dependency>
-            <groupId>me.clip</groupId>
-            <artifactId>placeholderapi</artifactId>
-            <version>2.11.2</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

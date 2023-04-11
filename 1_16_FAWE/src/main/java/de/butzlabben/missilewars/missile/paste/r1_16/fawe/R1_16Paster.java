@@ -42,10 +42,9 @@ public class R1_16Paster {
 
     public void pasteMissile(File schematic, Vector pos, int rotation, org.bukkit.World world,
                              Material glassBlockReplace, int radius, Material replaceType, JavaPlugin plugin, int replaceTicks) {
-        try {
-            World weWorld = new BukkitWorld(world);
+        World weWorld = new BukkitWorld(world);
 
-            Clipboard clipboard = ClipboardFormats.findByFile(schematic).load(schematic);
+        try (Clipboard clipboard = ClipboardFormats.findByFile(schematic).load(schematic)) {
 
             AffineTransform transform = new AffineTransform();
             transform = transform.rotateY(rotation);
@@ -75,11 +74,10 @@ public class R1_16Paster {
     }
 
     public void pasteSchematic(File schematic, Vector pos, org.bukkit.World world) {
-        try {
-            World weWorld = new BukkitWorld(world);
+        World weWorld = new BukkitWorld(world);
 
-            EditSession editSession = ClipboardFormats.findByFile(schematic).load(schematic)
-                    .paste(weWorld, fromBukkitVector(pos), false, false, null);
+        try (Clipboard clipboard = ClipboardFormats.findByFile(schematic).load(schematic)) {
+            EditSession editSession = clipboard.paste(weWorld, fromBukkitVector(pos), false, false, null);
             editSession.flushQueue();
 
         } catch (Exception e) {
