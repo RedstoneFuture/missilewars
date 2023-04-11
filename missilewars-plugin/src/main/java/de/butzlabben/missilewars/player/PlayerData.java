@@ -20,6 +20,12 @@ package de.butzlabben.missilewars.player;
 
 import com.google.common.base.Preconditions;
 import de.butzlabben.missilewars.util.version.VersionUtil;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.ToString;
 import org.bukkit.GameMode;
@@ -27,13 +33,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import org.jetbrains.annotations.NotNull;
 
 @ToString
 @AllArgsConstructor
@@ -114,6 +114,7 @@ public class PlayerData implements ConfigurationSerializable {
      * This method is used to save the original player data in the temporary player-data file.
      */
     @Override
+    @NotNull
     public Map<String, Object> serialize() {
         Map<String, Object> serialized = new HashMap<>();
         serialized.put("uuid", uuid.toString());

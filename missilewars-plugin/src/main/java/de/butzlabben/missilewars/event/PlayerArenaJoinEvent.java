@@ -24,6 +24,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Get's called, when a player has already entered an arena
@@ -45,6 +46,7 @@ public class PlayerArenaJoinEvent extends PlayerEvent implements Cancellable {
     }
 
     @Override
+    @NotNull
     public HandlerList getHandlers() {
         return handlers;
     }
