@@ -34,6 +34,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import java.util.ArrayList;
@@ -235,6 +236,15 @@ public class Team {
         if (newInterval > currentInterval && currentInterval != 0) {
             getGame().broadcast(Messages.getMessage("team_nerved").replace("%team%", getFullname()));
         }
+    }
+
+    public ItemStack getGlassPlane() {
+        ItemStack is = new ItemStack(ColorConverter.getGlassPaneFromColorCode(getColorCode()));
+
+        ItemMeta im = is.getItemMeta();
+        im.setDisplayName(getFullname());
+        is.setItemMeta(im);
+        return is;
     }
 
 }

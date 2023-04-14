@@ -18,16 +18,17 @@
 
 package de.butzlabben.missilewars.inventory;
 
-import de.butzlabben.missilewars.util.version.VersionUtil;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import de.butzlabben.missilewars.util.version.ColorConverter;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 public class OrcItem {
 
@@ -35,7 +36,7 @@ public class OrcItem {
             "§cERROR: Item is wrong configured!", "§cPath in properties: see Displayname");
 
     static {
-        fill = new OrcItem(VersionUtil.getGlassPlane("§8"));
+        fill = new OrcItem(new ItemStack(ColorConverter.getGlassPaneFromColorCode("§8")));
     }
 
     private ItemStack is;

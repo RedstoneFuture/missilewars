@@ -19,11 +19,7 @@
 package de.butzlabben.missilewars.util.version;
 
 import de.butzlabben.missilewars.Logger;
-import de.butzlabben.missilewars.game.Team;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 /**
  * @author Butzlabben
@@ -67,25 +63,6 @@ public class VersionUtil {
             version = 13;
         }
         return version;
-    }
-    
-    public static ItemStack getGlassPlane(Team team) {
-        String colorCode = team.getColorCode();
-        ItemStack is = new ItemStack(ColorConverter.getGlassPaneFromColorCode(colorCode));
-        
-        ItemMeta im = is.getItemMeta();
-        im.setDisplayName(team.getFullname());
-        is.setItemMeta(im);
-        return is;
-    }
-
-    public static boolean isStainedGlassPane(Material material) {
-        if (material == null) return false;
-        return material.name().contains("STAINED_GLASS_PANE");
-    }
-    
-    public static ItemStack getGlassPlane(String colorCode) {
-        return new ItemStack(ColorConverter.getGlassPaneFromColorCode(colorCode));
     }
     
 }

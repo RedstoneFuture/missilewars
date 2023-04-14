@@ -52,7 +52,6 @@ import de.butzlabben.missilewars.util.PlayerDataProvider;
 import de.butzlabben.missilewars.util.geometry.GameArea;
 import de.butzlabben.missilewars.util.geometry.Geometry;
 import de.butzlabben.missilewars.util.serialization.Serializer;
-import de.butzlabben.missilewars.util.version.VersionUtil;
 import lombok.Getter;
 import lombok.ToString;
 import org.bukkit.*;
@@ -347,8 +346,8 @@ public class Game {
 
             // team change menu:
             if (player.hasPermission("mw.change")) {
-                player.getInventory().setItem(0, VersionUtil.getGlassPlane(team1));
-                player.getInventory().setItem(8, VersionUtil.getGlassPlane(team2));
+                player.getInventory().setItem(0, team1.getGlassPlane());
+                player.getInventory().setItem(8, team2.getGlassPlane());
             }
 
             // map choose menu:
