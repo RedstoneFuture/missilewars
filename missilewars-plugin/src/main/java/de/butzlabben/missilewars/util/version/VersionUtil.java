@@ -70,14 +70,6 @@ public class VersionUtil {
         return version;
     }
     
-    public static Material getFireball() {
-        return Material.valueOf("FIRE_CHARGE");
-    }
-
-    public static Material getSnowball() {
-        return Material.valueOf("SNOWBALL");
-    }
-
     public static Material getMonsterEgg(EntityType type) {
         if (type == EntityType.MUSHROOM_COW) {
             //noinspection SpellCheckingInspection
@@ -95,14 +87,6 @@ public class VersionUtil {
         if (name.equals("EGG")) return false;
         if (name.contains("SPAWN_EGG")) return true;
         return name.equals("MONSTER_EGG");
-    }
-
-    public static Material getPortal() {
-        return Material.valueOf("NETHER_PORTAL");
-    }
-
-    public static Material getSunFlower() {
-        return Material.valueOf("SUNFLOWER");
     }
     
     public static ItemStack getGlassPlane(Team team) {
@@ -122,10 +106,6 @@ public class VersionUtil {
     
     public static ItemStack getGlassPlane(String colorCode) {
         return new ItemStack(ColorConverter.getGlassPaneFromColorCode(colorCode));
-    }
-
-    public static Material getPlayerSkullMaterial() {
-        return Material.valueOf("PLAYER_HEAD");
     }
 
     public static boolean isWallSignMaterial(Material material) {

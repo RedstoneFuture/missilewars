@@ -21,7 +21,6 @@ package de.butzlabben.missilewars.inventory.pages;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.inventory.OrcInventory;
 import de.butzlabben.missilewars.inventory.OrcItem;
-import de.butzlabben.missilewars.util.version.VersionUtil;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -38,7 +37,7 @@ public class InventoryPage extends OrcInventory {
     public InventoryPage(String title, int page, int pages) {
         super(title, 6);
 
-        OrcItem oi = new OrcItem(VersionUtil.getSunFlower(), "§aPage §e" + page + " §aof§e " + pages);
+        OrcItem oi = new OrcItem(Material.SUNFLOWER, "§aPage §e" + page + " §aof§e " + pages);
         addItem(5, 4, oi);
 
         oi = new OrcItem(Material.PAPER, "§ePrevious page");
