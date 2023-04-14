@@ -27,9 +27,9 @@ import de.butzlabben.missilewars.game.Team;
 import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.misc.RespawnGoldBlock;
 import de.butzlabben.missilewars.game.misc.Shield;
+import de.butzlabben.missilewars.game.missile.Missile;
 import de.butzlabben.missilewars.player.MWPlayer;
 import de.butzlabben.missilewars.util.geometry.Geometry;
-import de.butzlabben.missilewars.util.version.VersionUtil;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -104,9 +104,9 @@ public class GameListener extends GameBoundListener {
         ItemStack itemStack = event.getItem();
 
         // missile spawn with using of a missile spawn egg
-        if (VersionUtil.isMonsterEgg(itemStack.getType())) {
+        if (Missile.isSpawnEgg(itemStack.getType())) {
             event.setCancelled(true);
-
+            
             // Can missiles only be spawned if the item interaction was performed on a block (no air)?
             boolean isOnlyBlockPlaceable = getGame().getArena().getMissileConfiguration().isOnlyBlockPlaceable();
             if (isOnlyBlockPlaceable) {

@@ -22,7 +22,6 @@ import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.game.Team;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.entity.EntityType;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -68,25 +67,6 @@ public class VersionUtil {
             version = 13;
         }
         return version;
-    }
-    
-    public static Material getMonsterEgg(EntityType type) {
-        if (type == EntityType.MUSHROOM_COW) {
-            //noinspection SpellCheckingInspection
-            return Material.valueOf("MOOSHROOM_SPAWN_EGG");
-
-        }
-        return Material.valueOf(type.name() + "_SPAWN_EGG");
-    }
-
-    public static boolean isMonsterEgg(Material material) {
-        if (material == null) return false;
-        
-        String name = material.name();
-        
-        if (name.equals("EGG")) return false;
-        if (name.contains("SPAWN_EGG")) return true;
-        return name.equals("MONSTER_EGG");
     }
     
     public static ItemStack getGlassPlane(Team team) {
