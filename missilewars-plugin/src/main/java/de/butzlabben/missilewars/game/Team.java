@@ -24,7 +24,6 @@ import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.player.MWPlayer;
 import de.butzlabben.missilewars.util.MoneyUtil;
 import de.butzlabben.missilewars.util.version.ColorConverter;
-import de.butzlabben.missilewars.util.version.VersionUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -119,28 +118,28 @@ public class Team {
 
         ItemStack boots = new ItemStack(Material.LEATHER_BOOTS);
         LeatherArmorMeta bootsMeta = (LeatherArmorMeta) boots.getItemMeta();
+        bootsMeta.setUnbreakable(true);
         bootsMeta.setColor(color);
         boots.setItemMeta(bootsMeta);
-        VersionUtil.setUnbreakable(boots);
 
         ItemStack leggings = new ItemStack(Material.LEATHER_LEGGINGS);
         LeatherArmorMeta leggingsMeta = (LeatherArmorMeta) leggings.getItemMeta();
+        leggingsMeta.setUnbreakable(true);
         leggingsMeta.setColor(color);
         leggings.setItemMeta(leggingsMeta);
-        VersionUtil.setUnbreakable(leggings);
 
         ItemStack chestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
         LeatherArmorMeta chestplateMeta = (LeatherArmorMeta) chestplate.getItemMeta();
+        chestplateMeta.setUnbreakable(true);
         chestplateMeta.setColor(color);
         chestplate.setItemMeta(chestplateMeta);
-        VersionUtil.setUnbreakable(chestplate);
 
         ItemStack helmet = new ItemStack(Material.LEATHER_HELMET);
         LeatherArmorMeta helmetMeta = (LeatherArmorMeta) helmet.getItemMeta();
+        helmetMeta.setUnbreakable(true);
         helmetMeta.setColor(color);
         helmet.setItemMeta(helmetMeta);
-        VersionUtil.setUnbreakable(helmet);
-
+        
         teamArmor = new ItemStack[] {boots, leggings, chestplate, helmet};
     }
 

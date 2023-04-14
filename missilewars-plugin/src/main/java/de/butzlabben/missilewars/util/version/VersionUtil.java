@@ -111,11 +111,5 @@ public class VersionUtil {
     public static boolean isWallSignMaterial(Material material) {
         return material.name().contains("_SIGN");
     }
-
-    public static void setUnbreakable(ItemStack is) {
-        ItemMeta im = is.getItemMeta();
-        im.setUnbreakable(true);
-        is.setItemMeta(im);
-    }
     
 }

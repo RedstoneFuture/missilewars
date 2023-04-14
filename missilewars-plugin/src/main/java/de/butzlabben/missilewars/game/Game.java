@@ -541,10 +541,10 @@ public class Game {
             bow.addEnchantment(Enchantment.ARROW_FIRE, 1);
             bow.addEnchantment(Enchantment.ARROW_DAMAGE, 1);
             bow.addEnchantment(Enchantment.ARROW_KNOCKBACK, 1);
-            ItemMeta im = bow.getItemMeta();
-            im.addEnchant(Enchantment.DAMAGE_ALL, 6, true);
-            bow.setItemMeta(im);
-            VersionUtil.setUnbreakable(bow);
+            ItemMeta bowMeta = bow.getItemMeta();
+            bowMeta.setUnbreakable(true);
+            bowMeta.addEnchant(Enchantment.DAMAGE_ALL, 6, true);
+            bow.setItemMeta(bowMeta);
             this.customBow = bow;
         }
 
@@ -552,7 +552,9 @@ public class Game {
         if (this.getArena().getSpawn().isSendPickaxe() || this.getArena().getRespawn().isSendPickaxe()) {
 
             ItemStack pickaxe = new ItemStack(Material.IRON_PICKAXE);
-            VersionUtil.setUnbreakable(pickaxe);
+            ItemMeta pickaxeMeta = pickaxe.getItemMeta();
+            pickaxeMeta.setUnbreakable(true);
+            pickaxe.setItemMeta(pickaxeMeta);
             this.customPickaxe = pickaxe;
         }
 
@@ -582,26 +584,15 @@ public class Game {
         // send kit items
         if (isRespawn) {
 
-            if (this.getArena().getRespawn().isSendBow()) {
-                player.getInventory().addItem(this.customBow);
-            }
-
-            if (this.getArena().getRespawn().isSendPickaxe()) {
-                player.getInventory().addItem(this.customPickaxe);
-            }
+            if (this.getArena().getRespawn().isSendBow()) player.getInventory().addItem(this.customBow);
+            if (this.getArena().getRespawn().isSendPickaxe()) player.getInventory().addItem(this.customPickaxe);
 
         } else {
 
-            if (this.getArena().getSpawn().isSendBow()) {
-                player.getInventory().addItem(this.customBow);
-            }
-
-            if (this.getArena().getSpawn().isSendPickaxe()) {
-                player.getInventory().addItem(this.customPickaxe);
-            }
-
+            if (this.getArena().getSpawn().isSendBow()) player.getInventory().addItem(this.customBow);
+            if (this.getArena().getSpawn().isSendPickaxe()) player.getInventory().addItem(this.customPickaxe);
+            
         }
-
     }
 
     /**
