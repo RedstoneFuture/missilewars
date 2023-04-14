@@ -21,11 +21,8 @@ package de.butzlabben.missilewars.util.version;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.game.Team;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.Sound;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -73,33 +70,6 @@ public class VersionUtil {
         return version;
     }
     
-    public static void playFireball(Player p, Location loc) {
-        p.playSound(loc, sound("BLOCK_ANVIL_LAND"), 100.0F, 2.0F);
-        p.playSound(loc, sound("ITEM_FLINTANDSTEEL_USE"), 100.0F, 1.0F);
-    }
-
-    public static void playSnowball(Player p, Location loc) {
-        p.playSound(loc, sound("ENTITY_ENDER_DRAGON_FLAP"), 1, 1);
-    }
-
-    public static void playPling(Player p) {
-        p.playSound(p.getLocation(), sound("BLOCK_NOTE_BLOCK_PLING"), 100, 3);
-    }
-
-    public static void playDraw(Player p) {
-        p.playSound(p.getLocation(), sound("ENTITY_WITHER_DEATH"), 100, 0);
-    }
-
-    private static Sound sound(String s) {
-        Sound sound = null;
-        try {
-            sound = Sound.valueOf(s);
-        } catch (Exception e) {
-            Logger.ERROR.log("Couldn't find sound " + s);
-        }
-        return sound;
-    }
-
     public static Material getFireball() {
         return Material.valueOf("FIRE_CHARGE");
     }

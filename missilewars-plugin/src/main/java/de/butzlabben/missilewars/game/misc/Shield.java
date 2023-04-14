@@ -21,10 +21,10 @@ package de.butzlabben.missilewars.game.misc;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.arena.ShieldConfiguration;
 import de.butzlabben.missilewars.game.missile.paste.PasteProvider;
-import de.butzlabben.missilewars.util.version.VersionUtil;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
@@ -71,6 +71,6 @@ public class Shield implements Listener {
         File schem = new File(pluginDir, "shields/" + shieldConfiguration.getSchematic());
 
         PasteProvider.getPaster().pasteSchematic(schem, pastePos, loc.getWorld());
-        VersionUtil.playSnowball(player, player.getLocation());
+        player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1, 1);
     }
 }
