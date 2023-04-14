@@ -31,7 +31,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SpawnEggMeta;
 import org.bukkit.util.Vector;
 
 import java.io.File;
@@ -109,14 +108,11 @@ public class Missile {
      * @return ItemStack = the spawn egg with the missile name
      */
     public ItemStack getItem() {
-        ItemStack is = new ItemStack(getSpawnEgg(egg));
-        SpawnEggMeta sm = (SpawnEggMeta) is.getItemMeta();
-        is.setItemMeta(sm);
-        
-        ItemMeta im = is.getItemMeta();
-        im.setDisplayName(getDisplayName());
-        is.setItemMeta(im);
-        return is;
+        ItemStack spawnEgg = new ItemStack(getSpawnEgg(egg));
+        ItemMeta spawnEggMeta = spawnEgg.getItemMeta();
+        spawnEggMeta.setDisplayName(getDisplayName());
+        spawnEgg.setItemMeta(spawnEggMeta);
+        return spawnEgg;
     }
 
     public static Material getSpawnEgg(EntityType type) {
