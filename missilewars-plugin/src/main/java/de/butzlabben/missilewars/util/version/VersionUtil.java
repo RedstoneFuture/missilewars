@@ -107,9 +107,5 @@ public class VersionUtil {
     public static ItemStack getGlassPlane(String colorCode) {
         return new ItemStack(ColorConverter.getGlassPaneFromColorCode(colorCode));
     }
-
-    public static boolean isWallSignMaterial(Material material) {
-        return material.name().contains("_SIGN");
-    }
     
 }
