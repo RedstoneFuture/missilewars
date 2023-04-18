@@ -71,11 +71,11 @@ public class Messages {
         cfg.addDefault("command.invalid_missile", "&cThe specified missile was not found.");
         cfg.addDefault("command.invalid_game", "&cThe specified game was not found.");
         cfg.addDefault("command.invalid_map", "&cThe specified map was not found.");
-        cfg.addDefault("command.invalid_team_number", "&cThe team number is invalid. Use '1' or '2' to specify the target team.");
+        cfg.addDefault("command.invalid_team_number", "&cThe team number is invalid. Use \"1\" or \"2\" to specify the target team.");
         cfg.addDefault("command.missile_needed", "&cPlease specify the missile.");
         cfg.addDefault("command.team_number_needed", "&cPlease specify the team number.");
 
-        cfg.addDefault("game.map_selected", "&7A map was selected. Use '/mw start' again to start the round.");
+        cfg.addDefault("game.map_selected", "&7A map was selected. Use \"/mw start\" again to start the round.");
         cfg.addDefault("game.player_joined", "&e%player% &7joined the game (%team%&7).");
         cfg.addDefault("game.player_left", "&e%player% &7left the game (%team%&7).");
         cfg.addDefault("game.not_in_game_area", "&cYou are not in an arena right now.");
@@ -83,25 +83,25 @@ public class Messages {
         cfg.addDefault("game.already_startet", "&cGame already started.");
         cfg.addDefault("game.can_not_startet", "&cGame cannot be started.");
         
-        cfg.addDefault("lobby_timer.game_starts_in", "Game starts in &e%seconds% &7seconds.");
+        cfg.addDefault("lobby_timer.game_starts_in", "&7Game starts in &e%seconds% &7seconds.");
 
-        cfg.addDefault("game_timer.game_ends_in_minutes", "Game ends in &e%minutes% &7minutes.");
-        cfg.addDefault("game_timer.game_ends_in_seconds", "Game ends in &e%seconds% &7seconds.");
+        cfg.addDefault("game_timer.game_ends_in_minutes", "&7Game ends in &e%minutes% &7minutes.");
+        cfg.addDefault("game_timer.game_ends_in_seconds", "&7Game ends in &e%seconds% &7seconds.");
 
-        cfg.addDefault("endgame_timer.game_starts_new_in", "Game starts new in &e%seconds% &7seconds.");
+        cfg.addDefault("endgame_timer.game_starts_new_in", "&7Game starts new in &e%seconds% &7seconds.");
 
         cfg.addDefault("lobby.player_joined", "&e%player% &7joined the game &8(&7%players%&8/&7%max_players%&8)");
         cfg.addDefault("lobby.player_left", "&e%player% &7left the game &8(&7%players%&8/&7%max_players%&8)");
         cfg.addDefault("lobby.not_enough_players", "&cThere are not enough players online.");
         cfg.addDefault("lobby.teams_unequal", "&cThe teams are unequal distributed.");
         cfg.addDefault("lobby.game_starts", "&aThe game starts.");
-        
+
         cfg.addDefault("team.change_team_not_now", "&cThe game is not in the right state to change your team right now.");
         cfg.addDefault("team.change_team_no_longer_now", "&cNow you cannot change your team anymore.");
         cfg.addDefault("team.already_in_team", "&cYou are already in this team.");
-        cfg.addDefault("team.team_changed", "You are now in %team%&7.");
-        cfg.addDefault("team.team_assigned", "You have been assigned to %team%&7.");
-        cfg.addDefault("team.all_teammates_offline", "Everyone from %team% &7is offline.");
+        cfg.addDefault("team.team_changed", "&7You are now in %team%&7.");
+        cfg.addDefault("team.team_assigned", "&7You have been assigned to %team%&7.");
+        cfg.addDefault("team.all_teammates_offline", "&7Everyone from %team% &7is offline.");
         cfg.addDefault("team.team_buffed", "%team% &7was buffed as one player left the team.");
         cfg.addDefault("team.team_nerved", "%team% &7was nerved as one player joined the team.");
         cfg.addDefault("team.hurt_teammates", "&cYou must not hurt your teammates.");
@@ -112,8 +112,8 @@ public class Messages {
         cfg.addDefault("arena.not_higher", "&cYou can not go higher.");
         cfg.addDefault("arena.kick_inactivity", "&cYou were inactive on MissileWars.");
 
-        cfg.addDefault("died.normal", "%player% &7died.");
-        cfg.addDefault("died.explosion", "%player% &7was blown up.");
+        cfg.addDefault("died.normal", "&7%player% &7died.");
+        cfg.addDefault("died.explosion", "&7%player% &7was blown up.");
 
         cfg.addDefault("fall_protection.start", "&cFall protection inactive in %seconds% seconds.");
         cfg.addDefault("fall_protection.end", "&cFall protection inactive.");
@@ -127,8 +127,15 @@ public class Messages {
         cfg.addDefault("game_result.subtitle_loser", "&chas lost!");
         cfg.addDefault("game_result.title_draw", "&7Draw!");
         cfg.addDefault("game_result.subtitle_draw", "");
-        cfg.addDefault("game_result.money", "You received &e%money% &7coins.");
+        cfg.addDefault("game_result.money", "&7You received &e%money% &7coins.");
         
+        cfg.addDefault("vote.success", "&7You successfully voted for the map %map%.");
+        cfg.addDefault("vote.finished", "&7The map %map% &7was elected.");
+        cfg.addDefault("vote.gui", "Vote for a map");
+        cfg.addDefault("vote.cant_vote", "&cYou can not vote in this game.");
+        cfg.addDefault("vote.change_team_not_now", "&cThe game is not in the right state to vote right now.");
+        cfg.addDefault("vote.change_team_no_longer_now", "&cA map was already selected.");
+
         cfg.addDefault("sign.0", "•● MissileWars ●•");
         cfg.addDefault("sign.1", "%state%");
         cfg.addDefault("sign.2", "%arena%");
@@ -137,13 +144,6 @@ public class Messages {
         cfg.addDefault("sign.state.ingame", "&bIngame");
         cfg.addDefault("sign.state.ended", "&cRestarting...");
         cfg.addDefault("sign.state.error", "&cError...");
-
-        cfg.addDefault("vote.success", "You successfully voted for the map %map%.");
-        cfg.addDefault("vote.finished", "The map %map% &7was elected.");
-        cfg.addDefault("vote.gui", "Vote for a map");
-        cfg.addDefault("vote.cant_vote", "&cYou can't vote in this game.");
-        cfg.addDefault("vote.change_team_not_now", "&cThe game is not in the right state to vote right now.");
-        cfg.addDefault("vote.change_team_no_longer_now", "&cA map was already selected.");
 
     }
 
