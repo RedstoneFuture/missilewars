@@ -265,7 +265,7 @@ public class GameListener extends GameBoundListener {
 
         if (!getGame().isInGameArea(event.getTo())) {
             if (to != null) Game.knockbackEffect(player, from, to);
-            player.sendMessage(Messages.getMessage("arena_leave"));
+            player.sendMessage(Messages.getMessage("area.arena_leave"));
         }
     }
 

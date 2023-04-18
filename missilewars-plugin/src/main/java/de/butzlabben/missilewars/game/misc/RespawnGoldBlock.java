@@ -124,7 +124,7 @@ public class RespawnGoldBlock implements Listener {
             BlockSetterProvider.getBlockDataSetter().setData(loc.getBlock(), map.get(loc).getValue());
         }
         map.clear();
-        player.sendMessage(Messages.getMessage("fall_protection_inactive"));
+        player.sendMessage(Messages.getMessage("fall_protection.end"));
         Bukkit.getScheduler().cancelTask(task);
         HandlerList.unregisterAll(this);
     }
@@ -136,7 +136,7 @@ public class RespawnGoldBlock implements Listener {
     private void sendFallProtectionMessage() {
         double seconds = (double) duration / 20;
         if ((seconds == Math.floor(seconds)) && !Double.isInfinite(seconds)) {
-            player.sendMessage(Messages.getMessage("fall_protection").replace("%seconds%", Integer.toString((int) seconds)));
+            player.sendMessage(Messages.getMessage("fall_protection.start").replace("%seconds%", Integer.toString((int) seconds)));
         }
     }
 
@@ -151,7 +151,7 @@ public class RespawnGoldBlock implements Listener {
             map.clear();
             Bukkit.getScheduler().cancelTask(task);
             HandlerList.unregisterAll(this);
-            eventPlayer.sendMessage(Messages.getMessage("fall_protection_deactivated"));
+            eventPlayer.sendMessage(Messages.getMessage("fall_protection.deactivated"));
         }
     }
 }

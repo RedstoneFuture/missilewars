@@ -81,12 +81,12 @@ public class LobbyTimer extends Timer implements Runnable {
             case 3:
             case 2:
             case 1:
-                broadcast(Messages.getMessage("game_starts_in").replace("%seconds%", Integer.toString(seconds)));
+                broadcast(Messages.getMessage("game_timer.game_starts_in").replace("%seconds%", Integer.toString(seconds)));
                 playPling();
                 break;
             case 10:
                 checkVote();
-                broadcast(Messages.getMessage("game_starts_in").replace("%seconds%", Integer.toString(seconds)));
+                broadcast(Messages.getMessage("game_timer.game_starts_in").replace("%seconds%", Integer.toString(seconds)));
                 playPling();
                 break;
             case 0:

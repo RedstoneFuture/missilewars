@@ -60,23 +60,27 @@ public class Messages {
         cfg.addDefault("prefix", "&6•&e● MissileWars &8▎  &7");
 
         cfg.addDefault("not_in_arena", "&cYou are not in an arena right now");
+        
+        //TODO currently not used:
         cfg.addDefault("game_quit", "You lef this game");
+        
         cfg.addDefault("not_enter_arena", "&cYou may not enter this arena right now");
 
-        cfg.addDefault("game_starts_new_in", "Game starts new in &e%seconds% &7seconds");
-        cfg.addDefault("game_ends_in_minutes", "Game ends in &e%minutes% &7minutes");
-        cfg.addDefault("game_ends_in_seconds", "Game ends in &e%seconds% &7seconds");
-        cfg.addDefault("game_starts_in", "Game starts in &e%seconds% &7seconds");
+        cfg.addDefault("game_timer.game_starts_in", "Game starts in &e%seconds% &7seconds");
 
+        cfg.addDefault("game_timer.game_ends_in_minutes", "Game ends in &e%minutes% &7minutes");
+        cfg.addDefault("game_timer.game_ends_in_seconds", "Game ends in &e%seconds% &7seconds");
+
+        cfg.addDefault("endgame_timer.game_starts_new_in", "Game starts new in &e%seconds% &7seconds");
+        
         cfg.addDefault("not_enough_players", "&cThere are not enough players online");
         cfg.addDefault("teams_unequal", "&cThe teams are unequal distributed");
         cfg.addDefault("game_starts", "&aThe game starts");
 
-        cfg.addDefault("fall_protection", "&cFall protection inactive in %seconds% seconds");
-        cfg.addDefault("fall_protection_inactive", "&cFall protection inactive");
-        cfg.addDefault("fall_protection_deactivated", "&cFall protection deactivated by sneaking");
+        cfg.addDefault("fall_protection.start", "&cFall protection inactive in %seconds% seconds");
+        cfg.addDefault("fall_protection.end", "&cFall protection inactive");
+        cfg.addDefault("fall_protection.deactivated", "&cFall protection deactivated by sneaking");
 
-        cfg.addDefault("money", "You received &e%money% &7coins");
         cfg.addDefault("kick_inactivity", "&cYou were inactive on MissileWars");
 
         cfg.addDefault("game_result.title_won", "&7%team%");
@@ -87,6 +91,7 @@ public class Messages {
         cfg.addDefault("game_result.subtitle_loser", "&chas lost!");
         cfg.addDefault("game_result.title_draw", "&7Draw!");
         cfg.addDefault("game_result.subtitle_draw", "");
+        cfg.addDefault("game_result.money", "You received &e%money% &7coins");
 
         cfg.addDefault("spectator", "&7You are now a spectator");
         cfg.addDefault("change_team_not_now", "&cNow you cannot change your team anymore");
@@ -107,8 +112,9 @@ public class Messages {
         cfg.addDefault("team_nerved", "%team% &7was nerved as one player joined the team");
 
         cfg.addDefault("restart_after_game", "&7The server will restart after this game");
-        cfg.addDefault("arena_leave", "&cYou are not allowed to leave the arena");
-        cfg.addDefault("missile_place_deny", "&cYou are not allowed to place a missile here");
+        
+        cfg.addDefault("area.arena_leave", "&cYou are not allowed to leave the arena");
+        cfg.addDefault("area.missile_place_deny", "&cYou are not allowed to place a missile here");
 
         cfg.addDefault("sign.0", "•● MissileWars ●•");
         cfg.addDefault("sign.1", "%state%");

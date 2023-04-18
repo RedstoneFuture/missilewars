@@ -627,7 +627,7 @@ public class Game {
         boolean isOnlyBetweenSpawnPlaceable = this.arena.getMissileConfiguration().isOnlyBetweenSpawnPlaceable();
         if (isOnlyBetweenSpawnPlaceable) {
             if (!isInInnerGameArea(player.getLocation())) {
-                player.sendMessage(Messages.getMessage("missile_place_deny"));
+                player.sendMessage(Messages.getMessage("area.missile_place_deny"));
                 return;
             }
         }
