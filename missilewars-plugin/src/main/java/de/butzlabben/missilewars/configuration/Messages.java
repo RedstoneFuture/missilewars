@@ -59,10 +59,10 @@ public class Messages {
 
         cfg.addDefault("prefix", "&6•&e● MissileWars &8▎ &7");
 
-        cfg.addDefault("reload", "&7Reloaded configs.");
-        cfg.addDefault("restart_all_games_warn", "&cWarning: Restarting all games. This may take a while.");
-        cfg.addDefault("restart_all_games", "&7Restarted all games.");
-        cfg.addDefault("printed_debug_msg", "&7Printed debug message into the log file.");
+        cfg.addDefault("debug.reload_config", "&7Reloaded configs.");
+        cfg.addDefault("debug.restart_all_games_warn", "&cWarning: Restarting all games. This may take a while.");
+        cfg.addDefault("debug.restart_all_games", "&7Restarted all games.");
+        cfg.addDefault("debug.printed_debug_msg", "&7Printed debug message into the log file.");
         
         cfg.addDefault("server.restart_after_game", "&7The server will restart after this game.");
 

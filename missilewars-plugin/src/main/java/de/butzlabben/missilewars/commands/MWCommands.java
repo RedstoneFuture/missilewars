@@ -264,7 +264,7 @@ public class MWCommands extends BaseCommand {
         Messages.load();
         Arenas.load();
         
-        player.sendMessage(Messages.getMessage("reload"));
+        player.sendMessage(Messages.getMessage("debug.reload_config"));
     }
 
     @Subcommand("debug")
@@ -287,7 +287,7 @@ public class MWCommands extends BaseCommand {
             Logger.NORMAL.log(game.toString());
         }
         
-        player.sendMessage(Messages.getMessage("printed_debug_msg"));
+        player.sendMessage(Messages.getMessage("debug.printed_debug_msg"));
     }
 
     @Subcommand("restartall")
@@ -304,11 +304,11 @@ public class MWCommands extends BaseCommand {
         }
         
         if (GameManager.getInstance().getGames().size() > 10) {
-            player.sendMessage(Messages.getMessage("restart_all_games_warn"));
+            player.sendMessage(Messages.getMessage("debug.restart_all_games_warn"));
         }
         
         GameManager.getInstance().restartAll();
-        player.sendMessage(Messages.getMessage("restart_all_games"));
+        player.sendMessage(Messages.getMessage("debug.restart_all_games"));
     }
 
     static boolean senderIsPlayer(CommandSender sender) {
