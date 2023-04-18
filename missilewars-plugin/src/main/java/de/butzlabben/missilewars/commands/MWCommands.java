@@ -132,7 +132,7 @@ public class MWCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length > 1) {
-            player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
+            player.sendMessage(Messages.getMessage("command.to_many_arguments"));
             return;
         }
 
@@ -189,7 +189,7 @@ public class MWCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length > 1) {
-            player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
+            player.sendMessage(Messages.getMessage("command.to_many_arguments"));
             return;
         }
 
@@ -223,7 +223,7 @@ public class MWCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length > 1) {
-            player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
+            player.sendMessage(Messages.getMessage("command.to_many_arguments"));
             return;
         }
 
@@ -256,7 +256,7 @@ public class MWCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length > 0) {
-            player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
+            player.sendMessage(Messages.getMessage("command.to_many_arguments"));
             return;
         }
 
@@ -275,7 +275,7 @@ public class MWCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length > 0) {
-            player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
+            player.sendMessage(Messages.getMessage("command.to_many_arguments"));
             return;
         }
 
@@ -297,7 +297,7 @@ public class MWCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length > 0) {
-            player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
+            player.sendMessage(Messages.getMessage("command.to_many_arguments"));
             return;
         }
 

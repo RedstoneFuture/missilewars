@@ -333,11 +333,21 @@ public class Game {
             Team team = getNextTeam();
             team.addMember(mwPlayer);
             player.sendMessage(Messages.getMessage("team.team_assigned").replace("%team%", team.getFullname()));
-
-            broadcast(Messages.getMessage("lobby.player_joined")
-                    .replace("%max_players%", Integer.toString(getLobby().getMaxSize()))
-                    .replace("%players%", Integer.toString(getPlayers().values().size()))
-                    .replace("%player%", player.getName()));
+            
+            if (state == GameState.LOBBY) {
+                broadcast(Messages.getMessage("lobby.player_joined")
+                        .replace("%max_players%", Integer.toString(getLobby().getMaxSize()))
+                        .replace("%players%", Integer.toString(getPlayers().values().size()))
+                        .replace("%player%", player.getName())
+                        .replace("%team%", team.getFullname()));
+            } else if (state == GameState.INGAME) {
+                broadcast(Messages.getMessage("game.player_joined")
+                        .replace("%max_players%", Integer.toString(getLobby().getMaxSize()))
+                        .replace("%players%", Integer.toString(getPlayers().values().size()))
+                        .replace("%player%", player.getName())
+                        .replace("%team%", team.getFullname()));
+            }
+            
         }
 
         player.setScoreboard(getScoreboard());
@@ -369,17 +379,28 @@ public class Game {
         Player player = mwPlayer.getPlayer();
         Team team = mwPlayer.getTeam();
 
-        if (state == GameState.INGAME) {
+        if (state == GameState.LOBBY) {
+            if (team != null) {
+                broadcast(Messages.getMessage("lobby.player_left")
+                        .replace("%max_players%", Integer.toString(getLobby().getMaxSize()))
+                        .replace("%players%", Integer.toString(getPlayers().values().size()))
+                        .replace("%player%", player.getName())
+                        .replace("%team%", team.getFullname()));
+            }
+            
+        } else if (state == GameState.INGAME) {
             BukkitTask task = getPlayerTasks().get(mwPlayer.getUuid());
             if (task != null) task.cancel();
 
             if (team != null) {
                 broadcast(Messages.getMessage("game.player_left")
-                        .replace("%team%", team.getFullname())
-                        .replace("%player%", player.getName()));
+                        .replace("%max_players%", Integer.toString(getLobby().getMaxSize()))
+                        .replace("%players%", Integer.toString(getPlayers().values().size()))
+                        .replace("%player%", player.getName())
+                        .replace("%team%", team.getFullname()));
             }
         }
-
+        
         PlayerDataProvider.getInstance().loadInventory(player);
 
         if (team != null) {
@@ -634,7 +655,7 @@ public class Game {
 
         Missile missile = this.arena.getMissileConfiguration().getMissileFromName(itemStack.getItemMeta().getDisplayName());
         if (missile == null) {
-            player.sendMessage(Messages.getMessage("invalid_missile"));
+            player.sendMessage(Messages.getMessage("command.invalid_missile"));
             return;
         }
         itemStack.setAmount(itemStack.getAmount() - 1);

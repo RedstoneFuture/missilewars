@@ -57,14 +57,16 @@ public class Messages {
 
     private static void addDefaults() {
 
-        cfg.addDefault("prefix", "&6•&e● MissileWars &8▎  &7");
+        cfg.addDefault("prefix", "&6•&e● MissileWars &8▎ &7");
 
         cfg.addDefault("server.restart_after_game", "&7The server will restart after this game.");
 
-        cfg.addDefault("invalid_missile", "&cThe mentioned missile was not found.");
-        
+        cfg.addDefault("command.to_many_arguments", "§cToo many arguments.");
+        cfg.addDefault("command.invalid_missile", "&cThe mentioned missile was not found.");
+
+        cfg.addDefault("game.player_joined", "&e%player% &7joined the game (%team%&7).");
+        cfg.addDefault("game.player_left", "&e%player% &7left the game (%team%&7).");
         cfg.addDefault("game.not_in_game_area", "&cYou are not in an arena right now.");
-        cfg.addDefault("game.player_left", "%player% &7left the game.");
         cfg.addDefault("game.not_enter_arena", "&cYou may not enter this arena right now.");
         
         cfg.addDefault("lobby_timer.game_starts_in", "Game starts in &e%seconds% &7seconds.");
@@ -74,7 +76,8 @@ public class Messages {
 
         cfg.addDefault("endgame_timer.game_starts_new_in", "Game starts new in &e%seconds% &7seconds.");
 
-        cfg.addDefault("lobby.player_joined", "&e%player% &7joined &8(&7%players%&8/&7%max_players%&8)");
+        cfg.addDefault("lobby.player_joined", "&e%player% &7joined the game &8(&7%players%&8/&7%max_players%&8)");
+        cfg.addDefault("lobby.player_left", "&e%player% &7left the game &8(&7%players%&8/&7%max_players%&8)");
         cfg.addDefault("lobby.not_enough_players", "&cThere are not enough players online.");
         cfg.addDefault("lobby.teams_unequal", "&cThe teams are unequal distributed.");
         cfg.addDefault("lobby.game_starts", "&aThe game starts.");
@@ -116,7 +119,7 @@ public class Messages {
         cfg.addDefault("sign.0", "•● MissileWars ●•");
         cfg.addDefault("sign.1", "%state%");
         cfg.addDefault("sign.2", "%arena%");
-        cfg.addDefault("sign.3", "%players%/%max_players%");
+        cfg.addDefault("sign.3", "&7%players%&8/&7%max_players%");
         cfg.addDefault("sign.state.lobby", "&aLobby");
         cfg.addDefault("sign.state.ingame", "&bIngame");
         cfg.addDefault("sign.state.ended", "&cRestarting...");

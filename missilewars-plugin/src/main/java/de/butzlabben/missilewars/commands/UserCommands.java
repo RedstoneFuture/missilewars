@@ -50,7 +50,7 @@ public class UserCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length > 0) {
-            player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
+            player.sendMessage(Messages.getMessage("command.to_many_arguments"));
             return;
         }
 
@@ -93,9 +93,14 @@ public class UserCommands extends BaseCommand {
 
         if (!MWCommands.senderIsPlayer(sender)) return;
         Player player = (Player) sender;
+        
+        if (args.length < 1) {
+            player.sendMessage(Messages.getPrefix() + "§cNumber needed.");
+            return;
+        }
 
-        if (args.length > 0) {
-            player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
+        if (args.length > 1) {
+            player.sendMessage(Messages.getMessage("command.to_many_arguments"));
             return;
         }
 
@@ -104,7 +109,7 @@ public class UserCommands extends BaseCommand {
             player.sendMessage(Messages.getMessage("game.not_in_game_area"));
             return;
         }
-
+        
         if (game.getState() != GameState.LOBBY) {
             player.sendMessage(Messages.getPrefix() + "§cThe game is not in the right state to change your team right now");
             return;
@@ -140,7 +145,7 @@ public class UserCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length > 0) {
-            player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
+            player.sendMessage(Messages.getMessage("command.to_many_arguments"));
             return;
         }
 
