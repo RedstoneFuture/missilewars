@@ -31,7 +31,6 @@ import de.butzlabben.missilewars.inventory.pages.PageGUICreator;
 import de.butzlabben.missilewars.util.stats.PlayerGuiFactory;
 import de.butzlabben.missilewars.util.stats.PreFetcher;
 import de.butzlabben.missilewars.util.stats.StatsUtil;
-import de.butzlabben.missilewars.util.version.VersionUtil;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -83,7 +82,7 @@ public class StatsCommands extends BaseCommand {
         inv.addItem(9, new OrcItem(Material.SLIME_BLOCK, "§aGeneral statistics", generalLore));
 
         List<String> playerLore = Arrays.asList("§7Unique players: §e" + fetcher.getUniquePlayers(), "", "§7Click to list players");
-        OrcItem players = new OrcItem(VersionUtil.getPlayerSkullMaterial(), "§aPlayers", playerLore);
+        OrcItem players = new OrcItem(Material.PLAYER_HEAD, "§aPlayers", playerLore);
         players.setOnClick((p, inventory, item) -> {
             p.closeInventory();
             preFetchRunnable.stop();

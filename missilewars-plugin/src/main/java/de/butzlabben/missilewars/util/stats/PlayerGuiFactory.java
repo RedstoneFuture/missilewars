@@ -27,9 +27,9 @@ import de.butzlabben.missilewars.game.stats.PlayerStats;
 import de.butzlabben.missilewars.game.stats.PlayerStatsComparator;
 import de.butzlabben.missilewars.inventory.OrcItem;
 import de.butzlabben.missilewars.inventory.pages.PageGUICreator;
-import de.butzlabben.missilewars.util.version.VersionUtil;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -113,7 +113,7 @@ public class PlayerGuiFactory {
 
         PageGUICreator<PlayerStats> creator = new PageGUICreator<>("§ePlayer statistics", stats, (item) -> {
             String name = item.getName();
-            ItemStack itemStack = new ItemStack(VersionUtil.getPlayerSkullMaterial());
+            ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta sm = (SkullMeta) itemStack.getItemMeta();
             if (Config.isShowRealSkins()) {
                 //noinspection deprecation

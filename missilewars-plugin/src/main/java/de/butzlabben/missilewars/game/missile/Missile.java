@@ -23,18 +23,17 @@ import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.missile.paste.PasteProvider;
-import de.butzlabben.missilewars.util.version.VersionUtil;
-import java.io.File;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SpawnEggMeta;
-import org.bukkit.material.SpawnEgg;
 import org.bukkit.util.Vector;
+
+import java.io.File;
 
 /**
  * @author Butzlabben
@@ -109,21 +108,26 @@ public class Missile {
      * @return ItemStack = the spawn egg with the missile name
      */
     public ItemStack getItem() {
-        ItemStack is = new ItemStack(VersionUtil.getMonsterEgg(egg));
-        if (VersionUtil.getVersion() > 10) {
-            SpawnEggMeta sm = (SpawnEggMeta) is.getItemMeta();
-            if (VersionUtil.getVersion() < 13)
-                sm.setSpawnedType(egg);
-            is.setItemMeta(sm);
-        } else {
-            SpawnEgg se = new SpawnEgg(egg);
-            se.setSpawnedType(egg);
-            is = se.toItemStack();
-            is.setAmount(1);
+        ItemStack spawnEgg = new ItemStack(getSpawnEgg(egg));
+        ItemMeta spawnEggMeta = spawnEgg.getItemMeta();
+        spawnEggMeta.setDisplayName(getDisplayName());
+        spawnEgg.setItemMeta(spawnEggMeta);
+        return spawnEgg;
+    }
+
+    public static Material getSpawnEgg(EntityType type) {
+        if (type == EntityType.MUSHROOM_COW) {
+            //noinspection SpellCheckingInspection
+            return Material.valueOf("MOOSHROOM_SPAWN_EGG");
+
         }
-        ItemMeta im = is.getItemMeta();
-        im.setDisplayName(getDisplayName());
-        is.setItemMeta(im);
-        return is;
+        return Material.valueOf(type.name() + "_SPAWN_EGG");
+    }
+
+    public static boolean isSpawnEgg(Material material) {
+        if (material == null) return false;
+        
+        String name = material.name();
+        return name.contains("SPAWN_EGG") || name.equals("MONSTER_EGG");
     }
 }

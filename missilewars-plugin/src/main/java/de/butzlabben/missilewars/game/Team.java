@@ -24,7 +24,6 @@ import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.player.MWPlayer;
 import de.butzlabben.missilewars.util.MoneyUtil;
 import de.butzlabben.missilewars.util.version.ColorConverter;
-import de.butzlabben.missilewars.util.version.VersionUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -32,8 +31,10 @@ import lombok.ToString;
 import org.bukkit.Color;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import java.util.ArrayList;
@@ -118,28 +119,28 @@ public class Team {
 
         ItemStack boots = new ItemStack(Material.LEATHER_BOOTS);
         LeatherArmorMeta bootsMeta = (LeatherArmorMeta) boots.getItemMeta();
+        bootsMeta.setUnbreakable(true);
         bootsMeta.setColor(color);
         boots.setItemMeta(bootsMeta);
-        VersionUtil.setUnbreakable(boots);
 
         ItemStack leggings = new ItemStack(Material.LEATHER_LEGGINGS);
         LeatherArmorMeta leggingsMeta = (LeatherArmorMeta) leggings.getItemMeta();
+        leggingsMeta.setUnbreakable(true);
         leggingsMeta.setColor(color);
         leggings.setItemMeta(leggingsMeta);
-        VersionUtil.setUnbreakable(leggings);
 
         ItemStack chestplate = new ItemStack(Material.LEATHER_CHESTPLATE);
         LeatherArmorMeta chestplateMeta = (LeatherArmorMeta) chestplate.getItemMeta();
+        chestplateMeta.setUnbreakable(true);
         chestplateMeta.setColor(color);
         chestplate.setItemMeta(chestplateMeta);
-        VersionUtil.setUnbreakable(chestplate);
 
         ItemStack helmet = new ItemStack(Material.LEATHER_HELMET);
         LeatherArmorMeta helmetMeta = (LeatherArmorMeta) helmet.getItemMeta();
+        helmetMeta.setUnbreakable(true);
         helmetMeta.setColor(color);
         helmet.setItemMeta(helmetMeta);
-        VersionUtil.setUnbreakable(helmet);
-
+        
         teamArmor = new ItemStack[] {boots, leggings, chestplate, helmet};
     }
 
@@ -202,8 +203,8 @@ public class Team {
                 subTitle = null;
                 break;
         }
-
-        VersionUtil.sendTitle(mwPlayer.getPlayer(), title, subTitle);
+        
+        mwPlayer.getPlayer().sendTitle(title, subTitle);
     }
 
     /**
@@ -211,14 +212,16 @@ public class Team {
      * game result.
      */
     public void sendGameResultSound(MWPlayer mwPlayer) {
+        
+        Player player = mwPlayer.getPlayer();
 
         switch (gameResult) {
             case WIN:
-                VersionUtil.playPling(mwPlayer.getPlayer());
+                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 100, 3);
                 break;
             case LOSE:
             case DRAW:
-                VersionUtil.playDraw(mwPlayer.getPlayer());
+                player.playSound(player.getLocation(), Sound.ENTITY_WITHER_DEATH, 100, 0);
                 break;
             default:
                 break;
@@ -233,6 +236,15 @@ public class Team {
         if (newInterval > currentInterval && currentInterval != 0) {
             getGame().broadcast(Messages.getMessage("team_nerved").replace("%team%", getFullname()));
         }
+    }
+
+    public ItemStack getGlassPlane() {
+        ItemStack is = new ItemStack(ColorConverter.getGlassPaneFromColorCode(getColorCode()));
+
+        ItemMeta im = is.getItemMeta();
+        im.setDisplayName(getFullname());
+        is.setItemMeta(im);
+        return is;
     }
 
 }

@@ -19,7 +19,6 @@
 package de.butzlabben.missilewars.game.equipment;
 
 import de.butzlabben.missilewars.game.Game;
-import de.butzlabben.missilewars.util.version.VersionUtil;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -85,7 +84,7 @@ public class SpecialGameEquipment {
      * This method creates the shield item stack.
      */
     private void createShield() {
-        shield = new ItemStack(VersionUtil.getSnowball());
+        shield = new ItemStack(Material.SNOWBALL);
         ItemMeta shieldMeta = shield.getItemMeta();
         shieldMeta.setDisplayName(game.getArena().getShieldConfiguration().getName());
         shield.setItemMeta(shieldMeta);
@@ -102,7 +101,7 @@ public class SpecialGameEquipment {
      * This method creates the fireball item stack.
      */
     private void createFireball() {
-        fireball = new ItemStack(VersionUtil.getFireball());
+        fireball = new ItemStack(Material.FIRE_CHARGE);
         ItemMeta fireballMeta = fireball.getItemMeta();
         fireballMeta.setDisplayName(game.getArena().getFireballConfiguration().getName());
         fireball.setItemMeta(fireballMeta);

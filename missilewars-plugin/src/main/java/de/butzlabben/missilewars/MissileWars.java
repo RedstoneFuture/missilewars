@@ -216,9 +216,9 @@ public class MissileWars extends JavaPlugin {
 
         Logger.BOOT.log("This server is running MissileWars v" + version + " by Butzlabben");
 
-        if (VersionUtil.getVersion() < 8) {
+        if (VersionUtil.getVersion() < 13) {
             Logger.WARN.log("====================================================");
-            Logger.WARN.log("It seems that you are using version older than 1.8");
+            Logger.WARN.log("It seems that you are using version older than 1.13");
             Logger.WARN.log("There is no guarantee for this to work");
             Logger.WARN.log("Proceed with extreme caution");
             Logger.WARN.log("====================================================");

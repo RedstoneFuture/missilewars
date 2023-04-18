@@ -23,7 +23,6 @@ import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.GameManager;
-import de.butzlabben.missilewars.util.version.VersionUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,6 +30,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.type.WallSign;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +46,8 @@ public class MWSign {
     public boolean isValid() {
         boolean worldExists = location.getWorld() != null;
         boolean lobbyValid = GameManager.getInstance().getGames().containsKey(lobby);
-        boolean blockIsSign = VersionUtil.isWallSignMaterial(location.getBlock().getType());
+        boolean blockIsSign = (location.getBlock().getBlockData() instanceof WallSign);
+        
         return worldExists && lobbyValid && blockIsSign;
     }
 
@@ -73,7 +74,7 @@ public class MWSign {
 
     public void editSign(Location location, List<String> lines) {
         Block block = location.getBlock();
-        if (!VersionUtil.isWallSignMaterial(block.getType())) {
+        if (!(block.getBlockData() instanceof WallSign)) {
             Logger.WARN.log("Configured sign at: " + location + " is not a wall sign");
             return;
         }

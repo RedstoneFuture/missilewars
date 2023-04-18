@@ -24,7 +24,7 @@ import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
 import de.butzlabben.missilewars.player.MWPlayer;
-import de.butzlabben.missilewars.util.version.VersionUtil;
+import org.bukkit.Sound;
 
 import java.util.Map;
 import java.util.Optional;
@@ -109,7 +109,7 @@ public class LobbyTimer extends Timer implements Runnable {
 
     private void playPling() {
         for (MWPlayer mwPlayer : getGame().getPlayers().values()) {
-            VersionUtil.playPling(mwPlayer.getPlayer());
+            mwPlayer.getPlayer().playSound(mwPlayer.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 100, 3);
         }
     }
 

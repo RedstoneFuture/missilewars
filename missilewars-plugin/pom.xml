@@ -50,12 +50,6 @@
     <dependencies>
         <dependency>
             <groupId>de.butzlabben</groupId>
-            <artifactId>1_12</artifactId>
-            <version>1.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>de.butzlabben</groupId>
             <artifactId>1_13</artifactId>
             <version>1.0</version>
             <scope>compile</scope>

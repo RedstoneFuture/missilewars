@@ -52,19 +52,9 @@ import de.butzlabben.missilewars.util.PlayerDataProvider;
 import de.butzlabben.missilewars.util.geometry.GameArea;
 import de.butzlabben.missilewars.util.geometry.Geometry;
 import de.butzlabben.missilewars.util.serialization.Serializer;
-import de.butzlabben.missilewars.util.version.VersionUtil;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.ToString;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
@@ -75,6 +65,12 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * @author Butzlabben
@@ -350,8 +346,8 @@ public class Game {
 
             // team change menu:
             if (player.hasPermission("mw.change")) {
-                player.getInventory().setItem(0, VersionUtil.getGlassPlane(team1));
-                player.getInventory().setItem(8, VersionUtil.getGlassPlane(team2));
+                player.getInventory().setItem(0, team1.getGlassPlane());
+                player.getInventory().setItem(8, team2.getGlassPlane());
             }
 
             // map choose menu:
@@ -544,10 +540,10 @@ public class Game {
             bow.addEnchantment(Enchantment.ARROW_FIRE, 1);
             bow.addEnchantment(Enchantment.ARROW_DAMAGE, 1);
             bow.addEnchantment(Enchantment.ARROW_KNOCKBACK, 1);
-            ItemMeta im = bow.getItemMeta();
-            im.addEnchant(Enchantment.DAMAGE_ALL, 6, true);
-            bow.setItemMeta(im);
-            VersionUtil.setUnbreakable(bow);
+            ItemMeta bowMeta = bow.getItemMeta();
+            bowMeta.setUnbreakable(true);
+            bowMeta.addEnchant(Enchantment.DAMAGE_ALL, 6, true);
+            bow.setItemMeta(bowMeta);
             this.customBow = bow;
         }
 
@@ -555,7 +551,9 @@ public class Game {
         if (this.getArena().getSpawn().isSendPickaxe() || this.getArena().getRespawn().isSendPickaxe()) {
 
             ItemStack pickaxe = new ItemStack(Material.IRON_PICKAXE);
-            VersionUtil.setUnbreakable(pickaxe);
+            ItemMeta pickaxeMeta = pickaxe.getItemMeta();
+            pickaxeMeta.setUnbreakable(true);
+            pickaxe.setItemMeta(pickaxeMeta);
             this.customPickaxe = pickaxe;
         }
 
@@ -585,26 +583,15 @@ public class Game {
         // send kit items
         if (isRespawn) {
 
-            if (this.getArena().getRespawn().isSendBow()) {
-                player.getInventory().addItem(this.customBow);
-            }
-
-            if (this.getArena().getRespawn().isSendPickaxe()) {
-                player.getInventory().addItem(this.customPickaxe);
-            }
+            if (this.getArena().getRespawn().isSendBow()) player.getInventory().addItem(this.customBow);
+            if (this.getArena().getRespawn().isSendPickaxe()) player.getInventory().addItem(this.customPickaxe);
 
         } else {
 
-            if (this.getArena().getSpawn().isSendBow()) {
-                player.getInventory().addItem(this.customBow);
-            }
-
-            if (this.getArena().getSpawn().isSendPickaxe()) {
-                player.getInventory().addItem(this.customPickaxe);
-            }
-
+            if (this.getArena().getSpawn().isSendBow()) player.getInventory().addItem(this.customBow);
+            if (this.getArena().getSpawn().isSendPickaxe()) player.getInventory().addItem(this.customPickaxe);
+            
         }
-
     }
 
     /**
@@ -663,14 +650,11 @@ public class Game {
     public void spawnFireball(Player player, ItemStack itemStack) {
         int amount = itemStack.getAmount();
         itemStack.setAmount(amount - 1);
-
-        if (amount == 1 && VersionUtil.getVersion() == 8) {
-            player.getInventory().remove(VersionUtil.getFireball());
-        }
-
+        
         Fireball fb = player.launchProjectile(Fireball.class);
         fb.setVelocity(player.getLocation().getDirection().multiply(2.5D));
-        VersionUtil.playFireball(player, fb.getLocation());
+        player.playSound(fb.getLocation(), Sound.BLOCK_ANVIL_LAND, 100.0F, 2.0F);
+        player.playSound(fb.getLocation(), Sound.ITEM_FLINTANDSTEEL_USE, 100.0F, 1.0F);
         fb.setYield(3F);
         fb.setIsIncendiary(true);
         fb.setBounce(false);
@@ -810,8 +794,8 @@ public class Game {
             subTitle = Messages.getNativeMessage("game_result.subtitle_draw");
 
         }
-
-        VersionUtil.sendTitle(player, title, subTitle);
+        
+        player.sendTitle(title, subTitle);
     }
 
     /**

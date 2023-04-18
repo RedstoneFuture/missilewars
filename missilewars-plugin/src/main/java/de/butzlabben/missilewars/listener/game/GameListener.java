@@ -27,11 +27,12 @@ import de.butzlabben.missilewars.game.Team;
 import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.misc.RespawnGoldBlock;
 import de.butzlabben.missilewars.game.misc.Shield;
+import de.butzlabben.missilewars.game.missile.Missile;
 import de.butzlabben.missilewars.player.MWPlayer;
 import de.butzlabben.missilewars.util.geometry.Geometry;
-import de.butzlabben.missilewars.util.version.VersionUtil;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -66,14 +67,14 @@ public class GameListener extends GameBoundListener {
         if (event.getEntity().getType() != EntityType.FIREBALL) return;
         if (getGame().getArena().getFireballConfiguration().isDestroysPortal()) return;
 
-        event.blockList().removeIf(b -> b.getType() == VersionUtil.getPortal());
+        event.blockList().removeIf(b -> b.getType() == Material.NETHER_PORTAL);
     }
 
     @EventHandler
     public void onBlockPhysics(BlockPhysicsEvent event) {
         if (!isInGameWorld(event.getBlock().getLocation())) return;
 
-        if (event.getChangedType() != VersionUtil.getPortal()) return;
+        if (event.getChangedType() != Material.NETHER_PORTAL) return;
 
         Location location = event.getBlock().getLocation();
         
@@ -103,9 +104,9 @@ public class GameListener extends GameBoundListener {
         ItemStack itemStack = event.getItem();
 
         // missile spawn with using of a missile spawn egg
-        if (VersionUtil.isMonsterEgg(itemStack.getType())) {
+        if (Missile.isSpawnEgg(itemStack.getType())) {
             event.setCancelled(true);
-
+            
             // Can missiles only be spawned if the item interaction was performed on a block (no air)?
             boolean isOnlyBlockPlaceable = getGame().getArena().getMissileConfiguration().isOnlyBlockPlaceable();
             if (isOnlyBlockPlaceable) {
@@ -117,7 +118,7 @@ public class GameListener extends GameBoundListener {
         }
 
         // shield spawn with using of a shield spawn egg
-        if (itemStack.getType() == VersionUtil.getFireball()) {
+        if (itemStack.getType() == Material.FIRE_CHARGE) {
 
             getGame().spawnFireball(player, itemStack);
         }

@@ -24,7 +24,6 @@ import de.butzlabben.missilewars.event.PlayerArenaLeaveEvent;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.inventory.VoteInventory;
 import de.butzlabben.missilewars.player.MWPlayer;
-import de.butzlabben.missilewars.util.version.VersionUtil;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -60,7 +59,7 @@ public class LobbyListener extends GameBoundListener {
 
         if (event.getItem() == null) return;
 
-        if (VersionUtil.isStainedGlassPane(event.getItem().getType())) {
+        if (event.getItem().getType().name().contains("STAINED_GLASS_PANE")) {
             // team change:
             if (!player.hasPermission("mw.change")) return;
 
