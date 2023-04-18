@@ -93,8 +93,13 @@ public class UserCommands extends BaseCommand {
 
         if (!MWCommands.senderIsPlayer(sender)) return;
         Player player = (Player) sender;
+        
+        if (args.length < 1) {
+            player.sendMessage(Messages.getPrefix() + "§cNumber needed.");
+            return;
+        }
 
-        if (args.length > 0) {
+        if (args.length > 1) {
             player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
             return;
         }
