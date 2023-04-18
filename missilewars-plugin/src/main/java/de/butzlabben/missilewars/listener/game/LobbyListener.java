@@ -70,7 +70,7 @@ public class LobbyListener extends GameBoundListener {
 
             // too late for team change:
             if (getGame().getTimer().getSeconds() < 10) {
-                player.sendMessage(Messages.getMessage("team.change_team_not_now"));
+                player.sendMessage(Messages.getMessage("team.change_team_no_longer_now"));
                 return;
             }
 

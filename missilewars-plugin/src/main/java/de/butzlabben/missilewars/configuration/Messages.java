@@ -59,15 +59,29 @@ public class Messages {
 
         cfg.addDefault("prefix", "&6•&e● MissileWars &8▎ &7");
 
+        cfg.addDefault("reload", "&7Reloaded configs.");
+        cfg.addDefault("restart_all_games_warn", "&cWarning: Restarting all games. This may take a while.");
+        cfg.addDefault("restart_all_games", "&7Restarted all games.");
+        cfg.addDefault("printed_debug_msg", "&7Printed debug message into the log file.");
+        
         cfg.addDefault("server.restart_after_game", "&7The server will restart after this game.");
 
-        cfg.addDefault("command.to_many_arguments", "§cToo many arguments.");
-        cfg.addDefault("command.invalid_missile", "&cThe mentioned missile was not found.");
+        cfg.addDefault("command.only_players", "&cYou are not a player.");
+        cfg.addDefault("command.to_many_arguments", "&cToo many arguments.");
+        cfg.addDefault("command.invalid_missile", "&cThe specified missile was not found.");
+        cfg.addDefault("command.invalid_game", "&cThe specified game was not found.");
+        cfg.addDefault("command.invalid_map", "&cThe specified map was not found.");
+        cfg.addDefault("command.invalid_team_number", "&cThe team number is invalid. Use '1' or '2' to specify the target team.");
+        cfg.addDefault("command.missile_needed", "&cPlease specify the missile.");
+        cfg.addDefault("command.team_number_needed", "&cPlease specify the team number.");
 
+        cfg.addDefault("game.map_selected", "&7A map was selected. Use '/mw start' again to start the round.");
         cfg.addDefault("game.player_joined", "&e%player% &7joined the game (%team%&7).");
         cfg.addDefault("game.player_left", "&e%player% &7left the game (%team%&7).");
         cfg.addDefault("game.not_in_game_area", "&cYou are not in an arena right now.");
         cfg.addDefault("game.not_enter_arena", "&cYou may not enter this arena right now.");
+        cfg.addDefault("game.already_startet", "&cGame already started.");
+        cfg.addDefault("game.can_not_startet", "&cGame cannot be started.");
         
         cfg.addDefault("lobby_timer.game_starts_in", "Game starts in &e%seconds% &7seconds.");
 
@@ -82,10 +96,9 @@ public class Messages {
         cfg.addDefault("lobby.teams_unequal", "&cThe teams are unequal distributed.");
         cfg.addDefault("lobby.game_starts", "&aThe game starts.");
         
-        cfg.addDefault("team.change_team_not_now", "&cNow you cannot change your team anymore.");
-        //TODO currently not used:
+        cfg.addDefault("team.change_team_not_now", "&cThe game is not in the right state to change your team right now.");
+        cfg.addDefault("team.change_team_no_longer_now", "&cNow you cannot change your team anymore.");
         cfg.addDefault("team.already_in_team", "&cYou are already in this team.");
-        cfg.addDefault("team.cannot_change_difference", "&cYou cannot change your team.");
         cfg.addDefault("team.team_changed", "You are now in %team%&7.");
         cfg.addDefault("team.team_assigned", "You have been assigned to %team%&7.");
         cfg.addDefault("team.all_teammates_offline", "Everyone from %team% &7is offline.");
@@ -128,6 +141,9 @@ public class Messages {
         cfg.addDefault("vote.success", "You successfully voted for the map %map%.");
         cfg.addDefault("vote.finished", "The map %map% &7was elected.");
         cfg.addDefault("vote.gui", "Vote for a map");
+        cfg.addDefault("vote.cant_vote", "&cYou can't vote in this game.");
+        cfg.addDefault("vote.change_team_not_now", "&cThe game is not in the right state to vote right now.");
+        cfg.addDefault("vote.change_team_no_longer_now", "&cA map was already selected.");
 
     }
 

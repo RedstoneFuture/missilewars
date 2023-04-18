@@ -61,24 +61,24 @@ public class UserCommands extends BaseCommand {
         }
 
         if (game.getState() != GameState.LOBBY) {
-            player.sendMessage(Messages.getPrefix() + "§cThe game is not in the right state to vote right now");
+            player.sendMessage(Messages.getMessage("vote.change_team_not_now"));
             return;
         }
 
         if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING) {
-            player.sendMessage(Messages.getPrefix() + "§cYou can't vote in this game");
+            player.sendMessage(Messages.getMessage("vote.cant_vote"));
             return;
         }
 
         if (game.getArena() != null) {
-            player.sendMessage(Messages.getPrefix() + "§cA map was already elected");
+            player.sendMessage(Messages.getMessage("vote.change_team_no_longer_now"));
             return;
         }
 
         String arenaName = args[0];
         Optional<Arena> arena = Arenas.getFromName(arenaName);
         if (!game.getVotes().containsKey(arenaName) || arena.isEmpty()) {
-            player.sendMessage(Messages.getPrefix() + "§cNo map with this title was found");
+            player.sendMessage(Messages.getMessage("command.invalid_map"));
             return;
         }
 
@@ -95,7 +95,7 @@ public class UserCommands extends BaseCommand {
         Player player = (Player) sender;
         
         if (args.length < 1) {
-            player.sendMessage(Messages.getPrefix() + "§cNumber needed.");
+            player.sendMessage(Messages.getMessage("command.team_number_needed"));
             return;
         }
 
@@ -111,7 +111,7 @@ public class UserCommands extends BaseCommand {
         }
         
         if (game.getState() != GameState.LOBBY) {
-            player.sendMessage(Messages.getPrefix() + "§cThe game is not in the right state to change your team right now");
+            player.sendMessage(Messages.getMessage("team.change_team_not_now"));
             return;
         }
 
@@ -119,20 +119,19 @@ public class UserCommands extends BaseCommand {
             MWPlayer mwPlayer = game.getPlayer(player);
             int teamNumber = Integer.parseInt(args[0]);
             Team to = teamNumber == 1 ? game.getTeam1() : game.getTeam2();
-            int otherCount = to.getEnemyTeam().getMembers().size() - 1;
-            int toCount = to.getMembers().size() + 1;
-            int diff = toCount - otherCount;
-            if (diff > 1) {
-                player.sendMessage(Messages.getMessage("team.cannot_change_difference"));
+            
+            // Is the same team?
+            if (to == mwPlayer.getTeam()) {
+                player.sendMessage(Messages.getMessage("team.already_in_team"));
                 return;
             }
-
+            
             // Remove the player from the old team and add him to the new team
             to.addMember(mwPlayer);
 
             player.sendMessage(Messages.getMessage("team.team_changed").replace("%team%", to.getFullname()));
         } catch (NumberFormatException exception) {
-            player.sendMessage(Messages.getPrefix() + "§c/mw change <1|2>");
+            sender.sendMessage(Messages.getMessage("command.invalid_team_number"));
         }
     }
 

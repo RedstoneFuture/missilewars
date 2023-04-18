@@ -98,7 +98,7 @@ public class MWCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length < 1) {
-            player.sendMessage(Messages.getPrefix() + "§cMissile needed.");
+            player.sendMessage(Messages.getMessage("command.missile_needed"));
             return;
         }
 
@@ -115,7 +115,7 @@ public class MWCommands extends BaseCommand {
 
         Missile missile = game.getArena().getMissileConfiguration().getMissileFromName(args[0]);
         if (missile == null) {
-            player.sendMessage(Messages.getPrefix() + "§cUnknown missile.");
+            player.sendMessage(Messages.getMessage("command.invalid_missile"));
             return;
         }
 
@@ -141,7 +141,7 @@ public class MWCommands extends BaseCommand {
         if (args.length == 1) {
             game = GameManager.getInstance().getGame(args[0]);
             if (game == null) {
-                player.sendMessage(Messages.getPrefix() + "§cGame not found.");
+                player.sendMessage(Messages.getMessage("command.invalid_game"));
                 return;
             }
         } else {
@@ -153,7 +153,7 @@ public class MWCommands extends BaseCommand {
         }
 
         if (game.getState() != GameState.LOBBY) {
-            player.sendMessage(Messages.getPrefix() + "§cGame already started");
+            player.sendMessage(Messages.getMessage("game.already_startet"));
             return;
         }
 
@@ -161,7 +161,7 @@ public class MWCommands extends BaseCommand {
             game.startGame();
         else {
             if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING && game.getArena() == null) {
-                player.sendMessage(Messages.getPrefix() + "§cGame cannot be started");
+                player.sendMessage(Messages.getMessage("game.can_not_startet"));
             } else {
                 Map.Entry<String, Integer> mostVotes = null;
                 for (Map.Entry<String, Integer> arena : game.getVotes().entrySet()) {
@@ -175,7 +175,7 @@ public class MWCommands extends BaseCommand {
                 Optional<Arena> arena = Arenas.getFromName(mostVotes.getKey());
                 if (arena.isEmpty()) throw new IllegalStateException("Voted arena is not present");
                 game.setArena(arena.get());
-                player.sendMessage(Messages.getPrefix() + "A map was elected. Use \"/mw start\" again to start the round");
+                player.sendMessage(Messages.getMessage("game.map_selected"));
             }
         }
     }
@@ -198,7 +198,7 @@ public class MWCommands extends BaseCommand {
         if (args.length == 1) {
             game = GameManager.getInstance().getGame(args[0]);
             if (game == null) {
-                player.sendMessage(Messages.getPrefix() + "§cGame not found.");
+                player.sendMessage(Messages.getMessage("command.invalid_game"));
                 return;
             }
         } else {
@@ -232,7 +232,7 @@ public class MWCommands extends BaseCommand {
         if (args.length == 1) {
             game = GameManager.getInstance().getGame(args[0]);
             if (game == null) {
-                player.sendMessage(Messages.getPrefix() + "§cGame not found.");
+                player.sendMessage(Messages.getMessage("command.invalid_game"));
                 return;
             }
         } else {
@@ -263,7 +263,8 @@ public class MWCommands extends BaseCommand {
         Config.load();
         Messages.load();
         Arenas.load();
-        sender.sendMessage(Messages.getPrefix() + "Reloaded configs");
+        
+        player.sendMessage(Messages.getMessage("reload"));
     }
 
     @Subcommand("debug")
@@ -285,7 +286,8 @@ public class MWCommands extends BaseCommand {
             Logger.NORMAL.log("Printing state for arena " + game.getArena().getName() + ". Number: " + i);
             Logger.NORMAL.log(game.toString());
         }
-        sender.sendMessage(Messages.getPrefix() + "Printed debug message into the log file");
+        
+        player.sendMessage(Messages.getMessage("printed_debug_msg"));
     }
 
     @Subcommand("restartall")
@@ -300,16 +302,19 @@ public class MWCommands extends BaseCommand {
             player.sendMessage(Messages.getMessage("command.to_many_arguments"));
             return;
         }
-
-        sender.sendMessage(Messages.getPrefix() + "§cWarning - Restarting all games. This may take a while");
+        
+        if (GameManager.getInstance().getGames().size() > 10) {
+            player.sendMessage(Messages.getMessage("restart_all_games_warn"));
+        }
+        
         GameManager.getInstance().restartAll();
-        sender.sendMessage(Messages.getPrefix() + "Restarted all games.");
+        player.sendMessage(Messages.getMessage("restart_all_games"));
     }
 
     static boolean senderIsPlayer(CommandSender sender) {
         if (sender instanceof Player) return true;
-
-        sender.sendMessage(Messages.getPrefix() + "§cYou are not a player");
+        
+        sender.sendMessage(Messages.getMessage("command.only_players"));
         return false;
     }
 
