@@ -103,7 +103,7 @@ public class MWCommands extends BaseCommand {
         }
 
         if (args.length > 1) {
-            player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
+            player.sendMessage(Messages.getMessage("command.to_many_arguments"));
             return;
         }
 
