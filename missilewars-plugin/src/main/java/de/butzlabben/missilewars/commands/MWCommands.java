@@ -109,7 +109,7 @@ public class MWCommands extends BaseCommand {
 
         Game game = GameManager.getInstance().getGame(player.getLocation());
         if (game == null) {
-            player.sendMessage(Messages.getMessage("not_in_arena"));
+            player.sendMessage(Messages.getMessage("game.not_in_game_area"));
             return;
         }
 
@@ -147,7 +147,7 @@ public class MWCommands extends BaseCommand {
         } else {
             game = GameManager.getInstance().getGame(player.getLocation());
             if (game == null) {
-                player.sendMessage(Messages.getMessage("not_in_arena"));
+                player.sendMessage(Messages.getMessage("game.not_in_game_area"));
                 return;
             }
         }
@@ -204,7 +204,7 @@ public class MWCommands extends BaseCommand {
         } else {
             game = GameManager.getInstance().getGame(player.getLocation());
             if (game == null) {
-                player.sendMessage(Messages.getMessage("not_in_arena"));
+                player.sendMessage(Messages.getMessage("game.not_in_game_area"));
                 return;
             }
         }
@@ -238,13 +238,13 @@ public class MWCommands extends BaseCommand {
         } else {
             game = GameManager.getInstance().getGame(player.getLocation());
             if (game == null) {
-                player.sendMessage(Messages.getMessage("not_in_arena"));
+                player.sendMessage(Messages.getMessage("game.not_in_game_area"));
                 return;
             }
         }
 
         GameManager.getInstance().getGames().values().forEach(Game::appendRestart);
-        sender.sendMessage(Messages.getMessage("restart_after_game"));
+        sender.sendMessage(Messages.getMessage("server.restart_after_game"));
     }
 
     @Subcommand("reload")

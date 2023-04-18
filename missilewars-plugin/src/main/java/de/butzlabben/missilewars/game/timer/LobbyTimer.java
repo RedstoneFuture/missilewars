@@ -67,7 +67,7 @@ public class LobbyTimer extends Timer implements Runnable {
             if (size1 + size2 < getGame().getLobby().getMinSize()) {
                 seconds = startTime;
                 remaining = 90;
-                broadcast(Messages.getMessage("not_enough_players"));
+                broadcast(Messages.getMessage("lobby.not_enough_players"));
                 return;
             }
         }
@@ -81,22 +81,22 @@ public class LobbyTimer extends Timer implements Runnable {
             case 3:
             case 2:
             case 1:
-                broadcast(Messages.getMessage("game_timer.game_starts_in").replace("%seconds%", Integer.toString(seconds)));
+                broadcast(Messages.getMessage("lobby_timer.game_starts_in").replace("%seconds%", Integer.toString(seconds)));
                 playPling();
                 break;
             case 10:
                 checkVote();
-                broadcast(Messages.getMessage("game_timer.game_starts_in").replace("%seconds%", Integer.toString(seconds)));
+                broadcast(Messages.getMessage("lobby_timer.game_starts_in").replace("%seconds%", Integer.toString(seconds)));
                 playPling();
                 break;
             case 0:
                 int diff = size1 - size2;
                 if (diff >= 2 || diff <= -2) {
-                    broadcast(Messages.getMessage("teams_unequal"));
+                    broadcast(Messages.getMessage("lobby.teams_unequal"));
                     seconds = startTime;
                     return;
                 }
-                broadcast(Messages.getMessage("game_starts"));
+                broadcast(Messages.getMessage("lobby.game_starts"));
                 playPling();
                 getGame().startGame();
                 return;

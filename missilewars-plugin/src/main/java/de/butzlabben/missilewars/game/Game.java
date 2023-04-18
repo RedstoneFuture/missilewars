@@ -322,7 +322,7 @@ public class Game {
             Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> teleportToArenaSpectatorSpawn(player), 2);
             Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> player.setGameMode(GameMode.SPECTATOR), 35);
 
-            player.sendMessage(Messages.getMessage("spectator"));
+            player.sendMessage(Messages.getMessage("arena.spectator"));
             player.setDisplayName("§7" + player.getName() + "§r");
 
         } else {
@@ -332,9 +332,9 @@ public class Game {
 
             Team team = getNextTeam();
             team.addMember(mwPlayer);
-            player.sendMessage(Messages.getMessage("team_assigned").replace("%team%", team.getFullname()));
+            player.sendMessage(Messages.getMessage("team.team_assigned").replace("%team%", team.getFullname()));
 
-            broadcast(Messages.getMessage("lobby_joined")
+            broadcast(Messages.getMessage("lobby.player_joined")
                     .replace("%max_players%", Integer.toString(getLobby().getMaxSize()))
                     .replace("%players%", Integer.toString(getPlayers().values().size()))
                     .replace("%player%", player.getName()));
@@ -374,7 +374,7 @@ public class Game {
             if (task != null) task.cancel();
 
             if (team != null) {
-                broadcast(Messages.getMessage("player_left")
+                broadcast(Messages.getMessage("game.player_left")
                         .replace("%team%", team.getFullname())
                         .replace("%player%", player.getName()));
             }
@@ -411,7 +411,7 @@ public class Game {
                 sendGameResult();
                 stopGame();
             });
-            broadcast(Messages.getMessage("team_offline").replace("%team%", team.getFullname()));
+            broadcast(Messages.getMessage("team.all_teammates_offline").replace("%team%", team.getFullname()));
         }
     }
 

@@ -231,10 +231,10 @@ public class Team {
     // TODO Add new team buffer
     public void updateIntervals(int newInterval) {
         if (newInterval < currentInterval && currentInterval != 0) {
-            getGame().broadcast(Messages.getMessage("team_buffed").replace("%team%", getFullname()));
+            getGame().broadcast(Messages.getMessage("team.team_buffed").replace("%team%", getFullname()));
         }
         if (newInterval > currentInterval && currentInterval != 0) {
-            getGame().broadcast(Messages.getMessage("team_nerved").replace("%team%", getFullname()));
+            getGame().broadcast(Messages.getMessage("team.team_nerved").replace("%team%", getFullname()));
         }
     }
 

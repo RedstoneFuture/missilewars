@@ -56,7 +56,7 @@ public class UserCommands extends BaseCommand {
 
         Game game = GameManager.getInstance().getGame(player.getLocation());
         if (game == null) {
-            player.sendMessage(Messages.getMessage("not_in_arena"));
+            player.sendMessage(Messages.getMessage("game.not_in_game_area"));
             return;
         }
 
@@ -101,7 +101,7 @@ public class UserCommands extends BaseCommand {
 
         Game game = GameManager.getInstance().getGame(player.getLocation());
         if (game == null) {
-            player.sendMessage(Messages.getMessage("not_in_arena"));
+            player.sendMessage(Messages.getMessage("game.not_in_game_area"));
             return;
         }
 
@@ -118,14 +118,14 @@ public class UserCommands extends BaseCommand {
             int toCount = to.getMembers().size() + 1;
             int diff = toCount - otherCount;
             if (diff > 1) {
-                player.sendMessage(Messages.getMessage("cannot_change_difference"));
+                player.sendMessage(Messages.getMessage("team.cannot_change_difference"));
                 return;
             }
 
             // Remove the player from the old team and add him to the new team
             to.addMember(mwPlayer);
 
-            player.sendMessage(Messages.getMessage("team_changed").replace("%team%", to.getFullname()));
+            player.sendMessage(Messages.getMessage("team.team_changed").replace("%team%", to.getFullname()));
         } catch (NumberFormatException exception) {
             player.sendMessage(Messages.getPrefix() + "§c/mw change <1|2>");
         }
@@ -146,7 +146,7 @@ public class UserCommands extends BaseCommand {
 
         Game game = GameManager.getInstance().getGame(player.getLocation());
         if (game == null) {
-            player.sendMessage(Messages.getMessage("not_in_arena"));
+            player.sendMessage(Messages.getMessage("game.not_in_game_area"));
             return;
         }
 
