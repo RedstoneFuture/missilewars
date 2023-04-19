@@ -74,8 +74,8 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
                 if (params.startsWith("arena_")) return "§c§oThis is not a game arena!";
             }
 
-            if (params.startsWith("lobby_")) params = params.replace("_this", playerGame.getLobby().getName());
-            if (params.startsWith("arena_")) params = params.replace("_this", playerGame.getArena().getName());
+            if (params.startsWith("lobby_")) params = params.replace("this", playerGame.getLobby().getName());
+            if (params.startsWith("arena_")) params = params.replace("this", playerGame.getArena().getName());
         }
 
 
