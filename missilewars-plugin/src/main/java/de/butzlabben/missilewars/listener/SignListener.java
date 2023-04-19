@@ -80,9 +80,9 @@ public class SignListener implements Listener {
             signRepository.getSigns().add(sign);
             signRepository.saveData();
 
-            player.sendMessage(Messages.getPrefix() + "Sign was successfully created and connected");
+            player.sendMessage(Messages.getMessage("signedit.sign_created"));
         } else {
-            player.sendMessage(Messages.getPrefix() + "§cCould not find lobby \"" + lobbyName + "\"");
+            player.sendMessage(Messages.getMessage("signedit.lobby_not_found").replace("%input%", lobbyName));
             event.setCancelled(true);
         }
     }
@@ -105,9 +105,9 @@ public class SignListener implements Listener {
             repository.getSigns().remove(sign);
             repository.saveData();
 
-            player.sendMessage(Messages.getPrefix() + "You have successfully removed this missilewars sign");
+            player.sendMessage(Messages.getMessage("signedit.sign_removed"));
         } else {
-            player.sendMessage(Messages.getPrefix() + "§cYou have to be sneaking in order to remove this sign");
+            player.sendMessage(Messages.getMessage("signedit.sign_remove_desc"));
             event.setCancelled(true);
         }
     }

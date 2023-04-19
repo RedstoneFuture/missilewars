@@ -136,6 +136,11 @@ public class Messages {
         cfg.addDefault("vote.change_team_not_now", "&cThe game is not in the right state to vote right now.");
         cfg.addDefault("vote.change_team_no_longer_now", "&cA map was already selected.");
 
+        cfg.addDefault("signedit.sign_created", "&7Sign was successfully created and connected.");
+        cfg.addDefault("signedit.sign_removed", "&7You have successfully removed this missilewars sign.");
+        cfg.addDefault("signedit.lobby_not_found", "&cCould not find lobby %input%.");
+        cfg.addDefault("signedit.sign_remove_desc", "&cYou have to be sneaking in order to remove this sign.");
+
         cfg.addDefault("sign.0", "•● MissileWars ●•");
         cfg.addDefault("sign.1", "%state%");
         cfg.addDefault("sign.2", "%arena%");
