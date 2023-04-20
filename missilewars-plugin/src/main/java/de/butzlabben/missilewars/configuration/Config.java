@@ -176,6 +176,9 @@ public class Config {
         cfg.set("fallback_spawn.z", spawnLocation.getZ());
         cfg.set("fallback_spawn.yaw", spawnLocation.getYaw());
         cfg.set("fallback_spawn.pitch", spawnLocation.getPitch());
+
+        // re-save the config with only validated options
+        SetupUtil.safeFile(FILE, cfg);
     }
 
     public static YamlConfiguration getConfig() {
