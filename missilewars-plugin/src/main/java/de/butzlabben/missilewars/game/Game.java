@@ -378,21 +378,33 @@ public class Game {
     public void playerLeaveFromGame(MWPlayer mwPlayer) {
         Player player = mwPlayer.getPlayer();
         Team team = mwPlayer.getTeam();
+        boolean playerWasTeamMember = false;
 
-        if (state == GameState.LOBBY) {
-            if (team != null) {
+        if (state == GameState.INGAME) {
+            BukkitTask task = getPlayerTasks().get(mwPlayer.getUuid());
+            if (task != null) task.cancel();
+        }
+        
+        PlayerDataProvider.getInstance().loadInventory(player);
+
+        if (team != null) {
+            playerWasTeamMember = true;
+            team.removeMember(mwPlayer);
+            if (state == GameState.INGAME) checkTeamSize(team);
+        }
+
+        removePlayer(mwPlayer);
+        
+        if (playerWasTeamMember) {
+            if (state == GameState.LOBBY) {
                 broadcast(Messages.getMessage("lobby.player_left")
                         .replace("%max_players%", Integer.toString(getLobby().getMaxSize()))
                         .replace("%players%", Integer.toString(getPlayers().values().size()))
                         .replace("%player%", player.getName())
                         .replace("%team%", team.getFullname()));
-            }
-            
-        } else if (state == GameState.INGAME) {
-            BukkitTask task = getPlayerTasks().get(mwPlayer.getUuid());
-            if (task != null) task.cancel();
 
-            if (team != null) {
+            } else if (state == GameState.INGAME) {
+
                 broadcast(Messages.getMessage("game.player_left")
                         .replace("%max_players%", Integer.toString(getLobby().getMaxSize()))
                         .replace("%players%", Integer.toString(getPlayers().values().size()))
@@ -400,16 +412,15 @@ public class Game {
                         .replace("%team%", team.getFullname()));
             }
         }
-        
-        PlayerDataProvider.getInstance().loadInventory(player);
-
-        if (team != null) {
-            team.removeMember(mwPlayer);
-            if (state == GameState.INGAME) checkTeamSize(team);
-        }
 
         player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
-        removePlayer(mwPlayer);
+
+        if (state == GameState.LOBBY) {
+            player.sendMessage(Messages.getMessage("lobby.left").replace("%lobby_name%", getLobby().getDisplayName()));
+        } else if (state == GameState.INGAME) {
+            player.sendMessage(Messages.getMessage("game.left").replace("%arena_name%", arena.getDisplayName()));
+        }
+        
     }
 
     /**
