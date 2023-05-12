@@ -334,15 +334,15 @@ public class Game {
             team.addMember(mwPlayer);
             player.sendMessage(Messages.getMessage("team.team_assigned").replace("%team%", team.getFullname()));
             
+            String message = null;
             if (state == GameState.LOBBY) {
-                broadcast(Messages.getMessage("lobby.player_joined")
-                        .replace("%max_players%", Integer.toString(getLobby().getMaxSize()))
-                        .replace("%players%", Integer.toString(getPlayers().values().size()))
-                        .replace("%player%", player.getName())
-                        .replace("%team%", team.getFullname()));
+                message = Messages.getMessage("lobby.player_joined");
             } else if (state == GameState.INGAME) {
-                broadcast(Messages.getMessage("game.player_joined")
-                        .replace("%max_players%", Integer.toString(getLobby().getMaxSize()))
+                message = Messages.getMessage("game.player_joined");
+            }
+            
+            if (message != null) {
+                broadcast(message.replace("%max_players%", Integer.toString(getLobby().getMaxSize()))
                         .replace("%players%", Integer.toString(getPlayers().values().size()))
                         .replace("%player%", player.getName())
                         .replace("%team%", team.getFullname()));
@@ -396,21 +396,21 @@ public class Game {
         removePlayer(mwPlayer);
         
         if (playerWasTeamMember) {
+
+            String message = null;
             if (state == GameState.LOBBY) {
-                broadcast(Messages.getMessage("lobby.player_left")
-                        .replace("%max_players%", Integer.toString(getLobby().getMaxSize()))
-                        .replace("%players%", Integer.toString(getPlayers().values().size()))
-                        .replace("%player%", player.getName())
-                        .replace("%team%", team.getFullname()));
-
+                message = Messages.getMessage("lobby.player_left");
             } else if (state == GameState.INGAME) {
-
-                broadcast(Messages.getMessage("game.player_left")
-                        .replace("%max_players%", Integer.toString(getLobby().getMaxSize()))
+                message = Messages.getMessage("game.player_left");
+            }
+            
+            if (message != null) {
+                broadcast(message.replace("%max_players%", Integer.toString(getLobby().getMaxSize()))
                         .replace("%players%", Integer.toString(getPlayers().values().size()))
                         .replace("%player%", player.getName())
                         .replace("%team%", team.getFullname()));
             }
+
         }
 
         player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
