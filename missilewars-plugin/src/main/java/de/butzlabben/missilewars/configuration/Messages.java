@@ -101,6 +101,7 @@ public class Messages {
         cfg.addDefault("team.change_team_not_now", "&cThe game is not in the right state to change your team right now.");
         cfg.addDefault("team.change_team_no_longer_now", "&cNow you cannot change your team anymore.");
         cfg.addDefault("team.already_in_team", "&cYou are already in this team.");
+        cfg.addDefault("team.unfair_team_size", "&cChanging the team would make the number of team members more uneven.");
         cfg.addDefault("team.team_changed", "&7You are now in %team%&7.");
         cfg.addDefault("team.team_assigned", "&7You have been assigned to %team%&7.");
         cfg.addDefault("team.all_teammates_offline", "&7Everyone from %team% &7is offline.");

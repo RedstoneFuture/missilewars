@@ -126,6 +126,12 @@ public class UserCommands extends BaseCommand {
                 return;
             }
             
+            // Would the number of team members be too far apart?
+            if (to != game.getNextTeam()) {
+                player.sendMessage(Messages.getMessage("team.unfair_team_size"));
+                return;
+            }
+            
             // Remove the player from the old team and add him to the new team
             to.addMember(mwPlayer);
 
