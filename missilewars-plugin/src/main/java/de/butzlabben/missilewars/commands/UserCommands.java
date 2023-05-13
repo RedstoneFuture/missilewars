@@ -114,31 +114,32 @@ public class UserCommands extends BaseCommand {
             player.sendMessage(Messages.getMessage("team.change_team_not_now"));
             return;
         }
-
-        try {
-            MWPlayer mwPlayer = game.getPlayer(player);
-            int teamNumber = Integer.parseInt(args[0]);
-            Team to = teamNumber == 1 ? game.getTeam1() : game.getTeam2();
-            
-            // Is the same team?
-            if (to == mwPlayer.getTeam()) {
-                player.sendMessage(Messages.getMessage("team.already_in_team"));
-                return;
-            }
-            
-            // Would the number of team members be too far apart?
-            if (to != game.getNextTeam()) {
-                player.sendMessage(Messages.getMessage("team.unfair_team_size"));
-                return;
-            }
-            
-            // Remove the player from the old team and add him to the new team
-            to.addMember(mwPlayer);
-
-            player.sendMessage(Messages.getMessage("team.team_changed").replace("%team%", to.getFullname()));
-        } catch (NumberFormatException exception) {
+        
+        if (!(args[0].equalsIgnoreCase("1") || args[0].equalsIgnoreCase("2"))) {
             sender.sendMessage(Messages.getMessage("command.invalid_team_number"));
+            return;
         }
+        
+        MWPlayer mwPlayer = game.getPlayer(player);
+        int teamNumber = Integer.parseInt(args[0]);
+        Team to = teamNumber == 1 ? game.getTeam1() : game.getTeam2();
+        
+        // Is the same team?
+        if (to == mwPlayer.getTeam()) {
+            player.sendMessage(Messages.getMessage("team.already_in_team"));
+            return;
+        }
+        
+        // Would the number of team members be too far apart?
+        if (to != game.getNextTeam()) {
+            player.sendMessage(Messages.getMessage("team.unfair_team_size"));
+            return;
+        }
+        
+        // Remove the player from the old team and add him to the new team
+        to.addMember(mwPlayer);
+
+        player.sendMessage(Messages.getMessage("team.team_changed").replace("%team%", to.getFullname()));
     }
 
     @Subcommand("quit|leave")
