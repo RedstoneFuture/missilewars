@@ -357,7 +357,7 @@ public class SetupCommands extends BaseCommand {
         } else {
             game = GameManager.getInstance().getGame(player.getLocation());
             if (game == null) {
-                player.sendMessage(Messages.getMessage("game.not_in_game_area"));
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_IN_GAME_AREA));
                 return false;
             }
         }

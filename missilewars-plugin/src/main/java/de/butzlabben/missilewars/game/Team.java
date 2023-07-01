@@ -187,16 +187,16 @@ public class Team {
 
         switch (gameResult) {
             case WIN:
-                title = Messages.getNativeMessage("game_result.title_winner");
-                subTitle = Messages.getNativeMessage("game_result.subtitle_winner");
+                title = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_TITLE_WINNER);
+                subTitle = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_SUBTITLE_WINNER);
                 break;
             case LOSE:
-                title = Messages.getNativeMessage("game_result.title_loser");
-                subTitle = Messages.getNativeMessage("game_result.subtitle_loser");
+                title = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_TITLE_LOSER);
+                subTitle = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_SUBTITLE_LOSER);
                 break;
             case DRAW:
-                title = Messages.getNativeMessage("game_result.title_draw");
-                subTitle = Messages.getNativeMessage("game_result.subtitle_draw");
+                title = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_TITLE_DRAW);
+                subTitle = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_SUBTITLE_DRAW);
                 break;
             default:
                 title = null;
@@ -231,10 +231,10 @@ public class Team {
     // TODO Add new team buffer
     public void updateIntervals(int newInterval) {
         if (newInterval < currentInterval && currentInterval != 0) {
-            getGame().broadcast(Messages.getMessage("team.team_buffed").replace("%team%", getFullname()));
+            getGame().broadcast(Messages.getMessage(true, Messages.MessageEnum.TEAM_TEAM_BUFFED).replace("%team%", getFullname()));
         }
         if (newInterval > currentInterval && currentInterval != 0) {
-            getGame().broadcast(Messages.getMessage("team.team_nerved").replace("%team%", getFullname()));
+            getGame().broadcast(Messages.getMessage(true, Messages.MessageEnum.TEAM_TEAM_NERVED).replace("%team%", getFullname()));
         }
     }
 

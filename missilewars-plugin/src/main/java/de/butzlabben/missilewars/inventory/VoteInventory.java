@@ -30,7 +30,7 @@ import java.util.Map;
 public class VoteInventory extends OrcInventory {
 
     public VoteInventory(List<Arena> arenas) {
-        super(Messages.getNativeMessage("vote.gui"), (int) Math.ceil(arenas.size() / 9D));
+        super(Messages.getMessage(false, Messages.MessageEnum.VOTE_GUI), (int) Math.ceil(arenas.size() / 9D));
 
         Map<Integer, int[]> map = new HashMap<>();
         map.put(1, new int[] {4});

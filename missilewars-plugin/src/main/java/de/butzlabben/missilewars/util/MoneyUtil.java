@@ -68,7 +68,7 @@ public class MoneyUtil {
             Logger.WARN.log("Message: " + r.errorMessage);
         } else {
             if (Bukkit.getPlayer(uuid) != null)
-                Bukkit.getPlayer(uuid).sendMessage(Messages.getMessage("game_result.money").replace("%money%", Integer.toString(money)));
+                Bukkit.getPlayer(uuid).sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_RESULT_MONEY).replace("%money%", Integer.toString(money)));
         }
     }
 }

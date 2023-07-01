@@ -20,6 +20,7 @@ package de.butzlabben.missilewars.configuration;
 
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.util.SetupUtil;
+import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -56,118 +57,132 @@ public class Messages {
     }
 
     private static void addDefaults() {
-
-        cfg.addDefault("prefix", "&6•&e● MissileWars &8▎ &7");
-
-        cfg.addDefault("debug.reload_config", "&7Reloaded configs.");
-        cfg.addDefault("debug.restart_all_games_warn", "&cWarning: Restarting all games. This may take a while.");
-        cfg.addDefault("debug.restart_all_games", "&7Restarted all games.");
-        cfg.addDefault("debug.printed_debug_msg", "&7Printed debug message into the log file.");
         
-        cfg.addDefault("server.restart_after_game", "&7The server will restart after this game.");
-
-        cfg.addDefault("command.only_players", "&cYou are not a player.");
-        cfg.addDefault("command.to_many_arguments", "&cToo many arguments.");
-        cfg.addDefault("command.invalid_missile", "&cThe specified missile was not found.");
-        cfg.addDefault("command.invalid_game", "&cThe specified game was not found.");
-        cfg.addDefault("command.invalid_map", "&cThe specified map was not found.");
-        cfg.addDefault("command.invalid_team_number", "&cThe team number is invalid. Use \"1\" or \"2\" to specify the target team.");
-        cfg.addDefault("command.missile_needed", "&cPlease specify the missile.");
-        cfg.addDefault("command.team_number_needed", "&cPlease specify the team number.");
-
-        cfg.addDefault("game.map_selected", "&7A map was selected. Use \"/mw start\" again to start the round.");
-        cfg.addDefault("game.player_joined", "&e%player% &7joined the game (%team%&7).");
-        cfg.addDefault("game.player_left", "&e%player% &7left the game (%team%&7).");
-        cfg.addDefault("game.left", "&7You left the running MissileWars game.");
-        cfg.addDefault("game.not_in_game_area", "&cYou are not in an arena right now.");
-        cfg.addDefault("game.not_enter_arena", "&cYou may not enter this arena right now.");
-        cfg.addDefault("game.already_startet", "&cGame already started.");
-        cfg.addDefault("game.can_not_startet", "&cGame cannot be started.");
-        
-        cfg.addDefault("lobby_timer.game_starts_in", "&7Game starts in &e%seconds% &7seconds.");
-
-        cfg.addDefault("game_timer.game_ends_in_minutes", "&7Game ends in &e%minutes% &7minutes.");
-        cfg.addDefault("game_timer.game_ends_in_seconds", "&7Game ends in &e%seconds% &7seconds.");
-
-        cfg.addDefault("endgame_timer.game_starts_new_in", "&7Game starts new in &e%seconds% &7seconds.");
-
-        cfg.addDefault("lobby.player_joined", "&e%player% &7joined the game &8(&7%players%&8/&7%max_players%&8)");
-        cfg.addDefault("lobby.player_left", "&e%player% &7left the game &8(&7%players%&8/&7%max_players%&8)");
-        cfg.addDefault("lobby.left", "&7You left the MissileWars lobby.");
-        cfg.addDefault("lobby.not_enough_players", "&cThere are not enough players online.");
-        cfg.addDefault("lobby.teams_unequal", "&cThe teams are unequal distributed.");
-        cfg.addDefault("lobby.game_starts", "&aThe game starts.");
-
-        cfg.addDefault("team.change_team_not_now", "&cThe game is not in the right state to change your team right now.");
-        cfg.addDefault("team.change_team_no_longer_now", "&cNow you cannot change your team anymore.");
-        cfg.addDefault("team.already_in_team", "&cYou are already in this team.");
-        cfg.addDefault("team.unfair_team_size", "&cChanging the team would make the number of team members more uneven.");
-        cfg.addDefault("team.team_changed", "&7You are now in %team%&7.");
-        cfg.addDefault("team.team_assigned", "&7You have been assigned to %team%&7.");
-        cfg.addDefault("team.all_teammates_offline", "&7Everyone from %team% &7is offline.");
-        cfg.addDefault("team.team_buffed", "%team% &7was buffed as one player left the team.");
-        cfg.addDefault("team.team_nerved", "%team% &7was nerved as one player joined the team.");
-        cfg.addDefault("team.hurt_teammates", "&cYou must not hurt your teammates.");
-        
-        cfg.addDefault("arena.spectator", "&7You are now a spectator.");
-        cfg.addDefault("arena.arena_leave", "&cYou are not allowed to leave the arena.");
-        cfg.addDefault("arena.missile_place_deny", "&cYou are not allowed to place a missile here.");
-        cfg.addDefault("arena.not_higher", "&cYou can not go higher.");
-        cfg.addDefault("arena.kick_inactivity", "&cYou were inactive on MissileWars.");
-
-        cfg.addDefault("died.normal", "&7%player% &7died.");
-        cfg.addDefault("died.explosion", "&7%player% &7was blown up.");
-
-        cfg.addDefault("fall_protection.start", "&cFall protection inactive in %seconds% seconds.");
-        cfg.addDefault("fall_protection.end", "&cFall protection inactive.");
-        cfg.addDefault("fall_protection.deactivated", "&cFall protection deactivated by sneaking.");
-
-        cfg.addDefault("game_result.title_won", "&7%team%");
-        cfg.addDefault("game_result.subtitle_won", "&6has won the game!");
-        cfg.addDefault("game_result.title_winner", "&2Your team");
-        cfg.addDefault("game_result.subtitle_winner", "&ahas won!");
-        cfg.addDefault("game_result.title_loser", "&4Your team");
-        cfg.addDefault("game_result.subtitle_loser", "&chas lost!");
-        cfg.addDefault("game_result.title_draw", "&7Draw!");
-        cfg.addDefault("game_result.subtitle_draw", "");
-        cfg.addDefault("game_result.money", "&7You received &e%money% &7coins.");
-        
-        cfg.addDefault("vote.success", "&7You successfully voted for the map %map%.");
-        cfg.addDefault("vote.finished", "&7The map %map% &7was elected.");
-        cfg.addDefault("vote.gui", "Vote for a map");
-        cfg.addDefault("vote.cant_vote", "&cYou can not vote in this game.");
-        cfg.addDefault("vote.change_team_not_now", "&cThe game is not in the right state to vote right now.");
-        cfg.addDefault("vote.change_team_no_longer_now", "&cA map was already selected.");
-
-        cfg.addDefault("signedit.sign_created", "&7Sign was successfully created and connected.");
-        cfg.addDefault("signedit.sign_removed", "&7You have successfully removed this missilewars sign.");
-        cfg.addDefault("signedit.lobby_not_found", "&cCould not find lobby %input%.");
-        cfg.addDefault("signedit.sign_remove_desc", "&cYou have to be sneaking in order to remove this sign.");
-
-        cfg.addDefault("sign.0", "•● MissileWars ●•");
-        cfg.addDefault("sign.1", "%state%");
-        cfg.addDefault("sign.2", "%arena%");
-        cfg.addDefault("sign.3", "&7%players%&8/&7%max_players%");
-        cfg.addDefault("sign.state.lobby", "&aLobby");
-        cfg.addDefault("sign.state.ingame", "&bIngame");
-        cfg.addDefault("sign.state.ended", "&cRestarting...");
-        cfg.addDefault("sign.state.error", "&cError...");
-
+        for (MessageEnum msg : MessageEnum.values()) {
+            cfg.addDefault(msg.getPath(), msg.getDefaultMsg());
+        }
     }
 
-    public static String getMessage(String path) {
-        return getPrefix() + getNativeMessage(path);
-    }
-
-    public static String getNativeMessage(String path) {
-        return ChatColor.translateAlternateColorCodes('&', getRawMessage(path));
-    }
-
-    private static String getRawMessage(String path) {
-        return cfg.getString(path, "&cError while reading from messages.yml: " + path);
+    public static String getMessage(boolean prefix, MessageEnum msg) {
+        if (prefix) return getPrefix() + getConfigMessage(msg);
+        return getConfigMessage(msg);
     }
 
     public static String getPrefix() {
-        return ChatColor.translateAlternateColorCodes('&', cfg.getString("prefix"));
+        return getConfigMessage(MessageEnum.PREFIX);
     }
+
+    @Getter
+    public enum MessageEnum {
+        PREFIX("prefix", "&6•&e● MissileWars &8▎ &7"),
+
+        DEBUG_RELOAD_CONFIG("debug.reload_config", "&7Reloaded configs."),
+        DEBUG_RESTART_ALL_GAMES_WARN("debug.restart_all_games_warn", "&cWarning: Restarting all games. This may take a while."),
+        DEBUG_RESTART_ALL_GAMES("debug.restart_all_games", "&7Restarted all games."),
+        DEBUG_PRINTED_DEBUG_MSG("debug.printed_debug_msg", "&7Printed debug message into the log file."),
+
+        SERVER_RESTART_AFTER_GAME("server.restart_after_game", "&7The server will restart after this game."),
+
+        COMMAND_ONLY_PLAYERS("command.only_players", "&cYou are not a player."),
+        COMMAND_TO_MANY_ARGUMENTS("command.to_many_arguments", "&cToo many arguments."),
+        COMMAND_INVALID_MISSILE("command.invalid_missile", "&cThe specified missile was not found."),
+        COMMAND_INVALID_GAME("command.invalid_game", "&cThe specified game was not found."),
+        COMMAND_INVALID_MAP("command.invalid_map", "&cThe specified map was not found."),
+        COMMAND_INVALID_TEAM_NUMBER("command.invalid_team_number", "&cThe team number is invalid. Use \"1\" or \"2\" to specify the target team."),
+        COMMAND_MISSILE_NEEDED("command.missile_needed", "&cPlease specify the missile."),
+        COMMAND_TEAM_NUMBER_NEEDED("command.team_number_needed", "&cPlease specify the team number."),
+
+        GAME_MAP_SELECTED("game.map_selected", "&7A map was selected. Use \"/mw start\" again to start the round."),
+        GAME_PLAYER_JOINED("game.player_joined", "&e%player% &7joined the game (%team%&7)."),
+        GAME_PLAYER_LEFT("game.player_left", "&e%player% &7left the game (%team%&7)."),
+        GAME_LEFT("game.left", "&7You left the running MissileWars game."),
+        GAME_NOT_IN_GAME_AREA("game.not_in_game_area", "&cYou are not in an arena right now."),
+        GAME_NOT_ENTER_ARENA("game.not_enter_arena", "&cYou may not enter this arena right now."),
+        GAME_ALREADY_STARTET("game.already_startet", "&cGame already started."),
+        GAME_CAN_NOT_STARTET("game.can_not_startet", "&cGame cannot be started."),
+
+        LOBBY_TIMER_GAME_STARTS_IN("lobby_timer.game_starts_in", "&7Game starts in &e%seconds% &7seconds."),
+
+        GAME_TIMER_GAME_ENDS_IN_MINUTES("game_timer.game_ends_in_minutes", "&7Game ends in &e%minutes% &7minutes."),
+        GAME_TIMER_GAME_ENDS_IN_SECONDS("game_timer.game_ends_in_seconds", "&7Game ends in &e%seconds% &7seconds."),
+
+        ENDGAME_TIMER_GAME_STARTS_NEW_IN("endgame_timer.game_starts_new_in", "&7Game starts new in &e%seconds% &7seconds."),
+
+        LOBBY_PLAYER_JOINED("lobby.player_joined", "&e%player% &7joined the game &8(&7%players%&8/&7%max_players%&8)"),
+        LOBBY_PLAYER_LEFT("lobby.player_left", "&e%player% &7left the game &8(&7%players%&8/&7%max_players%&8)"),
+        LOBBY_LEFT("lobby.left", "&7You left the MissileWars lobby."),
+        LOBBY_NOT_ENOUGH_PLAYERS("lobby.not_enough_players", "&cThere are not enough players online."),
+        LOBBY_TEAMS_UNEQUAL("lobby.teams_unequal", "&cThe teams are unequal distributed."),
+        LOBBY_GAME_STARTS("lobby.game_starts", "&aThe game starts."),
+
+        TEAM_CHANGE_TEAM_NOT_NOW("team.change_team_not_now", "&cThe game is not in the right state to change your team right now."),
+        TEAM_CHANGE_TEAM_NO_LONGER_NOW("team.change_team_no_longer_now", "&cNow you cannot change your team anymore."),
+        TEAM_ALREADY_IN_TEAM("team.already_in_team", "&cYou are already in this team."),
+        TEAM_UNFAIR_TEAM_SIZE("team.unfair_team_size", "&cChanging the team would make the number of team members more uneven."),
+        TEAM_TEAM_CHANGED("team.team_changed", "&7You are now in %team%&7."),
+        TEAM_TEAM_ASSIGNED("team.team_assigned", "&7You have been assigned to %team%&7."),
+        TEAM_ALL_TEAMMATES_OFFLINE("team.all_teammates_offline", "&7Everyone from %team% &7is offline."),
+        TEAM_TEAM_BUFFED("team.team_buffed", "%team% &7was buffed as one player left the team."),
+        TEAM_TEAM_NERVED("team.team_nerved", "%team% &7was nerved as one player joined the team."),
+        TEAM_HURT_TEAMMATES("team.hurt_teammates", "&cYou must not hurt your teammates."),
+
+        ARENA_SPECTATOR("arena.spectator", "&7You are now a spectator."),
+        ARENA_ARENA_LEAVE("arena.arena_leave", "&cYou are not allowed to leave the arena."),
+        ARENA_MISSILE_PLACE_DENY("arena.missile_place_deny", "&cYou are not allowed to place a missile here."),
+        ARENA_NOT_HIGHER("arena.not_higher", "&cYou can not go higher."),
+        ARENA_KICK_INACTIVITY("arena.kick_inactivity", "&cYou were inactive on MissileWars."),
+
+        DIED_NORMAL("died.normal", "&7%player% &7died."),
+        DIED_EXPLOSION("died.explosion", "&7%player% &7was blown up."),
+
+        FALL_PROTECTION_START("fall_protection.start", "&cFall protection inactive in %seconds% seconds."),
+        FALL_PROTECTION_END("fall_protection.end", "&cFall protection inactive."),
+        FALL_PROTECTION_DEACTIVATED("fall_protection.deactivated", "&cFall protection deactivated by sneaking."),
+
+        GAME_RESULT_TITLE_WON("game_result.title_won", "&7%team%"),
+        GAME_RESULT_SUBTITLE_WON("game_result.subtitle_won", "&6has won the game!"),
+        GAME_RESULT_TITLE_WINNER("game_result.title_winner", "&2Your team"),
+        GAME_RESULT_SUBTITLE_WINNER("game_result.subtitle_winner", "&ahas won!"),
+        GAME_RESULT_TITLE_LOSER("game_result.title_loser", "&4Your team"),
+        GAME_RESULT_SUBTITLE_LOSER("game_result.subtitle_loser", "&chas lost!"),
+        GAME_RESULT_TITLE_DRAW("game_result.title_draw", "&7Draw!"),
+        GAME_RESULT_SUBTITLE_DRAW("game_result.subtitle_draw", ""),
+        GAME_RESULT_MONEY("game_result.money", "&7You received &e%money% &7coins."),
+
+        VOTE_SUCCESS("vote.success", "&7You successfully voted for the map %map%."),
+        VOTE_FINISHED("vote.finished", "&7The map %map% &7was elected."),
+        VOTE_GUI("vote.gui", "Vote for a map"),
+        VOTE_CANT_VOTE("vote.cant_vote", "&cYou can not vote in this game."),
+        VOTE_CHANGE_TEAM_NOT_NOW("vote.change_team_not_now", "&cThe game is not in the right state to vote right now."),
+        VOTE_CHANGE_TEAM_NO_LONGER_NOW("vote.change_team_no_longer_now", "&cA map was already selected."),
+
+        SIGNEDIT_SIGN_CREATED("signedit.sign_created", "&7Sign was successfully created and connected."),
+        SIGNEDIT_SIGN_REMOVED("signedit.sign_removed", "&7You have successfully removed this missilewars sign."),
+        SIGNEDIT_LOBBY_NOT_FOUND("signedit.lobby_not_found", "&cCould not find lobby %input%."),
+        SIGNEDIT_SIGN_REMOVE_DESC("signedit.sign_remove_desc", "&cYou have to be sneaking in order to remove this sign."),
+
+        SIGN_0("sign.0", "•● MissileWars ●•"),
+        SIGN_1("sign.1", "%state%"),
+        SIGN_2("sign.2", "%arena%"),
+        SIGN_3("sign.3", "&7%players%&8/&7%max_players%"),
+        SIGN_STATE_LOBBY("sign.state.lobby", "&aLobby"),
+        SIGN_STATE_INGAME("sign.state.ingame", "&bIngame"),
+        SIGN_STATE_ENDED("sign.state.ended", "&cRestarting..."),
+        SIGN_STATE_ERROR("sign.state.error", "&cError...");
+
+        private final String path;
+        private final String defaultMsg;
+
+        MessageEnum(String path, String defaultMsg) {
+            this.path = path;
+            this.defaultMsg = getDefaultMsg();
+        }
+        
+    }
+
+    private static String getConfigMessage(MessageEnum msg) {
+        return ChatColor.translateAlternateColorCodes('&', cfg.getString(msg.getPath(), 
+                "&cError while reading from messages.yml: '" + msg.getPath() + "'"));
+    }
+
 }

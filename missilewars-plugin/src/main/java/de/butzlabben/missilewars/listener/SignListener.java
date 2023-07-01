@@ -80,9 +80,9 @@ public class SignListener implements Listener {
             signRepository.getSigns().add(sign);
             signRepository.saveData();
 
-            player.sendMessage(Messages.getMessage("signedit.sign_created"));
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.SIGNEDIT_SIGN_CREATED));
         } else {
-            player.sendMessage(Messages.getMessage("signedit.lobby_not_found").replace("%input%", lobbyName));
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.SIGNEDIT_LOBBY_NOT_FOUND).replace("%input%", lobbyName));
             event.setCancelled(true);
         }
     }
@@ -105,9 +105,9 @@ public class SignListener implements Listener {
             repository.getSigns().remove(sign);
             repository.saveData();
 
-            player.sendMessage(Messages.getMessage("signedit.sign_removed"));
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.SIGNEDIT_SIGN_REMOVED));
         } else {
-            player.sendMessage(Messages.getMessage("signedit.sign_remove_desc"));
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.SIGNEDIT_SIGN_REMOVE_DESC));
             event.setCancelled(true);
         }
     }
