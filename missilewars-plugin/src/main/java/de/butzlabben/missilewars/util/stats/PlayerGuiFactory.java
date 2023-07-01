@@ -72,7 +72,9 @@ public class PlayerGuiFactory {
         int currentSize = names.size();
         if (realSize > currentSize) {
             if (Config.isContactAuth()) {
-                player.sendMessage(Messages.getPrefix() + "Fetching not cached player names: " + currentSize + "/" + realSize);
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.STATS_FETCHING_PLAYERS)
+                        .replace("currentSize", Integer.toString(currentSize))
+                        .replace("realSize", Integer.toString(realSize)));
                 ForkJoinPool.commonPool().execute(() -> {
                     List<UUID> missing = getMissingUUIDs();
                     int maxFetches = Math.min(missing.size(), MAX_FETCHES);
