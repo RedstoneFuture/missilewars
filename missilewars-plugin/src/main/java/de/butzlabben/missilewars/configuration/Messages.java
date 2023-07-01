@@ -54,6 +54,7 @@ public class Messages {
 
         // re-save the config with only validated options
         SetupUtil.safeFile(FILE, cfg);
+        cfg = SetupUtil.getLoadedConfig(FILE);
     }
 
     private static void addDefaults() {
@@ -173,7 +174,7 @@ public class Messages {
         STATS_NOT_ENABLED("stats.not_enabled", "&cThe Fight Stats are not enabled!"),
         STATS_FETCHING_PLAYERS("stats.fetching_players", "Fetching not cached player names: %currentSize%/%realSize%"),
         STATS_LOADING_DATA("stats.loading_data", "Loading data..."),
-        STATS_WRONG_DATE_FORMAT("stats.wrong_date_format", "&cPlease use the date format 'dd.MM.yyyy'."),
+        STATS_WRONG_DATE_FORMAT("stats.wrong_date_format", "&cPlease use the date format \"dd.MM.yyyy\"."),
         STATS_TOO_FEW_GAMES("stats.too_few_games", "&cPlease play more than 10 games to enable the Fight Stats for you.");
 
         private final String path;
@@ -181,7 +182,7 @@ public class Messages {
 
         MessageEnum(String path, String defaultMsg) {
             this.path = path;
-            this.defaultMsg = getDefaultMsg();
+            this.defaultMsg = defaultMsg;
         }
         
     }

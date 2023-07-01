@@ -63,6 +63,7 @@ public class Config {
 
         // re-save the config with only validated options
         SetupUtil.safeFile(FILE, cfg);
+        cfg = SetupUtil.getLoadedConfig(FILE);
     }
 
     private static void addDefaults() {
