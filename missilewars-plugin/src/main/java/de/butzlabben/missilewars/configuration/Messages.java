@@ -172,7 +172,7 @@ public class Messages {
         SIGN_STATE_ERROR("sign.state.error", "&cError..."),
 
         STATS_NOT_ENABLED("stats.not_enabled", "&cThe Fight Stats are not enabled!"),
-        STATS_FETCHING_PLAYERS("stats.fetching_players", "Fetching not cached player names: %currentSize%/%realSize%"),
+        STATS_FETCHING_PLAYERS("stats.fetching_players", "Fetching not cached player names: %current_size%/%real_size%"),
         STATS_LOADING_DATA("stats.loading_data", "Loading data..."),
         STATS_WRONG_DATE_FORMAT("stats.wrong_date_format", "&cPlease use the date format \"dd.MM.yyyy\"."),
         STATS_TOO_FEW_GAMES("stats.too_few_games", "&cPlease play more than 10 games to enable the Fight Stats for you.");
