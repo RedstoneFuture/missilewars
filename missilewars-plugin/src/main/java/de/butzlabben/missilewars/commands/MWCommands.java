@@ -98,24 +98,24 @@ public class MWCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length < 1) {
-            player.sendMessage(Messages.getPrefix() + "§cMissile needed.");
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_MISSILE_NEEDED));
             return;
         }
 
         if (args.length > 1) {
-            player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
             return;
         }
 
         Game game = GameManager.getInstance().getGame(player.getLocation());
         if (game == null) {
-            player.sendMessage(Messages.getMessage("not_in_arena"));
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_IN_GAME_AREA));
             return;
         }
 
         Missile missile = game.getArena().getMissileConfiguration().getMissileFromName(args[0]);
         if (missile == null) {
-            player.sendMessage(Messages.getPrefix() + "§cUnknown missile.");
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_MISSILE));
             return;
         }
 
@@ -132,7 +132,7 @@ public class MWCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length > 1) {
-            player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
             return;
         }
 
@@ -141,19 +141,19 @@ public class MWCommands extends BaseCommand {
         if (args.length == 1) {
             game = GameManager.getInstance().getGame(args[0]);
             if (game == null) {
-                player.sendMessage(Messages.getPrefix() + "§cGame not found.");
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_GAME));
                 return;
             }
         } else {
             game = GameManager.getInstance().getGame(player.getLocation());
             if (game == null) {
-                player.sendMessage(Messages.getMessage("not_in_arena"));
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_IN_GAME_AREA));
                 return;
             }
         }
 
         if (game.getState() != GameState.LOBBY) {
-            player.sendMessage(Messages.getPrefix() + "§cGame already started");
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_ALREADY_STARTET));
             return;
         }
 
@@ -161,7 +161,7 @@ public class MWCommands extends BaseCommand {
             game.startGame();
         else {
             if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING && game.getArena() == null) {
-                player.sendMessage(Messages.getPrefix() + "§cGame cannot be started");
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_CAN_NOT_STARTET));
             } else {
                 Map.Entry<String, Integer> mostVotes = null;
                 for (Map.Entry<String, Integer> arena : game.getVotes().entrySet()) {
@@ -175,7 +175,7 @@ public class MWCommands extends BaseCommand {
                 Optional<Arena> arena = Arenas.getFromName(mostVotes.getKey());
                 if (arena.isEmpty()) throw new IllegalStateException("Voted arena is not present");
                 game.setArena(arena.get());
-                player.sendMessage(Messages.getPrefix() + "A map was elected. Use \"/mw start\" again to start the round");
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_MAP_SELECTED));
             }
         }
     }
@@ -189,7 +189,7 @@ public class MWCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length > 1) {
-            player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
             return;
         }
 
@@ -198,13 +198,13 @@ public class MWCommands extends BaseCommand {
         if (args.length == 1) {
             game = GameManager.getInstance().getGame(args[0]);
             if (game == null) {
-                player.sendMessage(Messages.getPrefix() + "§cGame not found.");
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_GAME));
                 return;
             }
         } else {
             game = GameManager.getInstance().getGame(player.getLocation());
             if (game == null) {
-                player.sendMessage(Messages.getMessage("not_in_arena"));
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_IN_GAME_AREA));
                 return;
             }
         }
@@ -223,7 +223,7 @@ public class MWCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length > 1) {
-            player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
             return;
         }
 
@@ -232,19 +232,19 @@ public class MWCommands extends BaseCommand {
         if (args.length == 1) {
             game = GameManager.getInstance().getGame(args[0]);
             if (game == null) {
-                player.sendMessage(Messages.getPrefix() + "§cGame not found.");
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_GAME));
                 return;
             }
         } else {
             game = GameManager.getInstance().getGame(player.getLocation());
             if (game == null) {
-                player.sendMessage(Messages.getMessage("not_in_arena"));
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_IN_GAME_AREA));
                 return;
             }
         }
 
         GameManager.getInstance().getGames().values().forEach(Game::appendRestart);
-        sender.sendMessage(Messages.getMessage("restart_after_game"));
+        sender.sendMessage(Messages.getMessage(true, Messages.MessageEnum.SERVER_RESTART_AFTER_GAME));
     }
 
     @Subcommand("reload")
@@ -256,14 +256,15 @@ public class MWCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length > 0) {
-            player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
             return;
         }
 
         Config.load();
         Messages.load();
         Arenas.load();
-        sender.sendMessage(Messages.getPrefix() + "Reloaded configs");
+        
+        player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.DEBUG_RELOAD_CONFIG));
     }
 
     @Subcommand("debug")
@@ -275,7 +276,7 @@ public class MWCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length > 0) {
-            player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
             return;
         }
 
@@ -285,7 +286,8 @@ public class MWCommands extends BaseCommand {
             Logger.NORMAL.log("Printing state for arena " + game.getArena().getName() + ". Number: " + i);
             Logger.NORMAL.log(game.toString());
         }
-        sender.sendMessage(Messages.getPrefix() + "Printed debug message into the log file");
+        
+        player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.DEBUG_PRINTED_DEBUG_MSG));
     }
 
     @Subcommand("restartall")
@@ -297,19 +299,22 @@ public class MWCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length > 0) {
-            player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
             return;
         }
-
-        sender.sendMessage(Messages.getPrefix() + "§cWarning - Restarting all games. This may take a while");
+        
+        if (GameManager.getInstance().getGames().size() > 10) {
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.DEBUG_RESTART_ALL_GAMES_WARN));
+        }
+        
         GameManager.getInstance().restartAll();
-        sender.sendMessage(Messages.getPrefix() + "Restarted all games.");
+        player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.DEBUG_RESTART_ALL_GAMES));
     }
 
     static boolean senderIsPlayer(CommandSender sender) {
         if (sender instanceof Player) return true;
-
-        sender.sendMessage(Messages.getPrefix() + "§cYou are not a player");
+        
+        sender.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_ONLY_PLAYERS));
         return false;
     }
 

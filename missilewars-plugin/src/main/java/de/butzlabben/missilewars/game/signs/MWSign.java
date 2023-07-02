@@ -62,9 +62,11 @@ public class MWSign {
         }
         Game game = GameManager.getInstance().getGame(getLobby());
         List<String> lines = new ArrayList<>();
-        for (int i = 0; i < 4; i++) {
-            lines.add(replace(Messages.getNativeMessage("sign." + i), game));
-        }
+        lines.add(replace(Messages.getMessage(false, Messages.MessageEnum.SIGN_0), game));
+        lines.add(replace(Messages.getMessage(false, Messages.MessageEnum.SIGN_1), game));
+        lines.add(replace(Messages.getMessage(false, Messages.MessageEnum.SIGN_2), game));
+        lines.add(replace(Messages.getMessage(false, Messages.MessageEnum.SIGN_3), game));
+        
         if (game == null) {
             Logger.WARN.log("Could not find specifed arena \"" + getLobby() + "\" for sign at: " + getLocation().toString());
         }
@@ -86,20 +88,20 @@ public class MWSign {
     }
 
     private String replace(String line, Game game) {
-        String state = Messages.getNativeMessage("sign.state.error");
+        String state = Messages.getMessage(false, Messages.MessageEnum.SIGN_STATE_ERROR);
         String name = "No game";
         if (game != null) {
             switch (game.getState()) {
                 case LOBBY:
-                    state = Messages.getNativeMessage("sign.state.lobby");
+                    state = Messages.getMessage(false, Messages.MessageEnum.SIGN_STATE_LOBBY);
                     name = game.getLobby().getDisplayName();
                     break;
                 case INGAME:
-                    state = Messages.getNativeMessage("sign.state.ingame");
+                    state = Messages.getMessage(false, Messages.MessageEnum.SIGN_STATE_INGAME);
                     name = game.getArena().getDisplayName();
                     break;
                 case END:
-                    state = Messages.getNativeMessage("sign.state.ended");
+                    state = Messages.getMessage(false, Messages.MessageEnum.SIGN_STATE_ENDED);
                     name = game.getArena().getDisplayName();
                     break;
             }

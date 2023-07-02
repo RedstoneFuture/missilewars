@@ -74,7 +74,7 @@ public class EndListener extends GameBoundListener {
 
         if (getGame().isSpectatorsMax()) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(Messages.getMessage("not_enter_arena"));
+            event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_ENTER_ARENA));
             return;
         }
 

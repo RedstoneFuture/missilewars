@@ -169,7 +169,7 @@ public class GameListener extends GameBoundListener {
 
         // same team
         if (team == getGame().getPlayer(player).getTeam()) {
-            shooter.sendMessage(Messages.getMessage("hurt_teammates"));
+            shooter.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_HURT_TEAMMATES));
             event.setCancelled(true);
         }
     }
@@ -212,9 +212,9 @@ public class GameListener extends GameBoundListener {
             EntityDamageEvent.DamageCause damageCause = player.getLastDamageCause().getCause();
 
             if (damageCause == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION || damageCause == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
-                deathBroadcast = Messages.getNativeMessage("died_explosion").replace("%player%", player.getDisplayName());
+                deathBroadcast = Messages.getMessage(true, Messages.MessageEnum.DIED_EXPLOSION).replace("%player%", player.getDisplayName());
             } else {
-                deathBroadcast = Messages.getNativeMessage("died").replace("%player%", player.getDisplayName());
+                deathBroadcast = Messages.getMessage(true, Messages.MessageEnum.DIED_NORMAL).replace("%player%", player.getDisplayName());
             }
 
             getGame().broadcast(deathBroadcast);
@@ -254,7 +254,7 @@ public class GameListener extends GameBoundListener {
         int toY = event.getTo().getBlockY();
         if (toY > getGame().getArena().getMaxHeight()) {
             player.teleport(event.getFrom());
-            player.sendMessage(Messages.getMessage("not_higher"));
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.ARENA_NOT_HIGHER));
         } else if (toY < getGame().getArena().getDeathHeight()) {
             player.setLastDamageCause(new EntityDamageEvent(player, EntityDamageEvent.DamageCause.FALL, 20));
             player.damage(20.0D);
@@ -265,7 +265,7 @@ public class GameListener extends GameBoundListener {
 
         if (!getGame().isInGameArea(event.getTo())) {
             if (to != null) Game.knockbackEffect(player, from, to);
-            player.sendMessage(Messages.getMessage("arena_leave"));
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.ARENA_ARENA_LEAVE));
         }
     }
 
@@ -278,7 +278,7 @@ public class GameListener extends GameBoundListener {
         if ((!getGame().getLobby().isJoinOngoingGame()) || (getGame().isPlayersMax())) {
             if (getGame().isSpectatorsMax()) {
                 event.setCancelled(true);
-                event.getPlayer().sendMessage(Messages.getMessage("not_enter_arena"));
+                event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_ENTER_ARENA));
                 return;
             }
             getGame().playerJoinInGame(player, true);

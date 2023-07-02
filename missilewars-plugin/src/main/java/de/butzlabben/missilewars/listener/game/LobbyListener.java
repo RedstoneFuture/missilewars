@@ -70,7 +70,7 @@ public class LobbyListener extends GameBoundListener {
 
             // too late for team change:
             if (getGame().getTimer().getSeconds() < 10) {
-                player.sendMessage(Messages.getMessage("change_team_not_now"));
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_CHANGE_TEAM_NO_LONGER_NOW));
                 return;
             }
 
@@ -121,7 +121,7 @@ public class LobbyListener extends GameBoundListener {
 
         if (getGame().isPlayersMax()) {
             event.setCancelled(true);
-            event.getPlayer().sendMessage(Messages.getMessage("not_enter_arena"));
+            event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_ENTER_ARENA));
             return;
         }
 

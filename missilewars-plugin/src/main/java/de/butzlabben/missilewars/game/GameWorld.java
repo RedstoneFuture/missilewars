@@ -67,7 +67,7 @@ public class GameWorld {
         synchronized (lock) {
             Bukkit.getOnlinePlayers().forEach(p -> {
                 if (p.isDead() && p.getWorld().getName().equals(worldName)) {
-                    p.kickPlayer(Messages.getMessage("kick_inactivity"));
+                    p.kickPlayer(Messages.getMessage(true, Messages.MessageEnum.ARENA_KICK_INACTIVITY));
                 }
             });
         }

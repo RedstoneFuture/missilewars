@@ -322,7 +322,7 @@ public class Game {
             Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> teleportToArenaSpectatorSpawn(player), 2);
             Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> player.setGameMode(GameMode.SPECTATOR), 35);
 
-            player.sendMessage(Messages.getMessage("spectator"));
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.ARENA_SPECTATOR));
             player.setDisplayName("§7" + player.getName() + "§r");
 
         } else {
@@ -332,12 +332,22 @@ public class Game {
 
             Team team = getNextTeam();
             team.addMember(mwPlayer);
-            player.sendMessage(Messages.getMessage("team_assigned").replace("%team%", team.getFullname()));
-
-            broadcast(Messages.getMessage("lobby_joined")
-                    .replace("%max_players%", Integer.toString(getLobby().getMaxSize()))
-                    .replace("%players%", Integer.toString(getPlayers().values().size()))
-                    .replace("%player%", player.getName()));
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_TEAM_ASSIGNED).replace("%team%", team.getFullname()));
+            
+            String message = null;
+            if (state == GameState.LOBBY) {
+                message = Messages.getMessage(true, Messages.MessageEnum.LOBBY_PLAYER_JOINED);
+            } else if (state == GameState.INGAME) {
+                message = Messages.getMessage(true, Messages.MessageEnum.GAME_PLAYER_JOINED);
+            }
+            
+            if (message != null) {
+                broadcast(message.replace("%max_players%", Integer.toString(getLobby().getMaxSize()))
+                        .replace("%players%", Integer.toString(getPlayers().values().size()))
+                        .replace("%player%", player.getName())
+                        .replace("%team%", team.getFullname()));
+            }
+            
         }
 
         player.setScoreboard(getScoreboard());
@@ -368,27 +378,49 @@ public class Game {
     public void playerLeaveFromGame(MWPlayer mwPlayer) {
         Player player = mwPlayer.getPlayer();
         Team team = mwPlayer.getTeam();
+        boolean playerWasTeamMember = false;
 
         if (state == GameState.INGAME) {
             BukkitTask task = getPlayerTasks().get(mwPlayer.getUuid());
             if (task != null) task.cancel();
-
-            if (team != null) {
-                broadcast(Messages.getMessage("player_left")
-                        .replace("%team%", team.getFullname())
-                        .replace("%player%", player.getName()));
-            }
         }
-
+        
         PlayerDataProvider.getInstance().loadInventory(player);
 
         if (team != null) {
+            playerWasTeamMember = true;
             team.removeMember(mwPlayer);
             if (state == GameState.INGAME) checkTeamSize(team);
         }
 
-        player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
         removePlayer(mwPlayer);
+        
+        if (playerWasTeamMember) {
+
+            String message = null;
+            if (state == GameState.LOBBY) {
+                message = Messages.getMessage(true, Messages.MessageEnum.LOBBY_PLAYER_LEFT);
+            } else if (state == GameState.INGAME) {
+                message = Messages.getMessage(true, Messages.MessageEnum.GAME_PLAYER_LEFT);
+            }
+            
+            if (message != null) {
+                broadcast(message.replace("%max_players%", Integer.toString(getLobby().getMaxSize()))
+                        .replace("%players%", Integer.toString(getPlayers().values().size()))
+                        .replace("%player%", player.getName())
+                        .replace("%team%", team.getFullname()));
+            }
+
+        }
+
+        player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
+
+        if (state == GameState.LOBBY) {
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.LOBBY_LEFT).replace("%lobby_name%", getLobby().getDisplayName()));
+        } else if (state == GameState.INGAME) {
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_LEFT).replace("%arena_name%", arena.getDisplayName()));
+        }
+        
     }
 
     /**
@@ -411,7 +443,7 @@ public class Game {
                 sendGameResult();
                 stopGame();
             });
-            broadcast(Messages.getMessage("team_offline").replace("%team%", team.getFullname()));
+            broadcast(Messages.getMessage(true, Messages.MessageEnum.TEAM_ALL_TEAMMATES_OFFLINE).replace("%team%", team.getFullname()));
         }
     }
 
@@ -627,14 +659,14 @@ public class Game {
         boolean isOnlyBetweenSpawnPlaceable = this.arena.getMissileConfiguration().isOnlyBetweenSpawnPlaceable();
         if (isOnlyBetweenSpawnPlaceable) {
             if (!isInInnerGameArea(player.getLocation())) {
-                player.sendMessage(Messages.getMessage("missile_place_deny"));
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.ARENA_MISSILE_PLACE_DENY));
                 return;
             }
         }
 
         Missile missile = this.arena.getMissileConfiguration().getMissileFromName(itemStack.getItemMeta().getDisplayName());
         if (missile == null) {
-            player.sendMessage(Messages.getMessage("invalid_missile"));
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_MISSILE));
             return;
         }
         itemStack.setAmount(itemStack.getAmount() - 1);
@@ -689,7 +721,7 @@ public class Game {
         createInnerGameArea();
 
         if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPVOTING) {
-            this.broadcast(Messages.getMessage("vote.finished").replace("%map%", this.arena.getDisplayName()));
+            this.broadcast(Messages.getMessage(true, Messages.MessageEnum.VOTE_FINISHED).replace("%map%", this.arena.getDisplayName()));
         }
         applyForAllPlayers(player -> player.getInventory().setItem(4, new ItemStack(Material.AIR)));
 
@@ -782,16 +814,16 @@ public class Game {
         String subTitle;
 
         if (team1.getGameResult() == GameResult.WIN) {
-            title = Messages.getNativeMessage("game_result.title_won").replace("%team%", team1.getName());
-            subTitle = Messages.getNativeMessage("game_result.subtitle_won");
+            title = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_TITLE_WON).replace("%team%", team1.getName());
+            subTitle = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_SUBTITLE_WON);
 
         } else if (team2.getGameResult() == GameResult.WIN) {
-            title = Messages.getNativeMessage("game_result.title_won").replace("%team%", team2.getName());
-            subTitle = Messages.getNativeMessage("game_result.subtitle_won");
+            title = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_TITLE_WON).replace("%team%", team2.getName());
+            subTitle = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_SUBTITLE_WON);
 
         } else {
-            title = Messages.getNativeMessage("game_result.title_draw");
-            subTitle = Messages.getNativeMessage("game_result.subtitle_draw");
+            title = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_TITLE_DRAW);
+            subTitle = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_SUBTITLE_DRAW);
 
         }
         

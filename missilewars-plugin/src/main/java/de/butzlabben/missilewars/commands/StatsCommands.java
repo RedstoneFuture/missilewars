@@ -182,7 +182,7 @@ public class StatsCommands extends BaseCommand {
 
     private StatsFetcher getFetcher(Player player, String[] args) {
         if (!Config.isFightStatsEnabled()) {
-            player.sendMessage(Messages.getPrefix() + "§cFightStats are not enabled!");
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.STATS_NOT_ENABLED));
             return null;
         }
         Date from = new Date(0);
@@ -191,7 +191,7 @@ public class StatsCommands extends BaseCommand {
             try {
                 from = format.parse(args[0]);
             } catch (ParseException e) {
-                player.sendMessage(Messages.getPrefix() + "§cPlease use the date format dd.MM.yyyy");
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.STATS_WRONG_DATE_FORMAT));
                 return null;
             }
             if (args.length > 1) {
@@ -201,10 +201,10 @@ public class StatsCommands extends BaseCommand {
 
         StatsFetcher fetcher = new StatsFetcher(from, arena);
         if (fetcher.getGameCount() < 10) {
-            player.sendMessage(Messages.getPrefix() + "Please play more than 10 games to enable fight stats");
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.STATS_TOO_FEW_GAMES));
             return null;
         }
-        player.sendMessage(Messages.getPrefix() + "Loading data...");
+        player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.STATS_LOADING_DATA));
         return fetcher;
     }
 }

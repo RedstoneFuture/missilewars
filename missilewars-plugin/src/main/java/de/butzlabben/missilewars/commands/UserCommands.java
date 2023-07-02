@@ -50,40 +50,40 @@ public class UserCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length > 0) {
-            player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
             return;
         }
 
         Game game = GameManager.getInstance().getGame(player.getLocation());
         if (game == null) {
-            player.sendMessage(Messages.getMessage("not_in_arena"));
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_IN_GAME_AREA));
             return;
         }
 
         if (game.getState() != GameState.LOBBY) {
-            player.sendMessage(Messages.getPrefix() + "§cThe game is not in the right state to vote right now");
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_CHANGE_TEAM_NOT_NOW));
             return;
         }
 
         if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING) {
-            player.sendMessage(Messages.getPrefix() + "§cYou can't vote in this game");
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_CANT_VOTE));
             return;
         }
 
         if (game.getArena() != null) {
-            player.sendMessage(Messages.getPrefix() + "§cA map was already elected");
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_CHANGE_TEAM_NO_LONGER_NOW));
             return;
         }
 
         String arenaName = args[0];
         Optional<Arena> arena = Arenas.getFromName(arenaName);
         if (!game.getVotes().containsKey(arenaName) || arena.isEmpty()) {
-            player.sendMessage(Messages.getPrefix() + "§cNo map with this title was found");
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_MAP));
             return;
         }
 
         game.getVotes().put(arenaName, game.getVotes().get(arenaName) + 1);
-        player.sendMessage(Messages.getMessage("vote.success").replace("%map%", arena.get().getDisplayName()));
+        player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_SUCCESS).replace("%map%", arena.get().getDisplayName()));
     }
 
     @Subcommand("change")
@@ -95,45 +95,51 @@ public class UserCommands extends BaseCommand {
         Player player = (Player) sender;
         
         if (args.length < 1) {
-            player.sendMessage(Messages.getPrefix() + "§cNumber needed.");
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TEAM_NUMBER_NEEDED));
             return;
         }
 
         if (args.length > 1) {
-            player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
             return;
         }
 
         Game game = GameManager.getInstance().getGame(player.getLocation());
         if (game == null) {
-            player.sendMessage(Messages.getMessage("not_in_arena"));
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_IN_GAME_AREA));
             return;
         }
-
+        
         if (game.getState() != GameState.LOBBY) {
-            player.sendMessage(Messages.getPrefix() + "§cThe game is not in the right state to change your team right now");
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_CHANGE_TEAM_NOT_NOW));
             return;
         }
-
-        try {
-            MWPlayer mwPlayer = game.getPlayer(player);
-            int teamNumber = Integer.parseInt(args[0]);
-            Team to = teamNumber == 1 ? game.getTeam1() : game.getTeam2();
-            int otherCount = to.getEnemyTeam().getMembers().size() - 1;
-            int toCount = to.getMembers().size() + 1;
-            int diff = toCount - otherCount;
-            if (diff > 1) {
-                player.sendMessage(Messages.getMessage("cannot_change_difference"));
-                return;
-            }
-
-            // Remove the player from the old team and add him to the new team
-            to.addMember(mwPlayer);
-
-            player.sendMessage(Messages.getMessage("team_changed").replace("%team%", to.getFullname()));
-        } catch (NumberFormatException exception) {
-            player.sendMessage(Messages.getPrefix() + "§c/mw change <1|2>");
+        
+        if (!(args[0].equalsIgnoreCase("1") || args[0].equalsIgnoreCase("2"))) {
+            sender.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_TEAM_NUMBER));
+            return;
         }
+        
+        MWPlayer mwPlayer = game.getPlayer(player);
+        int teamNumber = Integer.parseInt(args[0]);
+        Team to = teamNumber == 1 ? game.getTeam1() : game.getTeam2();
+        
+        // Is the same team?
+        if (to == mwPlayer.getTeam()) {
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_ALREADY_IN_TEAM));
+            return;
+        }
+        
+        // Would the number of team members be too far apart?
+        if (to != game.getNextTeam()) {
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_UNFAIR_TEAM_SIZE));
+            return;
+        }
+        
+        // Remove the player from the old team and add him to the new team
+        to.addMember(mwPlayer);
+
+        player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_TEAM_CHANGED).replace("%team%", to.getFullname()));
     }
 
     @Subcommand("quit|leave")
@@ -145,13 +151,13 @@ public class UserCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length > 0) {
-            player.sendMessage(Messages.getPrefix() + "§cToo many arguments.");
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
             return;
         }
 
         Game game = GameManager.getInstance().getGame(player.getLocation());
         if (game == null) {
-            player.sendMessage(Messages.getMessage("not_in_arena"));
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_IN_GAME_AREA));
             return;
         }
 
