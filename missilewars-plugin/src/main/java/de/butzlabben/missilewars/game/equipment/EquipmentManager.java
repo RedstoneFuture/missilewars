@@ -36,10 +36,10 @@ public class EquipmentManager {
 
     private final Game game;
 
+    private final MissileGameEquipment missileEquipment;
+    private final SpecialGameEquipment specialEquipment;
     private ItemStack customBow;
     private ItemStack customPickaxe;
-    private MissileGameEquipment missileEquipment;
-    private SpecialGameEquipment specialEquipment;
 
     
     public EquipmentManager(Game game) {
