@@ -30,8 +30,7 @@ import de.butzlabben.missilewars.event.GameStopEvent;
 import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
-import de.butzlabben.missilewars.game.equipment.MissileGameEquipment;
-import de.butzlabben.missilewars.game.equipment.SpecialGameEquipment;
+import de.butzlabben.missilewars.game.equipment.EquipmentManager;
 import de.butzlabben.missilewars.game.misc.MotdManager;
 import de.butzlabben.missilewars.game.misc.ScoreboardManager;
 import de.butzlabben.missilewars.game.missile.Missile;
@@ -55,13 +54,11 @@ import de.butzlabben.missilewars.util.serialization.Serializer;
 import lombok.Getter;
 import lombok.ToString;
 import org.bukkit.*;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
@@ -101,10 +98,7 @@ public class Game {
     private Arena arena;
     private ScoreboardManager scoreboardManager;
     private GameBoundListener listener;
-    private ItemStack customBow;
-    private ItemStack customPickaxe;
-    private MissileGameEquipment missileEquipment;
-    private SpecialGameEquipment specialEquipment;
+    private EquipmentManager equipmentManager;
 
     public Game(Lobby lobby) {
         Logger.BOOT.log("Loading lobby " + lobby.getName());
@@ -177,8 +171,7 @@ public class Game {
         scoreboardManager = new ScoreboardManager(this);
         scoreboardManager.createScoreboard();
 
-        missileEquipment = new MissileGameEquipment(this);
-        specialEquipment = new SpecialGameEquipment(this);
+        equipmentManager = new EquipmentManager(this);
 
         Logger.DEBUG.log("Making game ready");
         ++fights;
@@ -188,7 +181,7 @@ public class Game {
         FightStats.checkTables();
         Logger.DEBUG.log("Fights: " + fights);
 
-        createGameItems();
+        equipmentManager.createGameItems();
     }
 
     private void updateGameListener(GameBoundListener newListener) {
@@ -553,77 +546,11 @@ public class Game {
 
         player.teleport(mwPlayer.getTeam().getSpawn());
 
-        sendGameItems(player, false);
+        equipmentManager.sendGameItems(player, false);
         setPlayerAttributes(player);
 
         playerTasks.put(player.getUniqueId(),
                 Bukkit.getScheduler().runTaskTimer(MissileWars.getInstance(), mwPlayer, 40, 20));
-    }
-
-    /**
-     * This method is used to create the game items for the player kit.
-     */
-    private void createGameItems() {
-
-        // Will it be used ?
-        if (this.getArena().getSpawn().isSendBow() || this.getArena().getRespawn().isSendBow()) {
-
-            ItemStack bow = new ItemStack(Material.BOW);
-            bow.addEnchantment(Enchantment.ARROW_FIRE, 1);
-            bow.addEnchantment(Enchantment.ARROW_DAMAGE, 1);
-            bow.addEnchantment(Enchantment.ARROW_KNOCKBACK, 1);
-            ItemMeta bowMeta = bow.getItemMeta();
-            bowMeta.setUnbreakable(true);
-            bowMeta.addEnchant(Enchantment.DAMAGE_ALL, 6, true);
-            bow.setItemMeta(bowMeta);
-            this.customBow = bow;
-        }
-
-        // Will it be used ?
-        if (this.getArena().getSpawn().isSendPickaxe() || this.getArena().getRespawn().isSendPickaxe()) {
-
-            ItemStack pickaxe = new ItemStack(Material.IRON_PICKAXE);
-            ItemMeta pickaxeMeta = pickaxe.getItemMeta();
-            pickaxeMeta.setUnbreakable(true);
-            pickaxe.setItemMeta(pickaxeMeta);
-            this.customPickaxe = pickaxe;
-        }
-
-    }
-
-    /**
-     * This method gives the player the starter item set, based on the config.yml
-     * configuration for spawn and respawn.
-     *
-     * @param player the target player
-     * @param isRespawn true, if the player should receive it after a respawn
-     */
-    public void sendGameItems(Player player, boolean isRespawn) {
-
-        if (isRespawn) {
-            if (getArena().isKeepInventory()) return;
-
-        } else {
-            // clear inventory
-            player.getInventory().clear();
-        }
-
-        // send armor
-        ItemStack[] armor = getPlayer(player).getTeam().getTeamArmor();
-        player.getInventory().setArmorContents(armor);
-
-        // send kit items
-        if (isRespawn) {
-
-            if (this.getArena().getRespawn().isSendBow()) player.getInventory().addItem(this.customBow);
-            if (this.getArena().getRespawn().isSendPickaxe()) player.getInventory().addItem(this.customPickaxe);
-
-        } else {
-
-            if (this.getArena().getSpawn().isSendBow()) player.getInventory().addItem(this.customBow);
-            if (this.getArena().getSpawn().isSendPickaxe()) player.getInventory().addItem(this.customPickaxe);
-            
-        }
     }
 
     /**

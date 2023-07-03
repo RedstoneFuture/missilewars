@@ -183,7 +183,7 @@ public class GameListener extends GameBoundListener {
 
         if (team != null) {
             event.setRespawnLocation(team.getSpawn());
-            getGame().sendGameItems(player, true);
+            getGame().getEquipmentManager().sendGameItems(player, true);
             getGame().setPlayerAttributes(player);
             getGame().getPlayer(player).getRandomGameEquipment().resetPlayerInterval();
 

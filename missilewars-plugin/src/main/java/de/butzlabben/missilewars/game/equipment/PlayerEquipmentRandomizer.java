@@ -37,6 +37,7 @@ public class PlayerEquipmentRandomizer {
     private final MWPlayer mwPlayer;
     private final Game game;
     private final Arena arena;
+    private final EquipmentManager equipmentManager;
 
     private final int maxGameDuration;
     private final Random randomizer;
@@ -51,6 +52,7 @@ public class PlayerEquipmentRandomizer {
         this.mwPlayer = mwPlayer;
         this.game = game;
         this.arena = game.getArena();
+        this.equipmentManager = game.getEquipmentManager();
         randomizer = new Random();
         maxGameDuration = game.getArena().getGameDuration() * 60;
 
@@ -112,15 +114,15 @@ public class PlayerEquipmentRandomizer {
         // after 2 missile items, you get one special item
         if (sendEquipmentCounter >= 2) {
 
-            randomID = randomizer.nextInt(game.getSpecialEquipment().getSpecialEquipmentList().size());
-            item = game.getSpecialEquipment().getSpecialEquipmentList().get(randomID);
+            randomID = randomizer.nextInt(equipmentManager.getSpecialEquipment().getSpecialEquipmentList().size());
+            item = equipmentManager.getSpecialEquipment().getSpecialEquipmentList().get(randomID);
 
             sendEquipmentCounter = 0;
 
         } else {
 
-            randomID = randomizer.nextInt(game.getMissileEquipment().getMissileEquipmentList().size());
-            Missile missile = game.getMissileEquipment().getMissileEquipmentList().get(randomID);
+            randomID = randomizer.nextInt(equipmentManager.getMissileEquipment().getMissileEquipmentList().size());
+            Missile missile = equipmentManager.getMissileEquipment().getMissileEquipmentList().get(randomID);
             item = missile.getItem();
 
         }
