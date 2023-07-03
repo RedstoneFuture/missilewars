@@ -117,7 +117,7 @@ public class Config {
 
         cfg.addDefault("sidebar.title", "&eInfo ●&6•");
         cfg.addDefault("sidebar.member_list_style", "%team_color%%playername%");
-        cfg.addDefault("sidebar.member_list_max", "4");
+        cfg.addDefault("sidebar.member_list_max", 4);
 
         if (isNewConfig) {
             List<String> sidebarList = new ArrayList<>();
