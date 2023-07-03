@@ -69,7 +69,7 @@ public class LobbyListener extends GameBoundListener {
             if (displayName.equals(getGame().getPlayer(player).getTeam().getFullname())) return;
 
             // too late for team change:
-            if (getGame().getTimer().getSeconds() < 10) {
+            if (getGame().getTaskManager().getTimer().getSeconds() < 10) {
                 player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_CHANGE_TEAM_NO_LONGER_NOW));
                 return;
             }

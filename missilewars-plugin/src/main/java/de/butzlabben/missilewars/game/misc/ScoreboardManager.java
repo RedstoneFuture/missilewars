@@ -228,11 +228,15 @@ public class ScoreboardManager {
      */
     private String replaceScoreboardPlaceholders(String text) {
 
-        String time;
+        String time = "";
         if (game.getState() == GameState.LOBBY) {
+            // Show the planned duration of the next game:
             time = Integer.toString(game.getArena().getGameDuration());
-        } else {
-            time = Integer.toString(game.getTimer().getSeconds() / 60);
+        } else if (game.getState() == GameState.INGAME) {
+            // Show the remaining duration of the running game:
+            time = Integer.toString(game.getTaskManager().getTimer().getSeconds() / 60);
+        } else if (game.getState() == GameState.END) {
+            time = Integer.toString(game.getRemainingGameDuration() / 60);
         }
 
 

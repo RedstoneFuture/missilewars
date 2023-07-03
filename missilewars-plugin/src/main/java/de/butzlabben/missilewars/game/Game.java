@@ -98,6 +98,7 @@ public class Game {
     private GameBoundListener listener;
     private EquipmentManager equipmentManager;
     private TaskManager taskManager;
+    private int remainingGameDuration;
 
     public Game(Lobby lobby) {
         Logger.BOOT.log("Loading lobby " + lobby.getName());
@@ -246,7 +247,10 @@ public class Game {
             teleportToArenaSpectatorSpawn(player);
 
         }
-
+        
+        // Save the remaining game duration.
+        remainingGameDuration = taskManager.getTimer().getSeconds();
+        
         taskManager.stopTimer();
         updateGameListener(new EndListener(this));
         taskManager.setTimer(new EndTimer(this));
@@ -436,14 +440,12 @@ public class Game {
     }
 
     public void resetGame() {
-        HandlerList.unregisterAll(listener);
-
-        taskManager = new TaskManager(this);
-
         applyForAllPlayers(this::teleportToAfterGameSpawn);
+        
+        HandlerList.unregisterAll(listener);
+        taskManager.stopTimer();
 
         if (gameWorld != null) {
-            gameWorld.sendPlayersBack();
             gameWorld.unload();
             gameWorld.delete();
         }

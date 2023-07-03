@@ -172,7 +172,7 @@ public class PlayerEquipmentRandomizer {
             return DEFAULT_FACTOR_BY_GAME_TIME;
         }
 
-        int seconds = game.getTimer().getSeconds();
+        int seconds = game.getTaskManager().getTimer().getSeconds();
         for (int i = seconds; i <= maxGameDuration; i++) {
             if (arena.getInterval().getIntervalFactorByGameTime().containsKey(Integer.toString(i))) {
                 return arena.getInterval().getIntervalFactorByGameTime().get(Integer.toString(i));
