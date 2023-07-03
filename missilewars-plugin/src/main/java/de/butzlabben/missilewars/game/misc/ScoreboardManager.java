@@ -236,6 +236,7 @@ public class ScoreboardManager {
             // Show the remaining duration of the running game:
             time = Integer.toString(game.getTaskManager().getTimer().getSeconds() / 60);
         } else if (game.getState() == GameState.END) {
+            // Show the remaining duration of the last game:
             time = Integer.toString(game.getRemainingGameDuration() / 60);
         }
 
