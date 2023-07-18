@@ -42,7 +42,7 @@ public class TaskManager {
         this.game = game;
     }
     
-    public void setBukkitTask(long delay, long period) {
+    public void runTimer(long delay, long period) {
         bukkitTask = Bukkit.getScheduler().runTaskTimer(MissileWars.getInstance(), timer , delay, period);
     }
 

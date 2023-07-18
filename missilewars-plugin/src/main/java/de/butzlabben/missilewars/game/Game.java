@@ -143,7 +143,7 @@ public class Game {
         taskManager.stopTimer();
         updateGameListener(new LobbyListener(this));
         taskManager.setTimer(new LobbyTimer(this, lobby.getLobbyTime()));
-        taskManager.setBukkitTask(0, 20);
+        taskManager.runTimer(0, 20);
         state = GameState.LOBBY;
 
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> applyForAllPlayers(this::runTeleportEventForPlayer), 2);
@@ -218,7 +218,7 @@ public class Game {
         taskManager.stopTimer();
         updateGameListener(new GameListener(this));
         taskManager.setTimer(new GameTimer(this));
-        taskManager.setBukkitTask(5, 20);
+        taskManager.runTimer(5, 20);
         state = GameState.INGAME;
 
         timestart = System.currentTimeMillis();
@@ -254,7 +254,7 @@ public class Game {
         taskManager.stopTimer();
         updateGameListener(new EndListener(this));
         taskManager.setTimer(new EndTimer(this));
-        taskManager.setBukkitTask(5, 20);
+        taskManager.runTimer(5, 20);
         state = GameState.END;
 
         updateMOTD();
