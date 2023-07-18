@@ -40,7 +40,7 @@ import de.butzlabben.missilewars.game.stats.FightStats;
 import de.butzlabben.missilewars.game.timer.EndTimer;
 import de.butzlabben.missilewars.game.timer.GameTimer;
 import de.butzlabben.missilewars.game.timer.LobbyTimer;
-import de.butzlabben.missilewars.game.timer.Timer;
+import de.butzlabben.missilewars.game.timer.TaskManager;
 import de.butzlabben.missilewars.inventory.OrcItem;
 import de.butzlabben.missilewars.listener.game.EndListener;
 import de.butzlabben.missilewars.listener.game.GameBoundListener;
@@ -84,8 +84,6 @@ public class Game {
     private final Map<String, Integer> votes = new HashMap<>(); // Votes for the maps.
     private final Lobby lobby;
     private final HashMap<UUID, BukkitTask> playerTasks = new HashMap<>();
-    private Timer timer;
-    private BukkitTask bt;
     private GameState state = GameState.LOBBY;
     private Team team1;
     private Team team2;
@@ -99,6 +97,8 @@ public class Game {
     private ScoreboardManager scoreboardManager;
     private GameBoundListener listener;
     private EquipmentManager equipmentManager;
+    private TaskManager taskManager;
+    private int remainingGameDuration;
 
     public Game(Lobby lobby) {
         Logger.BOOT.log("Loading lobby " + lobby.getName());
@@ -139,10 +139,11 @@ public class Game {
 
         Logger.DEBUG.log("Start timer");
 
-        stopTimer();
+        taskManager = new TaskManager(this);
+        taskManager.stopTimer();
         updateGameListener(new LobbyListener(this));
-        timer = new LobbyTimer(this, lobby.getLobbyTime());
-        bt = Bukkit.getScheduler().runTaskTimer(MissileWars.getInstance(), timer, 0, 20);
+        taskManager.setTimer(new LobbyTimer(this, lobby.getLobbyTime()));
+        taskManager.runTimer(0, 20);
         state = GameState.LOBBY;
 
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> applyForAllPlayers(this::runTeleportEventForPlayer), 2);
@@ -214,10 +215,10 @@ public class Game {
             return;
         }
 
-        stopTimer();
+        taskManager.stopTimer();
         updateGameListener(new GameListener(this));
-        timer = new GameTimer(this);
-        bt = Bukkit.getScheduler().runTaskTimer(MissileWars.getInstance(), timer, 5, 20);
+        taskManager.setTimer(new GameTimer(this));
+        taskManager.runTimer(5, 20);
         state = GameState.INGAME;
 
         timestart = System.currentTimeMillis();
@@ -227,11 +228,6 @@ public class Game {
         updateMOTD();
 
         Bukkit.getPluginManager().callEvent(new GameStartEvent(this));
-    }
-
-    private void stopTimer() {
-        if (bt != null)
-            bt.cancel();
     }
 
     public void stopGame() {
@@ -251,11 +247,14 @@ public class Game {
             teleportToArenaSpectatorSpawn(player);
 
         }
-
-        stopTimer();
+        
+        // Save the remaining game duration.
+        remainingGameDuration = taskManager.getTimer().getSeconds();
+        
+        taskManager.stopTimer();
         updateGameListener(new EndListener(this));
-        timer = new EndTimer(this);
-        bt = Bukkit.getScheduler().runTaskTimer(MissileWars.getInstance(), timer, 5, 20);
+        taskManager.setTimer(new EndTimer(this));
+        taskManager.runTimer(5, 20);
         state = GameState.END;
 
         updateMOTD();
@@ -441,14 +440,14 @@ public class Game {
     }
 
     public void resetGame() {
-        HandlerList.unregisterAll(listener);
-
-        stopTimer();
-
+        // Teleporting players; the event listener will handle the teleport event
         applyForAllPlayers(this::teleportToAfterGameSpawn);
+        
+        // Deactivation of all event handlers
+        HandlerList.unregisterAll(listener);
+        taskManager.stopTimer();
 
         if (gameWorld != null) {
-            gameWorld.sendPlayersBack();
             gameWorld.unload();
             gameWorld.delete();
         }
