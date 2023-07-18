@@ -440,8 +440,10 @@ public class Game {
     }
 
     public void resetGame() {
+        // Teleporting players; the event listener will handle the teleport event
         applyForAllPlayers(this::teleportToAfterGameSpawn);
         
+        // Deactivation of all event handlers
         HandlerList.unregisterAll(listener);
         taskManager.stopTimer();
 
