@@ -254,7 +254,7 @@ public class Game {
 
         updateMOTD();
 
-        if (getArena().isSaveStatistics()) {
+        if (arena.isSaveStatistics()) {
             FightStats stats = new FightStats(this);
             stats.insert();
         }
@@ -329,15 +329,15 @@ public class Game {
             }
             
             if (message != null) {
-                broadcast(message.replace("%max_players%", Integer.toString(getLobby().getMaxSize()))
-                        .replace("%players%", Integer.toString(getPlayers().values().size()))
+                broadcast(message.replace("%max_players%", Integer.toString(lobby.getMaxSize()))
+                        .replace("%players%", Integer.toString(players.values().size()))
                         .replace("%player%", player.getName())
                         .replace("%team%", team.getFullname()));
             }
             
         }
 
-        player.setScoreboard(getScoreboardManager().getBoard());
+        player.setScoreboard(scoreboardManager.getBoard());
 
         if (state == GameState.LOBBY) {
 
@@ -368,7 +368,7 @@ public class Game {
         boolean playerWasTeamMember = false;
 
         if (state == GameState.INGAME) {
-            BukkitTask task = getPlayerTasks().get(mwPlayer.getUuid());
+            BukkitTask task = playerTasks.get(mwPlayer.getUuid());
             if (task != null) task.cancel();
         }
         
@@ -392,8 +392,8 @@ public class Game {
             }
             
             if (message != null) {
-                broadcast(message.replace("%max_players%", Integer.toString(getLobby().getMaxSize()))
-                        .replace("%players%", Integer.toString(getPlayers().values().size()))
+                broadcast(message.replace("%max_players%", Integer.toString(lobby.getMaxSize()))
+                        .replace("%players%", Integer.toString(players.values().size()))
                         .replace("%player%", player.getName())
                         .replace("%team%", team.getFullname()));
             }
@@ -403,7 +403,7 @@ public class Game {
         player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
 
         if (state == GameState.LOBBY) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.LOBBY_LEFT).replace("%lobby_name%", getLobby().getDisplayName()));
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.LOBBY_LEFT).replace("%lobby_name%", lobby.getDisplayName()));
         } else if (state == GameState.INGAME) {
             player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_LEFT).replace("%arena_name%", arena.getDisplayName()));
         }
@@ -418,7 +418,7 @@ public class Game {
      */
     private void runTeleportEventForPlayer(Player player) {
         Bukkit.getPluginManager().callEvent(new PlayerTeleportEvent(player,
-                Config.getFallbackSpawn(), getLobby().getSpawnPoint()));
+                Config.getFallbackSpawn(), lobby.getSpawnPoint()));
     }
 
     private void checkTeamSize(Team team) {
@@ -756,7 +756,7 @@ public class Game {
      */
     public void updateGameInfo() {
         MissileWars.getInstance().getSignRepository().getSigns(this).forEach(MWSign::update);
-        getScoreboardManager().resetScoreboard();
+        scoreboardManager.resetScoreboard();
         Logger.DEBUG.log("Updated signs and scoreboard.");
     }
 
@@ -775,13 +775,13 @@ public class Game {
     }
 
     public boolean isPlayersMax() {
-        int maxSize = getLobby().getMaxSize();
+        int maxSize = lobby.getMaxSize();
         int currentSize = team1.getMembers().size() + team2.getMembers().size();
         return currentSize >= maxSize;
     }
 
     public boolean isSpectatorsMax() {
-        int maxSize = getArena().getMaxSpectators();
+        int maxSize = arena.getMaxSpectators();
 
         if (maxSize == -1) return false;
 
@@ -800,14 +800,14 @@ public class Game {
     }
 
     public void teleportToLobbySpawn(Player player) {
-        player.teleport(getLobby().getSpawnPoint());
+        player.teleport(lobby.getSpawnPoint());
     }
 
     public void teleportToArenaSpectatorSpawn(Player player) {
-        player.teleport(getArena().getSpectatorSpawn());
+        player.teleport(arena.getSpectatorSpawn());
     }
 
     public void teleportToAfterGameSpawn(Player player) {
-        player.teleport(getLobby().getAfterGameSpawn());
+        player.teleport(lobby.getAfterGameSpawn());
     }
 }
