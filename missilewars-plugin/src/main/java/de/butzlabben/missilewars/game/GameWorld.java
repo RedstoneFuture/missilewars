@@ -20,7 +20,6 @@ package de.butzlabben.missilewars.game;
 
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.configuration.Config;
-import de.butzlabben.missilewars.configuration.Lobby;
 import de.butzlabben.missilewars.configuration.Messages;
 import lombok.Getter;
 import lombok.ToString;
@@ -70,16 +69,6 @@ public class GameWorld {
                     p.kickPlayer(Messages.getMessage(true, Messages.MessageEnum.ARENA_KICK_INACTIVITY));
                 }
             });
-        }
-    }
-
-    public void sendPlayersBack() {
-        synchronized (lock) {
-            World w = Bukkit.getWorld(worldName);
-            if (w == null)
-                return;
-            Lobby lobby = game.getLobby();
-            w.getEntities().stream().filter((f) -> f instanceof Player).forEach(p -> p.teleport(lobby.getAfterGameSpawn()));
         }
     }
 
