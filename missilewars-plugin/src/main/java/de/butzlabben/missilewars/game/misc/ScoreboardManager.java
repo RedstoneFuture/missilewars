@@ -24,6 +24,7 @@ import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.Team;
 import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.player.MWPlayer;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -54,7 +55,7 @@ public class ScoreboardManager {
     private boolean isTeam1ListUsed = false;
     private boolean isTeam2ListUsed = false;
 
-    public Scoreboard board;
+    @Getter private Scoreboard board;
     private Objective obj;
     private HashMap<Integer, org.bukkit.scoreboard.Team> teams = new HashMap<>();
     private static final String[] COLOR_CODES = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};

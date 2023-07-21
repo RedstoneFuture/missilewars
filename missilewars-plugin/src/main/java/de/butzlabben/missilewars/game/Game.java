@@ -60,7 +60,6 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
@@ -196,10 +195,6 @@ public class Game {
         if (!Config.isMultipleLobbies()) {
             MotdManager.getInstance().updateMOTD(this);
         }
-    }
-
-    public Scoreboard getScoreboard() {
-        return scoreboardManager.board;
     }
 
     public void startGame() {
@@ -342,7 +337,7 @@ public class Game {
             
         }
 
-        player.setScoreboard(getScoreboard());
+        player.setScoreboard(getScoreboardManager().getBoard());
 
         if (state == GameState.LOBBY) {
 
