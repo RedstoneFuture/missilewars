@@ -100,24 +100,24 @@ public class Game {
     private int remainingGameDuration;
 
     public Game(Lobby lobby) {
-        Logger.BOOT.log("Loading lobby " + lobby.getName());
+        Logger.BOOT.log("Loading lobby \"" + lobby.getName() + "\".");
         this.lobby = lobby;
 
         if (lobby.getBukkitWorld() == null) {
-            Logger.ERROR.log("Lobby world in arena \"" + lobby.getName() + "\" must not be null");
+            Logger.ERROR.log("Lobby world \"" + lobby.getName() + "\" must not be null");
             return;
         }
 
         try {
             Serializer.setWorldAtAllLocations(lobby, lobby.getBukkitWorld());
         } catch (Exception exception) {
-            Logger.ERROR.log("Could not inject world object at lobby " + lobby.getName());
+            Logger.ERROR.log("Could not inject world object at lobby \"" + lobby.getName() + "\".");
             exception.printStackTrace();
             return;
         }
 
         if (lobby.getPossibleArenas().size() == 0) {
-            Logger.ERROR.log("At least one valid arena must be set at lobby " + lobby.getName());
+            Logger.ERROR.log("At least one valid arena must be set at lobby \"" + lobby.getName() + "\".");
             return;
         }
 
@@ -148,7 +148,7 @@ public class Game {
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> applyForAllPlayers(this::runTeleportEventForPlayer), 2);
 
         if (Config.isSetup()) {
-            Logger.WARN.log("Did not fully initialize lobby " + lobby.getName() + " as the plugin is in setup mode");
+            Logger.WARN.log("Did not fully initialize lobby \"" + lobby.getName() + "\" as the plugin is in setup mode");
             return;
         }
 
