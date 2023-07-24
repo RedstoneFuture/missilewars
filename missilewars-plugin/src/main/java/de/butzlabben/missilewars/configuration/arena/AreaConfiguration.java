@@ -24,6 +24,7 @@ import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
+import org.bukkit.Location;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,6 +39,25 @@ public class AreaConfiguration implements ConfigurationSerializable {
     @SerializedName("max_x") private int maxX;
     @SerializedName("max_y") private int maxY;
     @SerializedName("max_z") private int maxZ;
+
+    /**
+     * Creates a quadratic area around the given location with the specified margin.
+     * The height will go from 0 to 256.
+     *
+     * @param location the location to put the area around.
+     * @param margin   the distance between the border of the area and the location.
+     *
+     * @return an area configuration around the location
+     */
+    public static AreaConfiguration aroundLocation(Location location, int margin) {
+        return new AreaConfiguration(location.getBlockX() - margin,
+                0,
+                location.getBlockZ() - margin,
+                location.getBlockX() + margin,
+                256,
+                location.getBlockZ() + margin
+        );
+    }
 
     /**
      * This method is used to save the config entries in the config file.
