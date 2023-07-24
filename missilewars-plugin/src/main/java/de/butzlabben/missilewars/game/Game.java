@@ -80,7 +80,7 @@ public class Game {
     private static final Map<String, Integer> cycles = new HashMap<>();
     private static int fights = 0;
     private final Map<UUID, MWPlayer> players = new HashMap<>();
-    private final Map<String, Integer> votes = new HashMap<>(); // Votes for the maps.
+    private final MapVoting mapVoting = new MapVoting(this);
     private final Lobby lobby;
     private final HashMap<UUID, BukkitTask> playerTasks = new HashMap<>();
     private GameState state = GameState.LOBBY;
@@ -121,8 +121,8 @@ public class Game {
             return;
         }
 
-        if (lobby.getPossibleArenas().stream().noneMatch(a -> Arenas.getFromName(a).isPresent())) {
-            Logger.ERROR.log("None of the specified arenas match a real arena for the lobby " + lobby.getName());
+        if (lobby.getPossibleArenas().stream().noneMatch(Arenas::isArenaExists)) {
+            Logger.ERROR.log("None of the specified arenas match a real arena for the lobby \"" + lobby.getName() + "\".");
             return;
         }
         
@@ -155,17 +155,21 @@ public class Game {
         // choose the game arena
         if (lobby.getMapChooseProcedure() == MapChooseProcedure.FIRST) {
             setArena(lobby.getArenas().get(0));
+            
         } else if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPCYCLE) {
             final int lastMapIndex = cycles.getOrDefault(lobby.getName(), -1);
             List<Arena> arenas = lobby.getArenas();
             int index = lastMapIndex >= arenas.size() - 1 ? 0 : lastMapIndex + 1;
             cycles.put(lobby.getName(), index);
             setArena(arenas.get(index));
+            
         } else if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPVOTING) {
-            if (lobby.getArenas().size() == 1) {
+            if (mapVoting.onlyOneArenaFound()) {
                 setArena(lobby.getArenas().get(0));
+                Logger.WARN.log("Only one arena was found for the lobby \"" + lobby.getName() + "\". The configured map voting was skipped.");
+            } else {
+                mapVoting.startVote();
             }
-            lobby.getArenas().forEach(arena -> votes.put(arena.getName(), 0));
         }
 
         scoreboardManager = new ScoreboardManager(this);

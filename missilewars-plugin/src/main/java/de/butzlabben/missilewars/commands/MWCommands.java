@@ -24,7 +24,6 @@ import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.Messages;
-import de.butzlabben.missilewars.configuration.arena.Arena;
 import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.GameManager;
@@ -35,9 +34,6 @@ import de.butzlabben.missilewars.game.missile.Missile;
 import de.butzlabben.missilewars.game.missile.MissileFacing;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.Map;
-import java.util.Optional;
 
 @CommandAlias("mw|missilewars")
 public class MWCommands extends BaseCommand {
@@ -163,19 +159,9 @@ public class MWCommands extends BaseCommand {
             if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING && game.getArena() == null) {
                 player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_CAN_NOT_STARTET));
             } else {
-                Map.Entry<String, Integer> mostVotes = null;
-                for (Map.Entry<String, Integer> arena : game.getVotes().entrySet()) {
-                    if (mostVotes == null) {
-                        mostVotes = arena;
-                        continue;
-                    }
-                    if (arena.getValue() > mostVotes.getValue()) mostVotes = arena;
-                }
-                if (mostVotes == null) throw new IllegalStateException("Most votes object was null");
-                Optional<Arena> arena = Arenas.getFromName(mostVotes.getKey());
-                if (arena.isEmpty()) throw new IllegalStateException("Voted arena is not present");
-                game.setArena(arena.get());
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_MAP_SELECTED));
+                game.getMapVoting().setVotedArena();
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_FINISHED)
+                        .replace("%map%", game.getArena().getDisplayName()));
             }
         }
     }

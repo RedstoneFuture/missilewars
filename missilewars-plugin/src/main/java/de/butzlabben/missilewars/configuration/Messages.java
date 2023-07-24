@@ -87,13 +87,13 @@ public class Messages {
         COMMAND_ONLY_PLAYERS("command.only_players", "&cYou are not a player."),
         COMMAND_TO_MANY_ARGUMENTS("command.to_many_arguments", "&cToo many arguments."),
         COMMAND_INVALID_MISSILE("command.invalid_missile", "&cThe specified missile was not found."),
+        COMMAND_MISSILE_NEEDED("command.missile_needed", "&cPlease specify the missile."),
         COMMAND_INVALID_GAME("command.invalid_game", "&cThe specified game was not found."),
         COMMAND_INVALID_MAP("command.invalid_map", "&cThe specified map was not found."),
+        COMMAND_MAP_NEEDED("command.map_needed", "&cPlease specify the map."),
         COMMAND_INVALID_TEAM_NUMBER("command.invalid_team_number", "&cThe team number is invalid. Use \"1\" or \"2\" to specify the target team."),
-        COMMAND_MISSILE_NEEDED("command.missile_needed", "&cPlease specify the missile."),
         COMMAND_TEAM_NUMBER_NEEDED("command.team_number_needed", "&cPlease specify the team number."),
-
-        GAME_MAP_SELECTED("game.map_selected", "&7A map was selected. Use \"/mw start\" again to start the round."),
+        
         GAME_PLAYER_JOINED("game.player_joined", "&e%player% &7joined the game (%team%&7)."),
         GAME_PLAYER_LEFT("game.player_left", "&e%player% &7left the game (%team%&7)."),
         GAME_LEFT("game.left", "&7You left the running MissileWars game."),
@@ -156,6 +156,8 @@ public class Messages {
         VOTE_CANT_VOTE("vote.cant_vote", "&cYou can not vote in this game."),
         VOTE_CHANGE_TEAM_NOT_NOW("vote.change_team_not_now", "&cThe game is not in the right state to vote right now."),
         VOTE_CHANGE_TEAM_NO_LONGER_NOW("vote.change_team_no_longer_now", "&cA map was already selected."),
+        VOTE_MAP_NOT_AVAILABLE("vote.map_not_available", "&cThe selected map is not available for this game."),
+        VOTE_ARENA_ALREADY_SELECTED("vote.arena_already_selected", "&cYou have already voted for this arena."),
 
         SIGNEDIT_SIGN_CREATED("signedit.sign_created", "&7Sign was successfully created and connected."),
         SIGNEDIT_SIGN_REMOVED("signedit.sign_removed", "&7You have successfully removed this missilewars sign."),

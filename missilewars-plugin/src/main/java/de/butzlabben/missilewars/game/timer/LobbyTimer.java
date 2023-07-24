@@ -19,15 +19,9 @@
 package de.butzlabben.missilewars.game.timer;
 
 import de.butzlabben.missilewars.configuration.Messages;
-import de.butzlabben.missilewars.configuration.arena.Arena;
-import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.game.Game;
-import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
 import de.butzlabben.missilewars.player.MWPlayer;
 import org.bukkit.Sound;
-
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * @author Butzlabben
@@ -85,7 +79,7 @@ public class LobbyTimer extends Timer implements Runnable {
                 playPling();
                 break;
             case 10:
-                checkVote();
+                getGame().getMapVoting().setVotedArena();
                 broadcast(Messages.getMessage(true, Messages.MessageEnum.LOBBY_TIMER_GAME_STARTS_IN).replace("%seconds%", Integer.toString(seconds)));
                 playPling();
                 break;
@@ -112,23 +106,5 @@ public class LobbyTimer extends Timer implements Runnable {
             mwPlayer.getPlayer().playSound(mwPlayer.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 100, 3);
         }
     }
-
-    private void checkVote() {
-        Game game = getGame();
-        if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING) return;
-        if (game.getArena() != null) return;
-
-        Map.Entry<String, Integer> mostVotes = null;
-        for (Map.Entry<String, Integer> arena : game.getVotes().entrySet()) {
-            if (mostVotes == null) {
-                mostVotes = arena;
-                continue;
-            }
-            if (arena.getValue() > mostVotes.getValue()) mostVotes = arena;
-        }
-        if (mostVotes == null) throw new IllegalStateException("Most votes object was null");
-        Optional<Arena> arena = Arenas.getFromName(mostVotes.getKey());
-        if (arena.isEmpty()) throw new IllegalStateException("Voted arena is not present");
-        game.setArena(arena.get());
-    }
+    
 }

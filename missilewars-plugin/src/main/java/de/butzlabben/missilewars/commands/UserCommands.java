@@ -25,18 +25,13 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Subcommand;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Messages;
-import de.butzlabben.missilewars.configuration.arena.Arena;
-import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.game.Team;
 import de.butzlabben.missilewars.game.enums.GameState;
-import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
 import de.butzlabben.missilewars.player.MWPlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.Optional;
 
 @CommandAlias("mw|missilewars")
 public class UserCommands extends BaseCommand {
@@ -49,7 +44,12 @@ public class UserCommands extends BaseCommand {
         if (!MWCommands.senderIsPlayer(sender)) return;
         Player player = (Player) sender;
 
-        if (args.length > 0) {
+        if (args.length < 1) {
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_MAP_NEEDED));
+            return;
+        }
+
+        if (args.length > 1) {
             player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
             return;
         }
@@ -59,31 +59,8 @@ public class UserCommands extends BaseCommand {
             player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_IN_GAME_AREA));
             return;
         }
-
-        if (game.getState() != GameState.LOBBY) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_CHANGE_TEAM_NOT_NOW));
-            return;
-        }
-
-        if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_CANT_VOTE));
-            return;
-        }
-
-        if (game.getArena() != null) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_CHANGE_TEAM_NO_LONGER_NOW));
-            return;
-        }
-
-        String arenaName = args[0];
-        Optional<Arena> arena = Arenas.getFromName(arenaName);
-        if (!game.getVotes().containsKey(arenaName) || arena.isEmpty()) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_MAP));
-            return;
-        }
-
-        game.getVotes().put(arenaName, game.getVotes().get(arenaName) + 1);
-        player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_SUCCESS).replace("%map%", arena.get().getDisplayName()));
+        
+        game.getMapVoting().addVote(player, args[0]);
     }
 
     @Subcommand("change")

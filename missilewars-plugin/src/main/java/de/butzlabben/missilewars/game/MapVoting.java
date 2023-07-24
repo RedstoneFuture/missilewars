@@ -20,8 +20,10 @@ package de.butzlabben.missilewars.game;
 
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.configuration.arena.Arena;
+import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
 import de.butzlabben.missilewars.game.enums.VoteState;
 import de.butzlabben.missilewars.player.MWPlayer;
+import lombok.Getter;
 import org.bukkit.entity.Player;
 
 import java.util.HashMap;
@@ -33,37 +35,64 @@ public class MapVoting {
 
     private final Map<MWPlayer, Arena> arenaVotes = new HashMap<>();
     private Game game;
-    public VoteState state = VoteState.NULL;
+    @Getter private VoteState state = VoteState.NULL;
 
     public MapVoting(Game game) {
         this.game = game;
     }
 
-    public void addVote(Player player, Arena arena) {
-
-        if (game.getArena() != null) {
-            //TODO Message
-            player.sendMessage(Messages.getPrefix() + Messages.getMessage("vote.arenaAlreadySelected").replace("%map%", arena.getDisplayName()));
+    /**
+     * This method saves the incoming votes of the players, provided that all 
+     * conditions for the voting process are met. If the conditions are not met, 
+     * the player will be notified accordingly.
+     * 
+     * @param player (Player) the voter
+     * @param arenaName (String) the voted arena name
+     */
+    public void addVote(Player player, String arenaName) {
+        
+        if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING) {
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_CANT_VOTE));
+            return;
+        }
+        
+        if (state == VoteState.NULL) {
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_CHANGE_TEAM_NOT_NOW));
+            return;
+        } else if (state == VoteState.FINISH) {
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_CHANGE_TEAM_NO_LONGER_NOW));
             return;
         }
 
+        Arena arena = Arenas.getFromName(arenaName);
+        if (arena == null) {
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_MAP));
+            return;
+        }
+        
         if (!game.getLobby().getArenas().contains(arena)) {
-            //TODO Message
-            player.sendMessage(Messages.getPrefix() + Messages.getMessage("vote.arenaNotExist").replace("%map%", arena.getDisplayName()));
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_MAP_NOT_AVAILABLE));
             return;
         }
 
         MWPlayer mwPlayer = game.getPlayer(player);
 
-        // remove old vote
         if (arenaVotes.containsKey(mwPlayer)) {
+
+            if (arenaVotes.get(mwPlayer) == arena) {
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_ARENA_ALREADY_SELECTED)
+                        .replace("%map%", arena.getDisplayName()));
+                return;
+            }
+
+            // remove old vote
             arenaVotes.remove(mwPlayer);
         }
 
         // add new vote
         arenaVotes.put(mwPlayer, arena);
 
-        player.sendMessage(Messages.getMessage("vote.success").replace("%map%", arena.getDisplayName()));
+        player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_SUCCESS).replace("%map%", arena.getDisplayName()));
     }
 
     /**
@@ -71,7 +100,7 @@ public class MapVoting {
      *
      * @return (Arena) the winner arena for this vote
      */
-    public Arena getVotedArena() {
+    private Arena getVotedArena() {
 
         Arena arena = arenaVotes.values().stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
                 .entrySet()
@@ -79,15 +108,48 @@ public class MapVoting {
                 .max(Map.Entry.comparingByValue()).orElseThrow()
                 .getKey();
 
+        // If no one voted:
+        if (arena == null) arena = game.getLobby().getArenas().get(0);
+        
         return arena;
     }
 
+    /**
+     * This method unlocks the map voting.
+     */
     public void startVote() {
         state = VoteState.RUNNING;
     }
 
+    /**
+     * This method locks the map voting again.
+     */
     public void stopVote() {
         state = VoteState.FINISH;
     }
 
+    /**
+     * This method checks if there is only one arena map available for this lobby and 
+     * therefore no map vote is necessary.
+     * 
+     * @return (Boolean) true, if only one map exists for this lobby
+     */
+    public boolean onlyOneArenaFound() {
+        return (game.getLobby().getArenas().size() == 1);
+    }
+
+    /**
+     * This method sets the selected arena of map voting for the current game.
+     */
+    public void setVotedArena() {
+        if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING) return;
+        if (onlyOneArenaFound()) return;
+
+        stopVote();
+        
+        Arena arena = game.getMapVoting().getVotedArena();
+        if (arena == null) throw new IllegalStateException("Voted arena is not present");
+        game.setArena(arena);
+    }
+    
 }
