@@ -20,11 +20,10 @@ package de.butzlabben.missilewars.configuration;
 
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.util.SetupUtil;
+import java.io.File;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
-
-import java.io.File;
 
 
 /**
@@ -58,7 +57,7 @@ public class Messages {
     }
 
     private static void addDefaults() {
-        
+
         for (MessageEnum msg : MessageEnum.values()) {
             cfg.addDefault(msg.getPath(), msg.getDefaultMsg());
         }
@@ -71,6 +70,11 @@ public class Messages {
 
     public static String getPrefix() {
         return getConfigMessage(MessageEnum.PREFIX);
+    }
+
+    private static String getConfigMessage(MessageEnum msg) {
+        return ChatColor.translateAlternateColorCodes('&', cfg.getString(msg.getPath(),
+                "&cError while reading from messages.yml: '" + msg.getPath() + "'"));
     }
 
     @Getter
@@ -186,12 +190,7 @@ public class Messages {
             this.path = path;
             this.defaultMsg = defaultMsg;
         }
-        
-    }
 
-    private static String getConfigMessage(MessageEnum msg) {
-        return ChatColor.translateAlternateColorCodes('&', cfg.getString(msg.getPath(), 
-                "&cError while reading from messages.yml: '" + msg.getPath() + "'"));
     }
 
 }

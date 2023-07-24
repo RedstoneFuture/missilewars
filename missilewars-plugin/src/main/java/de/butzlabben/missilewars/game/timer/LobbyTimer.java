@@ -21,6 +21,8 @@ package de.butzlabben.missilewars.game.timer;
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.player.MWPlayer;
+import java.util.Map;
+import java.util.Optional;
 import org.bukkit.Sound;
 
 /**
@@ -66,7 +68,7 @@ public class LobbyTimer extends Timer implements Runnable {
             }
         }
 
-        switch(seconds) {
+        switch (seconds) {
             case 120:
             case 60:
             case 30:

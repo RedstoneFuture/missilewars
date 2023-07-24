@@ -27,9 +27,10 @@ public class Geometry {
      * This method checks if a location is closer to a target location
      * than another location.
      *
-     * @param targetLocation (Location) the start location for the distance measure
-     * @param closerLocation (Location) the closer location
+     * @param targetLocation      (Location) the start location for the distance measure
+     * @param closerLocation      (Location) the closer location
      * @param furtherAwayLocation (Location) the location that is further away
+     *
      * @return true, if the statement is correct
      */
     public static boolean isCloser(Location targetLocation, Location closerLocation, Location furtherAwayLocation) {
@@ -41,7 +42,8 @@ public class Geometry {
      * arena (1 block wide) is still part of the arena (= inside).
      *
      * @param targetLocation (Location) the location to be checked
-     * @param area (Location) the arena, which should be around the location
+     * @param area           (Location) the arena, which should be around the location
+     *
      * @return true, if the statement is correct
      */
     public static boolean isInsideIn(Location targetLocation, GameArea area) {
@@ -62,9 +64,10 @@ public class Geometry {
 
     /**
      * This method checks, if both locations are in the same world.
-     * 
+     *
      * @param pos1 (Location) location 1
      * @param pos2 (Location) location 2
+     *
      * @return true, if they are in the same world
      */
     public static boolean bothLocInSameWorld(Location pos1, Location pos2) {
@@ -74,13 +77,14 @@ public class Geometry {
 
     /**
      * This method checks if a location is in a specified world.
-     * 
+     *
      * @param targetLocation (Location) the location to be checked
-     * @param world (World) the target world
+     * @param world          (World) the target world
+     *
      * @return true, if the statement is correct
      */
     public static boolean isInWorld(Location targetLocation, World world) {
         return targetLocation.getWorld().getName().equals(world.getName());
     }
-    
+
 }

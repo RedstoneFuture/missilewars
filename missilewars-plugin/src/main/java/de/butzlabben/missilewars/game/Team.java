@@ -24,6 +24,7 @@ import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.player.MWPlayer;
 import de.butzlabben.missilewars.util.MoneyUtil;
 import de.butzlabben.missilewars.util.version.ColorConverter;
+import java.util.ArrayList;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -36,8 +37,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
-
-import java.util.ArrayList;
 
 /**
  * @author Butzlabben
@@ -140,7 +139,7 @@ public class Team {
         helmetMeta.setUnbreakable(true);
         helmetMeta.setColor(color);
         helmet.setItemMeta(helmetMeta);
-        
+
         teamArmor = new ItemStack[] {boots, leggings, chestplate, helmet};
     }
 
@@ -203,7 +202,7 @@ public class Team {
                 subTitle = null;
                 break;
         }
-        
+
         mwPlayer.getPlayer().sendTitle(title, subTitle);
     }
 
@@ -212,7 +211,7 @@ public class Team {
      * game result.
      */
     public void sendGameResultSound(MWPlayer mwPlayer) {
-        
+
         Player player = mwPlayer.getPlayer();
 
         switch (gameResult) {

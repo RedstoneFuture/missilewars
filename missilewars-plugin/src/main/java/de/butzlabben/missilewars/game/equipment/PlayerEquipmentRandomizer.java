@@ -23,9 +23,8 @@ import de.butzlabben.missilewars.configuration.arena.Arena;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.missile.Missile;
 import de.butzlabben.missilewars.player.MWPlayer;
-import org.bukkit.inventory.ItemStack;
-
 import java.util.Random;
+import org.bukkit.inventory.ItemStack;
 
 /**
  * @author Butzlabben

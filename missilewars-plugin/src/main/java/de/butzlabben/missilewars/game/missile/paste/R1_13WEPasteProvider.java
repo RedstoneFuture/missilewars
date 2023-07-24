@@ -23,10 +23,9 @@ import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.game.Team;
 import de.butzlabben.missilewars.missile.paste.r1_13.we.R1_13Paster;
 import de.butzlabben.missilewars.util.version.ColorConverter;
+import java.io.File;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
-
-import java.io.File;
 
 /**
  * @author Butzlabben

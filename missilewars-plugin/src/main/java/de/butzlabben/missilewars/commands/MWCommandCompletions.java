@@ -40,7 +40,7 @@ public class MWCommandCompletions {
     private void registerGamesResult() {
         commandCompletions.registerCompletion("games", c -> GameManager.getInstance().getGames().keySet());
     }
-    
+
     private void registerMissilesResult() {
         commandCompletions.registerCompletion("missiles", c -> {
             CommandSender sender = c.getSender();
@@ -54,5 +54,5 @@ public class MWCommandCompletions {
             return game.getArena().getMissileConfiguration().getMissileNames();
         });
     }
-    
+
 }

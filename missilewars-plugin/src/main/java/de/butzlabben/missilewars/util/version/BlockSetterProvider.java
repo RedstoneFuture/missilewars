@@ -18,10 +18,9 @@
 
 package de.butzlabben.missilewars.util.version;
 
-import org.bukkit.block.Block;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import org.bukkit.block.Block;
 
 /**
  * @author Butzlabben
@@ -47,7 +46,7 @@ public class BlockSetterProvider {
             Method m = block.getClass().getMethod("getBlockData");
             return m.invoke(block);
         } catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException e) {
+                 | InvocationTargetException e) {
             e.printStackTrace();
         }
         return null;
@@ -58,11 +57,11 @@ public class BlockSetterProvider {
             Method m = object.getClass().getMethod(method);
             m.invoke(object, args);
         } catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException
-                | InvocationTargetException e) {
+                 | InvocationTargetException e) {
             e.printStackTrace();
         }
     }
-    
+
     private static class NewBlockSetter implements BlockDataSetter {
 
         @Override

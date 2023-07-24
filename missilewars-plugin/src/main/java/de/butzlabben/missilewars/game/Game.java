@@ -51,9 +51,19 @@ import de.butzlabben.missilewars.util.PlayerDataProvider;
 import de.butzlabben.missilewars.util.geometry.GameArea;
 import de.butzlabben.missilewars.util.geometry.Geometry;
 import de.butzlabben.missilewars.util.serialization.Serializer;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.ToString;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -61,12 +71,6 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Consumer;
 
 /**
  * @author Butzlabben
@@ -125,7 +129,7 @@ public class Game {
             Logger.ERROR.log("None of the specified arenas match a real arena for the lobby \"" + lobby.getName() + "\".");
             return;
         }
-        
+
         team1 = new Team(lobby.getTeam1Name(), lobby.getTeam1Color(), this);
         team2 = new Team(lobby.getTeam2Name(), lobby.getTeam2Color(), this);
 
@@ -246,10 +250,10 @@ public class Game {
             teleportToArenaSpectatorSpawn(player);
 
         }
-        
+
         // Save the remaining game duration.
         remainingGameDuration = taskManager.getTimer().getSeconds();
-        
+
         taskManager.stopTimer();
         updateGameListener(new EndListener(this));
         taskManager.setTimer(new EndTimer(this));
@@ -294,7 +298,7 @@ public class Game {
     /**
      * This method adds the player to the game.
      *
-     * @param player the target Player
+     * @param player          the target Player
      * @param isSpectatorJoin should the player join as spectator or as normal player
      */
     public void playerJoinInGame(Player player, boolean isSpectatorJoin) {
@@ -324,21 +328,21 @@ public class Game {
             Team team = getNextTeam();
             team.addMember(mwPlayer);
             player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_TEAM_ASSIGNED).replace("%team%", team.getFullname()));
-            
+
             String message = null;
             if (state == GameState.LOBBY) {
                 message = Messages.getMessage(true, Messages.MessageEnum.LOBBY_PLAYER_JOINED);
             } else if (state == GameState.INGAME) {
                 message = Messages.getMessage(true, Messages.MessageEnum.GAME_PLAYER_JOINED);
             }
-            
+
             if (message != null) {
                 broadcast(message.replace("%max_players%", Integer.toString(lobby.getMaxSize()))
                         .replace("%players%", Integer.toString(players.values().size()))
                         .replace("%player%", player.getName())
                         .replace("%team%", team.getFullname()));
             }
-            
+
         }
 
         player.setScoreboard(scoreboardManager.getBoard());
@@ -375,7 +379,7 @@ public class Game {
             BukkitTask task = playerTasks.get(mwPlayer.getUuid());
             if (task != null) task.cancel();
         }
-        
+
         PlayerDataProvider.getInstance().loadInventory(player);
 
         if (team != null) {
@@ -385,7 +389,7 @@ public class Game {
         }
 
         removePlayer(mwPlayer);
-        
+
         if (playerWasTeamMember) {
 
             String message = null;
@@ -394,7 +398,7 @@ public class Game {
             } else if (state == GameState.INGAME) {
                 message = Messages.getMessage(true, Messages.MessageEnum.GAME_PLAYER_LEFT);
             }
-            
+
             if (message != null) {
                 broadcast(message.replace("%max_players%", Integer.toString(lobby.getMaxSize()))
                         .replace("%players%", Integer.toString(players.values().size()))
@@ -411,7 +415,7 @@ public class Game {
         } else if (state == GameState.INGAME) {
             player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_LEFT).replace("%arena_name%", arena.getDisplayName()));
         }
-        
+
     }
 
     /**
@@ -441,7 +445,7 @@ public class Game {
     public void resetGame() {
         // Teleporting players; the event listener will handle the teleport event
         applyForAllPlayers(this::teleportToAfterGameSpawn);
-        
+
         // Deactivation of all event handlers
         HandlerList.unregisterAll(listener);
         taskManager.stopTimer();
@@ -458,8 +462,9 @@ public class Game {
 
     /**
      * This method checks if the location is inside in the Lobby-Area.
-     * 
+     *
      * @param location (Location) the location to be checked
+     *
      * @return true, if it's in the Lobby-Area
      */
     public boolean isInLobbyArea(Location location) {
@@ -470,6 +475,7 @@ public class Game {
      * This method checks if the location is inside in the Game-Area.
      *
      * @param location (Location) the location to be checked
+     *
      * @return true, if it's in the Game-Area
      */
     public boolean isInGameArea(Location location) {
@@ -478,10 +484,11 @@ public class Game {
 
     /**
      * This method checks if the location is inside in the Inner Game-Area.
-     * It's the arena from the Team 1 spawn position to the Team 2 spawn 
+     * It's the arena from the Team 1 spawn position to the Team 2 spawn
      * position ("length") with the same "width" of the (major) Game-Area.
      *
      * @param location (Location) the location to be checked
+     *
      * @return true, if it's in the Inner Game-Area
      */
     public boolean isInInnerGameArea(Location location) {
@@ -492,6 +499,7 @@ public class Game {
      * This method checks if the location is in the game world.
      *
      * @param location (Location) the location to be checked
+     *
      * @return true, if it's in the game world
      */
     public boolean isInGameWorld(Location location) {
@@ -503,6 +511,7 @@ public class Game {
      * Lobby-Area or inside in the game world.
      *
      * @param location (Location) the location to be checked
+     *
      * @return true, if the statement is correct
      */
     public boolean isIn(Location location) {
@@ -607,7 +616,7 @@ public class Game {
     public void spawnFireball(Player player, ItemStack itemStack) {
         int amount = itemStack.getAmount();
         itemStack.setAmount(amount - 1);
-        
+
         Fireball fb = player.launchProjectile(Fireball.class);
         fb.setVelocity(player.getLocation().getDirection().multiply(2.5D));
         player.playSound(fb.getLocation(), Sound.BLOCK_ANVIL_LAND, 100.0F, 2.0F);
@@ -642,7 +651,7 @@ public class Game {
             exception.printStackTrace();
             return;
         }
-        
+
         createInnerGameArea();
 
         if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPVOTING) {
@@ -654,7 +663,7 @@ public class Game {
     }
 
     private void createInnerGameArea() {
-        
+
         // Depending on the rotation of the (major) Game-Area, the spawn points 
         // of both teams are primarily on the X or Z axis opposite each other.
         // The Inner Game-Area is a copy of the (major) Game-Area, with the X or Z 
@@ -664,25 +673,25 @@ public class Game {
 
         int x1, x2, z1, z2;
         Location position1, position2;
-        
+
         if (gameArea.getDirection() == GameArea.Direction.NORTH_SOUTH) {
-            
+
             x1 = gameArea.getMinX();
             x2 = gameArea.getMaxX();
-            
+
             z1 = team1.getSpawn().getBlockZ();
             z2 = team2.getSpawn().getBlockZ();
-            
+
         } else {
-            
+
             z1 = gameArea.getMinZ();
             z2 = gameArea.getMaxZ();
-            
+
             x1 = team1.getSpawn().getBlockX();
             x2 = team2.getSpawn().getBlockX();
-            
+
         }
-        
+
         position1 = new Location(gameArea.getWorld(), x1, gameArea.getMinY(), z1);
         position2 = new Location(gameArea.getWorld(), x2, gameArea.getMaxY(), z2);
 
@@ -751,7 +760,7 @@ public class Game {
             subTitle = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_SUBTITLE_DRAW);
 
         }
-        
+
         player.sendTitle(title, subTitle);
     }
 
