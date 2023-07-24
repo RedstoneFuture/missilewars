@@ -19,12 +19,11 @@
 package de.butzlabben.missilewars.configuration.arena;
 
 import com.google.gson.annotations.SerializedName;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Getter
 @ToString

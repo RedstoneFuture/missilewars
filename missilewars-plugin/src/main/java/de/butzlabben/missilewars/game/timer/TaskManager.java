@@ -41,14 +41,14 @@ public class TaskManager {
     public TaskManager(Game game) {
         this.game = game;
     }
-    
+
     public void runTimer(long delay, long period) {
-        bukkitTask = Bukkit.getScheduler().runTaskTimer(MissileWars.getInstance(), timer , delay, period);
+        bukkitTask = Bukkit.getScheduler().runTaskTimer(MissileWars.getInstance(), timer, delay, period);
     }
 
     public void stopTimer() {
         if (bukkitTask != null)
             bukkitTask.cancel();
     }
-    
+
 }

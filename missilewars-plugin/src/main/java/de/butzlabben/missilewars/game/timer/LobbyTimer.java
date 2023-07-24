@@ -24,10 +24,9 @@ import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
 import de.butzlabben.missilewars.player.MWPlayer;
-import org.bukkit.Sound;
-
 import java.util.Map;
 import java.util.Optional;
+import org.bukkit.Sound;
 
 /**
  * @author Butzlabben
@@ -72,7 +71,7 @@ public class LobbyTimer extends Timer implements Runnable {
             }
         }
 
-        switch(seconds) {
+        switch (seconds) {
             case 120:
             case 60:
             case 30:

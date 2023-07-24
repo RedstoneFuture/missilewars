@@ -21,6 +21,8 @@ package de.butzlabben.missilewars.game;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.Messages;
+import java.io.File;
+import java.io.IOException;
 import lombok.Getter;
 import lombok.ToString;
 import org.apache.commons.io.FileUtils;
@@ -30,9 +32,6 @@ import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-
-import java.io.File;
-import java.io.IOException;
 
 @Getter
 @ToString(exclude = {"game", "lock"})
@@ -126,7 +125,7 @@ public class GameWorld {
             Logger.DEBUG.log("Loading new gameworld");
             World world = Bukkit.createWorld(new WorldCreator(worldName));
             Bukkit.getWorlds().add(world);
-            
+
             world.setGameRule(GameRule.DO_TILE_DROPS, game.getArena().isDoTileDrops());
             world.setGameRule(GameRule.KEEP_INVENTORY, game.getArena().isKeepInventory());
         }

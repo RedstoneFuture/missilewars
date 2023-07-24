@@ -30,6 +30,7 @@ import com.google.gson.JsonSerializer;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
+import com.mojang.util.UUIDTypeAdapter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -43,7 +44,6 @@ import java.util.Map;
 import java.util.UUID;
 import lombok.Getter;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
-import com.mojang.util.UUIDTypeAdapter;
 
 /**
  * @author Butzlabben

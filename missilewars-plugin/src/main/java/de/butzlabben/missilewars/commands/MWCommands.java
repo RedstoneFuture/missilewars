@@ -19,7 +19,12 @@
 package de.butzlabben.missilewars.commands;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.*;
+import co.aikar.commands.annotation.CommandAlias;
+import co.aikar.commands.annotation.CommandCompletion;
+import co.aikar.commands.annotation.CommandPermission;
+import co.aikar.commands.annotation.Default;
+import co.aikar.commands.annotation.Description;
+import co.aikar.commands.annotation.Subcommand;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Config;
@@ -33,11 +38,10 @@ import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
 import de.butzlabben.missilewars.game.missile.Missile;
 import de.butzlabben.missilewars.game.missile.MissileFacing;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
 import java.util.Map;
 import java.util.Optional;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 @CommandAlias("mw|missilewars")
 public class MWCommands extends BaseCommand {
@@ -68,7 +72,7 @@ public class MWCommands extends BaseCommand {
 
         sendHelpMessage(sender, "mw.setup", "/mw setup <main|lobby|arena> ...", "Setup the MW locations or the lobby/arena locations.");
     }
-    
+
     @Subcommand("listgames|list|games")
     @CommandCompletion("@nothing")
     @CommandPermission("mw.listgames")
@@ -247,6 +251,13 @@ public class MWCommands extends BaseCommand {
         sender.sendMessage(Messages.getMessage(true, Messages.MessageEnum.SERVER_RESTART_AFTER_GAME));
     }
 
+    static boolean senderIsPlayer(CommandSender sender) {
+        if (sender instanceof Player) return true;
+
+        sender.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_ONLY_PLAYERS));
+        return false;
+    }
+
     @Subcommand("reload")
     @CommandCompletion("@nothing")
     @CommandPermission("mw.reload")
@@ -263,7 +274,7 @@ public class MWCommands extends BaseCommand {
         Config.load();
         Messages.load();
         Arenas.load();
-        
+
         player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.DEBUG_RELOAD_CONFIG));
     }
 
@@ -286,7 +297,7 @@ public class MWCommands extends BaseCommand {
             Logger.NORMAL.log("Printing state for arena " + game.getArena().getName() + ". Number: " + i);
             Logger.NORMAL.log(game.toString());
         }
-        
+
         player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.DEBUG_PRINTED_DEBUG_MSG));
     }
 
@@ -302,20 +313,13 @@ public class MWCommands extends BaseCommand {
             player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
             return;
         }
-        
+
         if (GameManager.getInstance().getGames().size() > 10) {
             player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.DEBUG_RESTART_ALL_GAMES_WARN));
         }
-        
+
         GameManager.getInstance().restartAll();
         player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.DEBUG_RESTART_ALL_GAMES));
-    }
-
-    static boolean senderIsPlayer(CommandSender sender) {
-        if (sender instanceof Player) return true;
-        
-        sender.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_ONLY_PLAYERS));
-        return false;
     }
 
     static void sendHelpMessage(CommandSender sender, String permission, String command, String description) {

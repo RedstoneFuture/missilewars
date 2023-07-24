@@ -19,9 +19,8 @@
 package de.butzlabben.missilewars.game.missile.paste;
 
 import de.butzlabben.missilewars.game.Team;
-import org.bukkit.util.Vector;
-
 import java.io.File;
+import org.bukkit.util.Vector;
 
 /**
  * @author Butzlabben

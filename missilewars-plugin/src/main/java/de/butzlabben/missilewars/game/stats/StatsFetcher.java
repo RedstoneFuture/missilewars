@@ -20,8 +20,6 @@ package de.butzlabben.missilewars.game.stats;
 
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.util.ConnectionHolder;
-import lombok.Getter;
-
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -29,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import lombok.Getter;
 
 @Getter
 public class StatsFetcher {
