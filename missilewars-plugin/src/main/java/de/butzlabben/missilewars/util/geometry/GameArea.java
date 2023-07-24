@@ -159,15 +159,6 @@ public class GameArea {
     }
 
     /**
-     * This method returns the arena length along the X coordinate.
-     *
-     * @return (Integer) the X size
-     */
-    public int getXSize() {
-        return maxX - minX;
-    }
-
-    /**
      * This method defines the horizontal direction / rotation of the
      * area based on the alignment of the team spawn points.
      * <p>
@@ -177,6 +168,15 @@ public class GameArea {
     public enum Direction {
         NORTH_SOUTH,
         EAST_WEST
+    }
+
+    /**
+     * This method returns the arena length along the X coordinate.
+     *
+     * @return (Integer) the X size
+     */
+    public int getXSize() {
+        return maxX - minX;
     }
 
     /**
