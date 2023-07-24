@@ -23,11 +23,12 @@ import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.player.MWPlayer;
 import de.butzlabben.missilewars.util.ConnectionHolder;
+import lombok.RequiredArgsConstructor;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
-import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class FightStats {

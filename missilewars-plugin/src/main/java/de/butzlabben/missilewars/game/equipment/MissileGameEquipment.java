@@ -20,9 +20,10 @@ package de.butzlabben.missilewars.game.equipment;
 
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.missile.Missile;
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Getter;
 
 /**
  * @author Butzlabben

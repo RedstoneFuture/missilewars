@@ -24,12 +24,13 @@ import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.Lobby;
 import de.butzlabben.missilewars.util.geometry.GameArea;
 import de.butzlabben.missilewars.util.serialization.Serializer;
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
 
 @Getter
 public class GameManager {
@@ -64,7 +65,7 @@ public class GameManager {
             File lobbiesFolder = new File(Config.getLobbiesFolder());
             File file = new File(lobbiesFolder, Config.getDefaultLobby());
             if (file.exists()) {
-                lobbyFiles = new File[] {file};
+                lobbyFiles = new File[]{file};
             }
         }
         if (lobbyFiles == null) lobbyFiles = new File[0];
@@ -83,7 +84,7 @@ public class GameManager {
                 Bukkit.getPluginManager().disablePlugin(MissileWars.getInstance());
                 return;
             }
-            lobbyFiles = new File[] {file};
+            lobbyFiles = new File[]{file};
         }
 
         for (File lobbyFile : lobbyFiles) {
@@ -97,7 +98,7 @@ public class GameManager {
     /**
      * This method attempts to read the game lobby configuration and build a game
      * from it. Config mistakes are recognized and the config is saved again.
-     *
+     * 
      * @param lobbyFile (File) the arena configuration file
      */
     private void debugStart(File lobbyFile) {
@@ -127,10 +128,10 @@ public class GameManager {
 
     /**
      * This method (re)starts a MissileWars game.
-     *
+     * 
      * @param targetLobby (Lobby) the existing lobby of the game
-     * @param forceStart  true, if it should also (re)start, if it's not an automatically
-     *                    starting game according to the lobby configuration
+     * @param forceStart true, if it should also (re)start, if it's not an automatically
+     *                   starting game according to the lobby configuration
      */
     public void restartGame(Lobby targetLobby, boolean forceStart) {
         if (!targetLobby.isAutoLoad() && !forceStart) return;

@@ -41,11 +41,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPhysicsEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -81,10 +77,10 @@ public class GameListener extends GameBoundListener {
         if (event.getChangedType() != Material.NETHER_PORTAL) return;
 
         Location location = event.getBlock().getLocation();
-
+        
         Team team1 = getGame().getTeam1();
         Team team2 = getGame().getTeam2();
-
+        
         if (Geometry.isCloser(location, team1.getSpawn(), team2.getSpawn())) {
             team1.setGameResult(GameResult.LOSE);
             team2.setGameResult(GameResult.WIN);
@@ -92,7 +88,7 @@ public class GameListener extends GameBoundListener {
             team1.setGameResult(GameResult.WIN);
             team2.setGameResult(GameResult.LOSE);
         }
-
+        
         getGame().sendGameResult();
         getGame().stopGame();
     }
@@ -110,7 +106,7 @@ public class GameListener extends GameBoundListener {
         // missile spawn with using of a missile spawn egg
         if (Missile.isSpawnEgg(itemStack.getType())) {
             event.setCancelled(true);
-
+            
             // Can missiles only be spawned if the item interaction was performed on a block (no air)?
             boolean isOnlyBlockPlaceable = getGame().getArena().getMissileConfiguration().isOnlyBlockPlaceable();
             if (isOnlyBlockPlaceable) {

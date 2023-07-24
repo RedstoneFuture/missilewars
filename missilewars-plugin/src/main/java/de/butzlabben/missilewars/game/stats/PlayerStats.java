@@ -18,11 +18,12 @@
 
 package de.butzlabben.missilewars.game.stats;
 
-import java.util.UUID;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @Getter

@@ -20,12 +20,13 @@ package de.butzlabben.missilewars.util;
 
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.configuration.Messages;
-import java.util.UUID;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.plugin.RegisteredServiceProvider;
+
+import java.util.UUID;
 
 /**
  * @author Butzlabben

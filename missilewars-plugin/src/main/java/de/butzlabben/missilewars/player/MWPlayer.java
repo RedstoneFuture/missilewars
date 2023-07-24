@@ -21,13 +21,14 @@ package de.butzlabben.missilewars.player;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.Team;
 import de.butzlabben.missilewars.game.equipment.PlayerEquipmentRandomizer;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicLong;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Butzlabben

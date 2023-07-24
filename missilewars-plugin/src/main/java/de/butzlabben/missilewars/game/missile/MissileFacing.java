@@ -21,10 +21,11 @@ package de.butzlabben.missilewars.game.missile;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.configuration.arena.MissileConfiguration;
 import de.butzlabben.missilewars.util.missile.Interval;
+import org.bukkit.entity.Player;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.bukkit.entity.Player;
 
 /**
  * @author Butzlabben

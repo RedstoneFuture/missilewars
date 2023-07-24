@@ -23,8 +23,6 @@ import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.GameManager;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -33,6 +31,9 @@ import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.block.data.type.WallSign;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -46,7 +47,7 @@ public class MWSign {
         boolean worldExists = location.getWorld() != null;
         boolean lobbyValid = GameManager.getInstance().getGames().containsKey(lobby);
         boolean blockIsSign = (location.getBlock().getBlockData() instanceof WallSign);
-
+        
         return worldExists && lobbyValid && blockIsSign;
     }
 
@@ -65,7 +66,7 @@ public class MWSign {
         lines.add(replace(Messages.getMessage(false, Messages.MessageEnum.SIGN_1), game));
         lines.add(replace(Messages.getMessage(false, Messages.MessageEnum.SIGN_2), game));
         lines.add(replace(Messages.getMessage(false, Messages.MessageEnum.SIGN_3), game));
-
+        
         if (game == null) {
             Logger.WARN.log("Could not find specifed arena \"" + getLobby() + "\" for sign at: " + getLocation().toString());
         }

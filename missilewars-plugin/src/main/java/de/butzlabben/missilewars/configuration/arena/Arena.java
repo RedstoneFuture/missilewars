@@ -21,12 +21,13 @@ package de.butzlabben.missilewars.configuration.arena;
 import com.google.gson.annotations.SerializedName;
 import de.butzlabben.missilewars.util.geometry.GameArea;
 import de.butzlabben.missilewars.util.serialization.Serializer;
-import java.io.File;
-import java.io.IOException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.bukkit.Location;
+
+import java.io.File;
+import java.io.IOException;
 
 @Getter
 @ToString

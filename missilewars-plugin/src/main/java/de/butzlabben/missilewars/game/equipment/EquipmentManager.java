@@ -41,7 +41,7 @@ public class EquipmentManager {
     private ItemStack customBow;
     private ItemStack customPickaxe;
 
-
+    
     public EquipmentManager(Game game) {
         this.game = game;
 
@@ -84,7 +84,7 @@ public class EquipmentManager {
      * This method gives the player the starter item set, based on the config.yml
      * configuration for spawn and respawn.
      *
-     * @param player    the target player
+     * @param player the target player
      * @param isRespawn true, if the player should receive it after a respawn
      */
     public void sendGameItems(Player player, boolean isRespawn) {

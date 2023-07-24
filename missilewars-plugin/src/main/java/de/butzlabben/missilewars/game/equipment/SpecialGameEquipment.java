@@ -19,12 +19,13 @@
 package de.butzlabben.missilewars.game.equipment;
 
 import de.butzlabben.missilewars.game.Game;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Butzlabben

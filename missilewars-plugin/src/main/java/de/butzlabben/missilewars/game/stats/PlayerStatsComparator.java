@@ -18,8 +18,9 @@
 
 package de.butzlabben.missilewars.game.stats;
 
-import java.util.Comparator;
 import lombok.AllArgsConstructor;
+
+import java.util.Comparator;
 
 @AllArgsConstructor
 public class PlayerStatsComparator implements Comparator<PlayerStats> {

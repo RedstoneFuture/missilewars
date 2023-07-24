@@ -19,11 +19,7 @@
 package de.butzlabben.missilewars.commands;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandCompletion;
-import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Default;
-import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.*;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.game.stats.PlayerStats;
@@ -35,18 +31,15 @@ import de.butzlabben.missilewars.inventory.pages.PageGUICreator;
 import de.butzlabben.missilewars.util.stats.PlayerGuiFactory;
 import de.butzlabben.missilewars.util.stats.PreFetcher;
 import de.butzlabben.missilewars.util.stats.StatsUtil;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @CommandAlias("mw|missilewars")
 @Subcommand("stats")

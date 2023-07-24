@@ -36,7 +36,7 @@ public class GameTimer extends Timer {
     public void tick() {
         Game game = getGame();
 
-        switch (seconds) {
+        switch(seconds) {
             case 7200:
             case 5400:
             case 3600:
@@ -45,7 +45,7 @@ public class GameTimer extends Timer {
             case 600:
             case 300:
             case 180:
-                broadcast(Messages.getMessage(true, Messages.MessageEnum.GAME_TIMER_GAME_ENDS_IN_MINUTES).replace("%minutes%", Integer.toString(seconds / 60)));
+                broadcast(Messages.getMessage(true, Messages.MessageEnum.GAME_TIMER_GAME_ENDS_IN_MINUTES).replace("%minutes%", Integer.toString(seconds/60)));
                 break;
             case 60:
             case 30:

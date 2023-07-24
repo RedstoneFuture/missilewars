@@ -21,10 +21,11 @@ package de.butzlabben.missilewars.inventory;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.configuration.arena.Arena;
+import org.bukkit.Material;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.bukkit.Material;
 
 public class VoteInventory extends OrcInventory {
 

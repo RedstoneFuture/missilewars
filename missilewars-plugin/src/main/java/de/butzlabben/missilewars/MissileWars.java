@@ -19,11 +19,7 @@
 package de.butzlabben.missilewars;
 
 import co.aikar.commands.PaperCommandManager;
-import de.butzlabben.missilewars.commands.MWCommandCompletions;
-import de.butzlabben.missilewars.commands.MWCommands;
-import de.butzlabben.missilewars.commands.SetupCommands;
-import de.butzlabben.missilewars.commands.StatsCommands;
-import de.butzlabben.missilewars.commands.UserCommands;
+import de.butzlabben.missilewars.commands.*;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.game.Arenas;
@@ -40,8 +36,6 @@ import de.butzlabben.missilewars.util.MoneyUtil;
 import de.butzlabben.missilewars.util.SetupUtil;
 import de.butzlabben.missilewars.util.stats.PreFetcher;
 import de.butzlabben.missilewars.util.version.VersionUtil;
-import java.io.File;
-import java.util.Date;
 import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 import org.bstats.bukkit.Metrics;
@@ -49,6 +43,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
+import java.util.Date;
 
 /**
  * @author Butzlabben
@@ -127,11 +124,11 @@ public class MissileWars extends JavaPlugin {
         if (Config.isPrefetchPlayers()) {
             PreFetcher.preFetchPlayers(new StatsFetcher(new Date(0L), ""));
         }
-
+        
         checkPlaceholderAPI();
 
         ConfigurationSerialization.registerClass(PlayerData.class);
-
+        
         endTime = System.currentTimeMillis();
         Logger.SUCCESS.log("MissileWars was enabled in " + (endTime - startTime) + "ms");
     }
@@ -143,9 +140,9 @@ public class MissileWars extends JavaPlugin {
 
         ConnectionHolder.close();
     }
-
+    
     /**
-     * This method checks if the PlaceholderAPI is installed. When it is
+     * This method checks if the PlaceholderAPI is installed. When it is 
      * installed, a message is sent to the log.
      */
     private void checkPlaceholderAPI() {
@@ -154,7 +151,7 @@ public class MissileWars extends JavaPlugin {
             Logger.NORMAL.log("The PlaceholderAPI is installed. New placeholders are provided by MissileWars.");
         }
     }
-
+    
     /**
      * This method registers all events of the missilewars event listener.
      */
@@ -178,7 +175,7 @@ public class MissileWars extends JavaPlugin {
         commandManager = new PaperCommandManager(this);
 
         new MWCommandCompletions(commandManager);
-
+        
         commandManager.registerCommand(new MWCommands());
         commandManager.registerCommand(new StatsCommands());
         commandManager.registerCommand(new UserCommands());
