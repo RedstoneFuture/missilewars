@@ -94,7 +94,12 @@ public class PlayerListener implements Listener {
         if (game == null) return;
 
         Player player = event.getPlayer();
-        game.teleportToFallbackSpawn(player);
+        new BukkitRunnable() {
+            public void run() {
+                PlayerArenaJoinEvent joinEvent = registerPlayerArenaJoinEvent(player, game);
+                if (joinEvent.isCancelled()) game.teleportToFallbackSpawn(player);
+            }
+        }.runTaskLater(MissileWars.getInstance(), 2);
     }
 
     @EventHandler
