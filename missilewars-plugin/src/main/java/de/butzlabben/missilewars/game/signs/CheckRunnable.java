@@ -19,7 +19,6 @@
 package de.butzlabben.missilewars.game.signs;
 
 import de.butzlabben.missilewars.MissileWars;
-
 import java.util.List;
 
 public class CheckRunnable implements Runnable {

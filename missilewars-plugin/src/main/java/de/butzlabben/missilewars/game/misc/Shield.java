@@ -21,6 +21,7 @@ package de.butzlabben.missilewars.game.misc;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.arena.ShieldConfiguration;
 import de.butzlabben.missilewars.game.missile.paste.PasteProvider;
+import java.io.File;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -32,8 +33,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.util.Vector;
-
-import java.io.File;
 
 /**
  * @author Butzlabben

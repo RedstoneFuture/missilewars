@@ -34,7 +34,7 @@ public class GameArea {
     private int maxX, maxY, maxZ;
 
     private Direction direction;
-    
+
     /**
      * This method creates a new GameArena object.
      * <p>
@@ -45,22 +45,22 @@ public class GameArea {
      * @param pos2 (Location) the opposite corner of the desired area border
      */
     public GameArea(Location pos1, Location pos2) {
-        
+
         if (!Geometry.bothLocInSameWorld(pos1, pos2)) throw new IllegalArgumentException("Defined positions are not in the same world!");
         if (pos1.equals(pos2)) throw new IllegalArgumentException("The selected positions do not differ.");
-        
+
         this.world = pos1.getWorld();
-        
+
         this.position1 = pos1;
         this.position2 = pos2;
-        
+
         initialize();
     }
 
     /**
      * This method creates a new GameArena object.
      * <p>
-     * The GameArena is a rectangular area. Its border (1 block wide) is 
+     * The GameArena is a rectangular area. Its border (1 block wide) is
      * still part of the arena (= inside).
      *
      * @param center (Location) the horizontal center of the desired area; it's also the vertical minimum of the area (the floor)
@@ -68,12 +68,12 @@ public class GameArea {
      * @param height (int) the height of the desired area
      */
     public GameArea(Location center, int offset, int height) {
-        
+
         if (offset < 1) throw new IllegalArgumentException("The offset must be higher than 0.");
         if (height < 2) throw new IllegalArgumentException("The height must be higher than 1.");
-        
+
         this.world = center.getWorld();
-        
+
         long x1 = center.getBlockX() + offset;
         long x2 = center.getBlockX() - offset;
         long z1 = center.getBlockZ() + offset;
@@ -91,29 +91,29 @@ public class GameArea {
     /**
      * This method creates a new GameArena object.
      * <p>
-     * The GameArena is a rectangular area. Its border (1 block wide) is 
+     * The GameArena is a rectangular area. Its border (1 block wide) is
      * still part of the arena (= inside).
      *
-     * @param world (World) the target world for the desired area
+     * @param world      (World) the target world for the desired area
      * @param areaConfig (AreaConfiguration) the loaded Area-Configuration from which the data is taken
      */
     public GameArea(World world, AreaConfiguration areaConfig) {
-        
+
         this.world = world;
-        
+
         this.position1 = new Location(world, areaConfig.getMinX(), areaConfig.getMinY(), areaConfig.getMinZ());
         this.position2 = new Location(world, areaConfig.getMaxX(), areaConfig.getMaxY(), areaConfig.getMaxZ());
 
         if (position1.equals(position2)) throw new IllegalArgumentException("The selected positions do not differ.");
-        
+
         initialize();
     }
 
     /**
-     * This method calculates and saves the MIN and MAX positions 
-     * according to the current values. The assigned MIN and MAX 
-     * information can be used to later compare the GameArea more 
-     * easily with current live positions/areas. In addition, the 
+     * This method calculates and saves the MIN and MAX positions
+     * according to the current values. The assigned MIN and MAX
+     * information can be used to later compare the GameArea more
+     * easily with current live positions/areas. In addition, the
      * area direction is calculated afterwards.
      */
     private void initialize() {
@@ -159,7 +159,16 @@ public class GameArea {
     }
 
     /**
-     * This method defines the horizontal direction / rotation of the 
+     * This method returns the arena length along the X coordinate.
+     *
+     * @return (Integer) the X size
+     */
+    public int getXSize() {
+        return maxX - minX;
+    }
+
+    /**
+     * This method defines the horizontal direction / rotation of the
      * area based on the alignment of the team spawn points.
      * <p>
      * NORTH-SOUTH = primarily along the Z axis
@@ -168,15 +177,6 @@ public class GameArea {
     public enum Direction {
         NORTH_SOUTH,
         EAST_WEST
-    }
-
-    /**
-     * This method returns the arena length along the X coordinate.
-     * 
-     * @return (Integer) the X size
-     */
-    public int getXSize() {
-        return maxX - minX;
     }
 
     /**
@@ -196,5 +196,5 @@ public class GameArea {
     public int getZSize() {
         return maxZ - minZ;
     }
-    
+
 }

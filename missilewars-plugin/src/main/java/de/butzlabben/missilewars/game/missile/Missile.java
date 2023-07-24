@@ -23,6 +23,7 @@ import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.missile.paste.PasteProvider;
+import java.io.File;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Location;
@@ -32,8 +33,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
-
-import java.io.File;
 
 /**
  * @author Butzlabben
@@ -100,7 +99,7 @@ public class Missile {
                 .replace("%schematic_name_compact%", getSchematicName(true));
         return name;
     }
-    
+
     /**
      * This method provides the missile spawn item based on the
      * mob spawn item specification in the arena configuration.
@@ -126,7 +125,7 @@ public class Missile {
 
     public static boolean isSpawnEgg(Material material) {
         if (material == null) return false;
-        
+
         String name = material.name();
         return name.contains("SPAWN_EGG") || name.equals("MONSTER_EGG");
     }

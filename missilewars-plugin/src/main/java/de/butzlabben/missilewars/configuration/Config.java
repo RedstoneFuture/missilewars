@@ -22,19 +22,17 @@ import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.util.SetupUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.YamlConfiguration;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import static org.bukkit.Material.JUKEBOX;
 import static org.bukkit.Material.valueOf;
+import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
  * @author Butzlabben
@@ -169,7 +167,7 @@ public class Config {
 
         return location;
     }
-    
+
     public static void setFallbackSpawn(Location spawnLocation) {
         cfg.set("fallback_spawn.world", spawnLocation.getWorld().getName());
         cfg.set("fallback_spawn.x", spawnLocation.getX());
