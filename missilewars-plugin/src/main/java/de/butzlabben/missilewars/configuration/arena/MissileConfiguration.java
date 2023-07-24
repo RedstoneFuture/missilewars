@@ -21,13 +21,16 @@ package de.butzlabben.missilewars.configuration.arena;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.game.missile.Missile;
 import de.butzlabben.missilewars.game.missile.MissileFacing;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.bukkit.entity.EntityType;
-
-import java.io.File;
-import java.util.*;
 
 
 @Getter
@@ -89,7 +92,7 @@ public class MissileConfiguration {
         }
         missiles.removeAll(toRemove);
     }
-    
+
     public List<String> getMissileNames() {
         List<String> missileNames = new ArrayList<>();
         for (Missile missile : missiles) {
