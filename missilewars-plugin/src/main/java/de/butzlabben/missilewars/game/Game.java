@@ -356,8 +356,10 @@ public class Game {
             }
 
             // map choose menu:
-            if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPVOTING && arena == null) {
-                player.getInventory().setItem(4, new OrcItem(Material.NETHER_STAR, "§3Vote Map").getItemStack());
+            if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPVOTING && mapVoting.getState() == VoteState.RUNNING) {
+                if (player.hasPermission("mw.vote")) {
+                    player.getInventory().setItem(4, new OrcItem(Material.NETHER_STAR, "§3Vote Map").getItemStack());
+                }
             }
 
         } else if ((state == GameState.INGAME) && (!isSpectatorJoin)) {

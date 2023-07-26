@@ -83,8 +83,10 @@ public class LobbyListener extends GameBoundListener {
 
         } else if (event.getItem().getType() == Material.NETHER_STAR) {
             // vote inventory:
-            VoteInventory inventory = new VoteInventory(getGame().getLobby().getArenas());
-            player.openInventory(inventory.getInventory(player));
+            if (player.hasPermission("mw.vote")) {
+                VoteInventory inventory = new VoteInventory(getGame().getLobby().getArenas());
+                player.openInventory(inventory.getInventory(player));
+            }
         }
     }
 
