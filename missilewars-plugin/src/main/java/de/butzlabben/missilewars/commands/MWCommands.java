@@ -19,12 +19,7 @@
 package de.butzlabben.missilewars.commands;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandCompletion;
-import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Default;
-import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.*;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Config;
@@ -37,8 +32,6 @@ import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
 import de.butzlabben.missilewars.game.missile.Missile;
 import de.butzlabben.missilewars.game.missile.MissileFacing;
-import java.util.Map;
-import java.util.Optional;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -51,7 +44,7 @@ public class MWCommands extends BaseCommand {
 
         sender.sendMessage(Messages.getPrefix() + "MissileWars v" + MissileWars.getInstance().version + " by Butzlabben");
 
-        sendHelpMessage(sender, "mw.vote", "/mw vote", "Vote for a arena.");
+        sendHelpMessage(sender, "mw.vote", "/mw vote <arena>", "Vote for a arena.");
         sendHelpMessage(sender, "mw.change", "/mw change <1|2>", "Changes your team.");
         sendHelpMessage(sender, "mw.quit", "/mw quit", "Quit a game.");
 

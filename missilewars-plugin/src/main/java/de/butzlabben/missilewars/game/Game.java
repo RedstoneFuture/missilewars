@@ -156,8 +156,7 @@ public class Game {
         // choose the game arena
         if (lobby.getMapChooseProcedure() == MapChooseProcedure.FIRST) {
             setArena(lobby.getArenas().get(0));
-
-            finalStartGame();
+            finalGamePreparations();
 
         } else if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPCYCLE) {
             final int lastMapIndex = cycles.getOrDefault(lobby.getName(), -1);
@@ -165,15 +164,13 @@ public class Game {
             int index = lastMapIndex >= arenas.size() - 1 ? 0 : lastMapIndex + 1;
             cycles.put(lobby.getName(), index);
             setArena(arenas.get(index));
-
-            finalStartGame();
+            finalGamePreparations();
 
         } else if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPVOTING) {
             if (mapVoting.onlyOneArenaFound()) {
                 setArena(lobby.getArenas().get(0));
                 Logger.WARN.log("Only one arena was found for the lobby \"" + lobby.getName() + "\". The configured map voting was skipped.");
-
-                finalStartGame();
+                finalGamePreparations();
             } else {
                 mapVoting.startVote();
             }
@@ -183,7 +180,7 @@ public class Game {
         scoreboardManager.createScoreboard();
     }
 
-    public void finalStartGame() {
+    public void finalGamePreparations() {
         if (this.arena == null) {
             throw new IllegalStateException("The arena is not yet set");
         }
@@ -195,9 +192,7 @@ public class Game {
 
         Logger.DEBUG.log("Making game ready");
         ++fights;
-        if (fights >= Config.getFightRestart()) {
-            restart = true;
-        }
+        if (fights >= Config.getFightRestart()) restart = true;
 
         FightStats.checkTables();
         Logger.DEBUG.log("Fights: " + fights);
@@ -671,13 +666,6 @@ public class Game {
         }
 
         createInnerGameArea();
-
-        if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPVOTING) {
-            this.broadcast(Messages.getMessage(true, Messages.MessageEnum.VOTE_FINISHED).replace("%map%", this.arena.getDisplayName()));
-        }
-        applyForAllPlayers(player -> player.getInventory().setItem(4, new ItemStack(Material.AIR)));
-
-        ready = true;
     }
 
     private void createInnerGameArea() {
