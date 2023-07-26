@@ -66,7 +66,7 @@ public class Lobby {
     @SerializedName("team2_color") private String team2Color = "&a";
     @Setter @SerializedName("spawn_point") private Location spawnPoint = getBukkitDefaultWorld().getSpawnLocation();
     @Setter @SerializedName("after_game_spawn") private Location afterGameSpawn = getBukkitDefaultWorld().getSpawnLocation();
-    @Setter @SerializedName("area") private AreaConfiguration areaConfig = new AreaConfiguration(-30, 0, -30, 30, 256, 30);
+    @Setter @SerializedName("area") private AreaConfiguration areaConfig = AreaConfiguration.aroundLocation(getBukkitDefaultWorld().getSpawnLocation(), 30);
     @SerializedName("map_choose_procedure") private MapChooseProcedure mapChooseProcedure = MapChooseProcedure.FIRST;
     @SerializedName("possible_arenas") private List<String> possibleArenas = new ArrayList<>() {{
         add("arena0");
