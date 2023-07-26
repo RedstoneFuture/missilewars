@@ -185,6 +185,9 @@ public class Game {
             throw new IllegalStateException("The arena is not yet set");
         }
 
+        // Clear the player inventory
+        applyForAllPlayers(player -> player.getInventory().setItem(4, new ItemStack(Material.AIR)));
+
         scoreboardManager.resetScoreboard();
 
         equipmentManager = new EquipmentManager(this);
@@ -197,6 +200,7 @@ public class Game {
         FightStats.checkTables();
         Logger.DEBUG.log("Fights: " + fights);
 
+        ready = true;
     }
 
     private void updateGameListener(GameBoundListener newListener) {
@@ -363,7 +367,7 @@ public class Game {
             }
 
             // map choose menu:
-            if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPVOTING && mapVoting.getState() == VoteState.RUNNING) {
+            if (mapVoting.getState() == VoteState.RUNNING) {
                 if (player.hasPermission("mw.vote")) {
                     player.getInventory().setItem(4, new OrcItem(Material.NETHER_STAR, "§3Vote Map").getItemStack());
                 }

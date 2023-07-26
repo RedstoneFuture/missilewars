@@ -29,7 +29,7 @@ import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.enums.GameState;
-import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
+import de.butzlabben.missilewars.game.enums.VoteState;
 import de.butzlabben.missilewars.game.missile.Missile;
 import de.butzlabben.missilewars.game.missile.MissileFacing;
 import org.bukkit.command.CommandSender;
@@ -153,17 +153,16 @@ public class MWCommands extends BaseCommand {
             return;
         }
 
-        if (game.isReady())
-            game.startGame();
-        else {
-            if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING && game.getArena() == null) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_CAN_NOT_STARTET));
-            } else {
+        if (!game.isReady()) {
+            if (game.getMapVoting().getState() == VoteState.RUNNING) {
                 game.getMapVoting().setVotedArena();
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_FINISHED)
-                        .replace("%map%", game.getArena().getDisplayName()));
+            } else {
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_CAN_NOT_STARTET));
             }
+            return;
         }
+
+        game.startGame();
     }
 
     @Subcommand("stop")

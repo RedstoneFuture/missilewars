@@ -118,6 +118,9 @@ public class MapVoting {
      * This method unlocks the map voting.
      */
     public void startVote() {
+        if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING)
+            throw new IllegalStateException("Defined map choose procedure is not \"MAPVOTING\"");
+
         state = VoteState.RUNNING;
     }
 
@@ -125,6 +128,9 @@ public class MapVoting {
      * This method locks the map voting again.
      */
     public void stopVote() {
+        if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING)
+            throw new IllegalStateException("Defined map choose procedure is not \"MAPVOTING\"");
+
         state = VoteState.FINISH;
     }
 
@@ -143,7 +149,7 @@ public class MapVoting {
      */
     public void setVotedArena() {
         if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING)
-            throw new IllegalStateException("MapChooseProcedure is not \"MAPVOTING\"");
+            throw new IllegalStateException("Defined map choose procedure is not \"MAPVOTING\"");
 
         if (onlyOneArenaFound()) return;
         if (state != VoteState.RUNNING) return;
@@ -154,7 +160,10 @@ public class MapVoting {
         if (arena == null) throw new IllegalStateException("Voted arena is not present");
         game.setArena(arena);
 
-        game.finalStartGame();
+        game.broadcast(Messages.getMessage(true, Messages.MessageEnum.VOTE_FINISHED)
+                .replace("%map%", game.getArena().getDisplayName()));
+
+        game.finalGamePreparations();
     }
     
 }
