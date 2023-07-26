@@ -20,10 +20,11 @@ package de.butzlabben.missilewars.configuration;
 
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.util.SetupUtil;
-import java.io.File;
 import lombok.Getter;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.io.File;
 
 
 /**
@@ -155,7 +156,7 @@ public class Messages {
         GAME_RESULT_MONEY("game_result.money", "&7You received &e%money% &7coins."),
 
         VOTE_SUCCESS("vote.success", "&7You successfully voted for the map %map%."),
-        VOTE_FINISHED("vote.finished", "&7The map %map% &7was elected."),
+        VOTE_FINISHED("vote.finished", "&7The map %map% &7was selected."),
         VOTE_GUI("vote.gui", "Vote for a map"),
         VOTE_CANT_VOTE("vote.cant_vote", "&cYou can not vote in this game."),
         VOTE_CHANGE_TEAM_NOT_NOW("vote.change_team_not_now", "&cThe game is not in the right state to vote right now."),
