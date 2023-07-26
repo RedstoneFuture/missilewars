@@ -35,6 +35,7 @@ public class MWCommandCompletions {
 
         registerGamesResult();
         registerMissilesResult();
+        registerArenasResult();
     }
 
     private void registerGamesResult() {
@@ -52,6 +53,20 @@ public class MWCommandCompletions {
             if (game == null) return null;
 
             return game.getArena().getMissileConfiguration().getMissileNames();
+        });
+    }
+
+    private void registerArenasResult() {
+        commandCompletions.registerCompletion("arenas", c -> {
+            CommandSender sender = c.getSender();
+
+            if (!(sender instanceof Player)) return null;
+            Player player = (Player) sender;
+
+            Game game = GameManager.getInstance().getGame(player.getLocation());
+            if (game == null) return null;
+
+            return game.getLobby().getPossibleArenas();
         });
     }
 

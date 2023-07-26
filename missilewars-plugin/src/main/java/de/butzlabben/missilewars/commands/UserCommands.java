@@ -30,7 +30,6 @@ import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.game.Team;
 import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.player.MWPlayer;
-import java.util.Optional;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -38,7 +37,7 @@ import org.bukkit.entity.Player;
 public class UserCommands extends BaseCommand {
 
     @Subcommand("vote")
-    @CommandCompletion("@nothing")
+    @CommandCompletion("@arenas")
     @CommandPermission("mw.vote")
     public void voteCommand(CommandSender sender, String[] args) {
 
