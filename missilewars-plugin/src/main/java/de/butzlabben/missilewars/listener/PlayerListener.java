@@ -34,12 +34,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerListPingEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -202,9 +197,13 @@ public class PlayerListener implements Listener {
         Logger.DEBUG.log("Location: " + player.getLocation());
         Logger.DEBUG.log("Current game amount: " + GameManager.getInstance().getGameAmount());
         Logger.DEBUG.log("Lobby: " + game.getLobby().getDisplayName());
-        Logger.DEBUG.log("Arena: " + game.getArena().getDisplayName());
         Logger.DEBUG.log("Team 1: " + game.getTeam1());
         Logger.DEBUG.log("Team 2: " + game.getTeam2());
 
+        if (game.getArena() != null) {
+            Logger.DEBUG.log("Arena: " + game.getArena().getDisplayName());
+        } else {
+            Logger.DEBUG.log("Arena: not yet selected (Map Voting)");
+        }
     }
 }

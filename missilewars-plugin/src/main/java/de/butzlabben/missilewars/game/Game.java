@@ -18,7 +18,6 @@
 
 package de.butzlabben.missilewars.game;
 
-import com.google.common.base.Preconditions;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Config;
@@ -30,7 +29,9 @@ import de.butzlabben.missilewars.event.GameStopEvent;
 import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
+import de.butzlabben.missilewars.game.enums.VoteState;
 import de.butzlabben.missilewars.game.equipment.EquipmentManager;
+import de.butzlabben.missilewars.game.equipment.PlayerEquipmentRandomizer;
 import de.butzlabben.missilewars.game.misc.MotdManager;
 import de.butzlabben.missilewars.game.misc.ScoreboardManager;
 import de.butzlabben.missilewars.game.missile.Missile;
@@ -51,19 +52,9 @@ import de.butzlabben.missilewars.util.PlayerDataProvider;
 import de.butzlabben.missilewars.util.geometry.GameArea;
 import de.butzlabben.missilewars.util.geometry.Geometry;
 import de.butzlabben.missilewars.util.serialization.Serializer;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.ToString;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -71,6 +62,12 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * @author Butzlabben
@@ -159,18 +156,24 @@ public class Game {
         // choose the game arena
         if (lobby.getMapChooseProcedure() == MapChooseProcedure.FIRST) {
             setArena(lobby.getArenas().get(0));
-            
+
+            finalStartGame();
+
         } else if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPCYCLE) {
             final int lastMapIndex = cycles.getOrDefault(lobby.getName(), -1);
             List<Arena> arenas = lobby.getArenas();
             int index = lastMapIndex >= arenas.size() - 1 ? 0 : lastMapIndex + 1;
             cycles.put(lobby.getName(), index);
             setArena(arenas.get(index));
-            
+
+            finalStartGame();
+
         } else if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPVOTING) {
             if (mapVoting.onlyOneArenaFound()) {
                 setArena(lobby.getArenas().get(0));
                 Logger.WARN.log("Only one arena was found for the lobby \"" + lobby.getName() + "\". The configured map voting was skipped.");
+
+                finalStartGame();
             } else {
                 mapVoting.startVote();
             }
@@ -178,18 +181,27 @@ public class Game {
 
         scoreboardManager = new ScoreboardManager(this);
         scoreboardManager.createScoreboard();
+    }
+
+    public void finalStartGame() {
+        if (this.arena == null) {
+            throw new IllegalStateException("The arena is not yet set");
+        }
+
+        scoreboardManager.resetScoreboard();
 
         equipmentManager = new EquipmentManager(this);
+        equipmentManager.createGameItems();
 
         Logger.DEBUG.log("Making game ready");
         ++fights;
-        if (fights >= Config.getFightRestart())
+        if (fights >= Config.getFightRestart()) {
             restart = true;
+        }
 
         FightStats.checkTables();
         Logger.DEBUG.log("Fights: " + fights);
 
-        equipmentManager.createGameItems();
     }
 
     private void updateGameListener(GameBoundListener newListener) {
@@ -505,6 +517,9 @@ public class Game {
      * @return true, if it's in the game world
      */
     public boolean isInGameWorld(Location location) {
+        // Is possible during the map voting phase:
+        if (gameArea == null) return false;
+
         return Geometry.isInWorld(location, gameArea.getWorld());
     }
 
@@ -557,6 +572,8 @@ public class Game {
 
         equipmentManager.sendGameItems(player, false);
         setPlayerAttributes(player);
+
+        mwPlayer.setRandomGameEquipment(new PlayerEquipmentRandomizer(mwPlayer, this));
 
         playerTasks.put(player.getUniqueId(),
                 Bukkit.getScheduler().runTaskTimer(MissileWars.getInstance(), mwPlayer, 40, 20));
@@ -629,7 +646,6 @@ public class Game {
     }
 
     public void setArena(Arena arena) {
-        Preconditions.checkNotNull(arena);
         if (this.arena != null) {
             throw new IllegalStateException("Arena already set");
         }

@@ -21,8 +21,6 @@ package de.butzlabben.missilewars.game.timer;
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.player.MWPlayer;
-import java.util.Map;
-import java.util.Optional;
 import org.bukkit.Sound;
 
 /**

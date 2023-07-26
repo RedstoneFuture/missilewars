@@ -19,20 +19,21 @@
 package de.butzlabben.missilewars.game.misc;
 
 import de.butzlabben.missilewars.configuration.Config;
-import de.butzlabben.missilewars.configuration.arena.Arena;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.Team;
 import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.player.MWPlayer;
-import java.util.HashMap;
-import java.util.List;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
+
+import java.util.HashMap;
+import java.util.List;
 
 // Scoreboard Management: https://www.spigotmc.org/wiki/making-scoreboard-with-teams-no-flicker
 
@@ -43,7 +44,11 @@ public class ScoreboardManager {
 
     private Team team1;
     private Team team2;
-    private Arena arena;
+
+    @Setter
+    private String arenaDisplayName;
+    @Setter
+    private String arenaGameDuration;
 
     // get config options
     private static final String SCOREBOARD_TITLE = Config.getScoreboardTitle();
@@ -66,7 +71,15 @@ public class ScoreboardManager {
 
         team1 = game.getTeam1();
         team2 = game.getTeam2();
-        arena = game.getArena();
+
+        if (game.getArena() == null) {
+            // using of placeholders until the area is not set
+            setArenaDisplayName("?");
+            setArenaGameDuration("0");
+        } else {
+            setArenaDisplayName(game.getArena().getDisplayName());
+            setArenaGameDuration(Integer.toString(game.getArena().getGameDuration()));
+        }
 
         // register Scoreboard
         if (board == null) {
@@ -97,7 +110,7 @@ public class ScoreboardManager {
         org.bukkit.scoreboard.Team team;
 
         if (teams.size() < line) {
-            team = board.registerNewTeam(arena.getName() + "-" + line);
+            team = board.registerNewTeam(arenaDisplayName + "-" + line);
             team.addEntry("§" + COLOR_CODES[line - 1]);
             obj.getScore("§" + COLOR_CODES[line - 1]).setScore(line);
             teams.put(line, team);
@@ -233,7 +246,7 @@ public class ScoreboardManager {
         String time = "";
         if (game.getState() == GameState.LOBBY) {
             // Show the planned duration of the next game:
-            time = Integer.toString(game.getArena().getGameDuration());
+            time = arenaGameDuration;
         } else if (game.getState() == GameState.INGAME) {
             // Show the remaining duration of the running game:
             time = Integer.toString(game.getTaskManager().getTimer().getSeconds() / 60);
@@ -255,12 +268,11 @@ public class ScoreboardManager {
         text = text.replace("%team2_amount%", Integer.toString(team2.getMembers().size()));
 
         text = text.replace("%lobby_name%", game.getLobby().getDisplayName());
-        text = text.replace("%arena_name%", arena.getDisplayName());
+        text = text.replace("%arena_name%", arenaDisplayName);
 
         text = text.replace("%time%", time);
 
         return text;
     }
-
 
 }

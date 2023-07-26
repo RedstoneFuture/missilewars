@@ -102,15 +102,15 @@ public class MapVoting {
      */
     private Arena getVotedArena() {
 
+        // If no one voted:
+        if (arenaVotes.size() == 0) return game.getLobby().getArenas().get(0);
+
         Arena arena = arenaVotes.values().stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
                 .entrySet()
                 .stream()
                 .max(Map.Entry.comparingByValue()).orElseThrow()
                 .getKey();
 
-        // If no one voted:
-        if (arena == null) arena = game.getLobby().getArenas().get(0);
-        
         return arena;
     }
 
@@ -142,14 +142,19 @@ public class MapVoting {
      * This method sets the selected arena of map voting for the current game.
      */
     public void setVotedArena() {
-        if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING) return;
+        if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING)
+            throw new IllegalStateException("MapChooseProcedure is not \"MAPVOTING\"");
+
         if (onlyOneArenaFound()) return;
+        if (state != VoteState.RUNNING) return;
 
         stopVote();
-        
+
         Arena arena = game.getMapVoting().getVotedArena();
         if (arena == null) throw new IllegalStateException("Voted arena is not present");
         game.setArena(arena);
+
+        game.finalStartGame();
     }
     
 }

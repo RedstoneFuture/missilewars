@@ -21,13 +21,14 @@ package de.butzlabben.missilewars.player;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.Team;
 import de.butzlabben.missilewars.game.equipment.PlayerEquipmentRandomizer;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicLong;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * @author Butzlabben
@@ -41,14 +42,16 @@ public class MWPlayer implements Runnable {
     final long id = NEXT_ID.getAndIncrement();
     private final UUID uuid;
     private final Game game;
-    @Setter private Team team;
+    @Setter
+    private Team team;
+    @Setter
     private PlayerEquipmentRandomizer randomGameEquipment;
-    @Setter private boolean playerInteractEventCancel = false;
+    @Setter
+    private boolean playerInteractEventCancel = false;
 
     public MWPlayer(Player player, Game game) {
         this.uuid = player.getUniqueId();
         this.game = game;
-        this.randomGameEquipment = new PlayerEquipmentRandomizer(this, game);
     }
 
     public Player getPlayer() {
