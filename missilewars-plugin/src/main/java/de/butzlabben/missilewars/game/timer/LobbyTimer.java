@@ -90,9 +90,7 @@ public class LobbyTimer extends Timer implements Runnable {
                     seconds = startTime;
                     return;
                 }
-                broadcast(Messages.getMessage(true, Messages.MessageEnum.LOBBY_GAME_STARTS));
-                playPling();
-                getGame().startGame();
+                executeGameStart();
                 return;
             default:
                 break;
@@ -106,5 +104,11 @@ public class LobbyTimer extends Timer implements Runnable {
             mwPlayer.getPlayer().playSound(mwPlayer.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 100, 3);
         }
     }
-    
+
+    public void executeGameStart() {
+        broadcast(Messages.getMessage(true, Messages.MessageEnum.LOBBY_GAME_STARTS));
+        playPling();
+        getGame().startGame();
+    }
+
 }

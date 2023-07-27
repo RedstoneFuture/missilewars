@@ -32,6 +32,7 @@ import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.game.enums.VoteState;
 import de.butzlabben.missilewars.game.missile.Missile;
 import de.butzlabben.missilewars.game.missile.MissileFacing;
+import de.butzlabben.missilewars.game.timer.LobbyTimer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -158,11 +159,12 @@ public class MWCommands extends BaseCommand {
                 game.getMapVoting().setVotedArena();
             } else {
                 player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_CAN_NOT_STARTET));
+                return;
             }
-            return;
         }
 
-        game.startGame();
+        LobbyTimer lobbyTimer = (LobbyTimer) game.getTaskManager().getTimer();
+        lobbyTimer.executeGameStart();
     }
 
     @Subcommand("stop")
