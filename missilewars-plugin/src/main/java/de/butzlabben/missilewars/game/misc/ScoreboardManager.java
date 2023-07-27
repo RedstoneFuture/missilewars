@@ -73,7 +73,7 @@ public class ScoreboardManager {
         team2 = game.getTeam2();
 
         if (game.getArena() == null) {
-            // using of placeholders until the area is not set
+            // using of placeholders until the arena is not set
             setArenaDisplayName("?");
             setArenaGameDuration("0");
         } else {

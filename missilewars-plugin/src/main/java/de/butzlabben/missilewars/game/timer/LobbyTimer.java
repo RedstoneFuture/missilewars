@@ -105,6 +105,10 @@ public class LobbyTimer extends Timer implements Runnable {
         }
     }
 
+    /**
+     * This method executes the game start. In addition, the participants
+     * are informed about the start.
+     */
     public void executeGameStart() {
         broadcast(Messages.getMessage(true, Messages.MessageEnum.LOBBY_GAME_STARTS));
         playPling();

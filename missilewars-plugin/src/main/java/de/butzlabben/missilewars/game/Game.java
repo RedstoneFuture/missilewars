@@ -180,6 +180,12 @@ public class Game {
         scoreboardManager.createScoreboard();
     }
 
+    /**
+     * This method performs the final preparations for the game start.
+     * <p>
+     * It is necessary that the arena - even in the case of a map vote - is
+     * now already defined.
+     */
     public void finalGamePreparations() {
         if (this.arena == null) {
             throw new IllegalStateException("The arena is not yet set");
