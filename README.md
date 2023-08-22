@@ -2,6 +2,8 @@
 
 MissileWars is a famous, fun and fast minigame spigot-plugin for Minecraft
 
+[![Cooperation-Label: Recommended and supported by RedstoneWorld](https://redstoneworld.de/bilder/kooperation/Cooperation-Label.png)](https://redstoneworld.de)
+
 ## Downloads
 
 You can download the latest jar in the [latest release](https://github.com/Butzlabben/missilewars/releases/latest) or build it yourself (
