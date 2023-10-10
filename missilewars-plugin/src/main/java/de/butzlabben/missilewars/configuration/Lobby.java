@@ -40,6 +40,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Getter
 @ToString
 @RequiredArgsConstructor
@@ -83,21 +89,10 @@ public class Lobby {
         return Bukkit.getWorlds().get(0);
     }
 
-    public void checkForWrongArenas() {
-        for (String arenaName : possibleArenas) {
-            Optional<Arena> arena = Arenas.getFromName(arenaName);
-            if (arena.isEmpty()) {
-                Logger.WARN.log("Could not find arena with name \"" + arenaName + "\" for lobby \"" + getName() + "\"");
-            }
-        }
-    }
-
     public List<Arena> getArenas() {
         return possibleArenas
                 .stream()
                 .map(Arenas::getFromName)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
                 .collect(Collectors.toList());
     }
 

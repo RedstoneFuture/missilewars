@@ -19,27 +19,20 @@
 package de.butzlabben.missilewars.commands;
 
 import co.aikar.commands.BaseCommand;
-import co.aikar.commands.annotation.CommandAlias;
-import co.aikar.commands.annotation.CommandCompletion;
-import co.aikar.commands.annotation.CommandPermission;
-import co.aikar.commands.annotation.Default;
-import co.aikar.commands.annotation.Description;
-import co.aikar.commands.annotation.Subcommand;
+import co.aikar.commands.annotation.*;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.Messages;
-import de.butzlabben.missilewars.configuration.arena.Arena;
 import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.enums.GameState;
-import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
+import de.butzlabben.missilewars.game.enums.VoteState;
 import de.butzlabben.missilewars.game.missile.Missile;
 import de.butzlabben.missilewars.game.missile.MissileFacing;
-import java.util.Map;
-import java.util.Optional;
+import de.butzlabben.missilewars.game.timer.LobbyTimer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -52,7 +45,7 @@ public class MWCommands extends BaseCommand {
 
         sender.sendMessage(Messages.getPrefix() + "MissileWars v" + MissileWars.getInstance().version + " by Butzlabben");
 
-        sendHelpMessage(sender, "mw.vote", "/mw vote", "Vote for a arena.");
+        sendHelpMessage(sender, "mw.vote", "/mw vote <arena>", "Vote for a arena.");
         sendHelpMessage(sender, "mw.change", "/mw change <1|2>", "Changes your team.");
         sendHelpMessage(sender, "mw.quit", "/mw quit", "Quit a game.");
 
@@ -161,27 +154,17 @@ public class MWCommands extends BaseCommand {
             return;
         }
 
-        if (game.isReady())
-            game.startGame();
-        else {
-            if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING && game.getArena() == null) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_CAN_NOT_STARTET));
+        if (!game.isReady()) {
+            if (game.getMapVoting().getState() == VoteState.RUNNING) {
+                game.getMapVoting().setVotedArena();
             } else {
-                Map.Entry<String, Integer> mostVotes = null;
-                for (Map.Entry<String, Integer> arena : game.getVotes().entrySet()) {
-                    if (mostVotes == null) {
-                        mostVotes = arena;
-                        continue;
-                    }
-                    if (arena.getValue() > mostVotes.getValue()) mostVotes = arena;
-                }
-                if (mostVotes == null) throw new IllegalStateException("Most votes object was null");
-                Optional<Arena> arena = Arenas.getFromName(mostVotes.getKey());
-                if (arena.isEmpty()) throw new IllegalStateException("Voted arena is not present");
-                game.setArena(arena.get());
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_MAP_SELECTED));
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_CAN_NOT_STARTET));
+                return;
             }
         }
+
+        LobbyTimer lobbyTimer = (LobbyTimer) game.getTaskManager().getTimer();
+        lobbyTimer.executeGameStart();
     }
 
     @Subcommand("stop")

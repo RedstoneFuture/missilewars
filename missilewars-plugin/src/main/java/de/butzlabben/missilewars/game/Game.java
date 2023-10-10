@@ -18,7 +18,6 @@
 
 package de.butzlabben.missilewars.game;
 
-import com.google.common.base.Preconditions;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Config;
@@ -30,7 +29,9 @@ import de.butzlabben.missilewars.event.GameStopEvent;
 import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
+import de.butzlabben.missilewars.game.enums.VoteState;
 import de.butzlabben.missilewars.game.equipment.EquipmentManager;
+import de.butzlabben.missilewars.game.equipment.PlayerEquipmentRandomizer;
 import de.butzlabben.missilewars.game.misc.MotdManager;
 import de.butzlabben.missilewars.game.misc.ScoreboardManager;
 import de.butzlabben.missilewars.game.missile.Missile;
@@ -51,19 +52,9 @@ import de.butzlabben.missilewars.util.PlayerDataProvider;
 import de.butzlabben.missilewars.util.geometry.GameArea;
 import de.butzlabben.missilewars.util.geometry.Geometry;
 import de.butzlabben.missilewars.util.serialization.Serializer;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.ToString;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -71,6 +62,12 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * @author Butzlabben
@@ -84,9 +81,9 @@ public class Game {
     private static final Map<String, Integer> cycles = new HashMap<>();
     private static int fights = 0;
     private final Map<UUID, MWPlayer> players = new HashMap<>();
-    private final Map<String, Integer> votes = new HashMap<>(); // Votes for the maps.
+    private final MapVoting mapVoting = new MapVoting(this);
     private final Lobby lobby;
-    private final HashMap<UUID, BukkitTask> playerTasks = new HashMap<>();
+    private final Map<UUID, BukkitTask> playerTasks = new HashMap<>();
     private GameState state = GameState.LOBBY;
     private Team team1;
     private Team team2;
@@ -104,29 +101,29 @@ public class Game {
     private int remainingGameDuration;
 
     public Game(Lobby lobby) {
-        Logger.BOOT.log("Loading lobby " + lobby.getName());
+        Logger.BOOT.log("Loading lobby \"" + lobby.getName() + "\".");
         this.lobby = lobby;
 
         if (lobby.getBukkitWorld() == null) {
-            Logger.ERROR.log("Lobby world in arena \"" + lobby.getName() + "\" must not be null");
+            Logger.ERROR.log("Lobby world \"" + lobby.getName() + "\" must not be null");
             return;
         }
 
         try {
             Serializer.setWorldAtAllLocations(lobby, lobby.getBukkitWorld());
         } catch (Exception exception) {
-            Logger.ERROR.log("Could not inject world object at lobby " + lobby.getName());
+            Logger.ERROR.log("Could not inject world object at lobby \"" + lobby.getName() + "\".");
             exception.printStackTrace();
             return;
         }
 
         if (lobby.getPossibleArenas().size() == 0) {
-            Logger.ERROR.log("At least one valid arena must be set at lobby " + lobby.getName());
+            Logger.ERROR.log("At least one valid arena must be set at lobby \"" + lobby.getName() + "\".");
             return;
         }
 
-        if (lobby.getPossibleArenas().stream().noneMatch(a -> Arenas.getFromName(a).isPresent())) {
-            Logger.ERROR.log("None of the specified arenas match a real arena for the lobby " + lobby.getName());
+        if (lobby.getPossibleArenas().stream().noneMatch(Arenas::existsArena)) {
+            Logger.ERROR.log("None of the specified arenas match a real arena for the lobby \"" + lobby.getName() + "\".");
             return;
         }
 
@@ -152,40 +149,64 @@ public class Game {
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> applyForAllPlayers(this::runTeleportEventForPlayer), 2);
 
         if (Config.isSetup()) {
-            Logger.WARN.log("Did not fully initialize lobby " + lobby.getName() + " as the plugin is in setup mode");
+            Logger.WARN.log("Did not fully initialize lobby \"" + lobby.getName() + "\" as the plugin is in setup mode");
             return;
         }
 
         // choose the game arena
         if (lobby.getMapChooseProcedure() == MapChooseProcedure.FIRST) {
             setArena(lobby.getArenas().get(0));
+            prepareGame();
+
         } else if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPCYCLE) {
             final int lastMapIndex = cycles.getOrDefault(lobby.getName(), -1);
             List<Arena> arenas = lobby.getArenas();
             int index = lastMapIndex >= arenas.size() - 1 ? 0 : lastMapIndex + 1;
             cycles.put(lobby.getName(), index);
             setArena(arenas.get(index));
+            prepareGame();
+
         } else if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPVOTING) {
-            if (lobby.getArenas().size() == 1) {
+            if (mapVoting.onlyOneArenaFound()) {
                 setArena(lobby.getArenas().get(0));
+                Logger.WARN.log("Only one arena was found for the lobby \"" + lobby.getName() + "\". The configured map voting was skipped.");
+                prepareGame();
+            } else {
+                mapVoting.startVote();
             }
-            lobby.getArenas().forEach(arena -> votes.put(arena.getName(), 0));
         }
 
         scoreboardManager = new ScoreboardManager(this);
         scoreboardManager.createScoreboard();
+    }
+
+    /**
+     * This method performs the final preparations for the game start.
+     * <p>
+     * It is necessary that the arena - even in the case of a map vote - is
+     * now already defined.
+     */
+    public void prepareGame() {
+        if (this.arena == null) {
+            throw new IllegalStateException("The arena is not yet set");
+        }
+
+        // Clear the player inventory
+        applyForAllPlayers(player -> player.getInventory().setItem(4, new ItemStack(Material.AIR)));
+
+        scoreboardManager.resetScoreboard();
 
         equipmentManager = new EquipmentManager(this);
+        equipmentManager.createGameItems();
 
         Logger.DEBUG.log("Making game ready");
         ++fights;
-        if (fights >= Config.getFightRestart())
-            restart = true;
+        if (fights >= Config.getFightRestart()) restart = true;
 
         FightStats.checkTables();
         Logger.DEBUG.log("Fights: " + fights);
 
-        equipmentManager.createGameItems();
+        ready = true;
     }
 
     private void updateGameListener(GameBoundListener newListener) {
@@ -352,8 +373,10 @@ public class Game {
             }
 
             // map choose menu:
-            if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPVOTING && arena == null) {
-                player.getInventory().setItem(4, new OrcItem(Material.NETHER_STAR, "§3Vote Map").getItemStack());
+            if (mapVoting.getState() == VoteState.RUNNING) {
+                if (player.hasPermission("mw.vote")) {
+                    player.getInventory().setItem(4, new OrcItem(Material.NETHER_STAR, "§3Vote Map").getItemStack());
+                }
             }
 
         } else if ((state == GameState.INGAME) && (!isSpectatorJoin)) {
@@ -499,6 +522,9 @@ public class Game {
      * @return true, if it's in the game world
      */
     public boolean isInGameWorld(Location location) {
+        // Is possible during the map voting phase:
+        if (gameArea == null) return false;
+
         return Geometry.isInWorld(location, gameArea.getWorld());
     }
 
@@ -551,6 +577,8 @@ public class Game {
 
         equipmentManager.sendGameItems(player, false);
         setPlayerAttributes(player);
+
+        mwPlayer.setRandomGameEquipment(new PlayerEquipmentRandomizer(mwPlayer, this));
 
         playerTasks.put(player.getUniqueId(),
                 Bukkit.getScheduler().runTaskTimer(MissileWars.getInstance(), mwPlayer, 40, 20));
@@ -623,7 +651,6 @@ public class Game {
     }
 
     public void setArena(Arena arena) {
-        Preconditions.checkNotNull(arena);
         if (this.arena != null) {
             throw new IllegalStateException("Arena already set");
         }
@@ -649,13 +676,6 @@ public class Game {
         }
 
         createInnerGameArea();
-
-        if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPVOTING) {
-            this.broadcast(Messages.getMessage(true, Messages.MessageEnum.VOTE_FINISHED).replace("%map%", this.arena.getDisplayName()));
-        }
-        applyForAllPlayers(player -> player.getInventory().setItem(4, new ItemStack(Material.AIR)));
-
-        ready = true;
     }
 
     private void createInnerGameArea() {

@@ -24,20 +24,21 @@ import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.arena.Arena;
 import de.butzlabben.missilewars.util.SetupUtil;
 import de.butzlabben.missilewars.util.serialization.Serializer;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+
 public class Arenas {
 
-    @Getter private static final List<Arena> arenas = new ArrayList<>();
+    @Getter
+    private static final Map<String, Arena> ARENAS = new HashMap<>();
 
     public static void load() {
-        arenas.clear();
+        ARENAS.clear();
 
         File folder = new File(Config.getArenasFolder());
 
@@ -66,13 +67,13 @@ public class Arenas {
             try {
                 Arena arena = Serializer.deserialize(config, Arena.class);
                 arena.setFile(config);
-                if (getFromName(arena.getName()).isPresent()) {
+                if (existsArena(arena.getName())) {
                     Logger.WARN.log("There are several arenas configured with the name \"" + arena.getName() + "\". Arenas must have a unique name");
                     continue;
                 }
                 SetupUtil.checkMap(arena.getTemplateWorld());
                 arena.updateConfig();
-                arenas.add(arena);
+                ARENAS.put(arena.getName(), arena);
             } catch (IOException exception) {
                 Logger.ERROR.log("Could not load config for arena " + config.getName());
                 exception.printStackTrace();
@@ -80,7 +81,12 @@ public class Arenas {
         }
     }
 
-    public static Optional<Arena> getFromName(String name) {
-        return arenas.stream().filter(arena -> arena.getName().equalsIgnoreCase(name)).findFirst();
+    public static Arena getFromName(String arenaName) {
+        if (ARENAS.containsKey(arenaName)) return ARENAS.get(arenaName);
+        return null;
+    }
+
+    public static boolean existsArena(String arenaName) {
+        return ARENAS.containsKey(arenaName);
     }
 }

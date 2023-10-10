@@ -24,19 +24,21 @@ import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.Lobby;
 import de.butzlabben.missilewars.util.geometry.GameArea;
 import de.butzlabben.missilewars.util.serialization.Serializer;
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 public class GameManager {
 
     @Getter
     private static final GameManager instance = new GameManager();
-    private final HashMap<String, Game> games = new HashMap<>();
+    private final Map<String, Game> games = new HashMap<>();
 
 
     public void disableAll() {

@@ -19,14 +19,16 @@
 package de.butzlabben.missilewars.inventory;
 
 import de.butzlabben.missilewars.MissileWars;
-import java.util.HashMap;
-import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author Butzlabben
@@ -36,7 +38,7 @@ public class OrcListener implements Listener {
 
     private static OrcListener instance;
 
-    private final HashMap<UUID, OrcInventory> invs = new HashMap<>();
+    private final Map<UUID, OrcInventory> invs = new HashMap<>();
 
     private OrcListener() {
         Bukkit.getPluginManager().registerEvents(this, MissileWars.getInstance());
