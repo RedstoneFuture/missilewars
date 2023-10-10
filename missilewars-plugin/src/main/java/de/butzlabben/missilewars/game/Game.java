@@ -83,7 +83,7 @@ public class Game {
     private final Map<UUID, MWPlayer> players = new HashMap<>();
     private final MapVoting mapVoting = new MapVoting(this);
     private final Lobby lobby;
-    private final HashMap<UUID, BukkitTask> playerTasks = new HashMap<>();
+    private final Map<UUID, BukkitTask> playerTasks = new HashMap<>();
     private GameState state = GameState.LOBBY;
     private Team team1;
     private Team team2;

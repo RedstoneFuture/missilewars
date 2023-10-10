@@ -34,6 +34,7 @@ import org.bukkit.scoreboard.Scoreboard;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 // Scoreboard Management: https://www.spigotmc.org/wiki/making-scoreboard-with-teams-no-flicker
 
@@ -61,7 +62,7 @@ public class ScoreboardManager {
 
     @Getter private Scoreboard board;
     private Objective obj;
-    private HashMap<Integer, org.bukkit.scoreboard.Team> teams = new HashMap<>();
+    private Map<Integer, org.bukkit.scoreboard.Team> teams = new HashMap<>();
     private static final String[] COLOR_CODES = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};
 
     /**

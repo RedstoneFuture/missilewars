@@ -21,16 +21,18 @@ package de.butzlabben.missilewars.util;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.player.PlayerData;
-import java.io.File;
-import java.util.HashMap;
-import java.util.UUID;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class PlayerDataProvider {
 
     private static final PlayerDataProvider instance = new PlayerDataProvider();
-    private final HashMap<UUID, PlayerData> data = new HashMap<>();
+    private final Map<UUID, PlayerData> data = new HashMap<>();
     private final File playerDataDirectory;
 
     private PlayerDataProvider() {

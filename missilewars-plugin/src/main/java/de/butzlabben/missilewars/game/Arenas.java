@@ -30,10 +30,12 @@ import org.bukkit.Bukkit;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 
 public class Arenas {
 
-    @Getter private static final HashMap<String, Arena> ARENAS = new HashMap<>();
+    @Getter
+    private static final Map<String, Arena> ARENAS = new HashMap<>();
 
     public static void load() {
         ARENAS.clear();
