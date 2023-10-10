@@ -163,7 +163,7 @@ public class MapVoting {
         game.broadcast(Messages.getMessage(true, Messages.MessageEnum.VOTE_FINISHED)
                 .replace("%map%", game.getArena().getDisplayName()));
 
-        game.finalGamePreparations();
+        game.prepareGame();
     }
     
 }

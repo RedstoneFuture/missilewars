@@ -122,7 +122,7 @@ public class Game {
             return;
         }
 
-        if (lobby.getPossibleArenas().stream().noneMatch(Arenas::isArenaExists)) {
+        if (lobby.getPossibleArenas().stream().noneMatch(Arenas::existsArena)) {
             Logger.ERROR.log("None of the specified arenas match a real arena for the lobby \"" + lobby.getName() + "\".");
             return;
         }
@@ -156,7 +156,7 @@ public class Game {
         // choose the game arena
         if (lobby.getMapChooseProcedure() == MapChooseProcedure.FIRST) {
             setArena(lobby.getArenas().get(0));
-            finalGamePreparations();
+            prepareGame();
 
         } else if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPCYCLE) {
             final int lastMapIndex = cycles.getOrDefault(lobby.getName(), -1);
@@ -164,13 +164,13 @@ public class Game {
             int index = lastMapIndex >= arenas.size() - 1 ? 0 : lastMapIndex + 1;
             cycles.put(lobby.getName(), index);
             setArena(arenas.get(index));
-            finalGamePreparations();
+            prepareGame();
 
         } else if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPVOTING) {
             if (mapVoting.onlyOneArenaFound()) {
                 setArena(lobby.getArenas().get(0));
                 Logger.WARN.log("Only one arena was found for the lobby \"" + lobby.getName() + "\". The configured map voting was skipped.");
-                finalGamePreparations();
+                prepareGame();
             } else {
                 mapVoting.startVote();
             }
@@ -186,7 +186,7 @@ public class Game {
      * It is necessary that the arena - even in the case of a map vote - is
      * now already defined.
      */
-    public void finalGamePreparations() {
+    public void prepareGame() {
         if (this.arena == null) {
             throw new IllegalStateException("The arena is not yet set");
         }
