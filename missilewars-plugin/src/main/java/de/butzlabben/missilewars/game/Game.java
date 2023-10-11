@@ -153,6 +153,8 @@ public class Game {
             return;
         }
 
+        scoreboardManager = new ScoreboardManager(this);
+
         // choose the game arena
         if (lobby.getMapChooseProcedure() == MapChooseProcedure.FIRST) {
             setArena(lobby.getArenas().get(0));
@@ -173,11 +175,10 @@ public class Game {
                 prepareGame();
             } else {
                 mapVoting.startVote();
+                scoreboardManager.resetScoreboard();
             }
         }
 
-        scoreboardManager = new ScoreboardManager(this);
-        scoreboardManager.createScoreboard();
     }
 
     /**
