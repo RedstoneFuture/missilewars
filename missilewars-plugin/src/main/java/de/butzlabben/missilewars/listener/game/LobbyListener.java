@@ -31,6 +31,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
@@ -94,6 +95,14 @@ public class LobbyListener extends GameBoundListener {
         if (!isInLobbyArea(event.getPlayer().getLocation())) return;
 
         event.setRespawnLocation(getGame().getLobby().getSpawnPoint());
+    }
+
+    @EventHandler
+    public void onInventoryOpen(InventoryOpenEvent event) {
+        Player player = (Player) event.getPlayer();
+        if (!isInLobbyArea(player.getLocation())) return;
+
+        if (player.getGameMode() != GameMode.CREATIVE) event.setCancelled(true);
     }
 
     @EventHandler
