@@ -211,7 +211,7 @@ public class Game {
     }
 
     private void checkFightRestart() {
-        if ((Config.getFightRestart() == -1) || (Config.getFightRestart() == 0)) return;
+        if (Config.getFightRestart() <= 0) return;
 
         if (fights >= Config.getFightRestart()) restart = true;
     }
