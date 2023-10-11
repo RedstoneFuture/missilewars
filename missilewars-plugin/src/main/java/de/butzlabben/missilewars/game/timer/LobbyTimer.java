@@ -20,6 +20,7 @@ package de.butzlabben.missilewars.game.timer;
 
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.game.Game;
+import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
 import de.butzlabben.missilewars.player.MWPlayer;
 import org.bukkit.Sound;
 
@@ -79,7 +80,8 @@ public class LobbyTimer extends Timer implements Runnable {
                 playPling();
                 break;
             case 10:
-                getGame().getMapVoting().setVotedArena();
+                if (getGame().getLobby().getMapChooseProcedure() == MapChooseProcedure.MAPVOTING)
+                    getGame().getMapVoting().setVotedArena();
                 broadcast(Messages.getMessage(true, Messages.MessageEnum.LOBBY_TIMER_GAME_STARTS_IN).replace("%seconds%", Integer.toString(seconds)));
                 playPling();
                 break;

@@ -68,7 +68,7 @@ public class ScoreboardManager {
     /**
      * This method registers the scoreboard.
      */
-    public void createScoreboard() {
+    private void createScoreboard() {
 
         team1 = game.getTeam1();
         team2 = game.getTeam2();
