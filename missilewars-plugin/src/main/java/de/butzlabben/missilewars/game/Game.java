@@ -202,12 +202,18 @@ public class Game {
 
         Logger.DEBUG.log("Making game ready");
         ++fights;
-        if (fights >= Config.getFightRestart()) restart = true;
+        checkFightRestart();
 
         FightStats.checkTables();
         Logger.DEBUG.log("Fights: " + fights);
 
         ready = true;
+    }
+
+    private void checkFightRestart() {
+        if (Config.getFightRestart() <= 0) return;
+
+        if (fights >= Config.getFightRestart()) restart = true;
     }
 
     private void updateGameListener(GameBoundListener newListener) {

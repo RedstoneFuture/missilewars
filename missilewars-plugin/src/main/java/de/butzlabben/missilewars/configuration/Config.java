@@ -22,17 +22,19 @@ import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.util.SetupUtil;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import static org.bukkit.Material.JUKEBOX;
-import static org.bukkit.Material.valueOf;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.bukkit.Material.JUKEBOX;
+import static org.bukkit.Material.valueOf;
 
 /**
  * @author Butzlabben
@@ -75,7 +77,7 @@ public class Config {
         cfg.addDefault("contact_auth_server", true);
         cfg.addDefault("prefetch_players", true);
 
-        cfg.addDefault("restart_after_fights", 10);
+        cfg.addDefault("restart_after_fights", -1);
 
         cfg.addDefault("arenas.folder", "plugins/MissileWars/arenas");
 
