@@ -64,22 +64,11 @@ public class LobbyListener extends GameBoundListener {
             if (!player.hasPermission("mw.change")) return;
 
             String displayName = event.getItem().getItemMeta().getDisplayName();
-
-            // same team:
-            if (displayName.equals(getGame().getPlayer(player).getTeam().getFullname())) return;
-
-            // too late for team change:
-            if (getGame().getTaskManager().getTimer().getSeconds() < 10) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_CHANGE_TEAM_NO_LONGER_NOW));
-                return;
-            }
-
             if (displayName.equals(getGame().getTeam1().getFullname())) {
                 player.performCommand("mw change 1");
             } else {
                 player.performCommand("mw change 2");
             }
-            getGame().getScoreboardManager().updateScoreboard();
 
         } else if (event.getItem().getType() == Material.NETHER_STAR) {
             // vote inventory:

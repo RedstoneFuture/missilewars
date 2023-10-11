@@ -92,6 +92,12 @@ public class UserCommands extends BaseCommand {
             return;
         }
 
+        // too late for team change:
+        if (game.getTaskManager().getTimer().getSeconds() < 10) {
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_CHANGE_TEAM_NO_LONGER_NOW));
+            return;
+        }
+
         if (!(args[0].equalsIgnoreCase("1") || args[0].equalsIgnoreCase("2"))) {
             sender.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_TEAM_NUMBER));
             return;
@@ -117,6 +123,7 @@ public class UserCommands extends BaseCommand {
         to.addMember(mwPlayer);
 
         player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_TEAM_CHANGED).replace("%team%", to.getFullname()));
+        game.getScoreboardManager().updateScoreboard();
     }
 
     @Subcommand("quit|leave")
