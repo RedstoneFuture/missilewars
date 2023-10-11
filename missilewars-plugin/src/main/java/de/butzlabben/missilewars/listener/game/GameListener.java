@@ -239,6 +239,10 @@ public class GameListener extends GameBoundListener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
+
+        // Putting the items inside is not perfectly locked. But it is a second protection.
+        // More checks are possible: https://www.spigotmc.org/threads/531737
+
         if (!(event.getWhoClicked() instanceof Player)) return;
 
         Player player = (Player) event.getWhoClicked();
