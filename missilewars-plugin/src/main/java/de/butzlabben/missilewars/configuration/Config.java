@@ -64,6 +64,7 @@ public class Config {
         // re-save the config with only validated options
         SetupUtil.safeFile(FILE, cfg);
         cfg = SetupUtil.getLoadedConfig(FILE);
+
     }
 
     private static void addDefaults() {
@@ -86,6 +87,7 @@ public class Config {
         cfg.addDefault("lobbies.default_lobby", "lobby0.yml");
 
         cfg.addDefault("missiles.folder", "plugins/MissileWars/missiles");
+        cfg.addDefault("shields.folder", "plugins/MissileWars/shields");
 
         cfg.addDefault("replace.material", JUKEBOX.name());
         cfg.addDefault("replace.after_ticks", 2);
@@ -224,6 +226,10 @@ public class Config {
 
     public static String getMissilesFolder() {
         return cfg.getString("missiles.folder");
+    }
+
+    public static String getShieldsFolder() {
+        return cfg.getString("shields.folder");
     }
 
     public static int getReplaceTicks() {

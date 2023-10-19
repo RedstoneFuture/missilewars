@@ -21,10 +21,12 @@ package de.butzlabben.missilewars.game.equipment;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.configuration.arena.Arena;
 import de.butzlabben.missilewars.game.Game;
-import de.butzlabben.missilewars.game.missile.Missile;
+import de.butzlabben.missilewars.game.schematics.objects.Missile;
+import de.butzlabben.missilewars.game.schematics.objects.Shield;
 import de.butzlabben.missilewars.player.MWPlayer;
-import java.util.Random;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.Random;
 
 /**
  * @author Butzlabben
@@ -110,18 +112,32 @@ public class PlayerEquipmentRandomizer {
         int randomID;
 
         // switch between type of "items":
-        // after 2 missile items, you get one special item
+        // after 2 missile items, you get one special item or a shield
         if (sendEquipmentCounter >= 2) {
 
-            randomID = randomizer.nextInt(equipmentManager.getSpecialEquipment().getSpecialEquipmentList().size());
-            item = equipmentManager.getSpecialEquipment().getSpecialEquipmentList().get(randomID);
+            // Special Equipment or Schematic Game-Equipment of the type "Shield":
+            
+            int specialEquipment = equipmentManager.getSpecialEquipment().getSpecialEquipmentList().size();
+            int shieldsEquipment = equipmentManager.getShieldEquipment().getSchematicEquipmentList().size();
+            
+            randomID = randomizer.nextInt(1, specialEquipment + shieldsEquipment + 1);
+            if (randomID <= specialEquipment) {
+                item = equipmentManager.getSpecialEquipment().getSpecialEquipmentList().get(randomID - 1);
+            } else {
+                Shield shield = (Shield) equipmentManager.getShieldEquipment().getSchematicEquipmentList().get(randomID - specialEquipment - 1);
+                item = shield.getItem();
+            }
 
             sendEquipmentCounter = 0;
 
         } else {
 
-            randomID = randomizer.nextInt(equipmentManager.getMissileEquipment().getMissileEquipmentList().size());
-            Missile missile = equipmentManager.getMissileEquipment().getMissileEquipmentList().get(randomID);
+            // Schematic Game-Equipment of the type "Missile":
+            
+            int missilesEquipment = equipmentManager.getMissileEquipment().getSchematicEquipmentList().size();
+            
+            randomID = randomizer.nextInt(1, missilesEquipment + 1);
+            Missile missile = (Missile) equipmentManager.getMissileEquipment().getSchematicEquipmentList().get(randomID - 1);
             item = missile.getItem();
 
         }

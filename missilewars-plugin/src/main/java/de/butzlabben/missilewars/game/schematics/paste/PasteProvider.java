@@ -16,7 +16,7 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.game.missile.paste;
+package de.butzlabben.missilewars.game.schematics.paste;
 
 
 import de.butzlabben.missilewars.Logger;

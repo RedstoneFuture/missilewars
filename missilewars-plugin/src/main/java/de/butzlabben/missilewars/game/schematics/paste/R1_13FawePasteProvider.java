@@ -16,22 +16,23 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.game.missile.paste;
+package de.butzlabben.missilewars.game.schematics.paste;
 
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.game.Team;
-import de.butzlabben.missilewars.missile.paste.r1_13.we.R1_13Paster;
+import de.butzlabben.missilewars.missile.paste.r1_13.fawe.R1_13Paster;
 import de.butzlabben.missilewars.util.version.ColorConverter;
-import java.io.File;
 import org.bukkit.World;
 import org.bukkit.util.Vector;
+
+import java.io.File;
 
 /**
  * @author Butzlabben
  * @since 23.09.2018
  */
-public class R1_13WEPasteProvider implements Paster {
+public class R1_13FawePasteProvider implements Paster {
 
     R1_13Paster paster = new R1_13Paster();
 

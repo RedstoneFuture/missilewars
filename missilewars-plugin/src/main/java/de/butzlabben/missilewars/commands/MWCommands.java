@@ -30,8 +30,8 @@ import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.game.enums.VoteState;
-import de.butzlabben.missilewars.game.missile.Missile;
-import de.butzlabben.missilewars.game.missile.MissileFacing;
+import de.butzlabben.missilewars.game.schematics.SchematicFacing;
+import de.butzlabben.missilewars.game.schematics.objects.Missile;
 import de.butzlabben.missilewars.game.timer.LobbyTimer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -110,14 +110,14 @@ public class MWCommands extends BaseCommand {
             return;
         }
 
-        Missile missile = game.getArena().getMissileConfiguration().getMissileFromName(args[0]);
+        Missile missile = (Missile) game.getArena().getMissileConfiguration().getSchematicFromName(args[0]);
         if (missile == null) {
             player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_MISSILE));
             return;
         }
 
-        MissileFacing missileFacing = MissileFacing.getFacingPlayer(player, game.getArena().getMissileConfiguration());
-        missile.paste(player, missileFacing, game);
+        SchematicFacing schematicFacing = SchematicFacing.getFacingPlayer(player, game.getArena().getMissileConfiguration());
+        missile.paste(game, player, schematicFacing);
     }
 
     @Subcommand("start")

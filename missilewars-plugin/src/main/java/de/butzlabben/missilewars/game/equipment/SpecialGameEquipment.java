@@ -19,12 +19,13 @@
 package de.butzlabben.missilewars.game.equipment;
 
 import de.butzlabben.missilewars.game.Game;
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author Butzlabben
@@ -35,8 +36,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 public class SpecialGameEquipment {
 
     private final Game game;
-
-    private ItemStack shield;
+    
     private ItemStack arrow;
     private ItemStack fireball;
 
@@ -45,8 +45,7 @@ public class SpecialGameEquipment {
 
     public SpecialGameEquipment(Game game) {
         this.game = game;
-
-        createShield();
+        
         createArrow();
         createFireball();
 
@@ -60,14 +59,9 @@ public class SpecialGameEquipment {
      * If the spawn-occurrence is 0, the equipment is skipped.
      */
     private void createSpecialEquipmentList() {
-
-        int shieldOccurrence = game.getArena().getShieldConfiguration().getOccurrence();
+        
         int arrowOccurrence = game.getArena().getArrowConfiguration().getOccurrence();
         int fireballOccurrence = game.getArena().getFireballConfiguration().getOccurrence();
-
-        for (int i = shieldOccurrence; i > 0; i--) {
-            specialEquipmentList.add(shield);
-        }
 
         for (int i = arrowOccurrence; i > 0; i--) {
             specialEquipmentList.add(arrow);
@@ -78,17 +72,7 @@ public class SpecialGameEquipment {
         }
 
     }
-
-    /**
-     * This method creates the shield item stack.
-     */
-    private void createShield() {
-        shield = new ItemStack(Material.SNOWBALL);
-        ItemMeta shieldMeta = shield.getItemMeta();
-        shieldMeta.setDisplayName(game.getArena().getShieldConfiguration().getName());
-        shield.setItemMeta(shieldMeta);
-    }
-
+    
     /**
      * This method creates the arrow item stack.
      */

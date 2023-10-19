@@ -19,27 +19,25 @@
 package de.butzlabben.missilewars.configuration.arena;
 
 import de.butzlabben.missilewars.Logger;
-import de.butzlabben.missilewars.game.missile.Missile;
-import de.butzlabben.missilewars.game.missile.MissileFacing;
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import de.butzlabben.missilewars.game.schematics.SchematicConfiguration;
+import de.butzlabben.missilewars.game.schematics.SchematicFacing;
+import de.butzlabben.missilewars.game.schematics.objects.Missile;
+import de.butzlabben.missilewars.game.schematics.objects.SchematicObject;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.bukkit.entity.EntityType;
 
+import java.io.File;
+import java.util.*;
+
 
 @Getter
 @ToString
 @RequiredArgsConstructor
-public class MissileConfiguration {
+public class MissileConfiguration extends SchematicConfiguration {
 
     // TODO pretty names
-
     private boolean onlyBlockPlaceable = false;
     private boolean onlyBetweenSpawnPlaceable = false;
     private boolean northFacing = true;
@@ -47,57 +45,79 @@ public class MissileConfiguration {
     private boolean southFacing = true;
     private boolean westFacing = true;
 
-    private List<Missile> missiles = new ArrayList<>() {{
-        add(new Missile("Tomahawk.schematic", "&aTomahawk", EntityType.CREEPER, 2, 2, 3));
-        add(new Missile("Cruiser.schematic", "&eCruiser", EntityType.BLAZE, 2, 2, 2));
-        add(new Missile("Sword.schematic", "&7Sword", EntityType.SKELETON, 2, 2, 2));
-        add(new Missile("Juggernaut.schematic", "&4Juggernaut", EntityType.MUSHROOM_COW, 2, 2, 1));
-        add(new Missile("Piranha.schematic", "&3Piranha", EntityType.HORSE, 2, 2, 3));
-        add(new Missile("Tunnelbore.schematic", "&0Tunnelbore", EntityType.ENDERMAN, 2, 2, 1));
+    private List<Missile> schematics = new ArrayList<>() {{
+        add(new Missile("Tomahawk.schematic", "&aTomahawk", 3, EntityType.CREEPER, 2, 2));
+        add(new Missile("Cruiser.schematic", "&eCruiser", 2, EntityType.BLAZE, 2, 2));
+        add(new Missile("Sword.schematic", "&7Sword", 2, EntityType.SKELETON, 2, 2));
+        add(new Missile("Juggernaut.schematic", "&4Juggernaut", 1, EntityType.MUSHROOM_COW, 2, 2));
+        add(new Missile("Piranha.schematic", "&3Piranha", 3, EntityType.HORSE, 2, 2));
+        add(new Missile("Tunnelbore.schematic", "&0Tunnelbore", 1, EntityType.ENDERMAN, 2, 2));
     }};
 
-    public List<MissileFacing> getEnabledFacings() {
-        List<MissileFacing> enabledDirections = new ArrayList<>();
 
-        if (northFacing) enabledDirections.add(MissileFacing.NORTH);
-        if (eastFacing) enabledDirections.add(MissileFacing.EAST);
-        if (southFacing) enabledDirections.add(MissileFacing.SOUTH);
-        if (westFacing) enabledDirections.add(MissileFacing.WEST);
+    @Override
+    public String getObjectNameSingular() {
+        return "Missile";
+    }
+
+    @Override
+    public String getObjectNamePlural() {
+        return "Missiles";
+    }
+    
+    @Override
+    public List<String> getSchematicNames() {
+        List<String> schematicNames = new ArrayList<>();
+
+        for (Missile missile : getSchematics()) {
+            schematicNames.add(missile.getSchematicName(true));
+        }
+
+        return schematicNames;
+    }
+
+    @Override
+    public SchematicObject getSchematicFromName(String name) {
+        String filteredName = name.replaceAll("§.", "");
+
+        for (Missile missile : getSchematics()) {
+            if (missile.getSchematicName(true).equalsIgnoreCase(filteredName)) return missile;
+        }
+        Logger.WARN.log("Schematic not found: " + filteredName);
+        return null;
+    }
+
+    @Override
+    public void check() {
+        if (getSchematics().isEmpty()) throw new IllegalStateException("The game cannot be started, when 0 " + getObjectNamePlural() + " are configured");
+
+        Set<SchematicObject> toRemove = new HashSet<>();
+        
+        for (Missile missile : getSchematics()) {
+            File schematic = missile.getSchematic();
+
+            if (schematic.exists()) continue;
+
+            Logger.WARN.log(missile.getDisplayName() + " §7has no " + getObjectNameSingular() + ". Removing this schematic");
+            toRemove.add(missile);
+        }
+        getSchematics().removeAll(toRemove);
+    }
+    
+    public List<SchematicFacing> getEnabledFacings() {
+        List<SchematicFacing> enabledDirections = new ArrayList<>();
+
+        if (northFacing) enabledDirections.add(SchematicFacing.NORTH);
+        if (eastFacing) enabledDirections.add(SchematicFacing.EAST);
+        if (southFacing) enabledDirections.add(SchematicFacing.SOUTH);
+        if (westFacing) enabledDirections.add(SchematicFacing.WEST);
 
         if (enabledDirections.isEmpty()) {
             Logger.WARN.log("All facings were disabled for an arena. Please correct this issue");
-            enabledDirections.addAll(Arrays.asList(MissileFacing.values()));
+            enabledDirections.addAll(Arrays.asList(SchematicFacing.values()));
         }
 
         return enabledDirections;
     }
-
-    public Missile getMissileFromName(String name) {
-        String filteredName = name.replaceAll("§.", "");
-        for (Missile missile : missiles) {
-            if (missile.getSchematicName(true).equalsIgnoreCase(filteredName)) return missile;
-        }
-        Logger.WARN.log("Missile not found: " + filteredName);
-        return null;
-    }
-
-    public void check() {
-        Set<Missile> toRemove = new HashSet<>();
-        for (Missile missile : missiles) {
-            File schematic = missile.getSchematic();
-            if (!schematic.exists()) {
-                Logger.WARN.log(missile.getDisplayName() + " §7has no schematic. Removing this missile");
-                toRemove.add(missile);
-            }
-        }
-        missiles.removeAll(toRemove);
-    }
-
-    public List<String> getMissileNames() {
-        List<String> missileNames = new ArrayList<>();
-        for (Missile missile : missiles) {
-            missileNames.add(missile.getSchematicName(true));
-        }
-        return missileNames;
-    }
+    
 }

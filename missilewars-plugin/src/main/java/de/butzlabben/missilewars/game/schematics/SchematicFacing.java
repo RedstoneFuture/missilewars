@@ -16,21 +16,22 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.game.missile;
+package de.butzlabben.missilewars.game.schematics;
 
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.configuration.arena.MissileConfiguration;
 import de.butzlabben.missilewars.util.missile.Interval;
+import org.bukkit.entity.Player;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.bukkit.entity.Player;
 
 /**
  * @author Butzlabben
  * @since 06.01.2018
  */
-public enum MissileFacing {
+public enum SchematicFacing {
 
     NORTH(new Interval(180, 270), new Interval(135, 315)),
     EAST(new Interval(270, 360), new Interval(225, 360), new Interval(0, 45)),
@@ -40,22 +41,22 @@ public enum MissileFacing {
     public final Interval primary;
     public final Interval[] secondary;
 
-    MissileFacing(Interval primary, Interval... secondary) {
+    SchematicFacing(Interval primary, Interval... secondary) {
         this.primary = primary;
         this.secondary = secondary;
     }
 
-    public static MissileFacing getFacing(double degree, MissileConfiguration configuration) {
-        List<MissileFacing> values = Arrays.stream(MissileFacing.values()).filter(f -> configuration.getEnabledFacings().contains(f)).collect(Collectors.toList());
-        MissileFacing facing = null;
-        for (MissileFacing fac : values) {
+    public static SchematicFacing getFacing(double degree, MissileConfiguration configuration) {
+        List<SchematicFacing> values = Arrays.stream(SchematicFacing.values()).filter(f -> configuration.getEnabledFacings().contains(f)).collect(Collectors.toList());
+        SchematicFacing facing = null;
+        for (SchematicFacing fac : values) {
             if (fac.primary.isIn(degree)) {
                 facing = fac;
                 break;
             }
         }
         if (facing == null) {
-            for (MissileFacing fac : values) {
+            for (SchematicFacing fac : values) {
                 for (int i = 0; i < fac.secondary.length; i++) {
                     if (fac.secondary[i].isIn(degree)) {
                         facing = fac;
@@ -71,7 +72,7 @@ public enum MissileFacing {
         return facing;
     }
 
-    public static MissileFacing getFacingPlayer(Player playerSelf, MissileConfiguration configuration) {
+    public static SchematicFacing getFacingPlayer(Player playerSelf, MissileConfiguration configuration) {
         float y = playerSelf.getLocation().getYaw();
         if (y < 0) {
             y += 360;

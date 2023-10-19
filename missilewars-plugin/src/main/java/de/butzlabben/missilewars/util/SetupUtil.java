@@ -21,8 +21,6 @@ package de.butzlabben.missilewars.util;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Config;
-import de.butzlabben.missilewars.configuration.arena.Arena;
-import de.butzlabben.missilewars.game.Arenas;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -93,25 +91,7 @@ public class SetupUtil {
             e.printStackTrace();
         }
     }
-
-    public static void checkShields() {
-        File shieldFolder = new File(MissileWars.getInstance().getDataFolder(), "shields");
-        if (!shieldFolder.exists()) {
-            shieldFolder.mkdir();
-        }
-
-        for (Arena arena : Arenas.getARENAS().values()) {
-            File shield = new File(shieldFolder, arena.getShieldConfiguration().getSchematic());
-            if (!shield.isFile()) {
-                String resource = "shield.schematic";
-
-                Logger.BOOT.log("Copying default shield schematic (" + resource + ")");
-                copyFile(resource, shield.getPath());
-
-            }
-        }
-    }
-
+    
     public static void checkMap(String worldName) {
         File arenasFolder = new File(Config.getArenasFolder());
         File file = new File(arenasFolder, worldName);
@@ -130,17 +110,15 @@ public class SetupUtil {
         }
     }
 
-    public static void checkMissiles() {
-        File file = new File(Config.getMissilesFolder());
-        if (!file.isDirectory()) {
-            String resource = "missiles.zip";
+    public static void saveDefaultSchematics(File schematicFile, String defaultFile) {
+        if (!schematicFile.isDirectory()) {
 
-            Logger.BOOT.log("Copying default missiles folder (" + resource + ")");
+            Logger.BOOT.log("Copying default schematic ressource folder (" + defaultFile + ")");
 
             try {
-                copyZip(resource, file.getPath());
+                copyZip(defaultFile, schematicFile.getPath());
             } catch (IOException e) {
-                Logger.ERROR.log("Unable to copy missiles!");
+                Logger.ERROR.log("Unable to copy schematic ressource folder '" + defaultFile + "'!");
                 e.printStackTrace();
             }
         }

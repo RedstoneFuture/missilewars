@@ -16,16 +16,13 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.game.missile;
+package de.butzlabben.missilewars.game.schematics.objects;
 
-import com.google.gson.annotations.SerializedName;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.game.Game;
-import de.butzlabben.missilewars.game.missile.paste.PasteProvider;
-import java.io.File;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import de.butzlabben.missilewars.game.schematics.SchematicFacing;
+import de.butzlabben.missilewars.game.schematics.paste.PasteProvider;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -34,78 +31,69 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.util.Vector;
 
+import java.io.File;
+
 /**
  * @author Butzlabben
  * @since 06.01.2018
  */
-@SuppressWarnings("deprecation")
-@RequiredArgsConstructor
-public class Missile {
-
-    private final String schematic;
-    @SerializedName("name") private final String displayName;
+public class Missile extends SchematicObject {
+    
     private final EntityType egg;
     private final int down;
     private final int dist;
-    @Getter private final int occurrence;
-
-    public void paste(Player p, MissileFacing mf, Game game) {
+    
+    
+    public Missile(String schematic, String displayName, int occurrence, EntityType egg, int down, int dist) {
+        super(schematic, displayName, occurrence);
+        this.egg = egg;
+        this.down = down;
+        this.dist = dist;
+    }
+    
+    @Override
+    public File getSchematicFolder() {
+        return new File(Config.getMissilesFolder());
+    }
+    
+    public void paste(Game game, Player p, SchematicFacing mf) {
         if (mf == null)
             return;
         try {
             Location loc = p.getLocation();
             Vector pastePos = new Vector(loc.getX(), loc.getY(), loc.getZ());
+            
             pastePos = pastePos.add(new Vector(0, -down, 0));
 
             int rotation = 0;
-            if (mf == MissileFacing.NORTH) {
+            if (mf == SchematicFacing.NORTH) {
                 pastePos = pastePos.add(new Vector(0, 0, -dist));
-            } else if (mf == MissileFacing.SOUTH) {
+            } else if (mf == SchematicFacing.SOUTH) {
                 pastePos = pastePos.add(new Vector(0, 0, dist));
                 rotation = 180;
-            } else if (mf == MissileFacing.EAST) {
+            } else if (mf == SchematicFacing.EAST) {
                 pastePos = pastePos.add(new Vector(dist, 0, 0));
                 rotation = 270;
-            } else if (mf == MissileFacing.WEST) {
+            } else if (mf == SchematicFacing.WEST) {
                 pastePos = pastePos.add(new Vector(-dist, 0, 0));
                 rotation = 90;
             }
 
-
             PasteProvider.getPaster().pasteMissile(getSchematic(), pastePos, rotation, loc.getWorld(),
                     game.getPlayer(p).getTeam());
         } catch (Exception e) {
-            Logger.ERROR.log("Could not load " + displayName);
+            Logger.ERROR.log("Could not load " + getDisplayName());
             e.printStackTrace();
         }
     }
-
-    public File getSchematic() {
-        File missilesFolder = new File(Config.getMissilesFolder());
-        return new File(missilesFolder, getSchematicName(false));
-    }
-
-    public String getSchematicName(boolean withoutExtension) {
-        if (withoutExtension) {
-            return schematic.replace(".schematic", "")
-                    .replace(".schem", "");
-        }
-        return schematic;
-    }
-
-    public String getDisplayName() {
-        String name = displayName;
-        name = name.replace("%schematic_name%", getSchematicName(false))
-                .replace("%schematic_name_compact%", getSchematicName(true));
-        return name;
-    }
-
+    
     /**
      * This method provides the missile spawn item based on the
      * mob spawn item specification in the arena configuration.
      *
      * @return ItemStack = the spawn egg with the missile name
      */
+    @Override
     public ItemStack getItem() {
         ItemStack spawnEgg = new ItemStack(getSpawnEgg(egg));
         ItemMeta spawnEggMeta = spawnEgg.getItemMeta();
@@ -129,4 +117,5 @@ public class Missile {
         String name = material.name();
         return name.contains("SPAWN_EGG") || name.equals("MONSTER_EGG");
     }
+    
 }

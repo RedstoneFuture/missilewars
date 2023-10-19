@@ -19,6 +19,7 @@
 package de.butzlabben.missilewars.game.equipment;
 
 import de.butzlabben.missilewars.game.Game;
+import de.butzlabben.missilewars.game.schematics.objects.SchematicObject;
 import lombok.Getter;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -36,7 +37,8 @@ public class EquipmentManager {
 
     private final Game game;
 
-    private final MissileGameEquipment missileEquipment;
+    private final SchematicGameEquipment missileEquipment;
+    private final SchematicGameEquipment shieldEquipment;
     private final SpecialGameEquipment specialEquipment;
     private ItemStack customBow;
     private ItemStack customPickaxe;
@@ -45,7 +47,8 @@ public class EquipmentManager {
     public EquipmentManager(Game game) {
         this.game = game;
 
-        missileEquipment = new MissileGameEquipment(game);
+        missileEquipment = new SchematicGameEquipment(game, SchematicObject.schematicType.MISSILE);
+        shieldEquipment = new SchematicGameEquipment(game, SchematicObject.schematicType.SHIELD);
         specialEquipment = new SpecialGameEquipment(game);
     }
 

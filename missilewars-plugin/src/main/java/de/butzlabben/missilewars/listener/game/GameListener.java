@@ -26,8 +26,7 @@ import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.Team;
 import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.misc.RespawnGoldBlock;
-import de.butzlabben.missilewars.game.misc.Shield;
-import de.butzlabben.missilewars.game.missile.Missile;
+import de.butzlabben.missilewars.game.schematics.objects.Missile;
 import de.butzlabben.missilewars.player.MWPlayer;
 import de.butzlabben.missilewars.util.geometry.Geometry;
 import org.bukkit.GameMode;
@@ -41,11 +40,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPhysicsEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -138,8 +133,8 @@ public class GameListener extends GameBoundListener {
         if (!(snowball.getShooter() instanceof Player)) return;
 
         Player shooter = (Player) snowball.getShooter();
-        Shield shield = new Shield(shooter, getGame().getArena().getShieldConfiguration());
-        shield.onThrow(event);
+        ShieldListener shieldListener = new ShieldListener(shooter, getGame());
+        shieldListener.onThrow(event);
     }
 
     @EventHandler

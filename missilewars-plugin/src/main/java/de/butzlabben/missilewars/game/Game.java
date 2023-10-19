@@ -34,8 +34,9 @@ import de.butzlabben.missilewars.game.equipment.EquipmentManager;
 import de.butzlabben.missilewars.game.equipment.PlayerEquipmentRandomizer;
 import de.butzlabben.missilewars.game.misc.MotdManager;
 import de.butzlabben.missilewars.game.misc.ScoreboardManager;
-import de.butzlabben.missilewars.game.missile.Missile;
-import de.butzlabben.missilewars.game.missile.MissileFacing;
+import de.butzlabben.missilewars.game.schematics.SchematicFacing;
+import de.butzlabben.missilewars.game.schematics.objects.Missile;
+import de.butzlabben.missilewars.game.schematics.objects.Shield;
 import de.butzlabben.missilewars.game.signs.MWSign;
 import de.butzlabben.missilewars.game.stats.FightStats;
 import de.butzlabben.missilewars.game.timer.EndTimer;
@@ -57,9 +58,11 @@ import lombok.ToString;
 import org.bukkit.*;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Snowball;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
@@ -617,6 +620,7 @@ public class Game {
      * This method spawns the missile for the player.
      *
      * @param player the executing player
+     * @param itemStack the spawn egg
      */
     public void spawnMissile(Player player, ItemStack itemStack) {
 
@@ -628,15 +632,39 @@ public class Game {
                 return;
             }
         }
-
-        Missile missile = this.arena.getMissileConfiguration().getMissileFromName(itemStack.getItemMeta().getDisplayName());
+        
+        ItemMeta itemMeta = itemStack.getItemMeta();
+        if (itemMeta == null) return;
+        
+        Missile missile = (Missile) this.arena.getMissileConfiguration().getSchematicFromName(itemMeta.getDisplayName());
         if (missile == null) {
             player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_MISSILE));
             return;
         }
+        
         itemStack.setAmount(itemStack.getAmount() - 1);
         player.setItemInHand(itemStack);
-        missile.paste(player, MissileFacing.getFacingPlayer(player, this.arena.getMissileConfiguration()), this);
+        missile.paste(this, player, SchematicFacing.getFacingPlayer(player, this.arena.getMissileConfiguration()));
+    }
+
+    /**
+     * This method spawns the shield after his flight route.
+     *
+     * @param player the executing player
+     * @param ball the snowball
+     */
+    public void spawnShield(Player player, Snowball ball) {
+        
+        ItemMeta itemMeta = ball.getItem().getItemMeta();
+        if (itemMeta == null) return;
+
+        Shield shield = (Shield) this.arena.getShieldConfiguration().getSchematicFromName(itemMeta.getDisplayName());
+        if (shield == null) {
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_MISSILE));
+            return;
+        }
+        
+        shield.paste(ball);
     }
 
     /**
@@ -663,9 +691,7 @@ public class Game {
         }
 
         arena.getMissileConfiguration().check();
-        if (arena.getMissileConfiguration().getMissiles().size() == 0) {
-            throw new IllegalStateException("The game cannot be started, when 0 missiles are configured");
-        }
+        arena.getShieldConfiguration().check();
 
         this.arena = arena.clone();
         gameWorld = new GameWorld(this, arena.getTemplateWorld());

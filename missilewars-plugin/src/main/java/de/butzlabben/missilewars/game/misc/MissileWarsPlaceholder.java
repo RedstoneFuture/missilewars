@@ -96,7 +96,7 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
 
                 // %missilewars_arena_missileamount_<arena name or 'this'>%
                 if (params.equalsIgnoreCase("arena_missileamount_" + arena.getName())) {
-                    return Integer.toString(arena.getMissileConfiguration().getMissiles().size());
+                    return Integer.toString(arena.getMissileConfiguration().getSchematics().size());
                 }
 
             }
