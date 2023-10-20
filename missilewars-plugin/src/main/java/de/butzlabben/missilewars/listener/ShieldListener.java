@@ -16,7 +16,7 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.listener.game;
+package de.butzlabben.missilewars.listener;
 
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.game.Game;

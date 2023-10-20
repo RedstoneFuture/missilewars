@@ -27,6 +27,7 @@ import de.butzlabben.missilewars.game.Team;
 import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.misc.RespawnGoldBlock;
 import de.butzlabben.missilewars.game.schematics.objects.Missile;
+import de.butzlabben.missilewars.listener.ShieldListener;
 import de.butzlabben.missilewars.player.MWPlayer;
 import de.butzlabben.missilewars.util.geometry.Geometry;
 import org.bukkit.GameMode;
