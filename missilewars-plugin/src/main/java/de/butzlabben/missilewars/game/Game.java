@@ -352,7 +352,7 @@ public class Game {
             player.setFoodLevel(20);
             player.setHealth(player.getMaxHealth());
 
-            Team team = getNextTeam();
+            Team team = getSmallerTeam();
             team.addMember(mwPlayer);
             player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_TEAM_ASSIGNED).replace("%team%", team.getFullname()));
 
@@ -826,14 +826,40 @@ public class Game {
      * This method returns the next matching team for the next player to
      * join. It is always the smaller team.
      *
-     * @return (Team) the matched team to join
+     * @return (Team) the smaller team
      */
-    public Team getNextTeam() {
+    public Team getSmallerTeam() {
         if (team1.getMembers().size() > team2.getMembers().size()) {
             return team2;
         } else {
             return team1;
         }
+    }
+
+    /**
+     * This method checks whether a team switch would be fair based on 
+     * the new team size. If no empty team results or if the team size 
+     * difference does not exceed a certain value, the switch is 
+     * considered acceptable.
+     * 
+     * @param targetTeam the new team
+     * @return (boolean) 'true' if it's a fair team switch
+     */
+    public boolean isValidTeamSwitch(Team targetTeam) {
+        
+        // original team sizes
+        int targetTeamSize = targetTeam.getMembers().size();
+        int currentTeamSize = targetTeam.getEnemyTeam().getMembers().size();
+        
+        // Preventing an empty team when previously both teams had at least one player:
+        if ((currentTeamSize == 1) && (targetTeamSize >= 1)) return false;
+
+        int diff = getSmallerTeam().getEnemyTeam().getMembers().size() - getSmallerTeam().getMembers().size();
+
+        // max team difference: 30% (rounded) of target team size
+        float maxDiff = Math.max(1, Math.round(targetTeamSize * 0.3));
+
+        return diff <= maxDiff;
     }
 
     public boolean isPlayersMax() {
