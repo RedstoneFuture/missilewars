@@ -101,6 +101,9 @@ public class LobbyListener extends GameBoundListener {
     public void onInventoryOpen(InventoryOpenEvent event) {
         Player player = (Player) event.getPlayer();
         if (!isInLobbyArea(player.getLocation())) return;
+        
+        // handling of vote inventory:
+        if (event.getView().getTitle().equals(Messages.getMessage(false, Messages.MessageEnum.VOTE_GUI))) return;
 
         if (player.getGameMode() != GameMode.CREATIVE) event.setCancelled(true);
     }
@@ -112,6 +115,8 @@ public class LobbyListener extends GameBoundListener {
         Player player = (Player) event.getWhoClicked();
         if (!isInLobbyArea(player.getLocation())) return;
 
+        // handling of vote inventory: see 'VoteInventory.class'
+        
         if (player.getGameMode() != GameMode.CREATIVE) event.setCancelled(true);
     }
 
