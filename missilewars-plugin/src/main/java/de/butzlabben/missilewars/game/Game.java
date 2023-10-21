@@ -831,12 +831,9 @@ public class Game {
         int diff = getSmallerTeam().getEnemyTeam().getMembers().size() - getSmallerTeam().getMembers().size();
 
         // max team difference: 30% (rounded) of target team size
-        float maxDiff = Math.round(targetTeamSize * 0.3);
-        // round up to at least 1:
-        if (maxDiff <= 0) maxDiff = 1;
+        float maxDiff = Math.max(1, Math.round(targetTeamSize * 0.3));
 
-        if (diff <= maxDiff) return true;
-        return false;
+        return diff <= maxDiff;
     }
 
     public boolean isPlayersMax() {
