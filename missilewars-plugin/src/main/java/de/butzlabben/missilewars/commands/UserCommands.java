@@ -114,7 +114,7 @@ public class UserCommands extends BaseCommand {
         }
 
         // Would the number of team members be too far apart?
-        if (to != game.getNextTeam()) {
+        if (!game.isValidTeamSwitch(to)) {
             player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_UNFAIR_TEAM_SIZE));
             return;
         }
