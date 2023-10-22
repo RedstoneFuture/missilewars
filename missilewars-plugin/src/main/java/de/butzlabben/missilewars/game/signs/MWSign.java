@@ -32,6 +32,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.WallSign;
 
 @Data
@@ -45,7 +46,7 @@ public class MWSign {
     public boolean isValid() {
         boolean worldExists = location.getWorld() != null;
         boolean lobbyValid = GameManager.getInstance().getGames().containsKey(lobby);
-        boolean blockIsSign = (location.getBlock().getBlockData() instanceof WallSign);
+        boolean blockIsSign = isSign(location.getBlock().getBlockData());
 
         return worldExists && lobbyValid && blockIsSign;
     }
@@ -75,8 +76,8 @@ public class MWSign {
 
     public void editSign(Location location, List<String> lines) {
         Block block = location.getBlock();
-        if (!(block.getBlockData() instanceof WallSign)) {
-            Logger.WARN.log("Configured sign at: " + location + " is not a wall sign");
+        if (!(MWSign.isSign(block.getBlockData()))) {
+            Logger.WARN.log("Configured sign at: " + location + " is not a standing or wall sign");
             return;
         }
         Sign sign = (Sign) block.getState();
@@ -110,5 +111,9 @@ public class MWSign {
         int players = game == null ? 0 : game.getPlayers().size();
         replaced = replaced.replace("%max_players%", Integer.toString(maxPlayers)).replace("%players%", Integer.toString(players));
         return replaced;
+    }
+    
+    public static boolean isSign(BlockData blockData) {
+        return ((blockData instanceof org.bukkit.block.data.type.Sign) || (blockData instanceof WallSign));
     }
 }

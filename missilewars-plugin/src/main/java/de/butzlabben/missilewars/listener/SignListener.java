@@ -24,9 +24,7 @@ import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.game.signs.MWSign;
 import de.butzlabben.missilewars.game.signs.SignRepository;
-import java.util.Optional;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.type.WallSign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,6 +32,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+
+import java.util.Optional;
 
 public class SignListener implements Listener {
 
@@ -44,7 +44,7 @@ public class SignListener implements Listener {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 
         Block block = event.getClickedBlock();
-        if (!(block.getBlockData() instanceof WallSign)) return;
+        if (!(MWSign.isSign(block.getBlockData()))) return;
 
         SignRepository repository = MissileWars.getInstance().getSignRepository();
         Optional<MWSign> optional = repository.getSign(block.getLocation());
@@ -60,7 +60,7 @@ public class SignListener implements Listener {
     @EventHandler
     public void onSignChange(SignChangeEvent event) {
         Block block = event.getBlock();
-        if (!(block.getBlockData() instanceof WallSign)) return;
+        if (!(MWSign.isSign(block.getBlockData()))) return;
 
         Player player = event.getPlayer();
         if (!hasManageSignPermission(player)) return;
@@ -89,7 +89,7 @@ public class SignListener implements Listener {
     @EventHandler
     public void onSignBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
-        if (!(block.getBlockData() instanceof WallSign)) return;
+        if (!(MWSign.isSign(block.getBlockData()))) return;
 
         Player player = event.getPlayer();
         if (!hasManageSignPermission(player)) return;
