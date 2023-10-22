@@ -29,6 +29,10 @@ Contributions are always welcome, just fork this project, make your changes and 
 All information about the Commands, Permissions, Placeholders and the Configuration can be found
 in our [Github Wiki](https://github.com/Butzlabben/missilewars/wiki).
 
+## Supporters / Project Partners
+
+[![Recommended and supported by RedstoneWorld](https://redstoneworld.de/bilder/kooperation/RedstoneWorld-Logo_small.png)](https://redstoneworld.de)
+
 ## Donate
 
 [![Donation link](https://www.paypalobjects.com/en_US/DK/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=naegele_daniel%40web.de&currency_code=EUR&source=url)
