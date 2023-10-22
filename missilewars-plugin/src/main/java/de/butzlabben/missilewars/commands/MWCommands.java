@@ -110,7 +110,7 @@ public class MWCommands extends BaseCommand {
             return;
         }
 
-        Missile missile = (Missile) game.getArena().getMissileConfiguration().getSchematicFromName(args[0]);
+        Missile missile = (Missile) game.getArena().getMissileConfiguration().getSchematicFromFileName(args[0]);
         if (missile == null) {
             player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_MISSILE));
             return;

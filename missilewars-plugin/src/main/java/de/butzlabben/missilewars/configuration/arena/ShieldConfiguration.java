@@ -67,13 +67,22 @@ public class ShieldConfiguration extends SchematicConfiguration {
     }
 
     @Override
-    public SchematicObject getSchematicFromName(String name) {
-        String filteredName = name.replaceAll("§.", "");
+    public SchematicObject getSchematicFromFileName(String fileName) {
 
         for (Shield shield : getSchematics()) {
-            if (shield.getSchematicName(true).equalsIgnoreCase(filteredName)) return shield;
+            if (shield.getSchematicName(true).equals(fileName)) return shield;
         }
-        Logger.WARN.log("Schematic not found: " + filteredName);
+        Logger.WARN.log(getObjectNameSingular() + " not found: '" + fileName.replaceAll("§", "").replaceAll("&", "") + "'");
+        return null;
+    }
+
+    @Override
+    public SchematicObject getSchematicFromDisplayName(String displayName) {
+
+        for (Shield shield : getSchematics()) {
+            if (shield.getDisplayName().equals(displayName)) return shield;
+        }
+        Logger.WARN.log(getObjectNameSingular() + " not found: '" + displayName.replaceAll("§", "").replaceAll("&", "") + "'");
         return null;
     }
 

@@ -636,7 +636,7 @@ public class Game {
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta == null) return;
         
-        Missile missile = (Missile) this.arena.getMissileConfiguration().getSchematicFromName(itemMeta.getDisplayName());
+        Missile missile = (Missile) this.arena.getMissileConfiguration().getSchematicFromDisplayName(itemMeta.getDisplayName());
         if (missile == null) {
             player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_MISSILE));
             return;
@@ -658,7 +658,7 @@ public class Game {
         ItemMeta itemMeta = ball.getItem().getItemMeta();
         if (itemMeta == null) return;
 
-        Shield shield = (Shield) this.arena.getShieldConfiguration().getSchematicFromName(itemMeta.getDisplayName());
+        Shield shield = (Shield) this.arena.getShieldConfiguration().getSchematicFromDisplayName(itemMeta.getDisplayName());
         if (shield == null) {
             player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_MISSILE));
             return;
