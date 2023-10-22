@@ -124,12 +124,12 @@ public class Config {
         if (isNewConfig) {
             List<String> sidebarList = new ArrayList<>();
 
-            sidebarList.add("§7Time left:");
-            sidebarList.add("§e» %time%m");
+            sidebarList.add("&7Time left:");
+            sidebarList.add("&e» %time%m");
             sidebarList.add("");
-            sidebarList.add("%team1% §7» %team1_color%%team1_amount%");
+            sidebarList.add("%team1% &7» %team1_color%%team1_amount%");
             sidebarList.add("");
-            sidebarList.add("%team2% §7» %team2_color%%team2_amount%");
+            sidebarList.add("%team2% &7» %team2_color%%team2_amount%");
 
             cfg.set("sidebar.entries", sidebarList);
         }
