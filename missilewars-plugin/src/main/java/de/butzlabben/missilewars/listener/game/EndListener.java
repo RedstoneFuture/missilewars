@@ -29,6 +29,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 /**
@@ -56,6 +57,14 @@ public class EndListener extends GameBoundListener {
 
         event.setDeathMessage(null);
         if (getGame().getArena().isAutoRespawn()) getGame().autoRespawnPlayer(player);
+    }
+
+    @EventHandler
+    public void onInventoryOpen(InventoryOpenEvent event) {
+        Player player = (Player) event.getPlayer();
+        if (!isInGameWorld(player.getLocation())) return;
+
+        if (player.getGameMode() != GameMode.CREATIVE) event.setCancelled(true);
     }
 
     @EventHandler

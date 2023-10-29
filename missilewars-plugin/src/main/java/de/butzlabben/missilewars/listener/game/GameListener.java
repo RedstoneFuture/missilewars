@@ -41,12 +41,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPhysicsEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -229,14 +226,29 @@ public class GameListener extends GameBoundListener {
     }
 
     @EventHandler
+    public void onInventoryOpen(InventoryOpenEvent event) {
+        Player player = (Player) event.getPlayer();
+        if (!isInGameWorld(player.getLocation())) return;
+
+        if (player.getGameMode() == GameMode.CREATIVE) return;
+        if (player.getGameMode() == GameMode.SPECTATOR) event.setCancelled(true);
+
+        Inventory clickedInventory = event.getInventory();
+        if (clickedInventory.getType() != InventoryType.PLAYER) event.setCancelled(true);
+    }
+
+    @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
+
+        // Putting the items inside is not perfectly locked. But it is a second protection.
+        // More checks are possible: https://www.spigotmc.org/threads/531737
+
         if (!(event.getWhoClicked() instanceof Player)) return;
 
         Player player = (Player) event.getWhoClicked();
         if (!isInGameWorld(player.getLocation())) return;
 
         if (player.getGameMode() == GameMode.CREATIVE) return;
-
         if (player.getGameMode() == GameMode.SPECTATOR) event.setCancelled(true);
 
         Inventory clickedInventory = event.getClickedInventory();
