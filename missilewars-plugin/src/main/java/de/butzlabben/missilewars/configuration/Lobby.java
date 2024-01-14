@@ -67,9 +67,10 @@ public class Lobby {
     @Setter @SerializedName("spawn_point") private Location spawnPoint = getBukkitDefaultWorld().getSpawnLocation();
     @Setter @SerializedName("after_game_spawn") private Location afterGameSpawn = getBukkitDefaultWorld().getSpawnLocation();
     @Setter @SerializedName("area") private AreaConfiguration areaConfig = AreaConfiguration.aroundLocation(getBukkitDefaultWorld().getSpawnLocation(), 30);
-    @SerializedName("map_choose_procedure") private MapChooseProcedure mapChooseProcedure = MapChooseProcedure.FIRST;
+    @SerializedName("map_choose_procedure") private MapChooseProcedure mapChooseProcedure = MapChooseProcedure.MAPCYCLE;
     @SerializedName("possible_arenas") private List<String> possibleArenas = new ArrayList<>() {{
         add("arena0");
+        add("dam");
     }};
 
     // These values are only set after the Config has been read.

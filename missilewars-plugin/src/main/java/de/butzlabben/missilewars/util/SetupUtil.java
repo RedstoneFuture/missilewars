@@ -23,18 +23,20 @@ import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.arena.Arena;
 import de.butzlabben.missilewars.game.Arenas;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import java.io.*;
-import java.net.URL;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
-import java.util.Enumeration;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.java.JavaPlugin;
 
 /**
  * @author Butzlabben
@@ -122,7 +124,7 @@ public class SetupUtil {
             Logger.BOOT.log("Copying default map (" + resource + ")");
 
             try {
-                copyZip(resource, file.getPath());
+                copyAndUnzip(resource, file.getPath());
             } catch (IOException e) {
                 Logger.ERROR.log("Unable to copy new map!");
                 e.printStackTrace();
@@ -138,7 +140,7 @@ public class SetupUtil {
             Logger.BOOT.log("Copying default missiles folder (" + resource + ")");
 
             try {
-                copyZip(resource, file.getPath());
+                copyAndUnzip(resource, file.getPath());
             } catch (IOException e) {
                 Logger.ERROR.log("Unable to copy missiles!");
                 e.printStackTrace();
@@ -159,29 +161,23 @@ public class SetupUtil {
         }
     }
 
-    private static void copyFolder(String resource, String outputFolder) throws IOException {
-        copyResourcesToDirectory(jarForClass(MissileWars.class, null), resource, outputFolder);
-    }
-
-    public static void copyZip(String resource, String outputFolder) throws IOException {
-        File out = new File(MissileWars.getInstance().getDataFolder(), resource);
-
+    public static void copyAndUnzip(String resource, String outputFolder) throws IOException {
         InputStream in = JavaPlugin.getPlugin(MissileWars.class).getResource(resource);
 
-        Files.copy(in, out.toPath());
-
-        unzip(out.getPath(), outputFolder);
-
-        // delete the ZIP files after server stopping
-        out.deleteOnExit();
+        unzip(in, outputFolder);
     }
 
-    public static void unzip(String zipFilePath, String destDirectory) throws IOException {
+    public static void unzip(InputStream inputStream, String destDirectory) throws IOException {
+        if (inputStream == null) {
+            return;
+        }
+
         File destDir = new File(destDirectory);
         if (!destDir.exists()) {
             destDir.mkdir();
         }
-        ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath));
+
+        ZipInputStream zipIn = new ZipInputStream(inputStream);
 
         ZipEntry entry = zipIn.getNextEntry();
         // iterates over entries in the zip file
@@ -215,53 +211,5 @@ public class SetupUtil {
             bos.write(bytesIn, 0, read);
         }
         bos.close();
-    }
-
-    public static JarFile jarForClass(Class<?> clazz, JarFile defaultJar) {
-        String path = "/" + clazz.getName().replace('.', '/') + ".class";
-        URL jarUrl = clazz.getResource(path);
-        if (jarUrl == null) {
-            return defaultJar;
-        }
-
-        String url = jarUrl.toString();
-        int bang = url.indexOf("!");
-        String JAR_URI_PREFIX = "jar:file:";
-        if (url.startsWith(JAR_URI_PREFIX) && bang != -1) {
-            try {
-                return new JarFile(url.substring(JAR_URI_PREFIX.length(), bang));
-            } catch (IOException e) {
-                throw new IllegalStateException("Error loading jar file.", e);
-            }
-        } else {
-            return defaultJar;
-        }
-    }
-
-    /**
-     * Copies a directory from a jar file to an external directory.
-     */
-    public static void copyResourcesToDirectory(JarFile fromJar, String jarDir, String destDir) throws IOException {
-        for (Enumeration<JarEntry> entries = fromJar.entries(); entries.hasMoreElements(); ) {
-            JarEntry entry = entries.nextElement();
-            if (entry.getName().startsWith(jarDir + "/") && !entry.isDirectory()) {
-                File dest = new File(destDir + "/" + entry.getName().substring(jarDir.length() + 1));
-                File parent = dest.getParentFile();
-                if (parent != null) {
-                    parent.mkdirs();
-                }
-
-                try (FileOutputStream out = new FileOutputStream(dest); InputStream in = fromJar.getInputStream(entry)) {
-                    byte[] buffer = new byte[8 * 1024];
-
-                    int s;
-                    while ((s = in.read(buffer)) > 0) {
-                        out.write(buffer, 0, s);
-                    }
-                } catch (IOException e) {
-                    throw new IOException("Could not copy asset from jar file", e);
-                }
-            }
-        }
     }
 }
