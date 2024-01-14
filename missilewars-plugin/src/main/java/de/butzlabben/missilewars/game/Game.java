@@ -52,9 +52,19 @@ import de.butzlabben.missilewars.util.PlayerDataProvider;
 import de.butzlabben.missilewars.util.geometry.GameArea;
 import de.butzlabben.missilewars.util.geometry.Geometry;
 import de.butzlabben.missilewars.util.serialization.Serializer;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.ToString;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -62,12 +72,6 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Consumer;
 
 /**
  * @author Butzlabben
@@ -117,7 +121,7 @@ public class Game {
             return;
         }
 
-        if (lobby.getPossibleArenas().size() == 0) {
+        if (lobby.getPossibleArenas().isEmpty()) {
             Logger.ERROR.log("At least one valid arena must be set at lobby \"" + lobby.getName() + "\".");
             return;
         }
@@ -163,7 +167,7 @@ public class Game {
         } else if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPCYCLE) {
             final int lastMapIndex = cycles.getOrDefault(lobby.getName(), -1);
             List<Arena> arenas = lobby.getArenas();
-            int index = lastMapIndex >= arenas.size() - 1 ? 0 : lastMapIndex + 1;
+            int index = (lastMapIndex + 1) % arenas.size();
             cycles.put(lobby.getName(), index);
             setArena(arenas.get(index));
             prepareGame();
@@ -179,6 +183,14 @@ public class Game {
             }
         }
 
+        // Add players if they are in the game area
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!isIn(player.getLocation())) {
+                continue;
+            }
+
+            playerJoinInGame(player, false);
+        }
     }
 
     /**
