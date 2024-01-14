@@ -18,21 +18,32 @@
 
 package de.butzlabben.missilewars.util.stats;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.util.UUIDTypeAdapter;
-import lombok.Getter;
-import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import lombok.Getter;
+import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
 /**
  * @author Butzlabben
@@ -59,7 +70,7 @@ public class GameProfileBuilder {
         }
 
         String json = getText(String.format("https://sessionserver.mojang.com/session/minecraft/profile/%s?unsigned=false",
-                UUIDTypeAdapter.fromUUID(uuid)));
+                uuid.toString().replace("-", "")));
 
         try {
             GameProfile result = gson.fromJson(json, GameProfile.class);
@@ -80,7 +91,7 @@ public class GameProfileBuilder {
 
         List<Object> args = new ArrayList<>();
         args.add(System.currentTimeMillis());
-        args.add(UUIDTypeAdapter.fromUUID(uuid));
+        args.add(uuid.toString().replaceAll("-", ""));
         args.add(name);
         args.add(skinUrl);
         if (cape) {
