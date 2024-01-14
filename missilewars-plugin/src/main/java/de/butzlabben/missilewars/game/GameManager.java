@@ -24,14 +24,13 @@ import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.Lobby;
 import de.butzlabben.missilewars.util.geometry.GameArea;
 import de.butzlabben.missilewars.util.serialization.Serializer;
-import lombok.Getter;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 
 @Getter
 public class GameManager {
@@ -47,10 +46,8 @@ public class GameManager {
     }
 
     public void restartAll() {
-        var iterator = games.values().iterator();
-        //noinspection WhileLoopReplaceableByForEach
-        while (iterator.hasNext()) {
-            restartGame(iterator.next().getLobby(), false);
+        for (Game game : games.values()) {
+            restartGame(game.getLobby(), false);
         }
     }
 

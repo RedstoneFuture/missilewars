@@ -307,7 +307,7 @@ public class Game {
         Bukkit.getPluginManager().callEvent(new GameStopEvent(this));
     }
 
-    public void reset() {
+    public void triggerRestart() {
         if (Config.isSetup()) return;
 
         if (restart) {
@@ -413,10 +413,8 @@ public class Game {
         Team team = mwPlayer.getTeam();
         boolean playerWasTeamMember = false;
 
-        if (state == GameState.INGAME) {
-            BukkitTask task = playerTasks.get(mwPlayer.getUuid());
-            if (task != null) task.cancel();
-        }
+        BukkitTask task = playerTasks.get(mwPlayer.getUuid());
+        if (task != null) task.cancel();
 
         PlayerDataProvider.getInstance().loadInventory(player);
 
@@ -487,6 +485,12 @@ public class Game {
         // Deactivation of all event handlers
         HandlerList.unregisterAll(listener);
         taskManager.stopTimer();
+
+        // Just in case this wasn't executed in stopGame() already
+        // This can happen if a game restart gets issued while it's still active
+        for (BukkitTask bt : playerTasks.values()) {
+            bt.cancel();
+        }
 
         if (gameWorld != null) {
             gameWorld.unload();
@@ -661,7 +665,7 @@ public class Game {
         itemStack.setAmount(amount - 1);
 
         Fireball fb = player.launchProjectile(Fireball.class);
-        fb.setVelocity(player.getLocation().getDirection().multiply(2.5D));
+        fb.setDirection(player.getLocation().getDirection().multiply(2.5D));
         player.playSound(fb.getLocation(), Sound.BLOCK_ANVIL_LAND, 100.0F, 2.0F);
         player.playSound(fb.getLocation(), Sound.ITEM_FLINTANDSTEEL_USE, 100.0F, 1.0F);
         fb.setYield(3F);
@@ -823,20 +827,21 @@ public class Game {
     }
 
     /**
-     * This method checks whether a team switch would be fair based on 
-     * the new team size. If no empty team results or if the team size 
-     * difference does not exceed a certain value, the switch is 
+     * This method checks whether a team switch would be fair based on
+     * the new team size. If no empty team results or if the team size
+     * difference does not exceed a certain value, the switch is
      * considered acceptable.
-     * 
+     *
      * @param targetTeam the new team
+     *
      * @return (boolean) 'true' if it's a fair team switch
      */
     public boolean isValidTeamSwitch(Team targetTeam) {
-        
+
         // original team sizes
         int targetTeamSize = targetTeam.getMembers().size();
         int currentTeamSize = targetTeam.getEnemyTeam().getMembers().size();
-        
+
         // Preventing an empty team when previously both teams had at least one player:
         if ((currentTeamSize == 1) && (targetTeamSize >= 1)) return false;
 
