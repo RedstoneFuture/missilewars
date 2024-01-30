@@ -40,7 +40,7 @@ public class SpecialGameEquipment {
     private ItemStack arrow;
     private ItemStack fireball;
 
-    private List<ItemStack> specialEquipmentList = new ArrayList<>();
+    private final List<ItemStack> specialEquipmentList = new ArrayList<>();
 
 
     public SpecialGameEquipment(Game game) {
