@@ -243,17 +243,7 @@ public class ScoreboardManager {
      */
     private String replaceScoreboardPlaceholders(String text) {
 
-        String time = "";
-        if (game.getState() == GameState.LOBBY) {
-            // Show the planned duration of the next game:
-            time = arenaGameDuration;
-        } else if (game.getState() == GameState.INGAME) {
-            // Show the remaining duration of the running game:
-            time = Integer.toString(game.getTaskManager().getTimer().getSeconds() / 60);
-        } else if (game.getState() == GameState.END) {
-            // Show the remaining duration of the last game:
-            time = Integer.toString(game.getRemainingGameDuration() / 60);
-        }
+        String time = getTimeString();
 
 
         text = ChatColor.translateAlternateColorCodes('&', text);
@@ -273,6 +263,21 @@ public class ScoreboardManager {
         text = text.replace("%time%", time);
 
         return text;
+    }
+
+    private String getTimeString() {
+        String time = "";
+        if (game.getState() == GameState.LOBBY) {
+            // Show the planned duration of the next game:
+            time = arenaGameDuration;
+        } else if (game.getState() == GameState.INGAME) {
+            // Show the remaining duration of the running game:
+            time = Integer.toString(game.getTaskManager().getTimer().getSeconds() / 60);
+        } else if (game.getState() == GameState.END) {
+            // Show the remaining duration of the last game:
+            time = Integer.toString(game.getRemainingGameDuration() / 60);
+        }
+        return time;
     }
 
 }

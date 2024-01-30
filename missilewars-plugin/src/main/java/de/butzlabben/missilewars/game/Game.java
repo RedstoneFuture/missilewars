@@ -679,7 +679,7 @@ public class Game {
         }
 
         arena.getMissileConfiguration().check();
-        if (arena.getMissileConfiguration().getMissiles().size() == 0) {
+        if (arena.getMissileConfiguration().getMissiles().isEmpty()) {
             throw new IllegalStateException("The game cannot be started, when 0 missiles are configured");
         }
 

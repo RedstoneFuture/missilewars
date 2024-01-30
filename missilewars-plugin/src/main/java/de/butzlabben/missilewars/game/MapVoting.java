@@ -102,15 +102,13 @@ public class MapVoting {
     private Arena getVotedArena() {
 
         // If no one voted:
-        if (arenaVotes.size() == 0) return game.getLobby().getArenas().get(0);
+        if (arenaVotes.isEmpty()) return game.getLobby().getArenas().get(0);
 
-        Arena arena = arenaVotes.values().stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+        return arenaVotes.values().stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
                 .entrySet()
                 .stream()
                 .max(Map.Entry.comparingByValue()).orElseThrow()
                 .getKey();
-
-        return arena;
     }
 
     /**

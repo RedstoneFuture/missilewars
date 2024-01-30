@@ -99,7 +99,7 @@ public class PlayerGuiFactory {
 
         for (PlayerStats stat : stats) {
             stat.setName(names.get(stat.getUuid()));
-            if (stat.getName() == null || stat.getName().equals("")) {
+            if (stat.getName() == null || stat.getName().isEmpty()) {
                 Logger.WARN.log("Could not find name for: " + stat.getUuid());
             }
         }
