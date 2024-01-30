@@ -80,7 +80,7 @@ public class GameProfileBuilder {
             cache.put(uuid, new CachedProfile(result));
             return result;
         } catch (Exception exception) {
-            throw new IOException("Could not read response: " + json);
+            throw new IOException("Could not read response: " + json, exception);
         }
     }
 
