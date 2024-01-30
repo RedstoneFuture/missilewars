@@ -62,8 +62,7 @@ public class PlayerGuiFactory {
             if (offlinePlayer.getName() != null) {
                 names.put(stat.getUuid(), offlinePlayer.getName());
                 stat.setName(offlinePlayer.getName());
-            }
-            if (GameProfileBuilder.getCache().containsKey(stat.getUuid())) {
+            } else if (GameProfileBuilder.getCache().containsKey(stat.getUuid())) {
                 String name = GameProfileBuilder.getCache().get(stat.getUuid()).getProfile().getName();
                 names.put(stat.getUuid(), name);
                 stat.setName(name);
@@ -74,31 +73,30 @@ public class PlayerGuiFactory {
     public void openWhenReady(Player player) {
         int realSize = stats.size();
         int currentSize = names.size();
-        if (realSize > currentSize) {
-            if (Config.isContactAuth()) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.STATS_FETCHING_PLAYERS)
-                        .replace("%current_size%", Integer.toString(currentSize))
-                        .replace("%real_size%", Integer.toString(realSize)));
-                ForkJoinPool.commonPool().execute(() -> {
-                    List<UUID> missing = getMissingUUIDs();
-                    int maxFetches = Math.min(missing.size(), MAX_FETCHES);
-                    for (int i = 0; i < maxFetches; i++) {
-                        UUID uuid = missing.get(i);
-                        try {
-                            GameProfile profile = GameProfileBuilder.fetch(uuid);
-                            names.put(uuid, profile.getName());
-                        } catch (IOException e) {
-                            names.put(uuid, "Error getting name");
-                            if (!e.getMessage().contains("Could not connect to mojang servers for unknown player"))
-                                Logger.WARN.log("Could not fetch name for " + uuid.toString() + ". Reason: " + e.getMessage());
-                        }
+        if (realSize > currentSize && Config.isContactAuth()) {
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.STATS_FETCHING_PLAYERS)
+                    .replace("%current_size%", Integer.toString(currentSize))
+                    .replace("%real_size%", Integer.toString(realSize)));
+            ForkJoinPool.commonPool().execute(() -> {
+                List<UUID> missing = getMissingUUIDs();
+                int maxFetches = Math.min(missing.size(), MAX_FETCHES);
+                for (int i = 0; i < maxFetches; i++) {
+                    UUID uuid = missing.get(i);
+                    try {
+                        GameProfile profile = GameProfileBuilder.fetch(uuid);
+                        names.put(uuid, profile.getName());
+                    } catch (IOException e) {
+                        names.put(uuid, "Error getting name");
+                        if (!e.getMessage().contains("Could not connect to mojang servers for unknown player"))
+                            Logger.WARN.log("Could not fetch name for " + uuid.toString() + ". Reason: " + e.getMessage());
                     }
+                }
 
-                    openWhenReady(player);
-                });
-                return;
-            }
+                openWhenReady(player);
+            });
+            return;
         }
+
         for (PlayerStats stat : stats) {
             stat.setName(names.get(stat.getUuid()));
             if (stat.getName() == null || stat.getName().equals("")) {

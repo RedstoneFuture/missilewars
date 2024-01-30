@@ -74,6 +74,9 @@ public class GameProfileBuilder {
 
         try {
             GameProfile result = gson.fromJson(json, GameProfile.class);
+            if (result == null) {
+                throw new IllegalStateException("Serialized game profile lookup result for UUID " + uuid + " is null");
+            }
             cache.put(uuid, new CachedProfile(result));
             return result;
         } catch (Exception exception) {
@@ -161,10 +164,11 @@ public class GameProfileBuilder {
         }
     }
 
+    @Getter
     public static class CachedProfile {
 
-        @Getter
         private final GameProfile profile;
+
 
         public CachedProfile(GameProfile profile) {
             this.profile = profile;
