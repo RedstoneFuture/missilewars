@@ -27,7 +27,7 @@ import org.bukkit.World;
 @Getter
 public class GameArea {
 
-    private World world;
+    private final World world;
     @Setter private Location position1, position2;
 
     private int minX, minY, minZ;

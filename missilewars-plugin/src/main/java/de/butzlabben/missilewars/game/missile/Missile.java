@@ -38,7 +38,6 @@ import org.bukkit.util.Vector;
  * @author Butzlabben
  * @since 06.01.2018
  */
-@SuppressWarnings("deprecation")
 @RequiredArgsConstructor
 public class Missile {
 

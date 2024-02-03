@@ -23,6 +23,9 @@ import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.Team;
 import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.player.MWPlayer;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -31,10 +34,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 // Scoreboard Management: https://www.spigotmc.org/wiki/making-scoreboard-with-teams-no-flicker
 
@@ -62,7 +61,7 @@ public class ScoreboardManager {
 
     @Getter private Scoreboard board;
     private Objective obj;
-    private Map<Integer, org.bukkit.scoreboard.Team> teams = new HashMap<>();
+    private final Map<Integer, org.bukkit.scoreboard.Team> teams = new HashMap<>();
     private static final String[] COLOR_CODES = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};
 
     /**
@@ -244,17 +243,7 @@ public class ScoreboardManager {
      */
     private String replaceScoreboardPlaceholders(String text) {
 
-        String time = "";
-        if (game.getState() == GameState.LOBBY) {
-            // Show the planned duration of the next game:
-            time = arenaGameDuration;
-        } else if (game.getState() == GameState.INGAME) {
-            // Show the remaining duration of the running game:
-            time = Integer.toString(game.getTaskManager().getTimer().getSeconds() / 60);
-        } else if (game.getState() == GameState.END) {
-            // Show the remaining duration of the last game:
-            time = Integer.toString(game.getRemainingGameDuration() / 60);
-        }
+        String time = getTimeString();
 
 
         text = ChatColor.translateAlternateColorCodes('&', text);
@@ -274,6 +263,21 @@ public class ScoreboardManager {
         text = text.replace("%time%", time);
 
         return text;
+    }
+
+    private String getTimeString() {
+        String time = "";
+        if (game.getState() == GameState.LOBBY) {
+            // Show the planned duration of the next game:
+            time = arenaGameDuration;
+        } else if (game.getState() == GameState.INGAME) {
+            // Show the remaining duration of the running game:
+            time = Integer.toString(game.getTaskManager().getTimer().getSeconds() / 60);
+        } else if (game.getState() == GameState.END) {
+            // Show the remaining duration of the last game:
+            time = Integer.toString(game.getRemainingGameDuration() / 60);
+        }
+        return time;
     }
 
 }

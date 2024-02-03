@@ -7,9 +7,6 @@ MissileWars is a famous, fun and fast minigame spigot-plugin for Minecraft
 You can download the latest jar in the [latest release](https://github.com/Butzlabben/missilewars/releases/latest) or build it yourself (
 see [BUILDING](#building))
 
-However, if you [buy the resource](https://www.spigotmc.org/resources/62947) and leave a review,
-you will also receive an extra map and some more missiles.
-
 ## Building
 
 To build MissileWars, you need to install the Java 17 JDK. Then you can build it via the Maven Wrapper.

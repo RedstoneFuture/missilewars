@@ -20,7 +20,6 @@ package de.butzlabben.missilewars.game;
 
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.configuration.Config;
-import de.butzlabben.missilewars.configuration.Messages;
 import java.io.File;
 import java.io.IOException;
 import lombok.Getter;
@@ -61,16 +60,6 @@ public class GameWorld {
         return Bukkit.getWorld(worldName);
     }
 
-    public void kickInactivity() {
-        synchronized (lock) {
-            Bukkit.getOnlinePlayers().forEach(p -> {
-                if (p.isDead() && p.getWorld().getName().equals(worldName)) {
-                    p.kickPlayer(Messages.getMessage(true, Messages.MessageEnum.ARENA_KICK_INACTIVITY));
-                }
-            });
-        }
-    }
-
     public void unload() {
         synchronized (lock) {
             World w = Bukkit.getWorld(worldName);
@@ -95,7 +84,7 @@ public class GameWorld {
             FileUtils.deleteQuietly(file);
             if (file.exists() || file.isDirectory()) {
                 Logger.WARN.log("Could not delete old world!");
-                file.delete();
+                file.deleteOnExit();
             }
         }
     }
