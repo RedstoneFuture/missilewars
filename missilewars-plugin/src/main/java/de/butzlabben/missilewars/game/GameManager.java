@@ -46,8 +46,11 @@ public class GameManager {
     }
 
     public void restartAll() {
-        for (Game game : games.values()) {
-            restartGame(game.getLobby(), false);
+        // We use an iterator to prevent a possible ConcurrentModificationException
+        var iterator = games.values().iterator();
+        //noinspection WhileLoopReplaceableByForEach
+        while (iterator.hasNext()) {
+            restartGame(iterator.next().getLobby(), false);
         }
     }
 
