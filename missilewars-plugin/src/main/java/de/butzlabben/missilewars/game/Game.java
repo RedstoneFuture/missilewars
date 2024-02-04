@@ -677,7 +677,7 @@ public class Game {
         itemStack.setAmount(amount - 1);
 
         Fireball fb = player.launchProjectile(Fireball.class);
-        fb.setVelocity(player.getLocation().getDirection().multiply(2.5D));
+        fb.setDirection(player.getLocation().getDirection().multiply(2.5D));
         player.playSound(fb.getLocation(), Sound.BLOCK_ANVIL_LAND, 100.0F, 2.0F);
         player.playSound(fb.getLocation(), Sound.ITEM_FLINTANDSTEEL_USE, 100.0F, 1.0F);
         fb.setYield(3F);
