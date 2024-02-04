@@ -18,32 +18,21 @@
 
 package de.butzlabben.missilewars.util.stats;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
+import com.google.gson.*;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
 import com.mojang.util.UUIDTypeAdapter;
+import lombok.Getter;
+import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import lombok.Getter;
-import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
+import java.util.*;
 
 /**
  * @author Butzlabben
@@ -70,17 +59,14 @@ public class GameProfileBuilder {
         }
 
         String json = getText(String.format("https://sessionserver.mojang.com/session/minecraft/profile/%s?unsigned=false",
-                uuid.toString().replace("-", "")));
+                UUIDTypeAdapter.fromUUID(uuid)));
 
         try {
             GameProfile result = gson.fromJson(json, GameProfile.class);
-            if (result == null) {
-                throw new IllegalStateException("Serialized game profile lookup result for UUID " + uuid + " is null");
-            }
             cache.put(uuid, new CachedProfile(result));
             return result;
         } catch (Exception exception) {
-            throw new IOException("Could not read response: " + json, exception);
+            throw new IOException("Could not read response: " + json);
         }
     }
 
@@ -94,7 +80,7 @@ public class GameProfileBuilder {
 
         List<Object> args = new ArrayList<>();
         args.add(System.currentTimeMillis());
-        args.add(uuid.toString().replaceAll("-", ""));
+        args.add(UUIDTypeAdapter.fromUUID(uuid));
         args.add(name);
         args.add(skinUrl);
         if (cape) {
@@ -164,11 +150,10 @@ public class GameProfileBuilder {
         }
     }
 
-    @Getter
     public static class CachedProfile {
 
+        @Getter
         private final GameProfile profile;
-
 
         public CachedProfile(GameProfile profile) {
             this.profile = profile;

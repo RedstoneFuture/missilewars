@@ -57,7 +57,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 @Getter
 public class MissileWars extends JavaPlugin {
 
-    @Getter
     private static MissileWars instance;
     public final String version = getDescription().getVersion();
     private SignRepository signRepository;
@@ -70,6 +69,13 @@ public class MissileWars extends JavaPlugin {
 
     public MissileWars() {
         instance = this;
+    }
+
+    /**
+     * @return the instance of the plugin
+     */
+    public static MissileWars getInstance() {
+        return instance;
     }
 
     @Override
@@ -110,7 +116,7 @@ public class MissileWars extends JavaPlugin {
         GameManager.getInstance().getGames().values().forEach(game -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (!game.isIn(player.getLocation())) continue;
-                game.playerJoinInGame(player, false);
+                game.teleportToLobbySpawn(player);
             }
         });
 

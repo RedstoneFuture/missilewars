@@ -142,7 +142,7 @@ public class RespawnGoldBlock implements Listener {
     @EventHandler
     public void onSneak(PlayerToggleSneakEvent e) {
         Player eventPlayer = e.getPlayer();
-        if (eventPlayer == player && (!map.isEmpty()) && (eventPlayer.isSneaking())) {
+        if (eventPlayer == player && (map.size() != 0) && (eventPlayer.isSneaking())) {
             for (Location loc : map.keySet()) {
                 loc.getBlock().setType(map.get(loc).getKey());
                 BlockSetterProvider.getBlockDataSetter().setData(loc.getBlock(), map.get(loc).getValue());

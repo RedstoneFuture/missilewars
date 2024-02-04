@@ -40,7 +40,7 @@ public class EndTimer extends Timer {
                 broadcast(Messages.getMessage(true, Messages.MessageEnum.ENDGAME_TIMER_GAME_STARTS_NEW_IN).replace("%seconds%", Integer.toString(seconds)));
                 break;
             case 0:
-                getGame().triggerRestart();
+                getGame().reset();
                 break;
             default:
                 break;

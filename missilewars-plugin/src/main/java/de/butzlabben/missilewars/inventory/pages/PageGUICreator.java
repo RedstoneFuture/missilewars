@@ -62,7 +62,7 @@ public class PageGUICreator<T> {
 
     public void show(Player p) {
         List<OrcItem> items = elements.stream().map(converter::convert).collect(Collectors.toList());
-        if (items.isEmpty())
+        if (items.size() == 0)
             return;
 
         int pages = (int) (Math.ceil((items.size() / (double) elementsPerPage) < 1 ? 1 : Math.ceil((double) items.size() / (double) elementsPerPage)));

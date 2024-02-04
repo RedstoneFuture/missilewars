@@ -24,12 +24,13 @@ import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.arena.Arena;
 import de.butzlabben.missilewars.util.SetupUtil;
 import de.butzlabben.missilewars.util.serialization.Serializer;
+import lombok.Getter;
+import org.bukkit.Bukkit;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import lombok.Getter;
-import org.bukkit.Bukkit;
 
 public class Arenas {
 
@@ -58,17 +59,9 @@ public class Arenas {
                 Bukkit.getPluginManager().disablePlugin(MissileWars.getInstance());
                 return;
             }
-
-            // Also unpack additional arenas
-            try {
-                SetupUtil.copyAndUnzip("Dam-Arena.zip", folder.getAbsolutePath());
-            } catch (IOException e) {
-                Logger.ERROR.log("Could not extract Dam Arena");
-                e.printStackTrace();
-            }
+            files = new File[] {defaultArena};
         }
 
-        files = folder.listFiles();
         for (File config : files) {
             if (!config.getName().endsWith(".yml") && !config.getName().endsWith(".yaml")) continue;
             try {

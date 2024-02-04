@@ -54,10 +54,6 @@ public class MissileConfiguration {
         add(new Missile("Juggernaut.schematic", "&4Juggernaut", EntityType.MUSHROOM_COW, 2, 2, 1));
         add(new Missile("Piranha.schematic", "&3Piranha", EntityType.HORSE, 2, 2, 3));
         add(new Missile("Tunnelbore.schematic", "&0Tunnelbore", EntityType.ENDERMAN, 2, 2, 1));
-        add(new Missile("Minuteman.schematic", "&3Minuteman", EntityType.CAVE_SPIDER, 2, 3, 2));
-        add(new Missile("Skybolt.schematic", "&bSkybolt", EntityType.SKELETON_HORSE, 2, 2, 2));
-        add(new Missile("Medusa.schematic", "&5Medusa", EntityType.PARROT, 2, 2, 1));
-
     }};
 
     public List<MissileFacing> getEnabledFacings() {

@@ -23,17 +23,18 @@ import de.butzlabben.missilewars.configuration.arena.Arena;
 import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
 import de.butzlabben.missilewars.game.enums.VoteState;
 import de.butzlabben.missilewars.player.MWPlayer;
+import lombok.Getter;
+import org.bukkit.entity.Player;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import lombok.Getter;
-import org.bukkit.entity.Player;
 
 public class MapVoting {
 
     private final Map<MWPlayer, Arena> arenaVotes = new HashMap<>();
-    private final Game game;
+    private Game game;
     @Getter private VoteState state = VoteState.NULL;
 
     public MapVoting(Game game) {
@@ -102,13 +103,15 @@ public class MapVoting {
     private Arena getVotedArena() {
 
         // If no one voted:
-        if (arenaVotes.isEmpty()) return game.getLobby().getArenas().get(0);
+        if (arenaVotes.size() == 0) return game.getLobby().getArenas().get(0);
 
-        return arenaVotes.values().stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+        Arena arena = arenaVotes.values().stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
                 .entrySet()
                 .stream()
                 .max(Map.Entry.comparingByValue()).orElseThrow()
                 .getKey();
+
+        return arena;
     }
 
     /**

@@ -52,19 +52,9 @@ import de.butzlabben.missilewars.util.PlayerDataProvider;
 import de.butzlabben.missilewars.util.geometry.GameArea;
 import de.butzlabben.missilewars.util.geometry.Geometry;
 import de.butzlabben.missilewars.util.serialization.Serializer;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-import java.util.function.Consumer;
 import lombok.Getter;
 import lombok.ToString;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -72,6 +62,12 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * @author Butzlabben
@@ -121,7 +117,7 @@ public class Game {
             return;
         }
 
-        if (lobby.getPossibleArenas().isEmpty()) {
+        if (lobby.getPossibleArenas().size() == 0) {
             Logger.ERROR.log("At least one valid arena must be set at lobby \"" + lobby.getName() + "\".");
             return;
         }
@@ -167,7 +163,7 @@ public class Game {
         } else if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPCYCLE) {
             final int lastMapIndex = cycles.getOrDefault(lobby.getName(), -1);
             List<Arena> arenas = lobby.getArenas();
-            int index = (lastMapIndex + 1) % arenas.size();
+            int index = lastMapIndex >= arenas.size() - 1 ? 0 : lastMapIndex + 1;
             cycles.put(lobby.getName(), index);
             setArena(arenas.get(index));
             prepareGame();
@@ -183,14 +179,6 @@ public class Game {
             }
         }
 
-        // Add players if they are in the game area
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (!isIn(player.getLocation())) {
-                continue;
-            }
-
-            playerJoinInGame(player, false);
-        }
     }
 
     /**
@@ -307,7 +295,7 @@ public class Game {
         Bukkit.getPluginManager().callEvent(new GameStopEvent(this));
     }
 
-    public void triggerRestart() {
+    public void reset() {
         if (Config.isSetup()) return;
 
         if (restart) {
@@ -413,8 +401,10 @@ public class Game {
         Team team = mwPlayer.getTeam();
         boolean playerWasTeamMember = false;
 
-        BukkitTask task = playerTasks.get(mwPlayer.getUuid());
-        if (task != null) task.cancel();
+        if (state == GameState.INGAME) {
+            BukkitTask task = playerTasks.get(mwPlayer.getUuid());
+            if (task != null) task.cancel();
+        }
 
         PlayerDataProvider.getInstance().loadInventory(player);
 
@@ -485,12 +475,6 @@ public class Game {
         // Deactivation of all event handlers
         HandlerList.unregisterAll(listener);
         taskManager.stopTimer();
-
-        // Just in case this wasn't executed in stopGame() already
-        // This can happen if a game restart gets issued while it's still active
-        for (BukkitTask bt : playerTasks.values()) {
-            bt.cancel();
-        }
 
         if (gameWorld != null) {
             gameWorld.unload();
@@ -665,7 +649,7 @@ public class Game {
         itemStack.setAmount(amount - 1);
 
         Fireball fb = player.launchProjectile(Fireball.class);
-        fb.setDirection(player.getLocation().getDirection().multiply(2.5D));
+        fb.setVelocity(player.getLocation().getDirection().multiply(2.5D));
         player.playSound(fb.getLocation(), Sound.BLOCK_ANVIL_LAND, 100.0F, 2.0F);
         player.playSound(fb.getLocation(), Sound.ITEM_FLINTANDSTEEL_USE, 100.0F, 1.0F);
         fb.setYield(3F);
@@ -679,7 +663,7 @@ public class Game {
         }
 
         arena.getMissileConfiguration().check();
-        if (arena.getMissileConfiguration().getMissiles().isEmpty()) {
+        if (arena.getMissileConfiguration().getMissiles().size() == 0) {
             throw new IllegalStateException("The game cannot be started, when 0 missiles are configured");
         }
 
@@ -827,21 +811,20 @@ public class Game {
     }
 
     /**
-     * This method checks whether a team switch would be fair based on
-     * the new team size. If no empty team results or if the team size
-     * difference does not exceed a certain value, the switch is
+     * This method checks whether a team switch would be fair based on 
+     * the new team size. If no empty team results or if the team size 
+     * difference does not exceed a certain value, the switch is 
      * considered acceptable.
-     *
+     * 
      * @param targetTeam the new team
-     *
      * @return (boolean) 'true' if it's a fair team switch
      */
     public boolean isValidTeamSwitch(Team targetTeam) {
-
+        
         // original team sizes
         int targetTeamSize = targetTeam.getMembers().size();
         int currentTeamSize = targetTeam.getEnemyTeam().getMembers().size();
-
+        
         // Preventing an empty team when previously both teams had at least one player:
         if ((currentTeamSize == 1) && (targetTeamSize >= 1)) return false;
 

@@ -34,7 +34,7 @@ public class MissileGameEquipment {
 
     private final Game game;
 
-    private final List<Missile> missileEquipmentList = new ArrayList<>();
+    private List<Missile> missileEquipmentList = new ArrayList<>();
 
 
     public MissileGameEquipment(Game game) {

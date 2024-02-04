@@ -47,7 +47,6 @@ import java.util.stream.Collectors;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 @CommandAlias("mw|missilewars")
 @Subcommand("stats")
@@ -58,28 +57,6 @@ public class StatsCommands extends BaseCommand {
     private final static double MAX_AVIATION_WIN = 0.1;
     private final SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy");
     private final SimpleDateFormat preciseFormat = new SimpleDateFormat("hh:mm dd.MM.yyyy");
-
-    @NotNull
-    private static List<String> generateRecommendations(StatsFetcher fetcher, SavedStats avgStatsWithoutDraws) {
-        List<String> recommendations = new ArrayList<>();
-        int gameCount = fetcher.getGameCount();
-
-        double avgWins = avgStatsWithoutDraws.getTeamWon();
-        if (Math.abs(avgWins - 1) > MAX_AVIATION_WIN) {
-            recommendations.add("It could be, that your map is biased to one team, as wins are not equally distributed");
-        }
-
-        int draws = fetcher.getDrawFights();
-        if ((((double) draws / (double) gameCount) * 100) > MAX_FIGHT_DRAW_PERCENTAGE) {
-            recommendations.add("Increase the game_length option. More than 15% of your games are draws");
-        }
-
-        Duration duration = Duration.ofMillis(avgStatsWithoutDraws.getTimeElapsed());
-        if (((double) duration.getSeconds() / 60.0) <= MIN_FIGHT_DURATION) {
-            recommendations.add("Remove some overpowered features. The average game length at won games is under 5 minutes");
-        }
-        return recommendations;
-    }
 
     @Default
     @CommandPermission("mw.stats")
@@ -95,7 +72,7 @@ public class StatsCommands extends BaseCommand {
         PreFetcher.PrePlayerFetchRunnable preFetchRunnable = PreFetcher.preFetchPlayers(fetcher);
 
         CustomInv inv = new CustomInv("§eMissileWars statistics", 3);
-        List<String> criteriaLore = Arrays.asList("§7Statistics since: §e" + format.format(fetcher.getFrom()), "§7Specified arena: §e" + (arena.isEmpty() ? "any" : arena));
+        List<String> criteriaLore = Arrays.asList("§7Statistics since: §e" + format.format(fetcher.getFrom()), "§7Specified arena: §e" + (arena.equals("") ? "any" : arena));
         inv.addItem(4, new OrcItem(Material.FEATHER, "§aStatistics search criteria", criteriaLore));
 
         int gameCount = fetcher.getGameCount();
@@ -144,10 +121,26 @@ public class StatsCommands extends BaseCommand {
         if (fetcher == null) return;
         SavedStats avgStatsWithDraws = fetcher.getAverageSavedStats(false);
         SavedStats avgStatsWithoutDraws = fetcher.getAverageSavedStats(true);
-        List<String> recommendations = generateRecommendations(fetcher, avgStatsWithoutDraws);
+        List<String> recommendations = new ArrayList<>();
+        int gameCount = fetcher.getGameCount();
+
+        double avgWins = avgStatsWithoutDraws.getTeamWon();
+        if (Math.abs(avgWins - 1) > MAX_AVIATION_WIN) {
+            recommendations.add("It could be, that your map is biased to one team, as wins are not equally distributed");
+        }
+
+        int draws = fetcher.getDrawFights();
+        if ((((double) draws / (double) gameCount) * 100) > MAX_FIGHT_DRAW_PERCENTAGE) {
+            recommendations.add("Increase the game_length option. More than 15% of your games are draws");
+        }
+
+        Duration duration = Duration.ofMillis(avgStatsWithoutDraws.getTimeElapsed());
+        if (((double) duration.getSeconds() / 60.0) <= MIN_FIGHT_DURATION) {
+            recommendations.add("Remove some overpowered features. The average game length at won games is under 5 minutes");
+        }
         // TODO implement more features
 
-        if (recommendations.isEmpty()) {
+        if (recommendations.size() == 0) {
             player.sendMessage(Messages.getPrefix() + "§aThere are currently no recommendations, everything seems fine :)");
         } else {
             player.sendMessage(Messages.getPrefix() + "§7=====[ §eMissileWars recommendations §7]=====");
