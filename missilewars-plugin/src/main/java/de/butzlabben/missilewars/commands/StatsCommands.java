@@ -140,7 +140,7 @@ public class StatsCommands extends BaseCommand {
         }
         // TODO implement more features
 
-        if (recommendations.size() == 0) {
+        if (recommendations.isEmpty()) {
             player.sendMessage(Messages.getPrefix() + "§aThere are currently no recommendations, everything seems fine :)");
         } else {
             player.sendMessage(Messages.getPrefix() + "§7=====[ §eMissileWars recommendations §7]=====");

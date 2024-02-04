@@ -120,7 +120,7 @@ public class Game {
             return;
         }
 
-        if (lobby.getPossibleArenas().size() == 0) {
+        if (lobby.getPossibleArenas().isEmpty()) {
             Logger.ERROR.log("At least one valid arena must be set at lobby \"" + lobby.getName() + "\".");
             return;
         }
