@@ -21,12 +21,13 @@ package de.butzlabben.missilewars.configuration.arena;
 import com.google.gson.annotations.SerializedName;
 import de.butzlabben.missilewars.util.geometry.GameArea;
 import de.butzlabben.missilewars.util.serialization.Serializer;
-import java.io.File;
-import java.io.IOException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.bukkit.Location;
+
+import java.io.File;
+import java.io.IOException;
 
 @Getter
 @ToString
@@ -47,13 +48,13 @@ public class Arena implements Cloneable {
     @SerializedName("max_spectators") private int maxSpectators = -1;
     @SerializedName("game_duration") private int gameDuration = 30;
     @SerializedName("fireball") private FireballConfiguration fireballConfiguration = new FireballConfiguration();
-    @SerializedName("shield") private ShieldConfiguration shieldConfiguration = new ShieldConfiguration();
     @SerializedName("arrow") private ArrowConfiguration arrowConfiguration = new ArrowConfiguration();
     @SerializedName("save_statistics") private boolean saveStatistics = true;
     @SerializedName("fall_protection") private FallProtectionConfiguration fallProtection = new FallProtectionConfiguration();
     @SerializedName("money") private MoneyConfiguration money = new MoneyConfiguration();
     @SerializedName("equipment_interval") private EquipmentIntervalConfiguration interval = new EquipmentIntervalConfiguration();
     @SerializedName("missile") private MissileConfiguration missileConfiguration = new MissileConfiguration();
+    @SerializedName("shield") private ShieldConfiguration shieldConfiguration = new ShieldConfiguration();
     @Setter @SerializedName("area") private AreaConfiguration areaConfig = new AreaConfiguration(-30, 0, -72, 30, 256, 72);
 
     @SerializedName("spectator_spawn")

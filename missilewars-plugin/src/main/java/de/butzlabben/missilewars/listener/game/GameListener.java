@@ -26,8 +26,8 @@ import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.Team;
 import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.misc.RespawnGoldBlock;
-import de.butzlabben.missilewars.game.misc.Shield;
-import de.butzlabben.missilewars.game.missile.Missile;
+import de.butzlabben.missilewars.game.schematics.objects.Missile;
+import de.butzlabben.missilewars.listener.ShieldListener;
 import de.butzlabben.missilewars.player.MWPlayer;
 import de.butzlabben.missilewars.util.geometry.Geometry;
 import org.bukkit.GameMode;
@@ -135,8 +135,8 @@ public class GameListener extends GameBoundListener {
         if (!(snowball.getShooter() instanceof Player)) return;
 
         Player shooter = (Player) snowball.getShooter();
-        Shield shield = new Shield(shooter, getGame().getArena().getShieldConfiguration());
-        shield.onThrow(event);
+        ShieldListener shieldListener = new ShieldListener(shooter, getGame());
+        shieldListener.onThrow(event);
     }
 
     @EventHandler

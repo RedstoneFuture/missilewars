@@ -19,11 +19,7 @@
 package de.butzlabben.missilewars;
 
 import co.aikar.commands.PaperCommandManager;
-import de.butzlabben.missilewars.commands.MWCommandCompletions;
-import de.butzlabben.missilewars.commands.MWCommands;
-import de.butzlabben.missilewars.commands.SetupCommands;
-import de.butzlabben.missilewars.commands.StatsCommands;
-import de.butzlabben.missilewars.commands.UserCommands;
+import de.butzlabben.missilewars.commands.*;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.game.Arenas;
@@ -40,8 +36,6 @@ import de.butzlabben.missilewars.util.MoneyUtil;
 import de.butzlabben.missilewars.util.SetupUtil;
 import de.butzlabben.missilewars.util.stats.PreFetcher;
 import de.butzlabben.missilewars.util.version.VersionUtil;
-import java.io.File;
-import java.util.Date;
 import lombok.Getter;
 import org.apache.commons.io.FileUtils;
 import org.bstats.bukkit.Metrics;
@@ -49,6 +43,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
+import java.util.Date;
 
 /**
  * @author Butzlabben
@@ -94,7 +91,8 @@ public class MissileWars extends JavaPlugin {
 
         Config.load();
         Messages.load();
-        SetupUtil.checkMissiles();
+        SetupUtil.saveDefaultSchematics(new File(Config.getMissilesFolder()), "missiles.zip");
+        SetupUtil.saveDefaultSchematics(new File(Config.getShieldsFolder()), "shields.zip");
 
         new File(Config.getLobbiesFolder()).mkdirs();
 
@@ -104,7 +102,6 @@ public class MissileWars extends JavaPlugin {
         registerCommands();
 
         Arenas.load();
-        SetupUtil.checkShields();
 
         GameManager.getInstance().loadGamesOnStartup();
 

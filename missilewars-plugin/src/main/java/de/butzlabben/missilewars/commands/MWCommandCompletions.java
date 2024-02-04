@@ -52,7 +52,7 @@ public class MWCommandCompletions {
             Game game = GameManager.getInstance().getGame(player.getLocation());
             if (game == null) return null;
 
-            return game.getArena().getMissileConfiguration().getMissileNames();
+            return game.getArena().getMissileConfiguration().getSchematicNames();
         });
     }
 

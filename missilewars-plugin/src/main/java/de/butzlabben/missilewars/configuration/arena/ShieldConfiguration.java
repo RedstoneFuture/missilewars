@@ -19,17 +19,79 @@
 package de.butzlabben.missilewars.configuration.arena;
 
 import com.google.gson.annotations.SerializedName;
+import de.butzlabben.missilewars.Logger;
+import de.butzlabben.missilewars.game.schematics.SchematicConfiguration;
+import de.butzlabben.missilewars.game.schematics.objects.SchematicObject;
+import de.butzlabben.missilewars.game.schematics.objects.Shield;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Getter
 @ToString
 @RequiredArgsConstructor
-public class ShieldConfiguration {
+public class ShieldConfiguration extends SchematicConfiguration {
 
-    private String name = "Shield";
-    private String schematic = "shield.schematic";
-    private int occurrence = 1;
     @SerializedName("fly_time") private int flyTime = 20;
+
+    private List<Shield> schematics = new ArrayList<>() {{
+        add(new Shield("shield.schematic", "&cShield", 1));
+    }};
+
+
+    @Override
+    public String getObjectNameSingular() {
+        return "Shield";
+    }
+
+    @Override
+    public String getObjectNamePlural() {
+        return "Shields";
+    }
+
+    @Override
+    public List<String> getSchematicNames() {
+        List<String> schematicNames = new ArrayList<>();
+
+        for (Shield shield : getSchematics()) {
+            schematicNames.add(shield.getSchematicName(true));
+        }
+
+        return schematicNames;
+    }
+
+    @Override
+    public SchematicObject getSchematicFromName(String name) {
+        String filteredName = name.replaceAll("§.", "");
+
+        for (Shield shield : getSchematics()) {
+            if (shield.getSchematicName(true).equalsIgnoreCase(filteredName)) return shield;
+        }
+        Logger.WARN.log("Schematic not found: " + filteredName);
+        return null;
+    }
+
+    @Override
+    public void check() {
+        if (getSchematics().isEmpty()) throw new IllegalStateException("The game cannot be started, when 0 " + getObjectNamePlural() + " are configured");
+
+        Set<SchematicObject> toRemove = new HashSet<>();
+
+        for (Shield shield : getSchematics()) {
+            File schematic = shield.getSchematic();
+
+            if (schematic.exists()) continue;
+
+            Logger.WARN.log(shield.getDisplayName() + " §7has no " + getObjectNameSingular() + ". Removing this schematic");
+            toRemove.add(shield);
+        }
+        getSchematics().removeAll(toRemove);
+    }
+    
 }

@@ -16,43 +16,43 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.game.misc;
+package de.butzlabben.missilewars.listener;
 
 import de.butzlabben.missilewars.MissileWars;
-import de.butzlabben.missilewars.configuration.arena.ShieldConfiguration;
-import de.butzlabben.missilewars.game.missile.paste.PasteProvider;
-import java.io.File;
+import de.butzlabben.missilewars.game.Game;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
-import org.bukkit.util.Vector;
 
 /**
  * @author Butzlabben
  * @since 11.09.2018
  */
 @RequiredArgsConstructor
-public class Shield implements Listener {
+public class ShieldListener implements Listener {
 
     private final Player player;
-    private final ShieldConfiguration shieldConfiguration;
-    private org.bukkit.entity.Snowball ball;
+    private final Game game;
+    private Snowball ball;
 
     public void onThrow(ProjectileLaunchEvent event) {
-        ball = (org.bukkit.entity.Snowball) event.getEntity();
+        ball = (Snowball) event.getEntity();
         Bukkit.getPluginManager().registerEvents(this, MissileWars.getInstance());
 
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> {
-            if (!ball.isDead()) pasteShield();
+            if (!ball.isDead()) {
+                game.spawnShield(player, ball);
+                player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1, 1);
+            }
             HandlerList.unregisterAll(this);
-        }, shieldConfiguration.getFlyTime());
+        }, game.getArena().getShieldConfiguration().getFlyTime());
     }
 
     @EventHandler
@@ -60,16 +60,7 @@ public class Shield implements Listener {
         if (!event.getEntity().equals(ball)) return;
 
         HandlerList.unregisterAll(this);
-        pasteShield();
+        game.spawnShield(player, ball);
     }
-
-    public void pasteShield() {
-        Location loc = ball.getLocation();
-        Vector pastePos = new Vector(loc.getX(), loc.getY(), loc.getZ());
-        File pluginDir = MissileWars.getInstance().getDataFolder();
-        File schem = new File(pluginDir, "shields/" + shieldConfiguration.getSchematic());
-
-        PasteProvider.getPaster().pasteSchematic(schem, pastePos, loc.getWorld());
-        player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1, 1);
-    }
+    
 }

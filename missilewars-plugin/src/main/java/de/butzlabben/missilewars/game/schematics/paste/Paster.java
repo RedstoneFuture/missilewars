@@ -16,11 +16,12 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.game.missile.paste;
+package de.butzlabben.missilewars.game.schematics.paste;
 
 import de.butzlabben.missilewars.game.Team;
-import java.io.File;
 import org.bukkit.util.Vector;
+
+import java.io.File;
 
 /**
  * @author Butzlabben
@@ -28,7 +29,7 @@ import org.bukkit.util.Vector;
  */
 public interface Paster {
 
-    void pasteMissile(File schematic, Vector position, int rotation, org.bukkit.World world, Team team);
-
     void pasteSchematic(File schematic, Vector position, org.bukkit.World world);
+
+    void pasteMissile(File schematic, Vector position, int rotation, org.bukkit.World world, Team team);
 }
