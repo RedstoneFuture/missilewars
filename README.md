@@ -4,11 +4,8 @@ MissileWars is a famous, fun and fast minigame spigot-plugin for Minecraft
 
 ## Downloads
 
-You can download the latest jar in the [latest release](https://github.com/Butzlabben/missilewars/releases/latest) or build it yourself (
-see [BUILDING](#building))
-
-However, if you [buy the resource](https://www.spigotmc.org/resources/62947) and leave a review,
-you will also receive an extra map and some more missiles.
+You can download the latest jar in the [latest release](https://github.com/RedstoneFuture/missilewars/releases/latest) 
+or build it yourself (see [BUILDING](#building))
 
 ## Building
 
@@ -27,7 +24,7 @@ Contributions are always welcome, just fork this project, make your changes and 
 ## Documentation
 
 All information about the Commands, Permissions, Placeholders and the Configuration can be found
-in our [Github Wiki](https://github.com/Butzlabben/missilewars/wiki).
+in our [GitHub Wiki](https://github.com/RedstoneFuture/missilewars/wiki).
 
 ## Supporters / Project Partners
 
