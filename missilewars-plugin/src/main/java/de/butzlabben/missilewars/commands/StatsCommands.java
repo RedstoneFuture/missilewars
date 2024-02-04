@@ -72,7 +72,7 @@ public class StatsCommands extends BaseCommand {
         PreFetcher.PrePlayerFetchRunnable preFetchRunnable = PreFetcher.preFetchPlayers(fetcher);
 
         CustomInv inv = new CustomInv("§eMissileWars statistics", 3);
-        List<String> criteriaLore = Arrays.asList("§7Statistics since: §e" + format.format(fetcher.getFrom()), "§7Specified arena: §e" + (arena.equals("") ? "any" : arena));
+        List<String> criteriaLore = Arrays.asList("§7Statistics since: §e" + format.format(fetcher.getFrom()), "§7Specified arena: §e" + (arena.isEmpty() ? "any" : arena));
         inv.addItem(4, new OrcItem(Material.FEATHER, "§aStatistics search criteria", criteriaLore));
 
         int gameCount = fetcher.getGameCount();
