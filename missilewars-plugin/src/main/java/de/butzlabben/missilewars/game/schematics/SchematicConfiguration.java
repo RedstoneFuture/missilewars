@@ -16,7 +16,9 @@ public abstract class SchematicConfiguration {
 
     public abstract List<String> getSchematicNames();
 
-    public abstract SchematicObject getSchematicFromName(String name);
+    public abstract SchematicObject getSchematicFromFileName(String name);
+    
+    public abstract SchematicObject getSchematicFromDisplayName(String name);
 
     public abstract void check();
     

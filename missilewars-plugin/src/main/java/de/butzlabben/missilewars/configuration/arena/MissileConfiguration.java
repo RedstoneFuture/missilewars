@@ -77,13 +77,22 @@ public class MissileConfiguration extends SchematicConfiguration {
     }
 
     @Override
-    public SchematicObject getSchematicFromName(String name) {
-        String filteredName = name.replaceAll("§.", "");
+    public SchematicObject getSchematicFromFileName(String fileName) {
 
         for (Missile missile : getSchematics()) {
-            if (missile.getSchematicName(true).equalsIgnoreCase(filteredName)) return missile;
+            if (missile.getSchematicName(true).equals(fileName)) return missile;
         }
-        Logger.WARN.log("Schematic not found: " + filteredName);
+        Logger.WARN.log(getObjectNameSingular() + " not found: '" + fileName.replaceAll("§", "").replaceAll("&", "") + "'");
+        return null;
+    }
+
+    @Override
+    public SchematicObject getSchematicFromDisplayName(String displayName) {
+
+        for (Missile missile : getSchematics()) {
+            if (missile.getDisplayName().equals(displayName)) return missile;
+        }
+        Logger.WARN.log(getObjectNameSingular() + " not found: '" + displayName.replaceAll("§", "").replaceAll("&", "") + "'");
         return null;
     }
 
