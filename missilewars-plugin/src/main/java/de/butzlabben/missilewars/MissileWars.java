@@ -54,7 +54,7 @@ import java.util.Date;
 @Getter
 public class MissileWars extends JavaPlugin {
 
-    private static MissileWars instance;
+    @Getter private static MissileWars instance;
     public final String version = getDescription().getVersion();
     private SignRepository signRepository;
     public PaperCommandManager commandManager;
@@ -66,13 +66,6 @@ public class MissileWars extends JavaPlugin {
 
     public MissileWars() {
         instance = this;
-    }
-
-    /**
-     * @return the instance of the plugin
-     */
-    public static MissileWars getInstance() {
-        return instance;
     }
 
     @Override
