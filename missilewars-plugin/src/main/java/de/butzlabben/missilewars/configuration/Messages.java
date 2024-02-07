@@ -91,14 +91,15 @@ public class Messages {
 
         COMMAND_ONLY_PLAYERS("command.only_players", "&cThe command can only be executed ingame by a player."),
         COMMAND_TO_MANY_ARGUMENTS("command.to_many_arguments", "&cToo many arguments."),
+        COMMAND_MISSILE_NEEDED("command.missile_needed", "&cPlease specify the missile."),
+        COMMAND_MAP_NEEDED("command.map_needed", "&cPlease specify the map."),
+        COMMAND_TEAM_NUMBER_NEEDED("command.team_number_needed", "&cPlease specify the team number."),
         COMMAND_INVALID_MISSILE("command.invalid_missile", "&cThe specified missile %input% was not found."),
         COMMAND_INVALID_SHIELD("command.invalid_missile", "&cThe specified shield %input% was not found."),
         COMMAND_MISSILE_NEEDED("command.missile_needed", "&cPlease specify the missile."),
         COMMAND_INVALID_GAME("command.invalid_game", "&cThe specified game was not found."),
         COMMAND_INVALID_MAP("command.invalid_map", "&cThe specified map %input% was not found."),
-        COMMAND_MAP_NEEDED("command.map_needed", "&cPlease specify the map."),
         COMMAND_INVALID_TEAM_NUMBER("command.invalid_team_number", "&cThe team number is invalid. Use \"1\" or \"2\" to specify the target team."),
-        COMMAND_TEAM_NUMBER_NEEDED("command.team_number_needed", "&cPlease specify the team number."),
         
         GAME_PLAYER_JOINED("game.player_joined", "&e%player% &7joined the game (%team%&7)."),
         GAME_PLAYER_LEFT("game.player_left", "&e%player% &7left the game (%team%&7)."),
