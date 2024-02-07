@@ -30,7 +30,9 @@ import lombok.ToString;
 @RequiredArgsConstructor
 public class EquipmentIntervalConfiguration {
 
-    private int start = 10;
+    @SerializedName("custom_start_interval") private int customStartInterval = 10;
+    @SerializedName("reset_after_respawn") private boolean resetAfterRespawn = true;
+    @SerializedName("custom_respawn_interval") private int customRespawnInterval = 10;
 
     @SerializedName("intervals_by_team_amount") private Map<String, Integer> intervalsByTeamAmount = new HashMap<>() {{
         put("1", 15);
