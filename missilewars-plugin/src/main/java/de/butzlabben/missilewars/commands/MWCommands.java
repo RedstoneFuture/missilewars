@@ -139,7 +139,8 @@ public class MWCommands extends BaseCommand {
         if (args.length == 1) {
             game = GameManager.getInstance().getGame(args[0]);
             if (game == null) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_GAME));
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_GAME)
+                        .replace("%input%", args[0]));
                 return;
             }
         } else {
@@ -186,7 +187,8 @@ public class MWCommands extends BaseCommand {
         if (args.length == 1) {
             game = GameManager.getInstance().getGame(args[0]);
             if (game == null) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_GAME));
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_GAME)
+                        .replace("%input%", args[0]));
                 return;
             }
         } else {
@@ -220,7 +222,8 @@ public class MWCommands extends BaseCommand {
         if (args.length == 1) {
             game = GameManager.getInstance().getGame(args[0]);
             if (game == null) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_GAME));
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_GAME)
+                        .replace("%input%", args[0]));
                 return;
             }
         } else {
