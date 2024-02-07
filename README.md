@@ -32,4 +32,4 @@ in our [GitHub Wiki](https://github.com/RedstoneFuture/missilewars/wiki).
 
 ## Donate
 
-[![Donation link](https://www.paypalobjects.com/en_US/DK/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=naegele_daniel%40web.de&currency_code=EUR&source=url)
+[![Donation link](https://www.paypalobjects.com/en_US/DK/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/donate/?hosted_button_id=8T5QGTQJP7E52)
