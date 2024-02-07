@@ -66,7 +66,8 @@ public class MapVoting {
 
         Arena arena = Arenas.getFromName(arenaName);
         if (arena == null) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_MAP));
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_MAP)
+                    .replace("%input%", arenaName));
             return;
         }
         

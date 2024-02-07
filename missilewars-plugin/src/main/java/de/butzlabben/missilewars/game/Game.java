@@ -638,7 +638,8 @@ public class Game {
         
         Missile missile = (Missile) this.arena.getMissileConfiguration().getSchematicFromDisplayName(itemMeta.getDisplayName());
         if (missile == null) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_MISSILE));
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_MISSILE)
+                    .replace("%input%", itemMeta.getDisplayName()));
             return;
         }
         
@@ -660,7 +661,8 @@ public class Game {
 
         Shield shield = (Shield) this.arena.getShieldConfiguration().getSchematicFromDisplayName(itemMeta.getDisplayName());
         if (shield == null) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_MISSILE));
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_SHIELD)
+                    .replace("%input%", itemMeta.getDisplayName()));
             return;
         }
         
