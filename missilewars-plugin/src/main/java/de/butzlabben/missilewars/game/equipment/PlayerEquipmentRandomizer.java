@@ -47,6 +47,9 @@ public class PlayerEquipmentRandomizer {
 
     int playerInterval;
     int sendEquipmentCounter = 0;
+    
+    int startInterval;
+    int respawnInterval;
 
 
     public PlayerEquipmentRandomizer(MWPlayer mwPlayer, Game game) {
@@ -56,8 +59,11 @@ public class PlayerEquipmentRandomizer {
         this.equipmentManager = game.getEquipmentManager();
         randomizer = new Random();
         maxGameDuration = game.getArena().getGameDuration() * 60;
+        
+        this.startInterval = arena.getInterval().getCustomStartInterval();
+        this.respawnInterval = arena.getInterval().getCustomRespawnInterval();
 
-        resetPlayerInterval();
+        initializePlayerInterval();
     }
 
     public void tick() {
@@ -67,16 +73,40 @@ public class PlayerEquipmentRandomizer {
         if (playerInterval <= 0) {
 
             sendRandomGameEquipment();
-            setPlayerInterval((int) Math.ceil(getIntervalByTeamAmount() * getFactorByGameTime()));
+            setPlayerInterval(getBasisInterval());
         }
     }
 
     /**
+     * This method set the countdown for the player equipment
+     * randomizer for the game join.
+     * <p> 
+     * If specified start-interval is '-1', the basis-interval is used.
+     */
+    public void initializePlayerInterval() {
+        if (startInterval == -1) {
+            setPlayerInterval(getBasisInterval());
+            return;
+        }
+        setPlayerInterval(startInterval);
+    }
+    
+    /**
      * This method resets the countdown for the player equipment
-     * randomizer.
+     * randomizer after a respawn, if activated.
+     * <p> 
+     * If specified respawn-interval is '-1', the basis-interval is used.
      */
     public void resetPlayerInterval() {
-        setPlayerInterval(getStartInterval() + 1);
+        // config option 'resetAfterRespawn'
+        if (!arena.getInterval().isResetAfterRespawn()) return;
+        
+        // adding 1 value before setting the player interval because of the timing
+        if (respawnInterval == -1) {
+            setPlayerInterval(getBasisInterval() + 1);
+            return;
+        }
+        setPlayerInterval(respawnInterval + 1);
     }
 
     /**
@@ -91,13 +121,13 @@ public class PlayerEquipmentRandomizer {
     }
 
     /**
-     * This method returns the interval after the player receives a new
-     * item at game start.
+     * This method returns the calculated basic interval dependent 
+     * on the team amount and the current game time.
      *
      * @return (int) the interval in seconds
      */
-    private int getStartInterval() {
-        return arena.getInterval().getStart();
+    private int getBasisInterval() {
+        return (int) Math.ceil(getIntervalByTeamAmount() * getFactorByGameTime());
     }
 
     /**
