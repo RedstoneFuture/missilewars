@@ -54,14 +54,18 @@ import java.util.Date;
 @Getter
 public class MissileWars extends JavaPlugin {
 
-    @Getter private static MissileWars instance;
+    @Getter
+    private static MissileWars instance;
+    
     public final String version = getDescription().getVersion();
     private SignRepository signRepository;
     public PaperCommandManager commandManager;
 
     private boolean foundFAWE;
 
+    @Getter
     private PlayerListener playerListener;
+    @Getter
     private SignListener signListener;
 
     public MissileWars() {
@@ -233,11 +237,4 @@ public class MissileWars extends JavaPlugin {
         }
     }
 
-    public PlayerListener getPlayerListener() {
-        return playerListener;
-    }
-
-    public SignListener getSignListener() {
-        return signListener;
-    }
 }
