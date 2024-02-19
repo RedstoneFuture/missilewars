@@ -22,16 +22,14 @@ import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.enums.GameState;
+import lombok.Getter;
 import org.bukkit.ChatColor;
 
 public class MotdManager {
 
+    @Getter
     private static final MotdManager instance = new MotdManager();
     private String motd = "&cError in getting Motd";
-
-    public static MotdManager getInstance() {
-        return instance;
-    }
 
     public String getMotd() {
         return ChatColor.translateAlternateColorCodes('&', motd);

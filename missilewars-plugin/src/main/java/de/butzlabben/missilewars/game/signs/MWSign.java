@@ -67,9 +67,6 @@ public class MWSign {
         lines.add(replace(Messages.getMessage(false, Messages.MessageEnum.SIGN_2), game));
         lines.add(replace(Messages.getMessage(false, Messages.MessageEnum.SIGN_3), game));
 
-        if (game == null) {
-            Logger.WARN.log("Could not find specifed arena \"" + getLobby() + "\" for sign at: " + getLocation().toString());
-        }
         // Run sync
         Bukkit.getScheduler().runTask(MissileWars.getInstance(), () -> editSign(getLocation(), lines));
     }
@@ -114,6 +111,6 @@ public class MWSign {
     }
     
     public static boolean isSign(BlockData blockData) {
-        return ((blockData instanceof org.bukkit.block.data.type.Sign) || (blockData instanceof WallSign));
+        return ((blockData instanceof Sign) || (blockData instanceof WallSign));
     }
 }
