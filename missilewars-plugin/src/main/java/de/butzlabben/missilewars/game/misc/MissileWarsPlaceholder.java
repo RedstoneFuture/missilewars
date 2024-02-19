@@ -72,6 +72,12 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
             Game playerGame = GameManager.getInstance().getGame(player.getLocation());
 
             if (playerGame == null) {
+
+                // %missilewars_lobby_gamestate_<lobby name or 'this'>%
+                if (params.startsWith("lobby_gamestate_")) {
+                    return GameManager.getInstance().getGameStateMessage(null);
+                }
+
                 // if (params.startsWith("lobby_")) return "§c§oThis is not a lobby area!";
                 if (params.startsWith("lobby_")) return "";
                 // if (params.startsWith("arena_")) return "§c§oThis is not a game arena!";
@@ -88,6 +94,11 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
         for (Game game : GameManager.getInstance().getGames().values()) {
             Lobby lobby = game.getLobby();
             
+            // %missilewars_lobby_gamestate_<lobby name or 'this'>%
+            if (params.equalsIgnoreCase("lobby_gamestate_" + lobby.getName())) {
+                return GameManager.getInstance().getGameStateMessage(game);
+            }
+
             // %missilewars_lobby_displayname_<lobby name or 'this'>%
             if (params.equalsIgnoreCase("lobby_displayname_" + lobby.getName())) {
                 return lobby.getDisplayName();
