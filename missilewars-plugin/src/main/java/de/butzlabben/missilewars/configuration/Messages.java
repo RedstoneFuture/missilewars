@@ -170,14 +170,16 @@ public class Messages {
         SIGNEDIT_LOBBY_NOT_FOUND("signedit.lobby_not_found", "&cCould not find lobby %input%."),
         SIGNEDIT_SIGN_REMOVE_DESC("signedit.sign_remove_desc", "&cYou have to be sneaking in order to remove this sign."),
 
+        GAME_STATE_NO_GAME("game_state.no_game", "&cNo Game."),
+        GAME_STATE_LOBBY("game_state.lobby", "&aLobby"),
+        GAME_STATE_INGAME("game_state.ingame", "&bIngame"),
+        GAME_STATE_END("game_state.ended", "&8Restarting..."),
+        GAME_STATE_ERROR("game_state.error", "&cError..."),
+        
         SIGN_0("sign.0", "•● MissileWars ●•"),
         SIGN_1("sign.1", "%state%"),
         SIGN_2("sign.2", "%arena%"),
         SIGN_3("sign.3", "&7%players%&8/&7%max_players%"),
-        SIGN_STATE_LOBBY("sign.state.lobby", "&aLobby"),
-        SIGN_STATE_INGAME("sign.state.ingame", "&bIngame"),
-        SIGN_STATE_ENDED("sign.state.ended", "&cRestarting..."),
-        SIGN_STATE_ERROR("sign.state.error", "&cError..."),
 
         STATS_NOT_ENABLED("stats.not_enabled", "&cThe Fight Stats are not enabled!"),
         STATS_FETCHING_PLAYERS("stats.fetching_players", "Fetching not cached player names: %current_size%/%real_size%"),

@@ -22,6 +22,7 @@ import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.Lobby;
+import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.util.geometry.GameArea;
 import de.butzlabben.missilewars.util.serialization.Serializer;
 import lombok.Getter;
@@ -186,4 +187,21 @@ public class GameManager {
         }
         return null;
     }
+    
+    public String getGameStateMessage(Game game) {
+        
+        if (game == null) return Messages.getMessage(false, Messages.MessageEnum.GAME_STATE_NO_GAME);
+        
+        switch (game.getState()) {
+            case LOBBY:
+                return Messages.getMessage(false, Messages.MessageEnum.GAME_STATE_LOBBY);
+            case INGAME:
+                return Messages.getMessage(false, Messages.MessageEnum.GAME_STATE_INGAME);
+            case END:
+                return Messages.getMessage(false, Messages.MessageEnum.GAME_STATE_END);
+            default:
+                return Messages.getMessage(false, Messages.MessageEnum.GAME_STATE_ERROR);
+        }
+    }
+    
 }

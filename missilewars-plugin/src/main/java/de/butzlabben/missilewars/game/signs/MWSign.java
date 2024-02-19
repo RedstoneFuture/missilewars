@@ -85,29 +85,29 @@ public class MWSign {
     }
 
     private String replace(String line, Game game) {
-        String state = Messages.getMessage(false, Messages.MessageEnum.SIGN_STATE_ERROR);
-        String name = "No game";
+
+        String state = GameManager.getInstance().getGameStateMessage(game);
+        String name = "-";
+        
         if (game != null) {
             switch (game.getState()) {
                 case LOBBY:
-                    state = Messages.getMessage(false, Messages.MessageEnum.SIGN_STATE_LOBBY);
                     name = game.getLobby().getDisplayName();
                     break;
                 case INGAME:
-                    state = Messages.getMessage(false, Messages.MessageEnum.SIGN_STATE_INGAME);
-                    name = game.getArena().getDisplayName();
-                    break;
                 case END:
-                    state = Messages.getMessage(false, Messages.MessageEnum.SIGN_STATE_ENDED);
                     name = game.getArena().getDisplayName();
                     break;
             }
         }
-        String replaced = line.replace("%state%", state).replace("%arena%", name);
-        int maxPlayers = game == null ? 0 : game.getLobby().getMaxSize();
-        int players = game == null ? 0 : game.getPlayers().size();
-        replaced = replaced.replace("%max_players%", Integer.toString(maxPlayers)).replace("%players%", Integer.toString(players));
-        return replaced;
+
+        int maxPlayers = (game == null ? 0 : game.getLobby().getMaxSize());
+        int players = (game == null ? 0 : game.getPlayers().size());
+
+        return line.replace("%state%", state)
+                .replace("%arena%", name)
+                .replace("%max_players%", Integer.toString(maxPlayers))
+                .replace("%players%", Integer.toString(players));
     }
     
     public static boolean isSign(BlockData blockData) {
