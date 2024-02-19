@@ -23,6 +23,7 @@ import de.butzlabben.missilewars.configuration.Lobby;
 import de.butzlabben.missilewars.configuration.arena.Arena;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.GameManager;
+import de.butzlabben.missilewars.player.MWPlayer;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -63,31 +64,56 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
     @Override
     public String onRequest(OfflinePlayer offlinePlayer, String params) {
 
-        if (params.endsWith("_this")) {
-            if (!offlinePlayer.isOnline()) return "§c§oPlayer is not online!";
+        if (params.endsWith("_this") || params.startsWith("player_")) {
+            // if (!offlinePlayer.isOnline()) return "§c§oPlayer is not online!";
+            if (!offlinePlayer.isOnline()) return "";
 
             Player player = offlinePlayer.getPlayer();
             Game playerGame = GameManager.getInstance().getGame(player.getLocation());
 
             if (playerGame == null) {
-                if (params.startsWith("lobby_")) return "§c§oThis is not a lobby area!";
-                if (params.startsWith("arena_")) return "§c§oThis is not a game arena!";
+                // if (params.startsWith("lobby_")) return "§c§oThis is not a lobby area!";
+                if (params.startsWith("lobby_")) return "";
+                // if (params.startsWith("arena_")) return "§c§oThis is not a game arena!";
+                if (params.startsWith("arena_")) return "";
+                // if (params.startsWith("player_")) return "§c§oPlayer is not in a game!";
+                if (params.startsWith("player_")) return "";
             }
 
             if (params.startsWith("lobby_")) params = params.replace("this", playerGame.getLobby().getName());
             if (params.startsWith("arena_")) params = params.replace("this", playerGame.getArena().getName());
+            
         }
-
-
+        
         for (Game game : GameManager.getInstance().getGames().values()) {
             Lobby lobby = game.getLobby();
-
+            
+            // %missilewars_lobby_displayname_<lobby name or 'this'>%
+            if (params.equalsIgnoreCase("lobby_displayname_" + lobby.getName())) {
+                return lobby.getDisplayName();
+            }
+            
+            // %missilewars_lobby_team1_name_<lobby name or 'this'>%
+            if (params.equalsIgnoreCase("lobby_team1_name_" + lobby.getName())) {
+                return lobby.getTeam1Name();
+            }
+            
+            // %missilewars_lobby_team1_color_<lobby name or 'this'>%
+            if (params.equalsIgnoreCase("lobby_team1_color_" + lobby.getName())) {
+                return lobby.getTeam1Color();
+            }
+            
+            // %missilewars_lobby_team2_name_<lobby name or 'this'>%
+            if (params.equalsIgnoreCase("lobby_team2_name_" + lobby.getName())) {
+                return lobby.getTeam2Name();
+            }
+            
+            // %missilewars_lobby_team2_color_<lobby name or 'this'>%
+            if (params.equalsIgnoreCase("lobby_team2_color_" + lobby.getName())) {
+                return lobby.getTeam2Color();
+            }
+            
             for (Arena arena : lobby.getArenas()) {
-
-                // %missilewars_lobby_displayname_<lobby name or 'this'>%
-                if (params.equalsIgnoreCase("lobby_displayname_" + lobby.getName())) {
-                    return lobby.getDisplayName();
-                }
 
                 // %missilewars_arena_displayname_<arena name or 'this'>%
                 if (params.equalsIgnoreCase("arena_displayname_" + arena.getName())) {
@@ -100,8 +126,29 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
                 }
 
             }
+            
+            if (game.getPlayers().get(offlinePlayer.getUniqueId()) != null) {
+                MWPlayer mwPlayer = game.getPlayers().get(offlinePlayer.getUniqueId());
+                
+                // %missilewars_player_lobby_displayname%
+                if (params.equalsIgnoreCase("player_lobby_displayname")) {
+                    return game.getLobby().getDisplayName();
+                }
+                
+                // %missilewars_player_team_name%
+                if (params.equalsIgnoreCase("player_team_name")) {
+                    return mwPlayer.getTeam().getName();
+                }
+                
+                // %missilewars_player_team_color%
+                if (params.equalsIgnoreCase("player_team_color")) {
+                    return mwPlayer.getTeam().getColor();
+                }
+                
+            }
+            
         }
-
+        
         // Placeholder is unknown by the expansion
         return null;
     }
