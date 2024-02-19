@@ -43,8 +43,6 @@ public class MWCommands extends BaseCommand {
     @Description("Shows information about the MissileWars Plugin.")
     public void mwCommand(CommandSender sender) {
 
-        sender.sendMessage(Messages.getPrefix() + "MissileWars v" + MissileWars.getInstance().version + " by Butzlabben");
-
         sendHelpMessage(sender, "mw.vote", "/mw vote <arena>", "Vote for a arena.");
         sendHelpMessage(sender, "mw.change", "/mw change <1|2>", "Changes your team.");
         sendHelpMessage(sender, "mw.quit", "/mw quit", "Quit a game.");
