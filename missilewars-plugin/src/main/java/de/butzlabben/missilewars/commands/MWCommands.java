@@ -63,7 +63,15 @@ public class MWCommands extends BaseCommand {
         sendHelpMessage(sender, "mw.debug", "/mw debug", "Show debug info.");
         sendHelpMessage(sender, "mw.restartall", "/mw restartall", "Restart all games.");
 
+        sendHelpMessage(sender, "/mw version", "Show the plugin version.");
         sendHelpMessage(sender, "mw.setup", "/mw setup <main|lobby|arena> ...", "Setup the MW locations or the lobby/arena locations.");
+    }
+    
+    @Subcommand("version")
+    @CommandCompletion("@nothing")
+    public void versionCommand(CommandSender sender, String[] args) {
+        
+        sender.sendMessage(Messages.getPrefix() + "Installed version: " + MissileWars.getInstance().version + " by RedstoneFuture & Butzlabben");
     }
 
     @Subcommand("listgames|list|games")
@@ -313,6 +321,10 @@ public class MWCommands extends BaseCommand {
         if (sender instanceof Player) {
             if (!sender.hasPermission(permission)) return;
         }
+        sender.sendMessage(Messages.getPrefix() + command + " - " + description);
+    }
+    
+    static void sendHelpMessage(CommandSender sender, String command, String description) {
         sender.sendMessage(Messages.getPrefix() + command + " - " + description);
     }
 }
