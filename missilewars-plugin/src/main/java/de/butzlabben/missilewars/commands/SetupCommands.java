@@ -24,6 +24,7 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
+import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.game.Game;
@@ -240,7 +241,12 @@ public class SetupCommands extends BaseCommand {
             public void set(CommandSender sender, String[] args) {
                 if (!senderIsPlayer(sender)) return;
                 if (!isValidGame(args)) return;
-
+                
+                if (!game.isInLobbyArea(player.getLocation())) {
+                    Logger.WARN.log("The new 'spawnpoint' of the lobby '" + game.getLobby().getName() 
+                            + "' is currently not located within the lobby area. This can lead to undesired behavior of MissileWars.");
+                }
+                
                 game.getLobby().setSpawnPoint(player.getLocation());
                 game.getLobby().updateConfig();
                 player.sendMessage(Messages.getPrefix() + "§fSet new 'spawnPoint' to " + player.getLocation() + ".");
