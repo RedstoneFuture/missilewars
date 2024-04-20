@@ -16,7 +16,7 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.configuration;
+package de.butzlabben.missilewars.configuration.lobby;
 
 import com.google.gson.annotations.SerializedName;
 import de.butzlabben.missilewars.Logger;
