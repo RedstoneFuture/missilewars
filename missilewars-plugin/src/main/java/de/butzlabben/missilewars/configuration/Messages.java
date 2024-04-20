@@ -21,10 +21,14 @@ package de.butzlabben.missilewars.configuration;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.util.SetupUtil;
 import lombok.Getter;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -73,8 +77,15 @@ public class Messages {
         return getConfigMessage(MessageEnum.PREFIX);
     }
 
+    /**
+     * This method returns the desired message from the 'messages.yml'. 
+     * The legacy color code with '&' is used.
+     * 
+     * @param msg the target message registered in the 'MessageEnum'
+     * @return (String) the converted message
+     */
     private static String getConfigMessage(MessageEnum msg) {
-        return ChatColor.translateAlternateColorCodes('&', cfg.getString(msg.getPath(),
+        return getConvertedMsg(cfg.getString(msg.getPath(),
                 "&cError while reading from messages.yml: '" + msg.getPath() + "'"));
     }
 
@@ -196,5 +207,36 @@ public class Messages {
         }
 
     }
-
+    
+    /**
+     * This method returns the desired message. Legacy 
+     * color-codes with '&' will be converted to the 
+     * final text message.
+     * 
+     * @param message the target message
+     * @return (String) the converted message
+     */
+    public static String getConvertedMsg(String message) {
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
+    
+    /**
+     * This method returns the desired message list. 
+     * Legacy color-codes with '&' will be converted 
+     * to the final text message.
+     * 
+     * @param messageList the target message list
+     * @return (String) the converted message list
+     */
+    public static List<String> getConvertedMsgList(List<String> messageList) {
+        List<String> convertedMsgList = new ArrayList<>();
+        for (String message : messageList) {
+            convertedMsgList.add(getConvertedMsg(message));
+        }
+        return convertedMsgList;
+    }
+    
+    public static String getPapiMessage(String message, Player player) {
+        return ChatColor.translateAlternateColorCodes('&', PlaceholderAPI.setPlaceholders(player, message));
+    }
 }

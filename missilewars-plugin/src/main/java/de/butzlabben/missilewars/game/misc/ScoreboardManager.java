@@ -88,7 +88,7 @@ public class ScoreboardManager {
         }
         obj = board.registerNewObjective("Info", "dummy");
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-        obj.setDisplayName(ChatColor.translateAlternateColorCodes('&', SCOREBOARD_TITLE));
+        obj.setDisplayName(SCOREBOARD_TITLE);
 
         // check if the team lists are used
         for (String cleanLine : SCOREBOARD_ENTRIES) {
@@ -255,10 +255,8 @@ public class ScoreboardManager {
             // Show the remaining duration of the last game:
             time = Integer.toString(game.getRemainingGameDuration() / 60);
         }
-
-
-        text = ChatColor.translateAlternateColorCodes('&', text);
-
+        
+        
         text = text.replace("%team1%", team1.getFullname());
         text = text.replace("%team2%", team2.getFullname());
 
