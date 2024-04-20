@@ -32,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 public class MissileWarsPlaceholder extends PlaceholderExpansion {
 
     private final MissileWars plugin;
+    private final String noInformation = "&7?";
 
     public MissileWarsPlaceholder(MissileWars plugin) {
         this.plugin = plugin;
@@ -66,7 +67,7 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
 
         if (params.endsWith("_this") || params.startsWith("player_")) {
             // if (!offlinePlayer.isOnline()) return "§c§oPlayer is not online!";
-            if (!offlinePlayer.isOnline()) return "";
+            if (!offlinePlayer.isOnline()) return noInformation;
 
             Player player = offlinePlayer.getPlayer();
             Game playerGame = GameManager.getInstance().getGame(player.getLocation());
@@ -79,11 +80,16 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
                 }
 
                 // if (params.startsWith("lobby_")) return "§c§oThis is not a lobby area!";
-                if (params.startsWith("lobby_")) return "";
+                if (params.startsWith("lobby_")) return noInformation;
                 // if (params.startsWith("arena_")) return "§c§oThis is not a game arena!";
-                if (params.startsWith("arena_")) return "";
+                if (params.startsWith("arena_")) return noInformation;
                 // if (params.startsWith("player_")) return "§c§oPlayer is not in a game!";
-                if (params.startsWith("player_")) return "";
+                if (params.startsWith("player_")) return noInformation;
+            }
+            
+            if (playerGame.getArena() == null) {
+                // if (params.startsWith("arena_")) return "§c§oThis is not a game arena!";
+                if (params.startsWith("arena_")) return noInformation;
             }
 
             if (params.startsWith("lobby_")) params = params.replace("this", playerGame.getLobby().getName());
