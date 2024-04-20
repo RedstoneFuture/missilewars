@@ -43,8 +43,10 @@ public class MWCommands extends BaseCommand {
     @Description("Shows information about the MissileWars Plugin.")
     public void mwCommand(CommandSender sender) {
 
+        sendHelpMessage(sender, "mw.vote", "/mw mapmenu", "Open the map-vote menu.");
         sendHelpMessage(sender, "mw.vote", "/mw vote <arena>", "Vote for a arena.");
-        sendHelpMessage(sender, "mw.change", "/mw change <1|2>", "Changes your team.");
+        sendHelpMessage(sender, "mw.change.use", "/mw teammenu", "Open the team-change menu.");
+        sendHelpMessage(sender, "mw.change.use", "/mw change <1|2|spec>", "Changes your team.");
         sendHelpMessage(sender, "mw.quit", "/mw quit", "Quit a game.");
 
         sendHelpMessage(sender, "mw.stats", "/mw stats [from] [arena]", "Shows stats.");
