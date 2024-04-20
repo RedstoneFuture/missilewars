@@ -63,12 +63,13 @@ public class MWCommands extends BaseCommand {
         sendHelpMessage(sender, "mw.debug", "/mw debug", "Show debug info.");
         sendHelpMessage(sender, "mw.restartall", "/mw restartall", "Restart all games.");
 
-        sendHelpMessage(sender, "/mw version", "Show the plugin version.");
+        sendHelpMessage(sender, "mw.version", "/mw version", "Show the plugin version.");
         sendHelpMessage(sender, "mw.setup", "/mw setup <main|lobby|arena> ...", "Setup the MW locations or the lobby/arena locations.");
     }
     
     @Subcommand("version")
     @CommandCompletion("@nothing")
+    @CommandPermission("mw.version")
     public void versionCommand(CommandSender sender, String[] args) {
         
         sender.sendMessage(Messages.getPrefix() + "Installed version: " + MissileWars.getInstance().version + " by RedstoneFuture & Butzlabben");
