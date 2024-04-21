@@ -21,17 +21,15 @@ package de.butzlabben.missilewars.configuration;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.game.GameManager;
+import de.butzlabben.missilewars.menus.MenuItem;
 import de.butzlabben.missilewars.util.SetupUtil;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
+import lombok.Getter;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static org.bukkit.Material.JUKEBOX;
 import static org.bukkit.Material.valueOf;
@@ -122,56 +120,85 @@ public class Config {
         cfg.addDefault("sidebar.member_list_max", 4);
 
         if (isNewConfig) {
-            List<String> sidebarList = new ArrayList<>();
-
-            sidebarList.add("&7Time left:");
-            sidebarList.add("&e» %time%m");
-            sidebarList.add("");
-            sidebarList.add("%team1% &7» %team1_color%%team1_amount%");
-            sidebarList.add("");
-            sidebarList.add("%team2% &7» %team2_color%%team2_amount%");
-
-            cfg.set("sidebar.entries", sidebarList);
-        }
-    }
-
-    public static List<String> getScoreboardEntries() {
-        return cfg.getStringList("sidebar.entries");
-    }
-
-    /**
-     * This method gets the minecraft material type of the block to start missiles.
-     */
-    public static Material getStartReplace() {
-        String name = cfg.getString("replace.material").toUpperCase();
-        try {
-            return valueOf(name);
-        } catch (Exception e) {
-            Logger.WARN.log("Could not use " + name + " as start material!");
-        }
-        return null;
-    }
-
-    public static Location getFallbackSpawn() {
-        ConfigurationSection cfg = Config.cfg.getConfigurationSection("fallback_spawn");
-        World world = Bukkit.getWorld(cfg.getString("world"));
-        if (world == null) {
-            Logger.WARN.log("The world configured at \"fallback_location.world\" couldn't be found. Using the default one");
-            world = Bukkit.getWorlds().get(0);
-        }
-        Location location = new Location(world,
-                cfg.getDouble("x"),
-                cfg.getDouble("y"),
-                cfg.getDouble("z"),
-                (float) cfg.getDouble("yaw"),
-                (float) cfg.getDouble("pitch"));
-        if (GameManager.getInstance().getGame(location) != null) {
-            Logger.WARN.log("Your fallback spawn is inside a game area. This plugins functionality can no longer be guaranteed");
+            
+            cfg.set("sidebar.entries", new ArrayList<String>() {{
+                add("&7Time left:");
+                add("&e» %time%m");
+                add("");
+                add("%team1% &7» %team1_color%%team1_amount%");
+                add("");
+                add("%team2% &7» %team2_color%%team2_amount%");
+            }});
         }
 
-        return location;
-    }
+        String gameJoinMenu = "menus.hotbar_menu.game_join_menu";
+        
+        if (isNewConfig) {
+            
+            // team-selection menu link:
+            
+            cfg.addDefault(gameJoinMenu + ".items.team_selection.display_name", "&eTeam Selection");
+            cfg.addDefault(gameJoinMenu + ".items.team_selection.material", "{player-team-name}");
+            cfg.addDefault(gameJoinMenu + ".items.team_selection.slot", 2);
 
+            cfg.set(gameJoinMenu + ".items.team_selection.lore", new ArrayList<String>() {{
+                add("&2Right click to open the");
+                add("&2team selection menu!");
+            }});
+            
+            cfg.set(gameJoinMenu + ".items.team_selection.left_click_commands", new ArrayList<String>());
+            cfg.set(gameJoinMenu + ".items.team_selection.right_click_commands", new ArrayList<String>() {{
+                add("mw teammenu");
+            }});
+            
+            
+            // map-voting menu link:
+            
+            cfg.addDefault(gameJoinMenu + ".items.mapVote.display_name", "&eMap Voting");
+            cfg.addDefault(gameJoinMenu + ".items.mapVote.material", "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjFkZDRmZTRhNDI5YWJkNjY1ZGZkYjNlMjEzMjFkNmVmYTZhNmI1ZTdiOTU2ZGI5YzVkNTljOWVmYWIyNSJ9fX0=");
+            cfg.addDefault(gameJoinMenu + ".items.mapVote.slot", 4);
+
+            cfg.set(gameJoinMenu + ".items.mapVote.lore", new ArrayList<String>() {{
+                add("&2Right click to open the");
+                add("&2map vote menu!");
+            }});
+            
+            cfg.set(gameJoinMenu + ".items.mapVote.left_click_commands", new ArrayList<String>());
+            cfg.set(gameJoinMenu + ".items.mapVote.right_click_commands", new ArrayList<String>() {{
+                add("mw mapmenu");
+            }});
+            
+            
+            // area info item:
+            
+            cfg.addDefault(gameJoinMenu + ".items.areaInfo.display_name", "&eArena Info");
+            cfg.addDefault(gameJoinMenu + ".items.areaInfo.material", "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjhlYTU3Yzc1NTFjNmFiMzNiOGZlZDM1NGI0M2RmNTIzZjFlMzU3YzRiNGY1NTExNDNjMzRkZGVhYzViNmM4ZCJ9fX0=");
+            cfg.addDefault(gameJoinMenu + ".items.areaInfo.slot", 6);
+
+            cfg.set(gameJoinMenu + ".items.areaInfo.lore", new ArrayList<String>() {{
+                add("&e> &fLobby: &7%missilewars_lobby_displayname_this%");
+                add("&e> &fArena: &7%missilewars_arena_displayname_this%");
+            }});
+            
+            cfg.set(gameJoinMenu + ".items.areaInfo.left_click_commands", new ArrayList<String>());
+            cfg.set(gameJoinMenu + ".items.areaInfo.right_click_commands", new ArrayList<String>());
+        }
+        
+        
+        String teamSelectionMenu = "menus.inventory_menu.team_selection_menu";
+        cfg.addDefault(teamSelectionMenu + ".title", "&eTeam Selection Menu");
+        cfg.addDefault(teamSelectionMenu + ".team_item", "{player-team-name}");
+        
+        String mapVoteMenu = "menus.inventory_menu.map_vote_menu";
+        cfg.addDefault(mapVoteMenu + ".title", "&eMap Vote Menu");
+        cfg.addDefault(mapVoteMenu + ".map_item", "&e{arena-name}");
+        cfg.addDefault(mapVoteMenu + ".vote_result_bar", "&7{vote-percent}%");
+        cfg.addDefault(mapVoteMenu + ".navigation.backwards_item.active", "&eprevious page");
+        cfg.addDefault(mapVoteMenu + ".navigation.backwards_item.inactive", "&7previous page");
+        cfg.addDefault(mapVoteMenu + ".navigation.forwards_item.active", "&enext page");
+        cfg.addDefault(mapVoteMenu + ".navigation.forwards_item.inactive", "&7next page");
+    }
+    
     public static void setFallbackSpawn(Location spawnLocation) {
         cfg.set("fallback_spawn.world", spawnLocation.getWorld().getName());
         cfg.set("fallback_spawn.x", spawnLocation.getX());
@@ -183,7 +210,7 @@ public class Config {
         // re-save the config with only validated options
         SetupUtil.safeFile(FILE, cfg);
     }
-
+    
     public static YamlConfiguration getConfig() {
         return cfg;
     }
@@ -231,6 +258,19 @@ public class Config {
     public static String getShieldsFolder() {
         return cfg.getString("shields.folder");
     }
+    
+    /**
+     * This method gets the minecraft material type of the block to start missiles.
+     */
+    public static Material getStartReplace() {
+        String name = cfg.getString("replace.material").toUpperCase();
+        try {
+            return valueOf(name);
+        } catch (Exception e) {
+            Logger.WARN.log("Could not use " + name + " as start material!");
+        }
+        return null;
+    }
 
     public static int getReplaceTicks() {
         return cfg.getInt("replace.after_ticks");
@@ -241,15 +281,15 @@ public class Config {
     }
 
     public static String motdEnded() {
-        return cfg.getString("motd.ended");
+        return Messages.getConvertedMsg(cfg.getString("motd.ended"));
     }
 
     public static String motdGame() {
-        return cfg.getString("motd.ingame");
+        return Messages.getConvertedMsg(cfg.getString("motd.ingame"));
     }
 
     public static String motdLobby() {
-        return cfg.getString("motd.lobby");
+        return Messages.getConvertedMsg(cfg.getString("motd.lobby"));
     }
 
     public static boolean motdEnabled() {
@@ -263,7 +303,27 @@ public class Config {
     public static boolean isShowRealSkins() {
         return cfg.getBoolean("fightstats.show_real_skins");
     }
+    
+    public static Location getFallbackSpawn() {
+        ConfigurationSection cfg = Config.cfg.getConfigurationSection("fallback_spawn");
+        World world = Bukkit.getWorld(cfg.getString("world"));
+        if (world == null) {
+            Logger.WARN.log("The world configured at \"fallback_location.world\" couldn't be found. Using the default one");
+            world = Bukkit.getWorlds().get(0);
+        }
+        Location location = new Location(world,
+                cfg.getDouble("x"),
+                cfg.getDouble("y"),
+                cfg.getDouble("z"),
+                (float) cfg.getDouble("yaw"),
+                (float) cfg.getDouble("pitch"));
+        if (GameManager.getInstance().getGame(location) != null) {
+            Logger.WARN.log("Your fallback spawn is inside a game area. This plugins functionality can no longer be guaranteed");
+        }
 
+        return location;
+    }
+    
     public static String getHost() {
         return cfg.getString("mysql.host");
     }
@@ -293,15 +353,84 @@ public class Config {
     }
 
     public static String getScoreboardTitle() {
-        return cfg.getString("sidebar.title");
+        return Messages.getConvertedMsg(cfg.getString("sidebar.title"));
     }
 
     public static String getScoreboardMembersStyle() {
-        return cfg.getString("sidebar.member_list_style");
+        return Messages.getConvertedMsg(cfg.getString("sidebar.member_list_style"));
     }
 
     public static int getScoreboardMembersMax() {
         return cfg.getInt("sidebar.member_list_max");
     }
+    
+    public static List<String> getScoreboardEntries() {
+        return Messages.getConvertedMsgList(cfg.getStringList("sidebar.entries"));
+    }
+    
+    public static Map<Integer, MenuItem> getGameJoinMenuItems() {
+        String gameJoinMenu = "menus.hotbar_menu.game_join_menu";
+        Map<Integer, MenuItem> menuItems = new HashMap<>();
+        Set<String> items = Config.cfg.getConfigurationSection(gameJoinMenu + ".items").getKeys(false);
+        
+        for (String item : items) {
+            ConfigurationSection cfg = Config.cfg.getConfigurationSection(gameJoinMenu + ".items." + item);
+            MenuItem menuItem = new MenuItem();
+            
+            menuItem.setDisplayName(Messages.getConvertedMsg(cfg.getString("display_name")));
+            menuItem.setMaterialName(cfg.getString("material"));
+            menuItem.setSlot(cfg.getInt("slot"));
+            menuItem.setLoreList(Messages.getConvertedMsgList(cfg.getStringList("lore")));
+            menuItem.setLeftClickCmdList(Messages.getConvertedMsgList(cfg.getStringList("left_click_commands")));
+            menuItem.setRightClickCmdList(Messages.getConvertedMsgList(cfg.getStringList("right_click_commands")));
+            
+            menuItems.put(menuItem.getSlot(), menuItem);
+        }
+        
+        return menuItems;
+    }
+    
+    public static String getTeamSelectionMenuTitle() {
+        return Messages.getConvertedMsg(cfg.getString("menus.inventory_menu.team_selection_menu.title"));
+    }
+    
+    @Getter
+    public enum TeamSelectionMenuItems {
+        TEAM_ITEM("menus.inventory_menu.team_selection_menu.team_item");
+        
+        private final String path;
 
+        TeamSelectionMenuItems(String path) {
+            this.path = path;
+        }
+        
+        public String getMessage() {
+            return Messages.getConvertedMsg(cfg.getString(getPath()));
+        }
+    }
+    
+    public static String getMapVoteMenuTitle() {
+        return Messages.getConvertedMsg(cfg.getString("menus.inventory_menu.map_vote_menu.title"));
+    }
+    
+    @Getter
+    public enum MapVoteMenuItems {
+        MAP_ITEM("menus.inventory_menu.map_vote_menu.map_item"),
+        VOTE_RESULT_BAR("menus.inventory_menu.map_vote_menu.vote_result_bar"),
+        BACKWARDS_ITEM_ACTIVE("menus.inventory_menu.map_vote_menu.navigation.backwards_item.active"),
+        BACKWARDS_ITEM_INACTIVE("menus.inventory_menu.map_vote_menu.navigation.backwards_item.inactive"),
+        FORWARDS_ITEM_ACTIVE("menus.inventory_menu.map_vote_menu.navigation.forwards_item.active"),
+        FORWARDS_ITEM_INACTIVE("menus.inventory_menu.map_vote_menu.navigation.forwards_item.inactive");
+        
+        private final String path;
+
+        MapVoteMenuItems(String path) {
+            this.path = path;
+        }
+        
+        public String getMessage() {
+            return Messages.getConvertedMsg(cfg.getString(getPath()));
+        }
+    }
+    
 }
