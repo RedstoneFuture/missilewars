@@ -92,7 +92,8 @@ public class Messages {
     @Getter
     public enum MessageEnum {
         PREFIX("prefix", "&6•&e● MissileWars &8▎ &7"),
-
+        NO_PERMISSION("no_permission", "You down't have the permission for this."),
+        
         DEBUG_RELOAD_CONFIG("debug.reload_config", "&7Reloaded configs."),
         DEBUG_RESTART_ALL_GAMES_WARN("debug.restart_all_games_warn", "&cWarning: Restarting all games. This may take a while."),
         DEBUG_RESTART_ALL_GAMES("debug.restart_all_games", "&7Restarted all games."),
