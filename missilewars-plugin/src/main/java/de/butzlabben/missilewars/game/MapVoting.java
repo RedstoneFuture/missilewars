@@ -51,11 +51,6 @@ public class MapVoting {
      */
     public void addVote(Player player, String arenaName) {
         
-        if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_CANT_VOTE));
-            return;
-        }
-        
         if (state == VoteState.NULL) {
             player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_CHANGE_TEAM_NOT_NOW));
             return;
