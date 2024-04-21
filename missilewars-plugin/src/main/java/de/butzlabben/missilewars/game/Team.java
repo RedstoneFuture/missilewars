@@ -51,6 +51,7 @@ public class Team {
     private final String name;
     private final String color;
     private final Game game;
+    private final transient TeamType teamType;
     private final transient ArrayList<MWPlayer> members = new ArrayList<>();
     @Setter private Location spawn;
     @Setter private transient GameResult gameResult = GameResult.DRAW;
