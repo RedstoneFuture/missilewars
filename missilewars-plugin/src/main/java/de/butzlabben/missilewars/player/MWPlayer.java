@@ -44,8 +44,7 @@ public class MWPlayer implements Runnable {
     private final Game game;
     @Setter
     private Team team;
-    @Setter
-    private PlayerEquipmentRandomizer randomGameEquipment;
+    private PlayerEquipmentRandomizer playerEquipmentRandomizer;
     @Setter
     private boolean playerInteractEventCancel = false;
 
@@ -57,10 +56,14 @@ public class MWPlayer implements Runnable {
     public Player getPlayer() {
         return Bukkit.getPlayer(uuid);
     }
-
+    
+    public void iniPlayerEquipmentRandomizer() {
+        this.playerEquipmentRandomizer = new PlayerEquipmentRandomizer(this, game);
+    }
+    
     @Override
     public void run() {
-        randomGameEquipment.tick();
+        playerEquipmentRandomizer.tick();
     }
 
     @Override

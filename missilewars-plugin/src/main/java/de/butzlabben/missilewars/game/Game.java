@@ -31,7 +31,6 @@ import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
 import de.butzlabben.missilewars.game.enums.VoteState;
 import de.butzlabben.missilewars.game.equipment.EquipmentManager;
-import de.butzlabben.missilewars.game.equipment.PlayerEquipmentRandomizer;
 import de.butzlabben.missilewars.game.misc.MotdManager;
 import de.butzlabben.missilewars.game.misc.ScoreboardManager;
 import de.butzlabben.missilewars.game.schematics.SchematicFacing;

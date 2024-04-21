@@ -186,7 +186,7 @@ public class GameListener extends GameBoundListener {
             event.setRespawnLocation(team.getSpawn());
             getGame().getEquipmentManager().sendGameItems(player, true);
             getGame().setPlayerAttributes(player);
-            getGame().getPlayer(player).getRandomGameEquipment().resetPlayerInterval();
+            getGame().getPlayer(player).getPlayerEquipmentRandomizer().resetPlayerInterval();
 
             FallProtectionConfiguration fallProtection = getGame().getArena().getFallProtection();
             if (fallProtection.isEnabled()) {
