@@ -178,6 +178,9 @@ public class Config {
             cfg.set(gameJoinMenu + ".items.areaInfo.lore", new ArrayList<String>() {{
                 add("&e> &fLobby: &7%missilewars_lobby_displayname_this%");
                 add("&e> &fArena: &7%missilewars_arena_displayname_this%");
+                add("&e> &fGame-Time: &7%missilewars_lobby_gameduration_this% min");
+                add("&e> &fMissiles: &7%missilewars_arena_missileamount_this%x");
+                add("&e> &fArena-Size: &7%missilewars_lobby_arenasize_X_this% x %missilewars_lobby_arenasize_Z_this% blocks");
             }});
             
             cfg.set(gameJoinMenu + ".items.areaInfo.left_click_commands", new ArrayList<String>());
