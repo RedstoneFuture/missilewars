@@ -30,7 +30,6 @@ import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.game.Team;
 import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
-import de.butzlabben.missilewars.game.enums.TeamType;
 import de.butzlabben.missilewars.player.MWPlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -70,9 +69,9 @@ public class UserCommands extends BaseCommand {
         game.getMapVoting().addVote(player, args[0]);
     }
     
-    @Subcommand("mapmenu")
+    @Subcommand("mapmenu|votegui")
     @CommandCompletion("@nothing")
-    @CommandPermission("mw.vote")
+    @CommandPermission("mw.mapmenu")
     public void mapmenuCommand(CommandSender sender, String[] args) {
 
         if (!MWCommands.senderIsPlayer(sender)) return;
@@ -95,6 +94,12 @@ public class UserCommands extends BaseCommand {
         }
         
         // The GUI can also be opened when it is too late to vote according to the settings.
+        // But only in the LOBBY Game-State.
+        
+        if (game.getState() != GameState.LOBBY) {
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_CHANGE_TEAM_NO_LONGER_NOW));
+            return;
+        }
         
         MWPlayer mwPlayer = game.getPlayer(player);
         mwPlayer.getMapVoteMenu().openMenu();
@@ -124,50 +129,66 @@ public class UserCommands extends BaseCommand {
             return;
         }
         
-        // Is team change only in lobby allowed?
-        if (game.getState() != GameState.LOBBY) {
+        MWPlayer mwPlayer = game.getPlayer(player);
+        
+        if (game.getState() == GameState.LOBBY) {
+            if (game.getArena() != null) {
+                if (!game.getArena().isTeamchangeOngoingGame()) {
+                    // Is too late for team change (last seconds of lobby waiting-time)?
+                    if (game.getTaskManager().getTimer().getSeconds() < 10) {
+                        player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_CHANGE_TEAM_NO_LONGER_NOW));
+                        return;
+                    }
+                }
+            }
+            
+        } else if (game.getState() == GameState.INGAME) {
+            // Is team change only in lobby allowed?
             if (!game.getArena().isTeamchangeOngoingGame()) {
                 player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_CHANGE_TEAM_NOT_NOW));
                 return;
             }
             
-        // Is too late for team change (last seconds of lobby waiting-time)?
-        } else if (game.getArena() != null) {
-            if (!game.getArena().isTeamchangeOngoingGame()) {
-                if (game.getTaskManager().getTimer().getSeconds() < 10) {
-                    player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_CHANGE_TEAM_NO_LONGER_NOW));
-                    return;
-                }
+            // Anti-Spam Check:
+            if (mwPlayer.getWaitTimeForTeamChange() > 0) {
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_ANTISPAM_TEAM_CHANGE)
+                        .replace("%seconds%", Long.toString(mwPlayer.getWaitTimeForTeamChange())));
+                return;
             }
+            mwPlayer.setLastTeamChangeTime();
+            
+        } else {
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_CHANGE_TEAM_NOT_NOW));
+            return;
+            
         }
         
-        MWPlayer mwPlayer = game.getPlayer(player);
         
         Team from = mwPlayer.getTeam();
         Team to;
         
         switch (args[0]) {
             case "1":
-                if (!player.hasPermission("mw.change.playerteam")) {
+                if (!player.hasPermission("mw.change.team.player")) {
                     Messages.getMessage(true, Messages.MessageEnum.NO_PERMISSION);
                     return;
                 }
-                to = game.getTeam1();
+                to = game.getTeamManager().getTeam1();
                 break;
             case "2":
-                if (!player.hasPermission("mw.change.playerteam")) {
+                if (!player.hasPermission("mw.change.team.player")) {
                     Messages.getMessage(true, Messages.MessageEnum.NO_PERMISSION);
                     return;
                 }
-                to = game.getTeam2();
+                to = game.getTeamManager().getTeam2();
                 break;
             case "spec":
             case "spectator":
-                if (!player.hasPermission("mw.change.spectator")) {
+                if (!player.hasPermission("mw.change.team.spectator")) {
                     Messages.getMessage(true, Messages.MessageEnum.NO_PERMISSION);
                     return;
                 }
-                to = game.getTeamSpec();
+                to = game.getTeamManager().getTeamSpec();
                 break;
             default:
                 sender.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_TEAM));
@@ -179,31 +200,34 @@ public class UserCommands extends BaseCommand {
             player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_ALREADY_IN_TEAM));
             return;
         }
-
+        
         // Would the number of team members be too far apart?
-        if (!game.isValidFairSwitch(from, to)) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_UNFAIR_TEAM_SIZE));
-            return;
+        if (game.getState() != GameState.LOBBY) {
+            if (!game.getTeamManager().isValidFairSwitch(from, to)) {
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_UNFAIR_TEAM_SIZE));
+                return;
+            }
         }
         
-        // Remove the player from the old team and add him to the new team
-        to.addMember(mwPlayer);
-        
-        if (to.getTeamType() == TeamType.SPECTATOR) {
-            if (game.getState() != GameState.LOBBY) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.ARENA_SPECTATOR));
+        // Checking max-user values:
+        if (to == game.getTeamManager().getTeamSpec()) {
+            if (game.areTooManySpectators()) {
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_SPECTATOR_MAX_REACHED));
+                return;
             }
         } else {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_TEAM_ASSIGNED).replace("%team%", to.getFullname()));
+            if (game.areTooManyPlayers()) {
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_PLAYER_MAX_REACHED));
+                return;
+            }
         }
         
-        game.getScoreboardManager().updateScoreboard();
-        mwPlayer.getGameJoinMenu().getMenu();
+        game.getGameJoinManager().runPlayerTeamSwitch(mwPlayer, to);
     }
     
-    @Subcommand("teammenu")
+    @Subcommand("teammenu|changegui")
     @CommandCompletion("@nothing")
-    @CommandPermission("mw.change.use")
+    @CommandPermission("mw.teammenu")
     public void teammenuCommand(CommandSender sender, String[] args) {
 
         if (!MWCommands.senderIsPlayer(sender)) return;

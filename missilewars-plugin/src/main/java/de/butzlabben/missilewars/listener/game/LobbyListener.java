@@ -18,22 +18,27 @@
 
 package de.butzlabben.missilewars.listener.game;
 
+import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.event.PlayerArenaJoinEvent;
 import de.butzlabben.missilewars.event.PlayerArenaLeaveEvent;
 import de.butzlabben.missilewars.game.Game;
-import de.butzlabben.missilewars.inventory.VoteInventory;
+import de.butzlabben.missilewars.game.enums.TeamType;
+import de.butzlabben.missilewars.menus.MenuItem;
+import de.butzlabben.missilewars.menus.hotbar.GameJoinMenu;
+import de.butzlabben.missilewars.menus.inventory.MapVoteMenu;
+import de.butzlabben.missilewars.menus.inventory.TeamSelectionMenu;
 import de.butzlabben.missilewars.player.MWPlayer;
 import org.bukkit.GameMode;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.*;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
 
 /**
  * @author Butzlabben
@@ -59,24 +64,27 @@ public class LobbyListener extends GameBoundListener {
         setInteractDelay(player);
 
         if (event.getItem() == null) return;
-
-        if (event.getItem().getType().name().contains("STAINED_GLASS_PANE")) {
-            // team change:
-            if (!player.hasPermission("mw.change")) return;
-
-            String displayName = event.getItem().getItemMeta().getDisplayName();
-            if (displayName.equals(getGame().getTeam1().getFullname())) {
-                player.performCommand("mw change 1");
-            } else {
-                player.performCommand("mw change 2");
-            }
-
-        } else if (event.getItem().getType() == Material.NETHER_STAR) {
-            // vote inventory:
-            if (player.hasPermission("mw.vote")) {
-                VoteInventory inventory = new VoteInventory(getGame().getLobby().getArenas());
-                player.openInventory(inventory.getInventory(player));
-            }
+        
+        // execution commands from the hotbar menu items
+        int slotId = player.getInventory().getHeldItemSlot();
+        if (!GameJoinMenu.menuItems.containsKey(slotId)) return;
+        
+        if ((event.getAction().equals(Action.LEFT_CLICK_AIR)) || (event.getAction().equals(Action.LEFT_CLICK_BLOCK))) {
+            
+            MWPlayer mwPlayer = getGame().getPlayer(player);
+            if (!mwPlayer.getGameJoinMenu().finalMenuItems.containsKey(slotId)) return;
+            
+            MenuItem menuItem = mwPlayer.getGameJoinMenu().finalMenuItems.get(slotId);
+            menuItem.getLeftClickActions().runActions(player, getGame());
+        }
+        
+        if ((event.getAction().equals(Action.RIGHT_CLICK_AIR)) || (event.getAction().equals(Action.RIGHT_CLICK_BLOCK))) {
+            
+            MWPlayer mwPlayer = getGame().getPlayer(player);
+            if (!mwPlayer.getGameJoinMenu().finalMenuItems.containsKey(slotId)) return;
+            
+            MenuItem menuItem = mwPlayer.getGameJoinMenu().finalMenuItems.get(slotId);
+            menuItem.getRightClickActions().runActions(player, getGame());
         }
     }
 
@@ -102,9 +110,10 @@ public class LobbyListener extends GameBoundListener {
         Player player = (Player) event.getPlayer();
         if (!isInLobbyArea(player.getLocation())) return;
         
-        // handling of vote inventory:
-        if (event.getView().getTitle().equals(Messages.getMessage(false, Messages.MessageEnum.VOTE_GUI))) return;
-
+        // handling of MW inventories:
+        if (event.getView().getTitle().equals(TeamSelectionMenu.getTitle()) || 
+                event.getView().getTitle().equals(MapVoteMenu.getTitle())) return;
+        
         if (player.getGameMode() != GameMode.CREATIVE) event.setCancelled(true);
     }
 
@@ -114,24 +123,47 @@ public class LobbyListener extends GameBoundListener {
 
         Player player = (Player) event.getWhoClicked();
         if (!isInLobbyArea(player.getLocation())) return;
-
-        // handling of vote inventory: see 'VoteInventory.class'
+        
+        // handling of MW inventories:
+        if (event.getView().getTitle().equals(TeamSelectionMenu.getTitle()) || 
+                event.getView().getTitle().equals(MapVoteMenu.getTitle())) {
+            if (event.getSlotType() == InventoryType.SlotType.CONTAINER) return;
+        }
         
         if (player.getGameMode() != GameMode.CREATIVE) event.setCancelled(true);
+        Logger.DEBUG.log("Cancelled 'InventoryClickEvent' event of " + player.getName());
     }
-
+    
+    @EventHandler
+    public void onPlayerSwapHandItems(PlayerSwapHandItemsEvent event) {
+        if (!isInLobbyArea(event.getPlayer().getLocation())) return;
+        
+        Player player = event.getPlayer();
+        
+        if (player.getGameMode() != GameMode.CREATIVE) event.setCancelled(true);
+        Logger.DEBUG.log("Cancelled 'PlayerSwapHandItemsEvent' event of " + player.getName());
+    }
+    
     @EventHandler
     public void onPlayerArenaJoin(PlayerArenaJoinEvent event) {
         if (!isInLobbyArea(event.getPlayer().getLocation())) return;
-
-        if (getGame().isPlayersMax()) {
-            event.setCancelled(true);
-            event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_ENTER_ARENA));
-            return;
-        }
-
+        
         Player player = event.getPlayer();
-        getGame().playerJoinInGame(player, false);
+        
+        // A: game join in a player-team:
+        if (!getGame().areTooManyPlayers()) {
+            getGame().getGameJoinManager().runPlayerJoin(player, TeamType.PLAYER);
+            
+        } else if (!getGame().areTooManySpectators()) {
+            event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_PLAYER_MAX_REACHED));
+            getGame().getGameJoinManager().runPlayerJoin(player, TeamType.SPECTATOR);
+            
+        } else {
+            event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_MAX_REACHED));
+            event.setCancelled(true);
+            
+        }
+        
     }
 
     @EventHandler
@@ -141,6 +173,6 @@ public class LobbyListener extends GameBoundListener {
         Player player = event.getPlayer();
         MWPlayer mwPlayer = event.getGame().getPlayer(player);
 
-        if (mwPlayer != null) getGame().playerLeaveFromGame(mwPlayer);
+        if (mwPlayer != null) getGame().getGameLeaveManager().playerLeaveFromGame(mwPlayer);
     }
 }

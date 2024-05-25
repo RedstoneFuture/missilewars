@@ -104,6 +104,11 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
             if (params.equalsIgnoreCase("lobby_gamestate_" + lobby.getName())) {
                 return GameManager.getInstance().getGameStateMessage(game);
             }
+            
+            // %missilewars_lobby_mapvote_state_<lobby name or 'this'>%
+            if (params.equalsIgnoreCase("lobby_mapvote_state_" + lobby.getName())) {
+                return game.getMapVoting().getState().toString();
+            }
 
             // %missilewars_lobby_displayname_<lobby name or 'this'>%
             if (params.equalsIgnoreCase("lobby_displayname_" + lobby.getName())) {

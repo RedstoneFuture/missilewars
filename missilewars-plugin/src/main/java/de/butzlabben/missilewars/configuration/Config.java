@@ -72,6 +72,8 @@ public class Config {
         }
 
         cfg.addDefault("setup_mode", false);
+        
+        cfg.addDefault("antispam_intervall.team_change_command", 25);
 
         cfg.addDefault("contact_auth_server", true);
         cfg.addDefault("prefetch_players", true);
@@ -140,32 +142,57 @@ public class Config {
             cfg.addDefault(gameJoinMenu + ".items.team_selection.display_name", "&eTeam Selection");
             cfg.addDefault(gameJoinMenu + ".items.team_selection.material", "{player-team-name}");
             cfg.addDefault(gameJoinMenu + ".items.team_selection.slot", 2);
+            
+            cfg.addDefault(gameJoinMenu + ".items.team_selection.priority", 0);
 
             cfg.set(gameJoinMenu + ".items.team_selection.lore", new ArrayList<String>() {{
                 add("&2Right click to open the");
                 add("&2team selection menu!");
             }});
             
-            cfg.set(gameJoinMenu + ".items.team_selection.left_click_commands", new ArrayList<String>());
-            cfg.set(gameJoinMenu + ".items.team_selection.right_click_commands", new ArrayList<String>() {{
-                add("mw teammenu");
+            cfg.set(gameJoinMenu + ".items.team_selection.left_click_actions", new ArrayList<String>());
+            cfg.set(gameJoinMenu + ".items.team_selection.right_click_actions", new ArrayList<String>() {{
+                add("[player-cmd] mw teammenu");
             }});
             
             
-            // map-voting menu link:
+            // map-voting menu link (A: Map-Vote active):
             
-            cfg.addDefault(gameJoinMenu + ".items.mapVote.display_name", "&eMap Voting");
-            cfg.addDefault(gameJoinMenu + ".items.mapVote.material", "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjFkZDRmZTRhNDI5YWJkNjY1ZGZkYjNlMjEzMjFkNmVmYTZhNmI1ZTdiOTU2ZGI5YzVkNTljOWVmYWIyNSJ9fX0=");
-            cfg.addDefault(gameJoinMenu + ".items.mapVote.slot", 4);
+            cfg.addDefault(gameJoinMenu + ".items.mapVote_active.display_name", "&eMap Voting");
+            cfg.addDefault(gameJoinMenu + ".items.mapVote_active.material", "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZmMyNzEwNTI3MTllZjY0MDc5ZWU4YzE0OTg5NTEyMzhhNzRkYWM0YzI3Yjk1NjQwZGI2ZmJkZGMyZDZiNWI2ZSJ9fX0=");
+            cfg.addDefault(gameJoinMenu + ".items.mapVote_active.slot", 4);
 
-            cfg.set(gameJoinMenu + ".items.mapVote.lore", new ArrayList<String>() {{
+            cfg.addDefault(gameJoinMenu + ".items.mapVote_active.priority", 1);
+            cfg.addDefault(gameJoinMenu + ".items.mapVote_active.view_requirement.type", "string equals");
+            cfg.addDefault(gameJoinMenu + ".items.mapVote_active.view_requirement.input", "%missilewars_lobby_mapvote_state_this%");
+            cfg.addDefault(gameJoinMenu + ".items.mapVote_active.view_requirement.output", "RUNNING");
+            
+            cfg.set(gameJoinMenu + ".items.mapVote_active.lore", new ArrayList<String>() {{
                 add("&2Right click to open the");
                 add("&2map vote menu!");
             }});
             
-            cfg.set(gameJoinMenu + ".items.mapVote.left_click_commands", new ArrayList<String>());
-            cfg.set(gameJoinMenu + ".items.mapVote.right_click_commands", new ArrayList<String>() {{
-                add("mw mapmenu");
+            cfg.set(gameJoinMenu + ".items.mapVote_active.left_click_actions", new ArrayList<String>());
+            cfg.set(gameJoinMenu + ".items.mapVote_active.right_click_actions", new ArrayList<String>() {{
+                add("[player-cmd] mw mapmenu");
+            }});
+            
+            
+            // map-voting menu link (B: Map-Vote inactive):
+            
+            cfg.addDefault(gameJoinMenu + ".items.mapVote_inactive.display_name", "&2Map Voting");
+            cfg.addDefault(gameJoinMenu + ".items.mapVote_inactive.material", "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjFkZDRmZTRhNDI5YWJkNjY1ZGZkYjNlMjEzMjFkNmVmYTZhNmI1ZTdiOTU2ZGI5YzVkNTljOWVmYWIyNSJ9fX0=");
+            cfg.addDefault(gameJoinMenu + ".items.mapVote_inactive.slot", 4);
+
+            cfg.addDefault(gameJoinMenu + ".items.mapVote_inactive.priority", 0);
+            
+            cfg.set(gameJoinMenu + ".items.mapVote_inactive.lore", new ArrayList<String>() {{
+                add("&2Voted-Map: &7%missilewars_arena_displayname_this%");
+            }});
+            
+            cfg.set(gameJoinMenu + ".items.mapVote_inactive.left_click_actions", new ArrayList<String>());
+            cfg.set(gameJoinMenu + ".items.mapVote_inactive.right_click_actions", new ArrayList<String>() {{
+                add("[player-cmd] mw mapmenu");
             }});
             
             
@@ -174,6 +201,8 @@ public class Config {
             cfg.addDefault(gameJoinMenu + ".items.areaInfo.display_name", "&eArena Info");
             cfg.addDefault(gameJoinMenu + ".items.areaInfo.material", "basehead-eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYjhlYTU3Yzc1NTFjNmFiMzNiOGZlZDM1NGI0M2RmNTIzZjFlMzU3YzRiNGY1NTExNDNjMzRkZGVhYzViNmM4ZCJ9fX0=");
             cfg.addDefault(gameJoinMenu + ".items.areaInfo.slot", 6);
+            
+            cfg.addDefault(gameJoinMenu + ".items.areaInfo.priority", 0);
 
             cfg.set(gameJoinMenu + ".items.areaInfo.lore", new ArrayList<String>() {{
                 add("&e> &fLobby: &7%missilewars_lobby_displayname_this%");
@@ -183,8 +212,8 @@ public class Config {
                 add("&e> &fArena-Size: &7%missilewars_lobby_arenasize_X_this% x %missilewars_lobby_arenasize_Z_this% blocks");
             }});
             
-            cfg.set(gameJoinMenu + ".items.areaInfo.left_click_commands", new ArrayList<String>());
-            cfg.set(gameJoinMenu + ".items.areaInfo.right_click_commands", new ArrayList<String>());
+            cfg.set(gameJoinMenu + ".items.areaInfo.left_click_actions", new ArrayList<String>());
+            cfg.set(gameJoinMenu + ".items.areaInfo.right_click_actions", new ArrayList<String>());
         }
         
         
@@ -224,6 +253,10 @@ public class Config {
 
     public static boolean isSetup() {
         return cfg.getBoolean("setup_mode");
+    }
+    
+    public static int getTeamChangeCmdIntervall() {
+        return cfg.getInt("antispam_intervall.team_change_command");
     }
 
     public static boolean isContactAuth() {
@@ -371,23 +404,36 @@ public class Config {
         return Messages.getConvertedMsgList(cfg.getStringList("sidebar.entries"));
     }
     
-    public static Map<Integer, MenuItem> getGameJoinMenuItems() {
+    public static Map<Integer, Map<Integer, MenuItem>> getGameJoinMenuItems() {
+        // Config keys inspired by DeluxeMenus https://wiki.helpch.at/helpchat-plugins/deluxemenus/options-and-configurations/item
+        
         String gameJoinMenu = "menus.hotbar_menu.game_join_menu";
-        Map<Integer, MenuItem> menuItems = new HashMap<>();
         Set<String> items = Config.cfg.getConfigurationSection(gameJoinMenu + ".items").getKeys(false);
+
+        Map<Integer, Map<Integer, MenuItem>> menuItems = new HashMap<>();
         
         for (String item : items) {
             ConfigurationSection cfg = Config.cfg.getConfigurationSection(gameJoinMenu + ".items." + item);
-            MenuItem menuItem = new MenuItem();
-            
+            MenuItem menuItem = new MenuItem(cfg.getInt("slot"), cfg.getInt("priority"));
+
             menuItem.setDisplayName(Messages.getConvertedMsg(cfg.getString("display_name")));
             menuItem.setMaterialName(cfg.getString("material"));
-            menuItem.setSlot(cfg.getInt("slot"));
+            menuItem.setItemRequirement(cfg);
             menuItem.setLoreList(Messages.getConvertedMsgList(cfg.getStringList("lore")));
-            menuItem.setLeftClickCmdList(Messages.getConvertedMsgList(cfg.getStringList("left_click_commands")));
-            menuItem.setRightClickCmdList(Messages.getConvertedMsgList(cfg.getStringList("right_click_commands")));
+            menuItem.setLeftClickActions(new ActionSet(Messages.getConvertedMsgList(cfg.getStringList("left_click_actions"))));
+            menuItem.setRightClickActions(new ActionSet(Messages.getConvertedMsgList(cfg.getStringList("right_click_actions"))));
             
-            menuItems.put(menuItem.getSlot(), menuItem);
+            int slot = menuItem.getSlot();
+            Map<Integer, MenuItem> itemsInSlot = new HashMap<>();
+            
+            if (!menuItems.containsKey(slot)) {
+                itemsInSlot.put(menuItem.getPriority(), menuItem);
+                menuItems.put(slot, itemsInSlot);
+            } else {
+                itemsInSlot = menuItems.get(slot);
+                itemsInSlot.put(menuItem.getPriority(), menuItem);
+                menuItems.replace(slot, itemsInSlot);
+            }
         }
         
         return menuItems;

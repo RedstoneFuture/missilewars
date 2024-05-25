@@ -27,6 +27,7 @@ import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.GameManager;
+import de.butzlabben.missilewars.game.TeamManager;
 import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.game.enums.VoteState;
@@ -43,9 +44,9 @@ public class MWCommands extends BaseCommand {
     @Description("Shows information about the MissileWars Plugin.")
     public void mwCommand(CommandSender sender) {
 
-        sendHelpMessage(sender, "mw.vote", "/mw mapmenu", "Open the map-vote menu.");
+        sendHelpMessage(sender, "mw.mapmenu", "/mw mapmenu", "Open the map-vote menu.");
         sendHelpMessage(sender, "mw.vote", "/mw vote <arena>", "Vote for a arena.");
-        sendHelpMessage(sender, "mw.change.use", "/mw teammenu", "Open the team-change menu.");
+        sendHelpMessage(sender, "mw.teammenu", "/mw teammenu", "Open the team-change menu.");
         sendHelpMessage(sender, "mw.change.use", "/mw change <1|2|spec>", "Changes your team.");
         sendHelpMessage(sender, "mw.quit", "/mw quit", "Quit a game.");
 
@@ -81,16 +82,20 @@ public class MWCommands extends BaseCommand {
     public void listgamesCommand(CommandSender sender, String[] args) {
 
         sender.sendMessage(Messages.getPrefix() + "Current games:");
-
+        
         for (Game game : GameManager.getInstance().getGames().values()) {
+            TeamManager teamManager = game.getTeamManager();
+            
             sender.sendMessage("§e " + game.getLobby().getName() + "§7 -- Name: »" + game.getLobby().getDisplayName() + "§7« | Status: " + game.getState());
             sender.sendMessage("§8 - §f" + "Load with startup: §7" + game.getLobby().isAutoLoad());
             sender.sendMessage("§8 - §f" + "Current Arena: §7" + game.getArena().getName() + "§7 -- Name: »" + game.getArena().getDisplayName() + "§7«");
-            sender.sendMessage("§8 - §f" + "Total players: §7" + game.getPlayers().size() + "x");
-            sender.sendMessage("§8 - §f" + "Team 1: §7" + game.getTeam1().getColor() + game.getTeam1().getName()
-                    + " §7with " + game.getTeam1().getMembers().size() + " players");
-            sender.sendMessage("§8 - §f" + "Team 2: §7" + game.getTeam2().getColor() + game.getTeam2().getName()
-                    + " §7with " + game.getTeam2().getMembers().size() + " players");
+            sender.sendMessage("§8 - §f" + "Total players: §7" + game.getTotalGameUserAmount() + "x");
+            sender.sendMessage("§8 - §f" + "Team 1: §7" + teamManager.getTeam1().getColor() + teamManager.getTeam1().getName()
+                    + " §7with " + teamManager.getTeam1().getMembers().size() + " players");
+            sender.sendMessage("§8 - §f" + "Team 2: §7" + teamManager.getTeam2().getColor() + teamManager.getTeam2().getName()
+                    + " §7with " + teamManager.getTeam2().getMembers().size() + " players");
+            sender.sendMessage("§8 - §f" + "Spectators: §7" + teamManager.getTeamSpec().getColor() + teamManager.getTeamSpec().getName()
+                    + " §7with " + teamManager.getTeamSpec().getMembers().size() + " players");
         }
 
     }
@@ -208,8 +213,8 @@ public class MWCommands extends BaseCommand {
             }
         }
 
-        game.getTeam1().setGameResult(GameResult.DRAW);
-        game.getTeam2().setGameResult(GameResult.DRAW);
+        game.getTeamManager().getTeam1().setGameResult(GameResult.DRAW);
+        game.getTeamManager().getTeam2().setGameResult(GameResult.DRAW);
         if (game.getState() == GameState.INGAME) game.stopGame();
     }
 

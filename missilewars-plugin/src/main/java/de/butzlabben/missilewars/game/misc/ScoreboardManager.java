@@ -48,9 +48,7 @@ public class ScoreboardManager {
 
     @Setter
     private String arenaDisplayName;
-    @Setter
-    private String arenaGameDuration;
-
+    
     // get config options
     private static final String SCOREBOARD_TITLE = Config.getScoreboardTitle();
     private static final String MEMBER_LIST_STYLE = Config.getScoreboardMembersStyle();
@@ -70,16 +68,14 @@ public class ScoreboardManager {
      */
     private void createScoreboard() {
 
-        team1 = game.getTeam1();
-        team2 = game.getTeam2();
+        team1 = game.getTeamManager().getTeam1();
+        team2 = game.getTeamManager().getTeam2();
 
         if (game.getArena() == null) {
             // using of placeholders until the arena is not set
             setArenaDisplayName("?");
-            setArenaGameDuration("0");
         } else {
             setArenaDisplayName(game.getArena().getDisplayName());
-            setArenaGameDuration(Integer.toString(game.getArena().getGameDuration()));
         }
 
         // register Scoreboard
@@ -243,19 +239,6 @@ public class ScoreboardManager {
      * @return the replaced text as String
      */
     private String replaceScoreboardPlaceholders(String text) {
-
-        String time = "";
-        if (game.getState() == GameState.LOBBY) {
-            // Show the planned duration of the next game:
-            time = arenaGameDuration;
-        } else if (game.getState() == GameState.INGAME) {
-            // Show the remaining duration of the running game:
-            time = Integer.toString(game.getTaskManager().getTimer().getSeconds() / 60);
-        } else if (game.getState() == GameState.END) {
-            // Show the remaining duration of the last game:
-            time = Integer.toString(game.getRemainingGameDuration() / 60);
-        }
-        
         
         text = text.replace("%team1%", team1.getFullname());
         text = text.replace("%team2%", team2.getFullname());
@@ -269,7 +252,7 @@ public class ScoreboardManager {
         text = text.replace("%lobby_name%", game.getLobby().getDisplayName());
         text = text.replace("%arena_name%", arenaDisplayName);
 
-        text = text.replace("%time%", time);
+        text = text.replace("%time%", Integer.toString(game.getGameDuration()));
 
         return text;
     }

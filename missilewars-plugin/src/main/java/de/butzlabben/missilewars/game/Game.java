@@ -29,7 +29,7 @@ import de.butzlabben.missilewars.event.GameStopEvent;
 import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
-import de.butzlabben.missilewars.game.enums.VoteState;
+import de.butzlabben.missilewars.game.enums.TeamType;
 import de.butzlabben.missilewars.game.equipment.EquipmentManager;
 import de.butzlabben.missilewars.game.misc.MotdManager;
 import de.butzlabben.missilewars.game.misc.ScoreboardManager;
@@ -42,13 +42,11 @@ import de.butzlabben.missilewars.game.timer.EndTimer;
 import de.butzlabben.missilewars.game.timer.GameTimer;
 import de.butzlabben.missilewars.game.timer.LobbyTimer;
 import de.butzlabben.missilewars.game.timer.TaskManager;
-import de.butzlabben.missilewars.inventory.OrcItem;
 import de.butzlabben.missilewars.listener.game.EndListener;
 import de.butzlabben.missilewars.listener.game.GameBoundListener;
 import de.butzlabben.missilewars.listener.game.GameListener;
 import de.butzlabben.missilewars.listener.game.LobbyListener;
 import de.butzlabben.missilewars.player.MWPlayer;
-import de.butzlabben.missilewars.util.PlayerDataProvider;
 import de.butzlabben.missilewars.util.geometry.GameArea;
 import de.butzlabben.missilewars.util.geometry.Geometry;
 import de.butzlabben.missilewars.util.serialization.Serializer;
@@ -59,16 +57,12 @@ import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.util.Vector;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -77,7 +71,7 @@ import java.util.function.Consumer;
  */
 
 @Getter
-@ToString(of = {"gameWorld", "players", "lobby", "arena", "team1", "team2", "state"})
+@ToString(of = {"gameWorld", "players", "lobby", "arena", "state"})
 public class Game {
 
     private static final Map<String, Integer> cycles = new HashMap<>();
@@ -87,8 +81,7 @@ public class Game {
     private final Lobby lobby;
     private final Map<UUID, BukkitTask> playerTasks = new HashMap<>();
     private GameState state = GameState.LOBBY;
-    private Team team1;
-    private Team team2;
+    private TeamManager teamManager;
     private boolean ready = false;
     private boolean restart = false;
     private GameWorld gameWorld;
@@ -97,11 +90,13 @@ public class Game {
     private long timestart;
     private Arena arena;
     private ScoreboardManager scoreboardManager;
+    private GameJoinManager gameJoinManager;
+    private GameLeaveManager gameLeaveManager;
     private GameBoundListener listener;
     private EquipmentManager equipmentManager;
     private TaskManager taskManager;
     private int remainingGameDuration;
-
+    
     public Game(Lobby lobby) {
         Logger.BOOT.log("Loading lobby \"" + lobby.getName() + "\".");
         this.lobby = lobby;
@@ -128,13 +123,9 @@ public class Game {
             Logger.ERROR.log("None of the specified arenas match a real arena for the lobby \"" + lobby.getName() + "\".");
             return;
         }
-
-        team1 = new Team(lobby.getTeam1Name(), lobby.getTeam1Color(), this);
-        team2 = new Team(lobby.getTeam2Name(), lobby.getTeam2Color(), this);
-
-        team1.createTeamArmor();
-        team2.createTeamArmor();
-
+        
+        teamManager = new TeamManager(this);
+        
         Logger.DEBUG.log("Registering, teleporting, etc. all players");
 
         updateMOTD();
@@ -148,7 +139,7 @@ public class Game {
         taskManager.runTimer(0, 20);
         state = GameState.LOBBY;
 
-        Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> applyForAllPlayers(this::runTeleportEventForPlayer), 2);
+        Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> applyForAllPlayers(player -> gameJoinManager.runTeleportEventForPlayer(player)), 2);
 
         if (Config.isSetup()) {
             Logger.WARN.log("Did not fully initialize lobby \"" + lobby.getName() + "\" as the plugin is in setup mode");
@@ -156,7 +147,9 @@ public class Game {
         }
 
         scoreboardManager = new ScoreboardManager(this);
-
+        gameJoinManager = new GameJoinManager(this);
+        gameLeaveManager = new GameLeaveManager(this);
+        
         // choose the game arena
         if (lobby.getMapChooseProcedure() == MapChooseProcedure.FIRST) {
             setArena(lobby.getArenas().get(0));
@@ -177,7 +170,7 @@ public class Game {
                 prepareGame();
             } else {
                 mapVoting.startVote();
-                scoreboardManager.resetScoreboard();
+                updateGameInfo();
             }
         }
 
@@ -193,11 +186,8 @@ public class Game {
         if (this.arena == null) {
             throw new IllegalStateException("The arena is not yet set");
         }
-
-        // Clear the player inventory
-        applyForAllPlayers(player -> player.getInventory().setItem(4, new ItemStack(Material.AIR)));
-
-        scoreboardManager.resetScoreboard();
+        
+        updateGameInfo();
 
         equipmentManager = new EquipmentManager(this);
         equipmentManager.createGameItems();
@@ -252,7 +242,7 @@ public class Game {
 
         timestart = System.currentTimeMillis();
 
-        applyForAllPlayers(this::startForPlayer);
+        applyForAllPlayers(player -> gameJoinManager.startForPlayer(player, true));
 
         updateMOTD();
 
@@ -318,158 +308,9 @@ public class Game {
             teleportToFallbackSpawn(mwPlayer.getPlayer());
         }
 
-        gameWorld.unload();
+        if (gameWorld != null) gameWorld.unload();
     }
-
-    /**
-     * This method adds the player to the game.
-     *
-     * @param player          the target Player
-     * @param isSpectatorJoin should the player join as spectator or as normal player
-     */
-    public void playerJoinInGame(Player player, boolean isSpectatorJoin) {
-
-        PlayerDataProvider.getInstance().storeInventory(player);
-        MWPlayer mwPlayer = addPlayer(player);
-
-        if (state == GameState.LOBBY) {
-            assert !isSpectatorJoin : "wrong syntax";
-
-            teleportToLobbySpawn(player);
-            player.setGameMode(GameMode.ADVENTURE);
-        }
-
-        if (isSpectatorJoin) {
-            Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> teleportToArenaSpectatorSpawn(player), 2);
-            Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> player.setGameMode(GameMode.SPECTATOR), 35);
-
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.ARENA_SPECTATOR));
-            player.setDisplayName("§7" + player.getName() + "§r");
-
-        } else {
-            player.getInventory().clear();
-            player.setFoodLevel(20);
-            player.setHealth(player.getMaxHealth());
-
-            Team team = getSmallerTeam();
-            team.addMember(mwPlayer);
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_TEAM_ASSIGNED).replace("%team%", team.getFullname()));
-
-            String message = null;
-            if (state == GameState.LOBBY) {
-                message = Messages.getMessage(true, Messages.MessageEnum.LOBBY_PLAYER_JOINED);
-            } else if (state == GameState.INGAME) {
-                message = Messages.getMessage(true, Messages.MessageEnum.GAME_PLAYER_JOINED);
-            }
-
-            if (message != null) {
-                broadcast(message.replace("%max_players%", Integer.toString(lobby.getMaxSize()))
-                        .replace("%players%", Integer.toString(players.values().size()))
-                        .replace("%player%", player.getName())
-                        .replace("%team%", team.getFullname()));
-            }
-
-        }
-
-        player.setScoreboard(scoreboardManager.getBoard());
-
-        if (state == GameState.LOBBY) {
-
-            // team change menu:
-            if (player.hasPermission("mw.change")) {
-                player.getInventory().setItem(0, team1.getGlassPlane());
-                player.getInventory().setItem(8, team2.getGlassPlane());
-            }
-
-            // map choose menu:
-            if (mapVoting.getState() == VoteState.RUNNING) {
-                if (player.hasPermission("mw.vote")) {
-                    player.getInventory().setItem(4, new OrcItem(Material.NETHER_STAR, "§3Vote Map").getItemStack());
-                }
-            }
-
-        } else if ((state == GameState.INGAME) && (!isSpectatorJoin)) {
-            startForPlayer(player);
-        }
-    }
-
-    /**
-     * This method handles the removal of the player from the game.
-     *
-     * @param mwPlayer the target missilewars player
-     */
-    public void playerLeaveFromGame(MWPlayer mwPlayer) {
-        Player player = mwPlayer.getPlayer();
-        Team team = mwPlayer.getTeam();
-        boolean playerWasTeamMember = false;
-
-        if (state == GameState.INGAME) {
-            BukkitTask task = playerTasks.get(mwPlayer.getUuid());
-            if (task != null) task.cancel();
-        }
-
-        PlayerDataProvider.getInstance().loadInventory(player);
-
-        if (team != null) {
-            playerWasTeamMember = true;
-            team.removeMember(mwPlayer);
-            if (state == GameState.INGAME) checkTeamSize(team);
-        }
-
-        removePlayer(mwPlayer);
-
-        if (playerWasTeamMember) {
-
-            String message = null;
-            if (state == GameState.LOBBY) {
-                message = Messages.getMessage(true, Messages.MessageEnum.LOBBY_PLAYER_LEFT);
-            } else if (state == GameState.INGAME) {
-                message = Messages.getMessage(true, Messages.MessageEnum.GAME_PLAYER_LEFT);
-            }
-
-            if (message != null) {
-                broadcast(message.replace("%max_players%", Integer.toString(lobby.getMaxSize()))
-                        .replace("%players%", Integer.toString(players.values().size()))
-                        .replace("%player%", player.getName())
-                        .replace("%team%", team.getFullname()));
-            }
-
-        }
-
-        player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
-
-        if (state == GameState.LOBBY) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.LOBBY_LEFT).replace("%lobby_name%", lobby.getDisplayName()));
-        } else if (state == GameState.INGAME) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_LEFT).replace("%arena_name%", arena.getDisplayName()));
-        }
-
-    }
-
-    /**
-     * This method executes the PlayerTeleportEvent to run the basic game join process
-     * after the game is restarted.
-     *
-     * @param player target player
-     */
-    private void runTeleportEventForPlayer(Player player) {
-        Bukkit.getPluginManager().callEvent(new PlayerTeleportEvent(player,
-                Config.getFallbackSpawn(), lobby.getSpawnPoint()));
-    }
-
-    private void checkTeamSize(Team team) {
-        int teamSize = team.getMembers().size();
-        if (teamSize == 0) {
-            Bukkit.getScheduler().runTask(MissileWars.getInstance(), () -> {
-                team.getEnemyTeam().setGameResult(GameResult.WIN);
-                team.setGameResult(GameResult.LOSE);
-                sendGameResult();
-                stopGame();
-            });
-            broadcast(Messages.getMessage(true, Messages.MessageEnum.TEAM_ALL_TEAMMATES_OFFLINE).replace("%team%", team.getFullname()));
-        }
-    }
-
+    
     public void resetGame() {
         // Teleporting players; the event listener will handle the teleport event
         applyForAllPlayers(this::teleportToAfterGameSpawn);
@@ -548,14 +389,7 @@ public class Game {
     public boolean isIn(Location location) {
         return isInLobbyArea(location) || isInGameWorld(location);
     }
-
-    private MWPlayer addPlayer(Player player) {
-        if (players.containsKey(player.getUniqueId())) return players.get(player.getUniqueId());
-        MWPlayer mwPlayer = new MWPlayer(player, this);
-        players.put(player.getUniqueId(), mwPlayer);
-        return mwPlayer;
-    }
-
+    
     public MWPlayer getPlayer(Player player) {
         return players.get(player.getUniqueId());
     }
@@ -564,7 +398,7 @@ public class Game {
      * This method finally removes the player from the game player array. Besides former
      * team members, it also affects spectators.
      */
-    private void removePlayer(MWPlayer mwPlayer) {
+    public void removePlayer(MWPlayer mwPlayer) {
         players.remove(mwPlayer.getUuid());
     }
 
@@ -573,24 +407,6 @@ public class Game {
             Player player = mwPlayer.getPlayer();
             if (player != null && player.isOnline()) player.sendMessage(message);
         }
-    }
-
-    public void startForPlayer(Player player) {
-        MWPlayer mwPlayer = getPlayer(player);
-        if (mwPlayer == null) {
-            Logger.ERROR.log("Error starting game at player " + player.getName());
-            return;
-        }
-
-        player.teleport(mwPlayer.getTeam().getSpawn());
-
-        equipmentManager.sendGameItems(player, false);
-        setPlayerAttributes(player);
-
-        mwPlayer.setRandomGameEquipment(new PlayerEquipmentRandomizer(mwPlayer, this));
-
-        playerTasks.put(player.getUniqueId(),
-                Bukkit.getScheduler().runTaskTimer(MissileWars.getInstance(), mwPlayer, 40, 20));
     }
 
     /**
@@ -701,8 +517,9 @@ public class Game {
 
         try {
             Serializer.setWorldAtAllLocations(this.arena, gameWorld.getWorld());
-            team1.setSpawn(this.arena.getTeam1Spawn());
-            team2.setSpawn(this.arena.getTeam2Spawn());
+            teamManager.getTeam1().setSpawn(this.arena.getTeam1Spawn());
+            teamManager.getTeam2().setSpawn(this.arena.getTeam2Spawn());
+            teamManager.getTeamSpec().setSpawn(this.arena.getSpectatorSpawn());
         } catch (Exception exception) {
             Logger.ERROR.log("Could not inject world object at arena " + this.arena.getName());
             exception.printStackTrace();
@@ -729,16 +546,16 @@ public class Game {
             x1 = gameArea.getMinX();
             x2 = gameArea.getMaxX();
 
-            z1 = team1.getSpawn().getBlockZ();
-            z2 = team2.getSpawn().getBlockZ();
+            z1 = teamManager.getTeam1().getSpawn().getBlockZ();
+            z2 = teamManager.getTeam2().getSpawn().getBlockZ();
 
         } else {
 
             z1 = gameArea.getMinZ();
             z2 = gameArea.getMaxZ();
 
-            x1 = team1.getSpawn().getBlockX();
-            x2 = team2.getSpawn().getBlockX();
+            x1 = teamManager.getTeam1().getSpawn().getBlockX();
+            x2 = teamManager.getTeam2().getSpawn().getBlockX();
 
         }
 
@@ -764,28 +581,16 @@ public class Game {
 
         for (Player player : gameWorld.getWorld().getPlayers()) {
             MWPlayer mwPlayer = getPlayer(player);
-
-            // team member of team 1
-            if (team1.isMember(mwPlayer)) {
-                team1.sendMoney(mwPlayer);
-                team1.sendGameResultTitle(mwPlayer);
-                team1.sendGameResultSound(mwPlayer);
-                continue;
-            }
-
-            // team member of team 2
-            if (team2.isMember(mwPlayer)) {
-                team2.sendMoney(mwPlayer);
-                team2.sendGameResultTitle(mwPlayer);
-                team2.sendGameResultSound(mwPlayer);
-                continue;
-            }
-
-            // spectator
-            if (player.isOnline()) {
+            Team team = mwPlayer.getTeam();
+            
+            if (team.getTeamType() == TeamType.PLAYER) {
+                team.sendMoney(mwPlayer);
+                team.sendGameResultTitle(mwPlayer);
+                team.sendGameResultSound(mwPlayer);
+            } else {
                 sendNeutralGameResultTitle(player);
             }
-
+            
         }
     }
 
@@ -797,12 +602,14 @@ public class Game {
         String title;
         String subTitle;
 
-        if (team1.getGameResult() == GameResult.WIN) {
-            title = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_TITLE_WON).replace("%team%", team1.getName());
+        if (teamManager.getTeam1().getGameResult() == GameResult.WIN) {
+            title = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_TITLE_WON)
+                    .replace("%team%", teamManager.getTeam1().getName());
             subTitle = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_SUBTITLE_WON);
 
-        } else if (team2.getGameResult() == GameResult.WIN) {
-            title = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_TITLE_WON).replace("%team%", team2.getName());
+        } else if (teamManager.getTeam2().getGameResult() == GameResult.WIN) {
+            title = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_TITLE_WON)
+                    .replace("%team%", teamManager.getTeam2().getName());
             subTitle = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_SUBTITLE_WON);
 
         } else {
@@ -820,62 +627,79 @@ public class Game {
     public void updateGameInfo() {
         MissileWars.getInstance().getSignRepository().getSigns(this).forEach(MWSign::update);
         scoreboardManager.resetScoreboard();
-        Logger.DEBUG.log("Updated signs and scoreboard.");
+        if (state == GameState.LOBBY) players.forEach((uuid, mwPlayer) -> mwPlayer.getGameJoinMenu().getMenu());
+        
+        Logger.DEBUG.log("Updated signs, scoreboard and menus.");
     }
-
+    
     /**
-     * This method returns the next matching team for the next player to
-     * join. It is always the smaller team.
-     *
-     * @return (Team) the smaller team
-     */
-    public Team getSmallerTeam() {
-        if (team1.getMembers().size() > team2.getMembers().size()) {
-            return team2;
-        } else {
-            return team1;
-        }
-    }
-
-    /**
-     * This method checks whether a team switch would be fair based on 
-     * the new team size. If no empty team results or if the team size 
-     * difference does not exceed a certain value, the switch is 
-     * considered acceptable.
+     * This method checks whether there are too few players in 
+     * the lobby based of the configuration. (Spectators are not 
+     * counted here!)
      * 
-     * @param targetTeam the new team
-     * @return (boolean) 'true' if it's a fair team switch
+     * @return (boolean) 'true' if to few players are in the lobby 
      */
-    public boolean isValidTeamSwitch(Team targetTeam) {
-        
-        // original team sizes
-        int targetTeamSize = targetTeam.getMembers().size();
-        int currentTeamSize = targetTeam.getEnemyTeam().getMembers().size();
-        
-        // Preventing an empty team when previously both teams had at least one player:
-        if ((currentTeamSize == 1) && (targetTeamSize >= 1)) return false;
-
-        int diff = getSmallerTeam().getEnemyTeam().getMembers().size() - getSmallerTeam().getMembers().size();
-
-        // max team difference: 30% (rounded) of target team size
-        float maxDiff = Math.max(1, Math.round(targetTeamSize * 0.3));
-
-        return diff <= maxDiff;
+    public boolean areToFewPlayers() {
+        int minSize = lobby.getMinPlayers();
+        int currentSize = teamManager.getTeam1().getMembers().size() + teamManager.getTeam2().getMembers().size();
+        return currentSize < minSize;
     }
 
-    public boolean isPlayersMax() {
-        int maxSize = lobby.getMaxSize();
-        int currentSize = team1.getMembers().size() + team2.getMembers().size();
-        return currentSize >= maxSize;
-    }
-
-    public boolean isSpectatorsMax() {
-        int maxSize = arena.getMaxSpectators();
-
+    /**
+     * This method checks whether there are too many players in 
+     * the lobby based of the configuration. (Spectators are not 
+     * counted here!)
+     * 
+     * @return (boolean) 'true' if to many players are in the lobby 
+     */
+    public boolean areTooManyPlayers() {
+        int maxSize = lobby.getMaxPlayers();
+        
         if (maxSize == -1) return false;
-
-        int currentSize = players.size() - (team1.getMembers().size() + team2.getMembers().size());
-        return currentSize >= maxSize;
+        
+        return getPlayerAmount() > maxSize;
+    }
+    
+    /**
+     * This method checks whether there are too many spectators in 
+     * the lobby based of the configuration.
+     * 
+     * @return (boolean) 'true' if to many spectators are in the lobby 
+     */
+    public boolean areTooManySpectators() {
+        int maxSize = lobby.getMaxSpectators();
+        
+        if (maxSize == -1) return false;
+        
+        int currentSize = teamManager.getTeamSpec().getMembers().size();
+        return currentSize > maxSize;
+    }
+    
+    public int getGameDuration() {
+        int time = 0;
+        if (arena == null) return time;
+        
+        if (state == GameState.LOBBY) {
+            // Show the planned duration of the next game:
+            time = arena.getGameDuration();
+        } else if (state == GameState.INGAME) {
+            // Show the remaining duration of the running game:
+            time = getTaskManager().getTimer().getSeconds() / 60;
+        } else if (state == GameState.END) {
+            // Show the remaining duration of the last game:
+            time = getRemainingGameDuration() / 60;
+        }
+        
+        return time;
+    }
+    
+    public int getTotalGameUserAmount() {
+        return players.size();
+    }
+    
+    public int getPlayerAmount() {
+        if ((teamManager.getTeam1() == null) || (teamManager.getTeam2() == null)) return 0;
+        return teamManager.getTeam1().getMembers().size() + teamManager.getTeam2().getMembers().size();
     }
 
     public static void knockbackEffect(Player player, Location from, Location to) {

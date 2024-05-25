@@ -197,8 +197,8 @@ public class PlayerListener implements Listener {
         Logger.DEBUG.log("Location: " + player.getLocation());
         Logger.DEBUG.log("Current game amount: " + GameManager.getInstance().getGameAmount());
         Logger.DEBUG.log("Lobby: " + game.getLobby().getDisplayName());
-        Logger.DEBUG.log("Team 1: " + game.getTeam1());
-        Logger.DEBUG.log("Team 2: " + game.getTeam2());
+        Logger.DEBUG.log("Team 1: " + game.getTeamManager().getTeam1());
+        Logger.DEBUG.log("Team 2: " + game.getTeamManager().getTeam2());
 
         if (game.getArena() != null) {
             Logger.DEBUG.log("Arena: " + game.getArena().getDisplayName());

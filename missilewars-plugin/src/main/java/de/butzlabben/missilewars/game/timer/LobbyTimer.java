@@ -49,7 +49,7 @@ public class LobbyTimer extends Timer implements Runnable {
             mwPlayer.getPlayer().setLevel(seconds);
         }
         
-        if (hasEmptyPlayerTeam()) {
+        if (getGame().getTeamManager().hasEmptyPlayerTeam()) {
             seconds = startTime;
             return;
         }
@@ -83,7 +83,7 @@ public class LobbyTimer extends Timer implements Runnable {
                 playPling();
                 break;
             case 0:
-                if (hasEmptyPlayerTeam()) {
+                if (!getGame().getTeamManager().hasBalancedTeamSizes()) {
                     broadcast(Messages.getMessage(true, Messages.MessageEnum.LOBBY_TEAMS_UNEQUAL));
                     seconds = startTime;
                     return;
@@ -108,15 +108,9 @@ public class LobbyTimer extends Timer implements Runnable {
      * are informed about the start.
      */
     public void executeGameStart() {
-        broadcast(Messages.getMessage(true, Messages.MessageEnum.LOBBY_GAME_STARTS));
+        broadcast(Messages.getMessage(true, Messages.MessageEnum.GAME_GAME_STARTS));
         playPling();
         getGame().startGame();
     }
     
-    private boolean hasEmptyPlayerTeam() {
-        int size1 = getGame().getTeam1().getMembers().size();
-        int size2 = getGame().getTeam2().getMembers().size();
-        
-        return ((size1 == 0) || (size2 == 0));
-    }
 }

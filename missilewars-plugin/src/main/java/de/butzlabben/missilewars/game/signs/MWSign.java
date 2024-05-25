@@ -101,8 +101,8 @@ public class MWSign {
             }
         }
 
-        int maxPlayers = (game == null ? 0 : game.getLobby().getMaxSize());
-        int players = (game == null ? 0 : game.getPlayers().size());
+        int maxPlayers = (game == null ? 0 : game.getLobby().getMaxPlayers());
+        int players = (game == null ? 0 : game.getPlayerAmount());
 
         return line.replace("%state%", state)
                 .replace("%arena%", name)
