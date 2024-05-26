@@ -31,8 +31,8 @@
     <artifactId>1_13</artifactId>
 
     <dependencies>
+        <!-- WorldEdit (Bukkit) API -->
         <dependency>
-            <!-- WorldEdit (Bukkit) API -->
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-bukkit</artifactId>
             <version>7.0.0-SNAPSHOT</version>
@@ -46,8 +46,8 @@
             </exclusions>
         </dependency>
 
+        <!-- WorldEdit (Core) API -->
         <dependency>
-            <!-- WorldEdit (Core) API -->
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-core</artifactId>
             <version>7.0.0-SNAPSHOT</version>
