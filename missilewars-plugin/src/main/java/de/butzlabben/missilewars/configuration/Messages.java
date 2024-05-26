@@ -110,8 +110,8 @@ public class Messages {
         COMMAND_INVALID_SHIELD("command.invalid_shield", "&cThe specified shield %input% was not found."),
         COMMAND_INVALID_GAME("command.invalid_game", "&cThe specified game %input% was not found."),
         COMMAND_INVALID_MAP("command.invalid_map", "&cThe specified map %input% was not found."),
-        COMMAND_INVALID_TEAM("command.invalid_team", "&cThe team selection in invalid. Use \"1\" or \"2\" to join on of the player-teams or use \"spec\" to enter the game as spectator."),
-        COMMAND_ANTISPAM_TEAM_CHANGE("command.antispam.team_change", "&cYou have to wait %seconds% seconds before you can change teams again."),
+        COMMAND_INVALID_TEAM("command.invalid_team", "&cThe team selection is invalid. Use \"1\" or \"2\" to join on of the player-teams or use \"spec\" to enter the game as spectator."),
+        COMMAND_ANTISPAM_TEAM_CHANGE("command.antispam.team_change", "&cYou have to wait %seconds% seconds before being able to change the team again."),
         
         GAME_PLAYER_JOINED("game.player_joined", "&e%player% &7joined the game (%team%&7)."),
         GAME_PLAYER_LEFT("game.player_left", "&e%player% &7left the game (%team%&7)."),
