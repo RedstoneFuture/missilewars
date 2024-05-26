@@ -54,7 +54,7 @@ public class MenuItem {
         if (materialName.startsWith("basehead-")) {
             tempItem = getCustomHead(materialName.split("-")[1]);
             
-        } else if (materialName.equalsIgnoreCase("{player-team-name}")) {
+        } else if (materialName.equalsIgnoreCase("{player-team-item}")) {
             tempItem = mwPlayer.getTeam().getMenuItem();
             
         } else {

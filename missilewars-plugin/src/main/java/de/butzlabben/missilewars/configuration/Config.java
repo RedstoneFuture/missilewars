@@ -140,7 +140,7 @@ public class Config {
             // team-selection menu link:
             
             cfg.addDefault(gameJoinMenu + ".items.team_selection.display_name", "&eTeam Selection");
-            cfg.addDefault(gameJoinMenu + ".items.team_selection.material", "{player-team-name}");
+            cfg.addDefault(gameJoinMenu + ".items.team_selection.material", "{player-team-item}");
             cfg.addDefault(gameJoinMenu + ".items.team_selection.slot", 2);
             
             cfg.addDefault(gameJoinMenu + ".items.team_selection.priority", 0);
