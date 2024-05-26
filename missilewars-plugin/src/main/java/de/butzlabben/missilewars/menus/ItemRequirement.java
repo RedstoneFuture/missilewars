@@ -65,24 +65,24 @@ public class ItemRequirement {
         switch (input) {
             case "!has permission":
                 negateRequirement = true;
-                return Type.HAS_PERMISSION;
             case "has permission":
                 return Type.HAS_PERMISSION;
+                
             case "!string equals":
                 negateRequirement = true;
-                return Type.STRING_EQUALS;
             case "string equals":
                 return Type.STRING_EQUALS;
+                
             case "!string equals ignorecase":
                 negateRequirement = true;
-                return Type.STRING_EQUALS_IGNORE_CASE;
             case "string equals ignorecase":
                 return Type.STRING_EQUALS_IGNORE_CASE;
+                
             case "!string contains":
                 negateRequirement = true;
-                return Type.STRING_CONTAINS;
             case "string contains":
                 return Type.STRING_CONTAINS;
+                
             default: return Type.NULL;
         }
     }
