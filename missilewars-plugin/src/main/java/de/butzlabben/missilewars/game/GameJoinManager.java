@@ -189,6 +189,7 @@ public class GameJoinManager {
             player.setGameMode(GameMode.SPECTATOR);
             
             if ((isNewPlayer) && (game.getState() == GameState.INGAME)) {
+                if (!player.hasPermission("mw.teammenu")) return;
                 Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> {
                     openTeamSelectionMenu(mwPlayer);
                 }, 20);
