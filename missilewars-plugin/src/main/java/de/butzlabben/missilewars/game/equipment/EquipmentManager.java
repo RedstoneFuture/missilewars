@@ -57,7 +57,7 @@ public class EquipmentManager {
      */
     public void createGameItems() {
 
-        // Will it be used ?
+        // Will it be used?
         if (game.getArena().getSpawn().isSendBow() || game.getArena().getRespawn().isSendBow()) {
 
             ItemStack bow = new ItemStack(Material.BOW);
@@ -71,7 +71,7 @@ public class EquipmentManager {
             this.customBow = bow;
         }
 
-        // Will it be used ?
+        // Will it be used?
         if (game.getArena().getSpawn().isSendPickaxe() || game.getArena().getRespawn().isSendPickaxe()) {
 
             ItemStack pickaxe = new ItemStack(Material.IRON_PICKAXE);
