@@ -67,10 +67,10 @@ public class MenuItem {
         // initial ItemMeta values:
         
         ItemMeta itemMeta = tempItem.getItemMeta();
-        MenuItem.hideMetaValues(tempItem);
-        MenuItem.setDisplayName(tempItem, finalDisplayName);
         itemMeta.setLore(finalLoreList);
         tempItem.setItemMeta(itemMeta);
+        MenuItem.hideMetaValues(tempItem);
+        MenuItem.setDisplayName(tempItem, finalDisplayName);
         
         itemStack = tempItem;
     }
