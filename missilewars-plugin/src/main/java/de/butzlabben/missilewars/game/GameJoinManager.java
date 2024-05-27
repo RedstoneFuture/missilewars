@@ -34,8 +34,6 @@ import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
-import java.util.HashMap;
-
 @RequiredArgsConstructor
 public class GameJoinManager {
     
@@ -145,7 +143,7 @@ public class GameJoinManager {
         player.setHealth(player.getMaxHealth());
     }
     
-    public void startForPlayerAfterCountdown(Player player, boolean isNewPlayer) {
+    public void startForPlayerAfterCountdown(Player player, boolean isGameJoin) {
         MWPlayer mwPlayer = game.getPlayer(player);
         if (mwPlayer == null) {
             Logger.ERROR.log("Error starting game at player " + player.getName());
@@ -160,7 +158,7 @@ public class GameJoinManager {
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> runCountdownIntervall(player, "§e3"), 40);
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> runCountdownIntervall(player, "§a2"), 60);
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> runCountdownIntervall(player, "§21"), 80);
-        Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> startForPlayer(player, isNewPlayer), 100);
+        Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> startForPlayer(player, isGameJoin), 100);
     }
     
     private void runCountdownIntervall(Player player, String titel) {
@@ -168,7 +166,7 @@ public class GameJoinManager {
         player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 100, 3);
     }
     
-    public void startForPlayer(Player player, boolean isNewPlayer) {
+    public void startForPlayer(Player player, boolean isGameJoin) {
         MWPlayer mwPlayer = game.getPlayer(player);
         if (mwPlayer == null) {
             Logger.ERROR.log("Error starting game at player " + player.getName());
@@ -188,7 +186,7 @@ public class GameJoinManager {
             // spectator join:
             player.setGameMode(GameMode.SPECTATOR);
             
-            if ((isNewPlayer) && (game.getState() == GameState.INGAME)) {
+            if ((isGameJoin) && (game.getState() == GameState.INGAME)) {
                 if (!player.hasPermission("mw.teammenu")) return;
                 Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> {
                     openTeamSelectionMenu(mwPlayer);
