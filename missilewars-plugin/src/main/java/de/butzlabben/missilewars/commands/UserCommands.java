@@ -169,6 +169,7 @@ public class UserCommands extends BaseCommand {
         
         switch (args[0]) {
             case "1":
+            case "team1":
                 if (!player.hasPermission("mw.change.team.player")) {
                     Messages.getMessage(true, Messages.MessageEnum.NO_PERMISSION);
                     return;
@@ -176,6 +177,7 @@ public class UserCommands extends BaseCommand {
                 to = game.getTeamManager().getTeam1();
                 break;
             case "2":
+            case "team2":
                 if (!player.hasPermission("mw.change.team.player")) {
                     Messages.getMessage(true, Messages.MessageEnum.NO_PERMISSION);
                     return;
