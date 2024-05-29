@@ -81,11 +81,11 @@ public class MapVoting {
                 return;
             }
 
-            // remove old vote
+            // remove the old vote
             arenaVotes.remove(mwPlayer);
         }
 
-        // add new vote
+        // add the new vote
         arenaVotes.put(mwPlayer, arena);
 
         player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_SUCCESS).replace("%map%", arena.getDisplayName()));
