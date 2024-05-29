@@ -21,10 +21,14 @@ package de.butzlabben.missilewars.configuration;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.util.SetupUtil;
 import lombok.Getter;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -73,15 +77,23 @@ public class Messages {
         return getConfigMessage(MessageEnum.PREFIX);
     }
 
+    /**
+     * This method returns the desired message from the 'messages.yml'. 
+     * The legacy color code with '&' is used.
+     * 
+     * @param msg the target message registered in the 'MessageEnum'
+     * @return (String) the converted message
+     */
     private static String getConfigMessage(MessageEnum msg) {
-        return ChatColor.translateAlternateColorCodes('&', cfg.getString(msg.getPath(),
+        return getConvertedMsg(cfg.getString(msg.getPath(),
                 "&cError while reading from messages.yml: '" + msg.getPath() + "'"));
     }
 
     @Getter
     public enum MessageEnum {
         PREFIX("prefix", "&6•&e● MissileWars &8▎ &7"),
-
+        NO_PERMISSION("no_permission", "You down't have the permission for this."),
+        
         DEBUG_RELOAD_CONFIG("debug.reload_config", "&7Reloaded configs."),
         DEBUG_RESTART_ALL_GAMES_WARN("debug.restart_all_games_warn", "&cWarning: Restarting all games. This may take a while."),
         DEBUG_RESTART_ALL_GAMES("debug.restart_all_games", "&7Restarted all games."),
@@ -98,7 +110,8 @@ public class Messages {
         COMMAND_INVALID_SHIELD("command.invalid_shield", "&cThe specified shield %input% was not found."),
         COMMAND_INVALID_GAME("command.invalid_game", "&cThe specified game %input% was not found."),
         COMMAND_INVALID_MAP("command.invalid_map", "&cThe specified map %input% was not found."),
-        COMMAND_INVALID_TEAM_NUMBER("command.invalid_team_number", "&cThe team number is invalid. Use \"1\" or \"2\" to specify the target team."),
+        COMMAND_INVALID_TEAM("command.invalid_team", "&cThe team selection is invalid. Use \"1\" or \"2\" to join on of the player-teams or use \"spec\" to enter the game as spectator."),
+        COMMAND_ANTISPAM_TEAM_CHANGE("command.antispam.team_change", "&cYou have to wait %seconds% seconds before being able to change the team again."),
         
         GAME_PLAYER_JOINED("game.player_joined", "&e%player% &7joined the game (%team%&7)."),
         GAME_PLAYER_LEFT("game.player_left", "&e%player% &7left the game (%team%&7)."),
@@ -107,7 +120,10 @@ public class Messages {
         GAME_NOT_ENTER_ARENA("game.not_enter_arena", "&cYou may not enter this arena right now."),
         GAME_ALREADY_STARTET("game.already_startet", "&cGame already started."),
         GAME_CAN_NOT_STARTET("game.can_not_startet", "&cGame cannot be started."),
-
+        GAME_GAME_STARTS("game.game_starts", "&aThe game starts."),
+        GAME_MAX_REACHED("game.max_reached", "&cUnfortunately, the lobby is full. You can no longer enter it. Please look for another lobby or wait for the next round."),
+        GAME_REJOINED("game.rejoined", "&eWelcome back! &7A rejoin to the old team is being considered ..."),
+        
         LOBBY_TIMER_GAME_STARTS_IN("lobby_timer.game_starts_in", "&7Game starts in &e%seconds% &7seconds."),
 
         GAME_TIMER_GAME_ENDS_IN_MINUTES("game_timer.game_ends_in_minutes", "&7Game ends in &e%minutes% &7minutes."),
@@ -120,20 +136,22 @@ public class Messages {
         LOBBY_LEFT("lobby.left", "&7You left the MissileWars lobby."),
         LOBBY_NOT_ENOUGH_PLAYERS("lobby.not_enough_players", "&cThere are not enough players online."),
         LOBBY_TEAMS_UNEQUAL("lobby.teams_unequal", "&cThe teams are unequal distributed."),
-        LOBBY_GAME_STARTS("lobby.game_starts", "&aThe game starts."),
-
+        
         TEAM_CHANGE_TEAM_NOT_NOW("team.change_team_not_now", "&cThe game is not in the right state to change your team right now."),
         TEAM_CHANGE_TEAM_NO_LONGER_NOW("team.change_team_no_longer_now", "&cNow you cannot change your team anymore."),
         TEAM_ALREADY_IN_TEAM("team.already_in_team", "&cYou are already in this team."),
         TEAM_UNFAIR_TEAM_SIZE("team.unfair_team_size", "&cChanging the team would make the number of team members more uneven."),
-        TEAM_TEAM_CHANGED("team.team_changed", "&7You are now in %team%&7."),
-        TEAM_TEAM_ASSIGNED("team.team_assigned", "&7You have been assigned to %team%&7."),
+        TEAM_PLAYER_TEAM_CHANGED("team.player.team_changed", "&7You are now in %team%&7."),
+        TEAM_SPECTATOR_TEAM_CHANGED("team.spectator.team_changed", "&7You are now a %team%&7."),
+        TEAM_PLAYER_TEAM_ASSIGNED("team.player.team_assigned", "&7You have been assigned to %team%&7."),
+        TEAM_SPECTATOR_TEAM_ASSIGNED("team.spectator.team_assigned", "&7You have been assigned to spectator."),
+        TEAM_PLAYER_MAX_REACHED("team.player.max_reached", "&cThe maximum number of players has been reached."),
+        TEAM_SPECTATOR_MAX_REACHED("team.spectator.max_reached", "&cThe maximum number of spectators has been reached."),
         TEAM_ALL_TEAMMATES_OFFLINE("team.all_teammates_offline", "&7Everyone from %team% &7is offline."),
         TEAM_TEAM_BUFFED("team.team_buffed", "%team% &7was buffed as one player left the team."),
         TEAM_TEAM_NERVED("team.team_nerved", "%team% &7was nerved as one player joined the team."),
         TEAM_HURT_TEAMMATES("team.hurt_teammates", "&cYou must not hurt your teammates."),
 
-        ARENA_SPECTATOR("arena.spectator", "&7You are now a spectator."),
         ARENA_ARENA_LEAVE("arena.arena_leave", "&cYou are not allowed to leave the arena."),
         ARENA_MISSILE_PLACE_DENY("arena.missile_place_deny", "&cYou are not allowed to place a missile here."),
         ARENA_NOT_HIGHER("arena.not_higher", "&cYou can not go higher."),
@@ -196,5 +214,36 @@ public class Messages {
         }
 
     }
-
+    
+    /**
+     * This method returns the desired message. Legacy 
+     * color-codes with '&' will be converted to the 
+     * final text message.
+     * 
+     * @param message the target message
+     * @return (String) the converted message
+     */
+    public static String getConvertedMsg(String message) {
+        return ChatColor.translateAlternateColorCodes('&', message);
+    }
+    
+    /**
+     * This method returns the desired message list. 
+     * Legacy color-codes with '&' will be converted 
+     * to the final text message.
+     * 
+     * @param messageList the target message list
+     * @return (String) the converted message list
+     */
+    public static List<String> getConvertedMsgList(List<String> messageList) {
+        List<String> convertedMsgList = new ArrayList<>();
+        for (String message : messageList) {
+            convertedMsgList.add(getConvertedMsg(message));
+        }
+        return convertedMsgList;
+    }
+    
+    public static String getPapiMessage(String message, Player player) {
+        return ChatColor.translateAlternateColorCodes('&', PlaceholderAPI.setPlaceholders(player, message));
+    }
 }

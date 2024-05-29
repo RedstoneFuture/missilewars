@@ -18,10 +18,17 @@
 
 package de.butzlabben.missilewars.listener.game;
 
+import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.event.PlayerArenaJoinEvent;
 import de.butzlabben.missilewars.event.PlayerArenaLeaveEvent;
 import de.butzlabben.missilewars.game.Game;
+import de.butzlabben.missilewars.game.GameLeaveManager;
+import de.butzlabben.missilewars.game.Team;
+import de.butzlabben.missilewars.game.enums.JoinIngameBehavior;
+import de.butzlabben.missilewars.game.enums.RejoinIngameBehavior;
+import de.butzlabben.missilewars.game.enums.TeamType;
+import de.butzlabben.missilewars.menus.inventory.TeamSelectionMenu;
 import de.butzlabben.missilewars.player.MWPlayer;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -30,6 +37,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerRespawnEvent;
 
 /**
@@ -64,6 +72,9 @@ public class EndListener extends GameBoundListener {
         Player player = (Player) event.getPlayer();
         if (!isInGameWorld(player.getLocation())) return;
 
+        // handling of MW inventories:
+        if (event.getView().getTitle().equals(TeamSelectionMenu.getTitle())) return;
+        
         if (player.getGameMode() != GameMode.CREATIVE) event.setCancelled(true);
     }
 
@@ -74,21 +85,61 @@ public class EndListener extends GameBoundListener {
         Player player = (Player) event.getWhoClicked();
         if (!isInGameWorld(player.getLocation())) return;
 
+        // handling of MW inventories:
+        if (event.getView().getTitle().equals(TeamSelectionMenu.getTitle())) {
+            if (event.getSlotType() == InventoryType.SlotType.CONTAINER) return;
+        }
+        
         if (player.getGameMode() != GameMode.CREATIVE) event.setCancelled(true);
+        Logger.DEBUG.log("Cancelled 'InventoryClickEvent' event of " + player.getName());
     }
 
     @EventHandler
     public void onPlayerArenaJoin(PlayerArenaJoinEvent event) {
         if (!getGame().isIn(event.getPlayer().getLocation())) return;
+        
+        Player player = event.getPlayer();
 
-        if (getGame().isSpectatorsMax()) {
-            event.setCancelled(true);
+        JoinIngameBehavior joinBehavior = getGame().getLobby().getJoinIngameBehavior();
+        RejoinIngameBehavior rejoinBehavior = getGame().getLobby().getRejoinIngameBehavior();
+        boolean isKnownPlayer = getGame().getGameLeaveManager().isKnownPlayer(player.getUniqueId());
+        Team lastTeam = getGame().getGameLeaveManager().getLastTeamOfKnownPlayer(player.getUniqueId());
+        
+        // A: Forbidden the game join:
+        if ((!isKnownPlayer && joinBehavior == JoinIngameBehavior.FORBIDDEN) || (isKnownPlayer && rejoinBehavior == RejoinIngameBehavior.FORBIDDEN)) {
             event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_ENTER_ARENA));
+            event.setCancelled(true);
             return;
         }
-
-        Player player = event.getPlayer();
-        getGame().playerJoinInGame(player, true);
+        
+        // B: game join in a player-team --> Forcing the join as a spectator because of the ENDGAME phase:
+        if ((!isKnownPlayer && joinBehavior == JoinIngameBehavior.PLAYER) || (isKnownPlayer && rejoinBehavior == RejoinIngameBehavior.PLAYER) 
+                || (isKnownPlayer && rejoinBehavior == RejoinIngameBehavior.LAST_TEAM && lastTeam.getTeamType() == TeamType.PLAYER)) {
+            
+            if (!getGame().areTooManySpectators()) {
+                getGame().getGameJoinManager().runPlayerJoin(player, TeamType.SPECTATOR);
+                
+            } else {
+                event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_SPECTATOR_MAX_REACHED));
+                event.setCancelled(true);
+                
+            }
+            return;
+        }
+        
+        // C: game join in a spectator-team:
+        if ((!isKnownPlayer && joinBehavior == JoinIngameBehavior.SPECTATOR) || (isKnownPlayer && rejoinBehavior == RejoinIngameBehavior.SPECTATOR) 
+                || (isKnownPlayer && rejoinBehavior == RejoinIngameBehavior.LAST_TEAM && lastTeam.getTeamType() == TeamType.SPECTATOR)) {
+            
+            if (!getGame().areTooManySpectators()) {
+                getGame().getGameJoinManager().runPlayerJoin(player, TeamType.SPECTATOR);
+                
+            } else {
+                event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_SPECTATOR_MAX_REACHED));
+                event.setCancelled(true);
+                
+            }
+        }
     }
 
     @EventHandler
@@ -98,6 +149,6 @@ public class EndListener extends GameBoundListener {
         Player player = event.getPlayer();
         MWPlayer mwPlayer = event.getGame().getPlayer(player);
 
-        if (mwPlayer != null) getGame().playerLeaveFromGame(mwPlayer);
+        if (mwPlayer != null) getGame().getGameLeaveManager().playerLeaveFromGame(mwPlayer);
     }
 }

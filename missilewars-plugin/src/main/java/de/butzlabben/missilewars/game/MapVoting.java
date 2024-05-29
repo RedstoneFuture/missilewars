@@ -51,11 +51,6 @@ public class MapVoting {
      */
     public void addVote(Player player, String arenaName) {
         
-        if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_CANT_VOTE));
-            return;
-        }
-        
         if (state == VoteState.NULL) {
             player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_CHANGE_TEAM_NOT_NOW));
             return;
@@ -86,11 +81,11 @@ public class MapVoting {
                 return;
             }
 
-            // remove old vote
+            // remove the old vote
             arenaVotes.remove(mwPlayer);
         }
 
-        // add new vote
+        // add the new vote
         arenaVotes.put(mwPlayer, arena);
 
         player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_SUCCESS).replace("%map%", arena.getDisplayName()));
@@ -114,7 +109,17 @@ public class MapVoting {
 
         return arena;
     }
-
+    
+    public double getPercentOf(Arena arena) {
+        long votes = arenaVotes.values().stream().filter(a -> a.equals(arena)).count();
+        return ((double) votes / arenaVotes.size()) * 100;
+    }
+    
+    public String getPercentOfMsg(Arena arena) {
+        double result = Math.round(getPercentOf(arena));
+        return Double.toString(result);
+    }
+    
     /**
      * This method unlocks the map voting.
      */
@@ -165,6 +170,10 @@ public class MapVoting {
                 .replace("%map%", game.getArena().getDisplayName()));
 
         game.prepareGame();
+    }
+    
+    public boolean isVotedMapOfPlayer(Arena arena, MWPlayer mwPlayer) {
+        return (arenaVotes.get(mwPlayer) == arena);
     }
     
 }

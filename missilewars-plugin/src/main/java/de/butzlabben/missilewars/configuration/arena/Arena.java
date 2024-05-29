@@ -45,7 +45,6 @@ public class Arena implements Cloneable {
     @SerializedName("keep_inventory") private boolean keepInventory = false;
     @SerializedName("max_height") private int maxHeight = 170;
     @SerializedName("death_height") private int deathHeight = 65;
-    @SerializedName("max_spectators") private int maxSpectators = -1;
     @SerializedName("game_duration") private int gameDuration = 30;
     @SerializedName("fireball") private FireballConfiguration fireballConfiguration = new FireballConfiguration();
     @SerializedName("arrow") private ArrowConfiguration arrowConfiguration = new ArrowConfiguration();
@@ -56,6 +55,7 @@ public class Arena implements Cloneable {
     @SerializedName("missile") private MissileConfiguration missileConfiguration = new MissileConfiguration();
     @SerializedName("shield") private ShieldConfiguration shieldConfiguration = new ShieldConfiguration();
     @Setter @SerializedName("area") private AreaConfiguration areaConfig = new AreaConfiguration(-30, 0, -72, 30, 256, 72);
+    @SerializedName("teamchange_ongoing_game") private boolean teamchangeOngoingGame = false;
 
     @SerializedName("spectator_spawn")
     @Setter
@@ -76,7 +76,7 @@ public class Arena implements Cloneable {
     public Arena() {
 
     }
-
+    
     @Override
     public Arena clone() {
         try {

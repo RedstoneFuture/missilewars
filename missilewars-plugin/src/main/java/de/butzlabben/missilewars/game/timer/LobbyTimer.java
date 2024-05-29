@@ -48,18 +48,15 @@ public class LobbyTimer extends Timer implements Runnable {
             if (mwPlayer.getPlayer() == null) continue;
             mwPlayer.getPlayer().setLevel(seconds);
         }
-
-        int size1 = getGame().getTeam1().getMembers().size();
-        int size2 = getGame().getTeam2().getMembers().size();
-
-        if (size1 == 0 || size2 == 0) {
+        
+        if (getGame().getTeamManager().hasEmptyPlayerTeam()) {
             seconds = startTime;
             return;
         }
-
+        
         --remaining;
         if (remaining == 0) {
-            if (size1 + size2 < getGame().getLobby().getMinSize()) {
+            if (getGame().areToFewPlayers()) {
                 seconds = startTime;
                 remaining = 90;
                 broadcast(Messages.getMessage(true, Messages.MessageEnum.LOBBY_NOT_ENOUGH_PLAYERS));
@@ -86,8 +83,7 @@ public class LobbyTimer extends Timer implements Runnable {
                 playPling();
                 break;
             case 0:
-                int diff = size1 - size2;
-                if (diff >= 2 || diff <= -2) {
+                if (!getGame().getTeamManager().hasBalancedTeamSizes()) {
                     broadcast(Messages.getMessage(true, Messages.MessageEnum.LOBBY_TEAMS_UNEQUAL));
                     seconds = startTime;
                     return;
@@ -112,9 +108,9 @@ public class LobbyTimer extends Timer implements Runnable {
      * are informed about the start.
      */
     public void executeGameStart() {
-        broadcast(Messages.getMessage(true, Messages.MessageEnum.LOBBY_GAME_STARTS));
+        broadcast(Messages.getMessage(true, Messages.MessageEnum.GAME_GAME_STARTS));
         playPling();
         getGame().startGame();
     }
-
+    
 }

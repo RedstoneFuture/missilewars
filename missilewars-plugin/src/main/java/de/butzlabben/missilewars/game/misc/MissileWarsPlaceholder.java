@@ -19,7 +19,7 @@
 package de.butzlabben.missilewars.game.misc;
 
 import de.butzlabben.missilewars.MissileWars;
-import de.butzlabben.missilewars.configuration.Lobby;
+import de.butzlabben.missilewars.configuration.lobby.Lobby;
 import de.butzlabben.missilewars.configuration.arena.Arena;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.GameManager;
@@ -32,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 public class MissileWarsPlaceholder extends PlaceholderExpansion {
 
     private final MissileWars plugin;
+    private final String noInformation = "&7?";
 
     public MissileWarsPlaceholder(MissileWars plugin) {
         this.plugin = plugin;
@@ -52,7 +53,7 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
     @Override
     @NotNull
     public String getVersion() {
-        return "0.0.1";
+        return "0.0.2";
     }
 
     // This is required or else PlaceholderAPI will unregister the expansion on reload
@@ -66,7 +67,7 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
 
         if (params.endsWith("_this") || params.startsWith("player_")) {
             // if (!offlinePlayer.isOnline()) return "§c§oPlayer is not online!";
-            if (!offlinePlayer.isOnline()) return "";
+            if (!offlinePlayer.isOnline()) return noInformation;
 
             Player player = offlinePlayer.getPlayer();
             Game playerGame = GameManager.getInstance().getGame(player.getLocation());
@@ -79,11 +80,16 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
                 }
 
                 // if (params.startsWith("lobby_")) return "§c§oThis is not a lobby area!";
-                if (params.startsWith("lobby_")) return "";
+                if (params.startsWith("lobby_")) return noInformation;
                 // if (params.startsWith("arena_")) return "§c§oThis is not a game arena!";
-                if (params.startsWith("arena_")) return "";
+                if (params.startsWith("arena_")) return noInformation;
                 // if (params.startsWith("player_")) return "§c§oPlayer is not in a game!";
-                if (params.startsWith("player_")) return "";
+                if (params.startsWith("player_")) return noInformation;
+            }
+            
+            if (playerGame.getArena() == null) {
+                // if (params.startsWith("arena_")) return "§c§oThis is not a game arena!";
+                if (params.startsWith("arena_")) return noInformation;
             }
 
             if (params.startsWith("lobby_")) params = params.replace("this", playerGame.getLobby().getName());
@@ -98,6 +104,11 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
             if (params.equalsIgnoreCase("lobby_gamestate_" + lobby.getName())) {
                 return GameManager.getInstance().getGameStateMessage(game);
             }
+            
+            // %missilewars_lobby_mapvote_state_<lobby name or 'this'>%
+            if (params.equalsIgnoreCase("lobby_mapvote_state_" + lobby.getName())) {
+                return game.getMapVoting().getState().toString();
+            }
 
             // %missilewars_lobby_displayname_<lobby name or 'this'>%
             if (params.equalsIgnoreCase("lobby_displayname_" + lobby.getName())) {
@@ -106,22 +117,59 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
             
             // %missilewars_lobby_team1_name_<lobby name or 'this'>%
             if (params.equalsIgnoreCase("lobby_team1_name_" + lobby.getName())) {
-                return lobby.getTeam1Name();
+                return lobby.getTeam1Config().getName();
             }
             
             // %missilewars_lobby_team1_color_<lobby name or 'this'>%
             if (params.equalsIgnoreCase("lobby_team1_color_" + lobby.getName())) {
-                return lobby.getTeam1Color();
+                return lobby.getTeam1Config().getColor();
             }
             
             // %missilewars_lobby_team2_name_<lobby name or 'this'>%
             if (params.equalsIgnoreCase("lobby_team2_name_" + lobby.getName())) {
-                return lobby.getTeam2Name();
+                return lobby.getTeam2Config().getName();
             }
             
             // %missilewars_lobby_team2_color_<lobby name or 'this'>%
             if (params.equalsIgnoreCase("lobby_team2_color_" + lobby.getName())) {
-                return lobby.getTeam2Color();
+                return lobby.getTeam2Config().getColor();
+            }
+            
+            // %missilewars_lobby_mapchooseprocedure_<lobby name or 'this'>%
+            if (params.equalsIgnoreCase("lobby_mapchooseprocedure_" + lobby.getName())) {
+                return lobby.getMapChooseProcedure().toString();
+            }
+            
+            // %missilewars_lobby_gameduration_<lobby name or 'this'>%
+            if (params.equalsIgnoreCase("lobby_gameduration_" + lobby.getName())) {
+                return Integer.toString(game.getGameDuration());
+            }
+            
+            // %missilewars_lobby_arenasize_X_<lobby name or 'this'>%
+            if (params.equalsIgnoreCase("lobby_arenasize_X_" + lobby.getName())) {
+                if (game.getGameArea() != null) {
+                    return Integer.toString(game.getGameArea().getXSize());
+                } else {
+                    return noInformation;
+                }
+            }
+            
+            // %missilewars_lobby_arenasize_Y_<lobby name or 'this'>%
+            if (params.equalsIgnoreCase("lobby_arenasize_Y_" + lobby.getName())) {
+                if (game.getGameArea() != null) {
+                    return Integer.toString(game.getGameArea().getYSize());
+                } else {
+                    return noInformation;
+                }
+            }
+            
+            // %missilewars_lobby_arenasize_Z_<lobby name or 'this'>%
+            if (params.equalsIgnoreCase("lobby_arenasize_Z_" + lobby.getName())) {
+                if (game.getGameArea() != null) {
+                    return Integer.toString(game.getGameArea().getZSize());
+                } else {
+                    return noInformation;
+                }
             }
             
             for (Arena arena : lobby.getArenas()) {
@@ -135,7 +183,12 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
                 if (params.equalsIgnoreCase("arena_missileamount_" + arena.getName())) {
                     return Integer.toString(arena.getMissileConfiguration().getSchematics().size());
                 }
-
+                
+                // %missilewars_arena_gameduration_<arena name or 'this'>%
+                if (params.equalsIgnoreCase("arena_gameduration_" + arena.getName())) {
+                    return Integer.toString(arena.getGameDuration());
+                }
+                
             }
             
             if (game.getPlayers().get(offlinePlayer.getUniqueId()) != null) {

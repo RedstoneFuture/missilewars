@@ -18,9 +18,13 @@
 
 package de.butzlabben.missilewars.player;
 
+import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.Team;
 import de.butzlabben.missilewars.game.equipment.PlayerEquipmentRandomizer;
+import de.butzlabben.missilewars.menus.hotbar.GameJoinMenu;
+import de.butzlabben.missilewars.menus.inventory.MapVoteMenu;
+import de.butzlabben.missilewars.menus.inventory.TeamSelectionMenu;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -44,27 +48,54 @@ public class MWPlayer implements Runnable {
     private final Game game;
     @Setter
     private Team team;
-    @Setter
-    private PlayerEquipmentRandomizer randomGameEquipment;
+    private PlayerEquipmentRandomizer playerEquipmentRandomizer;
     @Setter
     private boolean playerInteractEventCancel = false;
+    private GameJoinMenu gameJoinMenu;
+    private MapVoteMenu mapVoteMenu;
+    private TeamSelectionMenu teamSelectionMenu;
+    private long lastTeamChangeTime;
 
     public MWPlayer(Player player, Game game) {
         this.uuid = player.getUniqueId();
         this.game = game;
+        
+        this.gameJoinMenu = new GameJoinMenu(this);
+        this.mapVoteMenu = new MapVoteMenu(this);
+        this.teamSelectionMenu = new TeamSelectionMenu(this);
+        
+        setLastTeamChangeTime();
     }
 
     public Player getPlayer() {
         return Bukkit.getPlayer(uuid);
     }
-
+    
+    public void iniPlayerEquipmentRandomizer() {
+        this.playerEquipmentRandomizer = new PlayerEquipmentRandomizer(this, game);
+    }
+    
     @Override
     public void run() {
-        randomGameEquipment.tick();
+        playerEquipmentRandomizer.tick();
     }
 
     @Override
     public String toString() {
         return "MWPlayer(uuid=" + uuid + ", id=" + id + ", teamName=" + getTeam().getName() + ")";
+    }
+
+    public void setLastTeamChangeTime() {
+        this.lastTeamChangeTime = System.currentTimeMillis();
+    }
+
+    public long getWaitTimeForTeamChange() {
+        // anti-spam intervall in seconds
+        int antiSpamTime = Config.getTeamChangeCmdIntervall();
+        
+        long currentTime = System.currentTimeMillis();
+        
+        // Output is in seconds.
+        return (antiSpamTime - ((currentTime - lastTeamChangeTime) / 1000));
     }
 }

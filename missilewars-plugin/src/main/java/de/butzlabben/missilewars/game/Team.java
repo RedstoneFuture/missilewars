@@ -19,12 +19,14 @@
 package de.butzlabben.missilewars.game;
 
 import de.butzlabben.missilewars.Logger;
+import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.game.enums.GameResult;
+import de.butzlabben.missilewars.game.enums.TeamType;
+import de.butzlabben.missilewars.menus.MenuItem;
 import de.butzlabben.missilewars.player.MWPlayer;
 import de.butzlabben.missilewars.util.MoneyUtil;
 import de.butzlabben.missilewars.util.version.ColorConverter;
-import java.util.ArrayList;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -34,9 +36,11 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
+
+import java.util.ArrayList;
 
 /**
  * @author Butzlabben
@@ -51,22 +55,25 @@ public class Team {
     private final String name;
     private final String color;
     private final Game game;
+    private final transient TeamType teamType;
     private final transient ArrayList<MWPlayer> members = new ArrayList<>();
     @Setter private Location spawn;
     @Setter private transient GameResult gameResult = GameResult.DRAW;
     private transient int currentInterval = 0;
     ItemStack[] teamArmor;
-
-    public ArrayList<MWPlayer> getMembers() {
-        return members;
+    ItemStack menuItem;
+    
+    public void initialTeam() {
+        createTeamArmor();
+        createMenuItem();
     }
-
+    
     public Team getEnemyTeam() {
-        if (this == game.getTeam1())
-            return game.getTeam2();
-        return game.getTeam1();
+        if (this == game.getTeamManager().getTeam1()) return game.getTeamManager().getTeam2();
+        if (this == game.getTeamManager().getTeam2()) return game.getTeamManager().getTeam1();
+        return null;
     }
-
+    
     public void removeMember(MWPlayer mwPlayer) {
         if (!isMember(mwPlayer)) return;
 
@@ -81,13 +88,9 @@ public class Team {
     }
 
     public void addMember(MWPlayer mwPlayer) {
-        if (isMember(mwPlayer)) return;
-
-        // Already in a team?
-        if (mwPlayer.getTeam() != null) {
-            mwPlayer.getTeam().removeMember(mwPlayer);
-        }
-
+        // Is the player already in a team?
+        if (mwPlayer.getTeam() != null) return;
+        
         Player player = mwPlayer.getPlayer();
         if (player == null) {
             Logger.WARN.log("Could not add player " + mwPlayer.getUuid().toString() + " to a team because he went offline");
@@ -97,6 +100,7 @@ public class Team {
         members.add(mwPlayer);
         mwPlayer.setTeam(this);
         player.setDisplayName(getColorCode() + player.getName() + "§r");
+        
         player.getInventory().setArmorContents(getTeamArmor());
     }
 
@@ -113,7 +117,11 @@ public class Team {
     /**
      * This method creates the team armor based on the team color.
      */
-    public void createTeamArmor() {
+    private void createTeamArmor() {
+        // no armor for spectator
+        if (teamType == TeamType.SPECTATOR) return;
+        
+        
         Color color = ColorConverter.getColorFromCode(getColorCode());
 
         ItemStack boots = new ItemStack(Material.LEATHER_BOOTS);
@@ -142,9 +150,24 @@ public class Team {
 
         teamArmor = new ItemStack[] {boots, leggings, chestplate, helmet};
     }
+    
+    /**
+     * This method creates the team menu-item based on the team color.
+     */
+    private void createMenuItem() {
+        Color color = ColorConverter.getColorFromCode(getColorCode());
+        
+        menuItem = new ItemStack(Material.LEATHER_HELMET);
+        LeatherArmorMeta helmetMeta = (LeatherArmorMeta) menuItem.getItemMeta();
+        helmetMeta.setColor(color);
+        menuItem.setItemMeta(helmetMeta);
+        MenuItem.hideMetaValues(menuItem);
+        MenuItem.setDisplayName(menuItem, Config.TeamSelectionMenuItems.TEAM_ITEM.getMessage()
+                .replace("{player-team-name}", getFullname()));
+    }
 
-    public ItemStack[] getTeamArmor() {
-        return this.teamArmor;
+    public ItemStack getMenuItem() {
+        return menuItem.clone();
     }
 
     public boolean isMember(MWPlayer mwPlayer) {
@@ -236,14 +259,5 @@ public class Team {
             getGame().broadcast(Messages.getMessage(true, Messages.MessageEnum.TEAM_TEAM_NERVED).replace("%team%", getFullname()));
         }
     }
-
-    public ItemStack getGlassPlane() {
-        ItemStack is = new ItemStack(ColorConverter.getGlassPaneFromColorCode(getColorCode()));
-
-        ItemMeta im = is.getItemMeta();
-        im.setDisplayName(getFullname());
-        is.setItemMeta(im);
-        return is;
-    }
-
+    
 }

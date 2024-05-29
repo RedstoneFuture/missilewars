@@ -51,12 +51,10 @@ public class MotdManager {
                     newMotd = Config.motdGame();
                     break;
             }
-
-            int players = game.getPlayers().values().size();
-            int maxPlayers = game.getLobby().getMaxSize();
+            
             motd = ChatColor.translateAlternateColorCodes('&', newMotd)
-                    .replace("%max_players%", Integer.toString(maxPlayers))
-                    .replace("%players%", Integer.toString(players))
+                    .replace("%max_players%", Integer.toString(game.getLobby().getMaxPlayers()))
+                    .replace("%players%", Integer.toString(game.getPlayerAmount()))
                     .replace("%prefix%", Messages.getPrefix());
         }
     }

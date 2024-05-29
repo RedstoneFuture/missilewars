@@ -54,9 +54,9 @@ public class FightStats {
      */
     private int getGameResultCode() {
 
-        if (game.getTeam1().getGameResult() == GameResult.WIN) {
+        if (game.getTeamManager().getTeam1().getGameResult() == GameResult.WIN) {
             return 1;
-        } else if (game.getTeam2().getGameResult() == GameResult.WIN) {
+        } else if (game.getTeamManager().getTeam2().getGameResult() == GameResult.WIN) {
             return 2;
         }
 
@@ -109,7 +109,7 @@ public class FightStats {
                     statement.setInt(1, fightID);
                     statement.setString(2, mwPlayer.getUuid().toString());
 
-                    if (mwPlayer.getTeam() == game.getTeam1())
+                    if (mwPlayer.getTeam() == game.getTeamManager().getTeam1())
                         statement.setInt(3, 1);
                     else
                         statement.setInt(3, 2);
