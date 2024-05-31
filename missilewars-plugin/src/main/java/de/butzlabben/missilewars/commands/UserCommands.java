@@ -38,7 +38,7 @@ import org.bukkit.entity.Player;
 public class UserCommands extends BaseCommand {
     
     @Subcommand("vote")
-    @CommandCompletion("@arenas")
+    @CommandCompletion("@arenas @nothing")
     @CommandPermission("mw.vote")
     public void voteCommand(CommandSender sender, String[] args) {
 
@@ -106,7 +106,7 @@ public class UserCommands extends BaseCommand {
     }
 
     @Subcommand("change|switch|team")
-    @CommandCompletion("@teams")
+    @CommandCompletion("@teams @nothing")
     @CommandPermission("mw.change.use")
     public void changeCommand(CommandSender sender, String[] args) {
 

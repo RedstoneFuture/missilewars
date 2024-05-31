@@ -101,7 +101,7 @@ public class MWCommands extends BaseCommand {
     }
     
     @Subcommand("move")
-    @CommandCompletion("@game-players @teams")
+    @CommandCompletion("@game-players @teams @nothing")
     @CommandPermission("mw.move")
     public void moveCommand(CommandSender sender, String[] args) {
 
@@ -197,7 +197,7 @@ public class MWCommands extends BaseCommand {
     }
 
     @Subcommand("paste")
-    @CommandCompletion("@missiles")
+    @CommandCompletion("@missiles @nothing")
     @CommandPermission("mw.paste")
     public void pasteCommand(CommandSender sender, String[] args) {
 
@@ -232,7 +232,7 @@ public class MWCommands extends BaseCommand {
     }
 
     @Subcommand("start")
-    @CommandCompletion("@games")
+    @CommandCompletion("@games @nothing")
     @CommandPermission("mw.start")
     public void startCommand(CommandSender sender, String[] args) {
 
@@ -280,7 +280,7 @@ public class MWCommands extends BaseCommand {
     }
 
     @Subcommand("stop")
-    @CommandCompletion("@games")
+    @CommandCompletion("@games @nothing")
     @CommandPermission("mw.stop")
     public void stopCommand(CommandSender sender, String[] args) {
 
@@ -315,7 +315,7 @@ public class MWCommands extends BaseCommand {
     }
 
     @Subcommand("appendrestart")
-    @CommandCompletion("@games")
+    @CommandCompletion("@games @nothing")
     @CommandPermission("mw.appendrestart")
     public void appendrestartCommand(CommandSender sender, String[] args) {
 
