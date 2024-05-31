@@ -186,12 +186,14 @@ public class MWCommands extends BaseCommand {
         // The "isValidFairSwitch()" validation and max-user check is skipped here.
         
         sender.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_MOVE_MOVED_SENDER)
-                    .replace("%player%", targetPlayer.getName())
-                    .replace("%from%", from.getFullname())
-                    .replace("%to%", to.getFullname()));
+                .replace("%player%", targetPlayer.getName())
+                .replace("%from%", from.getFullname())
+                .replace("%to%", to.getFullname()));
         
         targetPlayer.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_MOVE_MOVED_TARGET)
-                .replace("%sender%", player.getName()));
+                .replace("%sender%", player.getName())
+                .replace("%from%", from.getFullname())
+                .replace("%to%", to.getFullname()));
         
         game.getGameJoinManager().runPlayerTeamSwitch(targetMwPlayer, to);
     }
