@@ -221,7 +221,7 @@ public class GameJoinManager {
         if (mwPlayer.getTeam() == teamManager.getTeamSpec()) {
 
             if (isTeamSwitch) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_SPECTATOR_TEAM_CHANGED)
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_SPECTATOR_TEAM_SWITCH)
                         .replace("%team%", mwPlayer.getTeam().getFullname()));
             } else {
                 player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_SPECTATOR_TEAM_ASSIGNED)
@@ -230,7 +230,7 @@ public class GameJoinManager {
             
         } else {
             if (isTeamSwitch) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_PLAYER_TEAM_CHANGED)
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_PLAYER_TEAM_SWITCH)
                         .replace("%team%", mwPlayer.getTeam().getFullname()));
             } else {
                 player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_PLAYER_TEAM_ASSIGNED)

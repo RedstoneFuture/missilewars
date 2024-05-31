@@ -199,14 +199,14 @@ public class UserCommands extends BaseCommand {
         
         // Is the same team?
         if (from == to) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_ALREADY_IN_TEAM));
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_CHANGE_ALREADY_IN_TEAM));
             return;
         }
         
         // Would the number of team members be too far apart?
         if (game.getState() != GameState.LOBBY) {
             if (!game.getTeamManager().isValidFairSwitch(from, to)) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_UNFAIR_TEAM_SIZE));
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_CHANGE_UNFAIR_TEAM_SIZE));
                 return;
             }
         }
@@ -214,12 +214,12 @@ public class UserCommands extends BaseCommand {
         // Checking max-user values:
         if (to == game.getTeamManager().getTeamSpec()) {
             if (game.areTooManySpectators()) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_SPECTATOR_MAX_REACHED));
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_SPECTATOR_TEAM_MAX_REACHED));
                 return;
             }
         } else {
             if (game.areTooManyPlayers()) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_PLAYER_MAX_REACHED));
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_PLAYER_TEAM_MAX_REACHED));
                 return;
             }
         }

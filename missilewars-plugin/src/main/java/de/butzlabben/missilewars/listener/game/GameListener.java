@@ -347,7 +347,7 @@ public class GameListener extends GameBoundListener {
                 
             } else if (isKnownPlayer && rejoinBehavior == RejoinIngameBehavior.LAST_TEAM && lastTeam.getTeamType() == TeamType.PLAYER 
                     && !getGame().areTooManySpectators()) {
-                event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_PLAYER_MAX_REACHED));
+                event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_PLAYER_TEAM_MAX_REACHED));
                 getGame().getGameJoinManager().runPlayerJoin(player, TeamType.SPECTATOR);
                 
             } else {
@@ -369,7 +369,7 @@ public class GameListener extends GameBoundListener {
                 getGame().getGameJoinManager().runPlayerJoin(player, TeamType.PLAYER);
                 
             } else {
-                event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_SPECTATOR_MAX_REACHED));
+                event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_SPECTATOR_TEAM_MAX_REACHED));
                 event.setCancelled(true);
                 
             }

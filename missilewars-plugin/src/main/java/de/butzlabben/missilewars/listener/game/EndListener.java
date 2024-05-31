@@ -23,7 +23,6 @@ import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.event.PlayerArenaJoinEvent;
 import de.butzlabben.missilewars.event.PlayerArenaLeaveEvent;
 import de.butzlabben.missilewars.game.Game;
-import de.butzlabben.missilewars.game.GameLeaveManager;
 import de.butzlabben.missilewars.game.Team;
 import de.butzlabben.missilewars.game.enums.JoinIngameBehavior;
 import de.butzlabben.missilewars.game.enums.RejoinIngameBehavior;
@@ -133,7 +132,7 @@ public class EndListener extends GameBoundListener {
                 getGame().getGameJoinManager().runPlayerJoin(player, TeamType.SPECTATOR);
                 
             } else {
-                event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_SPECTATOR_MAX_REACHED));
+                event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_SPECTATOR_TEAM_MAX_REACHED));
                 event.setCancelled(true);
                 
             }
@@ -148,7 +147,7 @@ public class EndListener extends GameBoundListener {
                 getGame().getGameJoinManager().runPlayerJoin(player, TeamType.SPECTATOR);
                 
             } else {
-                event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_SPECTATOR_MAX_REACHED));
+                event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_SPECTATOR_TEAM_MAX_REACHED));
                 event.setCancelled(true);
                 
             }

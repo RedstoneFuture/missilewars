@@ -168,7 +168,7 @@ public class LobbyListener extends GameBoundListener {
             getGame().getGameJoinManager().runPlayerJoin(player, TeamType.PLAYER);
             
         } else if (!getGame().areTooManySpectators()) {
-            event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_PLAYER_MAX_REACHED));
+            event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_PLAYER_TEAM_MAX_REACHED));
             getGame().getGameJoinManager().runPlayerJoin(player, TeamType.SPECTATOR);
             
         } else {
