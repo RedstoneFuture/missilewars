@@ -244,6 +244,19 @@ public class GameListener extends GameBoundListener {
         Inventory clickedInventory = event.getInventory();
         if (clickedInventory.getType() != InventoryType.PLAYER) event.setCancelled(true);
     }
+    
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onInventoryClickAsSpectator(InventoryClickEvent event) {
+        
+        if (!(event.getWhoClicked() instanceof Player)) return;
+
+        Player player = (Player) event.getWhoClicked();
+        if (player.getGameMode() != GameMode.SPECTATOR) return;
+        
+        // In Vanilla, the click actions are completely ignored. However, CraftBukkit 
+        // will continue to call the events, but it will be canceled by default.
+        event.setCancelled(false);
+    }
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
