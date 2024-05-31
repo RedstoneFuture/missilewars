@@ -701,6 +701,14 @@ public class Game {
         if ((teamManager.getTeam1() == null) || (teamManager.getTeam2() == null)) return 0;
         return teamManager.getTeam1().getMembers().size() + teamManager.getTeam2().getMembers().size();
     }
+    
+    public List<String> getPlayerList() {
+        List<String> playerList = new ArrayList<>();
+        
+        players.values().forEach(mwPlayer -> playerList.add(mwPlayer.getPlayer().getName()));
+        
+        return playerList;
+    }
 
     public static void knockbackEffect(Player player, Location from, Location to) {
         Vector addTo = from.toVector().subtract(to.toVector()).multiply(3);
