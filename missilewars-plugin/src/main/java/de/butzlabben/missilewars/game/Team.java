@@ -249,15 +249,5 @@ public class Team {
                 break;
         }
     }
-
-    // TODO Add new team buffer
-    public void updateIntervals(int newInterval) {
-        if (newInterval < currentInterval && currentInterval != 0) {
-            getGame().broadcast(Messages.getMessage(true, Messages.MessageEnum.TEAM_TEAM_BUFFED).replace("%team%", getFullname()));
-        }
-        if (newInterval > currentInterval && currentInterval != 0) {
-            getGame().broadcast(Messages.getMessage(true, Messages.MessageEnum.TEAM_TEAM_NERVED).replace("%team%", getFullname()));
-        }
-    }
     
 }

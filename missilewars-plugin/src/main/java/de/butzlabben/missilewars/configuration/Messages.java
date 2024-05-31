@@ -148,8 +148,6 @@ public class Messages {
         TEAM_PLAYER_MAX_REACHED("team.player.max_reached", "&cThe maximum number of players has been reached."),
         TEAM_SPECTATOR_MAX_REACHED("team.spectator.max_reached", "&cThe maximum number of spectators has been reached."),
         TEAM_ALL_TEAMMATES_OFFLINE("team.all_teammates_offline", "&7Everyone from %team% &7is offline."),
-        TEAM_TEAM_BUFFED("team.team_buffed", "%team% &7was buffed as one player left the team."),
-        TEAM_TEAM_NERVED("team.team_nerved", "%team% &7was nerved as one player joined the team."),
         TEAM_HURT_TEAMMATES("team.hurt_teammates", "&cYou must not hurt your teammates."),
 
         ARENA_ARENA_LEAVE("arena.arena_leave", "&cYou are not allowed to leave the arena."),
