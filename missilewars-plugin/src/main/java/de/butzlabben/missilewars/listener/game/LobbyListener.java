@@ -116,6 +116,19 @@ public class LobbyListener extends GameBoundListener {
         
         if (player.getGameMode() != GameMode.CREATIVE) event.setCancelled(true);
     }
+    
+    @EventHandler(priority = EventPriority.LOWEST)
+    public void onInventoryClickAsSpectator(InventoryClickEvent event) {
+        
+        if (!(event.getWhoClicked() instanceof Player)) return;
+
+        Player player = (Player) event.getWhoClicked();
+        if (player.getGameMode() != GameMode.SPECTATOR) return;
+        
+        // In Vanilla, the click actions are completely ignored. However, CraftBukkit 
+        // will continue to call the events, but it will be canceled by default.
+        event.setCancelled(false);
+    }
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
@@ -155,7 +168,7 @@ public class LobbyListener extends GameBoundListener {
             getGame().getGameJoinManager().runPlayerJoin(player, TeamType.PLAYER);
             
         } else if (!getGame().areTooManySpectators()) {
-            event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_PLAYER_MAX_REACHED));
+            event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_PLAYER_TEAM_MAX_REACHED));
             getGame().getGameJoinManager().runPlayerJoin(player, TeamType.SPECTATOR);
             
         } else {

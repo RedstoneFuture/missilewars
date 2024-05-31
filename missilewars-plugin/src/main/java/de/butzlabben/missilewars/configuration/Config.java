@@ -101,13 +101,13 @@ public class Config {
         cfg.addDefault("fightstats.enable", false);
         cfg.addDefault("fightstats.show_real_skins", true);
 
-        Location spawnLocation = Bukkit.getWorlds().get(0).getSpawnLocation().add(25, 0, 25);
-        cfg.addDefault("fallback_spawn.world", spawnLocation.getWorld().getName());
-        cfg.addDefault("fallback_spawn.x", spawnLocation.getX());
-        cfg.addDefault("fallback_spawn.y", spawnLocation.getY());
-        cfg.addDefault("fallback_spawn.z", spawnLocation.getZ());
-        cfg.addDefault("fallback_spawn.yaw", spawnLocation.getYaw());
-        cfg.addDefault("fallback_spawn.pitch", spawnLocation.getPitch());
+        Location worldSpawnLoc = Bukkit.getWorlds().get(0).getSpawnLocation();
+        cfg.addDefault("fallback_spawn.world", worldSpawnLoc.getWorld().getName());
+        cfg.addDefault("fallback_spawn.x", worldSpawnLoc.getX());
+        cfg.addDefault("fallback_spawn.y", worldSpawnLoc.getY());
+        cfg.addDefault("fallback_spawn.z", worldSpawnLoc.getZ());
+        cfg.addDefault("fallback_spawn.yaw", worldSpawnLoc.getYaw());
+        cfg.addDefault("fallback_spawn.pitch", worldSpawnLoc.getPitch());
 
         cfg.addDefault("mysql.host", "localhost");
         cfg.addDefault("mysql.database", "db");

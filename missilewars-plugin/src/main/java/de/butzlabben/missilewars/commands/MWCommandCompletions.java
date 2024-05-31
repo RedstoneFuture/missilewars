@@ -38,6 +38,7 @@ public class MWCommandCompletions {
         registerMissilesResult();
         registerArenasResult();
         registerTeamsResult();
+        registerGamePlayerResult();
     }
 
     private void registerGamesResult() {
@@ -85,5 +86,19 @@ public class MWCommandCompletions {
             return ImmutableList.of("1", "2", "spec");
         });
     }
+    
+    private void registerGamePlayerResult() {
+        commandCompletions.registerCompletion("game-players", c -> {
+            CommandSender sender = c.getSender();
 
+            if (!(sender instanceof Player)) return null;
+            Player player = (Player) sender;
+
+            Game game = GameManager.getInstance().getGame(player.getLocation());
+            if (game == null) return null;
+            
+            return game.getPlayerList();
+        });
+    }
+    
 }

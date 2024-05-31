@@ -91,6 +91,7 @@ public class GameJoinManager {
         
         sendJoinBroadcastMsg(mwPlayer);
         sendJoinPrivateMsg(mwPlayer, false);
+        
         player.setScoreboard(game.getScoreboardManager().getBoard());
         
         if (game.getState() == GameState.LOBBY) {
@@ -110,6 +111,7 @@ public class GameJoinManager {
     
     public void runPlayerTeamSwitch(MWPlayer mwPlayer, Team targetTeam) {
         Player player = mwPlayer.getPlayer();
+        Team oldTeam = mwPlayer.getTeam();
         
         setDefaultPlayerData(player);
         
@@ -117,8 +119,9 @@ public class GameJoinManager {
         game.getGameLeaveManager().playerLeaveFromTeam(mwPlayer);
         targetTeam.addMember(mwPlayer);
         
-        sendJoinBroadcastMsg(mwPlayer);
-        sendJoinPrivateMsg(mwPlayer, true);
+        sendTeamSwitchBroadcastMsg(mwPlayer, oldTeam);
+        // Sending the private info message is skipped here.
+        
         // Manual update of the scoreboard because the event listener was not addressed.
         game.getScoreboardManager().updateScoreboard();
         
@@ -200,43 +203,59 @@ public class GameJoinManager {
     private void sendJoinBroadcastMsg(MWPlayer mwPlayer) {
         Player player = mwPlayer.getPlayer();
         
-        String broadcastMsg = null;
+        String broadcastMsg;
         if (game.getState() == GameState.LOBBY) {
             broadcastMsg = Messages.getMessage(true, Messages.MessageEnum.LOBBY_PLAYER_JOINED);
-        } else if ((game.getState() == GameState.INGAME) || (game.getState() == GameState.END)) {
+        } else {
             broadcastMsg = Messages.getMessage(true, Messages.MessageEnum.GAME_PLAYER_JOINED);
         }
         
-        if (broadcastMsg != null) {
-            game.broadcast(broadcastMsg.replace("%max_players%", Integer.toString(game.getLobby().getMaxPlayers()))
-                    .replace("%players%", Integer.toString(game.getPlayerAmount()))
-                    .replace("%player%", player.getName())
-                    .replace("%team%", (mwPlayer.getTeam() != null) ? mwPlayer.getTeam().getFullname() : "?"));
+        game.broadcast(broadcastMsg.replace("%max_players%", Integer.toString(game.getLobby().getMaxPlayers()))
+                .replace("%players%", Integer.toString(game.getPlayerAmount()))
+                .replace("%player%", player.getName())
+                .replace("%team%", (mwPlayer.getTeam() != null) ? mwPlayer.getTeam().getFullname() : "?"));
+    }
+    
+    private void sendTeamSwitchBroadcastMsg(MWPlayer mwPlayer, Team oldTeam) {
+        Player player = mwPlayer.getPlayer();
+        
+        String broadcastMsg;
+        if (game.getState() == GameState.LOBBY) {
+            broadcastMsg = Messages.getMessage(true, Messages.MessageEnum.LOBBY_PLAYER_SWITCHED);
+        } else {
+            broadcastMsg = Messages.getMessage(true, Messages.MessageEnum.GAME_PLAYER_SWITCHED);
         }
+        
+        game.broadcast(broadcastMsg.replace("%max_players%", Integer.toString(game.getLobby().getMaxPlayers()))
+                .replace("%players%", Integer.toString(game.getPlayerAmount()))
+                .replace("%player%", player.getName())
+                .replace("%from%", oldTeam.getFullname())
+                .replace("%to%", mwPlayer.getTeam().getFullname()));
     }
     
     public void sendJoinPrivateMsg(MWPlayer mwPlayer, boolean isTeamSwitch) {
         Player player = mwPlayer.getPlayer();
         
+        String privateMsg;
         if (mwPlayer.getTeam() == teamManager.getTeamSpec()) {
-
             if (isTeamSwitch) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_SPECTATOR_TEAM_CHANGED)
-                        .replace("%team%", mwPlayer.getTeam().getFullname()));
+                privateMsg = Messages.getMessage(true, Messages.MessageEnum.TEAM_SPECTATOR_TEAM_SWITCH);
             } else {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_SPECTATOR_TEAM_ASSIGNED)
-                        .replace("%team%", mwPlayer.getTeam().getFullname()));
+                privateMsg = Messages.getMessage(true, Messages.MessageEnum.TEAM_SPECTATOR_TEAM_ASSIGNED);
             }
             
         } else {
             if (isTeamSwitch) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_PLAYER_TEAM_CHANGED)
-                        .replace("%team%", mwPlayer.getTeam().getFullname()));
+                privateMsg = Messages.getMessage(true, Messages.MessageEnum.TEAM_PLAYER_TEAM_SWITCH);
             } else {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_PLAYER_TEAM_ASSIGNED)
-                        .replace("%team%", mwPlayer.getTeam().getFullname()));
+                privateMsg = Messages.getMessage(true, Messages.MessageEnum.TEAM_PLAYER_TEAM_ASSIGNED);
             }
         }
+        
+        player.sendMessage(privateMsg.replace("%max_players%", Integer.toString(game.getLobby().getMaxPlayers()))
+                .replace("%players%", Integer.toString(game.getPlayerAmount()))
+                .replace("%player%", player.getName())
+                .replace("%team%", (mwPlayer.getTeam() != null) ? mwPlayer.getTeam().getFullname() : "?"));
     }
 
     private void getGameJoinMenu(MWPlayer mwPlayer) {

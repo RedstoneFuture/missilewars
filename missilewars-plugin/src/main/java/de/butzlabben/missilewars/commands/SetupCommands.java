@@ -95,7 +95,7 @@ public class SetupCommands extends BaseCommand {
         public class SpectatorspawnSetup extends BaseCommand {
 
             @Subcommand("set")
-            @CommandCompletion("@games")
+            @CommandCompletion("@games @nothing")
             public void set(CommandSender sender, String[] args) {
                 if (!senderIsPlayer(sender)) return;
                 if (!isValidGame(args)) return;
@@ -106,7 +106,7 @@ public class SetupCommands extends BaseCommand {
             }
 
             @Subcommand("teleport|tp")
-            @CommandCompletion("@games")
+            @CommandCompletion("@games @nothing")
             public void teleport(CommandSender sender, String[] args) {
                 if (!senderIsPlayer(sender)) return;
                 if (!isValidGame(args)) return;
@@ -121,7 +121,7 @@ public class SetupCommands extends BaseCommand {
         public class Team1spawnSetup extends BaseCommand {
 
             @Subcommand("set")
-            @CommandCompletion("@games")
+            @CommandCompletion("@games @nothing")
             public void set(CommandSender sender, String[] args) {
                 if (!senderIsPlayer(sender)) return;
                 if (!isValidGame(args)) return;
@@ -132,7 +132,7 @@ public class SetupCommands extends BaseCommand {
             }
 
             @Subcommand("teleport|tp")
-            @CommandCompletion("@games")
+            @CommandCompletion("@games @nothing")
             public void teleport(CommandSender sender, String[] args) {
                 if (!senderIsPlayer(sender)) return;
                 if (!isValidGame(args)) return;
@@ -147,7 +147,7 @@ public class SetupCommands extends BaseCommand {
         public class Team2spawnSetup extends BaseCommand {
 
             @Subcommand("set")
-            @CommandCompletion("@games")
+            @CommandCompletion("@games @nothing")
             public void set(CommandSender sender, String[] args) {
                 if (!senderIsPlayer(sender)) return;
                 if (!isValidGame(args)) return;
@@ -158,7 +158,7 @@ public class SetupCommands extends BaseCommand {
             }
 
             @Subcommand("teleport|tp")
-            @CommandCompletion("@games")
+            @CommandCompletion("@games @nothing")
             public void teleport(CommandSender sender, String[] args) {
                 if (!senderIsPlayer(sender)) return;
                 if (!isValidGame(args)) return;
@@ -176,7 +176,7 @@ public class SetupCommands extends BaseCommand {
             public class Pos1Setup extends BaseCommand {
 
                 @Subcommand("set")
-                @CommandCompletion("@games")
+                @CommandCompletion("@games @nothing")
                 public void set(CommandSender sender, String[] args) {
                     if (!senderIsPlayer(sender)) return;
                     if (!isValidGame(args)) return;
@@ -188,7 +188,7 @@ public class SetupCommands extends BaseCommand {
                 }
 
                 @Subcommand("teleport|tp")
-                @CommandCompletion("@games")
+                @CommandCompletion("@games @nothing")
                 public void teleport(CommandSender sender, String[] args) {
                     if (!senderIsPlayer(sender)) return;
                     if (!isValidGame(args)) return;
@@ -203,7 +203,7 @@ public class SetupCommands extends BaseCommand {
             public class Pos2Setup extends BaseCommand {
 
                 @Subcommand("set")
-                @CommandCompletion("@games")
+                @CommandCompletion("@games @nothing")
                 public void set(CommandSender sender, String[] args) {
                     if (!senderIsPlayer(sender)) return;
                     if (!isValidGame(args)) return;
@@ -215,7 +215,7 @@ public class SetupCommands extends BaseCommand {
                 }
 
                 @Subcommand("teleport|tp")
-                @CommandCompletion("@games")
+                @CommandCompletion("@games @nothing")
                 public void teleport(CommandSender sender, String[] args) {
                     if (!senderIsPlayer(sender)) return;
                     if (!isValidGame(args)) return;
@@ -236,7 +236,7 @@ public class SetupCommands extends BaseCommand {
         public class SpawnpointSetup extends BaseCommand {
 
             @Subcommand("set")
-            @CommandCompletion("@games")
+            @CommandCompletion("@games @nothing")
             public void set(CommandSender sender, String[] args) {
                 if (!senderIsPlayer(sender)) return;
                 if (!isValidGame(args)) return;
@@ -247,7 +247,7 @@ public class SetupCommands extends BaseCommand {
             }
 
             @Subcommand("teleport|tp")
-            @CommandCompletion("@games")
+            @CommandCompletion("@games @nothing")
             public void teleport(CommandSender sender, String[] args) {
                 if (!senderIsPlayer(sender)) return;
                 if (!isValidGame(args)) return;
@@ -262,7 +262,7 @@ public class SetupCommands extends BaseCommand {
         public class AftergamespawnSetup extends BaseCommand {
 
             @Subcommand("set")
-            @CommandCompletion("@games")
+            @CommandCompletion("@games @nothing")
             public void set(CommandSender sender, String[] args) {
                 if (!senderIsPlayer(sender)) return;
                 if (!isValidGame(args)) return;
@@ -273,7 +273,7 @@ public class SetupCommands extends BaseCommand {
             }
 
             @Subcommand("teleport|tp")
-            @CommandCompletion("@games")
+            @CommandCompletion("@games @nothing")
             public void teleport(CommandSender sender, String[] args) {
                 if (!senderIsPlayer(sender)) return;
                 if (!isValidGame(args)) return;
@@ -291,7 +291,7 @@ public class SetupCommands extends BaseCommand {
             public class Pos1Setup extends BaseCommand {
 
                 @Subcommand("set")
-                @CommandCompletion("@games")
+                @CommandCompletion("@games @nothing")
                 public void set(CommandSender sender, String[] args) {
                     if (!senderIsPlayer(sender)) return;
                     if (!isValidGame(args)) return;
@@ -303,7 +303,7 @@ public class SetupCommands extends BaseCommand {
                 }
 
                 @Subcommand("teleport|tp")
-                @CommandCompletion("@games")
+                @CommandCompletion("@games @nothing")
                 public void teleport(CommandSender sender, String[] args) {
                     if (!senderIsPlayer(sender)) return;
                     if (!isValidGame(args)) return;
@@ -318,7 +318,7 @@ public class SetupCommands extends BaseCommand {
             public class Pos2Setup extends BaseCommand {
 
                 @Subcommand("set")
-                @CommandCompletion("@games")
+                @CommandCompletion("@games @nothing")
                 public void set(CommandSender sender, String[] args) {
                     if (!senderIsPlayer(sender)) return;
                     if (!isValidGame(args)) return;
@@ -330,7 +330,7 @@ public class SetupCommands extends BaseCommand {
                 }
 
                 @Subcommand("teleport|tp")
-                @CommandCompletion("@games")
+                @CommandCompletion("@games @nothing")
                 public void teleport(CommandSender sender, String[] args) {
                     if (!senderIsPlayer(sender)) return;
                     if (!isValidGame(args)) return;

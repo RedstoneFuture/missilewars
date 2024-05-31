@@ -24,16 +24,15 @@ import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.Messages;
-import de.butzlabben.missilewars.game.Arenas;
-import de.butzlabben.missilewars.game.Game;
-import de.butzlabben.missilewars.game.GameManager;
-import de.butzlabben.missilewars.game.TeamManager;
+import de.butzlabben.missilewars.game.*;
 import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.enums.GameState;
+import de.butzlabben.missilewars.game.enums.TeamType;
 import de.butzlabben.missilewars.game.enums.VoteState;
 import de.butzlabben.missilewars.game.schematics.SchematicFacing;
 import de.butzlabben.missilewars.game.schematics.objects.Missile;
 import de.butzlabben.missilewars.game.timer.LobbyTimer;
+import de.butzlabben.missilewars.player.MWPlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -47,7 +46,7 @@ public class MWCommands extends BaseCommand {
         sendHelpMessage(sender, "mw.mapmenu", "/mw mapmenu", "Open the map-vote menu.");
         sendHelpMessage(sender, "mw.vote", "/mw vote <arena>", "Vote for a arena.");
         sendHelpMessage(sender, "mw.teammenu", "/mw teammenu", "Open the team-change menu.");
-        sendHelpMessage(sender, "mw.change.use", "/mw change <1|2|spec>", "Changes your team.");
+        sendHelpMessage(sender, "mw.change.use", "/mw change <1|2|spec>", "Change your team.");
         sendHelpMessage(sender, "mw.quit", "/mw quit", "Quit a game.");
 
         sendHelpMessage(sender, "mw.stats", "/mw stats [from] [arena]", "Shows stats.");
@@ -56,6 +55,7 @@ public class MWCommands extends BaseCommand {
         sendHelpMessage(sender, "mw.stats.list", "/mw stats list [from] [arena]", "Lists history of games.");
 
         sendHelpMessage(sender, "mw.listgames", "/mw listgames", "List the active games.");
+        sendHelpMessage(sender, "mw.move", "/mw move <player> <1|2|spec>", "Change the team of a specific player.");
         sendHelpMessage(sender, "mw.paste", "/mw paste <missile>", "Pastes a missile.");
         sendHelpMessage(sender, "mw.start", "/mw start [lobby]", "Starts the game.");
         sendHelpMessage(sender, "mw.stop", "/mw stop [lobby]", "Stops the game.");
@@ -99,9 +99,107 @@ public class MWCommands extends BaseCommand {
         }
 
     }
+    
+    @Subcommand("move")
+    @CommandCompletion("@game-players @teams @nothing")
+    @CommandPermission("mw.move")
+    public void moveCommand(CommandSender sender, String[] args) {
+
+        if (!MWCommands.senderIsPlayer(sender)) return;
+        Player player = (Player) sender;
+
+        if (args.length < 2) {
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TEAM_NUMBER_NEEDED));
+            return;
+        }
+
+        if (args.length > 2) {
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
+            return;
+        }
+
+        Game game = GameManager.getInstance().getGame(player.getLocation());
+        if (game == null) {
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_IN_GAME_AREA));
+            return;
+        }
+        
+        Player targetPlayer = MissileWars.getInstance().getServer().getPlayer(args[0]);
+        if (targetPlayer == null) {
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_PLAYER_NOT_ONLINE)
+                    .replace("%input%", args[0]));
+            return;
+        }
+        
+        MWPlayer targetMwPlayer = game.getPlayer(targetPlayer);
+        if (targetMwPlayer == null) {
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_PLAYER_NOT_IN_GAME)
+                    .replace("%input%", args[0]));
+            return;
+        }
+        
+        // The "isTeamchangeOngoingGame()" check is skipped here.
+        
+        
+        Team from = targetMwPlayer.getTeam();
+        Team to;
+        
+        switch (args[1]) {
+            case "1":
+            case "team1":
+                to = game.getTeamManager().getTeam1();
+                break;
+            case "2":
+            case "team2":
+                to = game.getTeamManager().getTeam2();
+                break;
+            case "spec":
+            case "spectator":
+                to = game.getTeamManager().getTeamSpec();
+                break;
+            default:
+                sender.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_TEAM));
+                return;
+        }
+        
+        // Is the same team?
+        if (from == to) {
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_MOVE_ALREADY_IN_TEAM)
+                    .replace("%player%", targetPlayer.getName()));
+            return;
+        }
+        
+        if (game.getState() != GameState.END) {
+            // Is the player the last one from his team?
+            if ((from.getTeamType() == TeamType.PLAYER) && (from.getMembers().size() == 1)) {
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_MOVE_IS_LAST_PLAYER)
+                    .replace("%from%", from.getFullname()));
+                return;
+            }
+            
+        } else {
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_MOVE_TEAM_NOT_NOW));
+            return;
+            
+        }
+        
+        // The "isValidFairSwitch()" validation and max-user check is skipped here.
+        
+        sender.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_MOVE_MOVED_SENDER)
+                .replace("%player%", targetPlayer.getName())
+                .replace("%from%", from.getFullname())
+                .replace("%to%", to.getFullname()));
+        
+        targetPlayer.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_MOVE_MOVED_TARGET)
+                .replace("%sender%", player.getName())
+                .replace("%from%", from.getFullname())
+                .replace("%to%", to.getFullname()));
+        
+        game.getGameJoinManager().runPlayerTeamSwitch(targetMwPlayer, to);
+    }
 
     @Subcommand("paste")
-    @CommandCompletion("@missiles")
+    @CommandCompletion("@missiles @nothing")
     @CommandPermission("mw.paste")
     public void pasteCommand(CommandSender sender, String[] args) {
 
@@ -136,7 +234,7 @@ public class MWCommands extends BaseCommand {
     }
 
     @Subcommand("start")
-    @CommandCompletion("@games")
+    @CommandCompletion("@games @nothing")
     @CommandPermission("mw.start")
     public void startCommand(CommandSender sender, String[] args) {
 
@@ -184,7 +282,7 @@ public class MWCommands extends BaseCommand {
     }
 
     @Subcommand("stop")
-    @CommandCompletion("@games")
+    @CommandCompletion("@games @nothing")
     @CommandPermission("mw.stop")
     public void stopCommand(CommandSender sender, String[] args) {
 
@@ -219,7 +317,7 @@ public class MWCommands extends BaseCommand {
     }
 
     @Subcommand("appendrestart")
-    @CommandCompletion("@games")
+    @CommandCompletion("@games @nothing")
     @CommandPermission("mw.appendrestart")
     public void appendrestartCommand(CommandSender sender, String[] args) {
 
