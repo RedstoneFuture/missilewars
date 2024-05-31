@@ -116,6 +116,7 @@ public class Messages {
         COMMAND_ANTISPAM_TEAM_CHANGE("command.antispam.team_change", "&cYou have to wait %seconds% seconds before being able to change the team again."),
         
         GAME_PLAYER_JOINED("game.player_joined", "&e%player% &7joined the game (%team%&7)."),
+        GAME_PLAYER_SWITCHED("game.player_switched", "&e%player% &7switched the team (%from%&7 → %to%&7)."),
         GAME_PLAYER_LEFT("game.player_left", "&e%player% &7left the game (%team%&7)."),
         GAME_LEFT("game.left", "&7You left the running MissileWars game."),
         GAME_NOT_IN_GAME_AREA("game.not_in_game_area", "&cYou are not in an arena right now."),
@@ -134,6 +135,7 @@ public class Messages {
         ENDGAME_TIMER_GAME_STARTS_NEW_IN("endgame_timer.game_starts_new_in", "&7Game starts new in &e%seconds% &7seconds."),
 
         LOBBY_PLAYER_JOINED("lobby.player_joined", "&e%player% &7joined the game &8(&7%players%&8/&7%max_players%&8)"),
+        LOBBY_PLAYER_SWITCHED("lobby.player_switched", "&e%player% &7rejoined the game &8(&7%players%&8/&7%max_players%&8)"),
         LOBBY_PLAYER_LEFT("lobby.player_left", "&e%player% &7left the game &8(&7%players%&8/&7%max_players%&8)"),
         LOBBY_LEFT("lobby.left", "&7You left the MissileWars lobby."),
         LOBBY_NOT_ENOUGH_PLAYERS("lobby.not_enough_players", "&cThere are not enough players online."),
@@ -154,8 +156,8 @@ public class Messages {
         TEAM_SPECTATOR_TEAM_MAX_REACHED("team.spectator_team.max_reached", "&cThe maximum number of spectators has been reached."),
         TEAM_ALL_TEAMMATES_OFFLINE("team.all_teammates_offline", "&7Everyone from %team% &7is offline."),
         TEAM_HURT_TEAMMATES("team.hurt_teammates", "&cYou must not hurt your teammates."),
-        TEAM_MOVE_MOVED_SENDER("team.move.moved.sender", "&7You moved the player %player% from %from%&7 to %to%&7."),
-        TEAM_MOVE_MOVED_TARGET("team.move.moved.target", "&cYou was moved from %sender% to another game team."),
+        TEAM_MOVE_MOVED_SENDER("team.move.moved.sender", "&7You moved %player% in another team."),
+        TEAM_MOVE_MOVED_TARGET("team.move.moved.target", "&cYou was moved from %sender% to another team."),
 
         ARENA_ARENA_LEAVE("arena.arena_leave", "&cYou are not allowed to leave the arena."),
         ARENA_MISSILE_PLACE_DENY("arena.missile_place_deny", "&cYou are not allowed to place a missile here."),
