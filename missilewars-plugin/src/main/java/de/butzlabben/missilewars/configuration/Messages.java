@@ -112,7 +112,7 @@ public class Messages {
         COMMAND_INVALID_MAP("command.invalid_map", "&cThe specified map %input% was not found for this MissileWars game."),
         COMMAND_INVALID_TEAM("command.invalid_team", "&cThe team selection is invalid. Use \"1\" or \"2\" to join on of the player-teams or use \"spec\" to enter the game as spectator."),
         COMMAND_INVALID_PLAYER_NOT_ONLINE("command.invalid_player.not_online", "&cThe specified player %input% is not online on this server."),
-        COMMAND_INVALID_PLAYER_NOT_IN_GAME("command.invalid_player.not_in_game", "&cThe specified player %input% was not found in this MissileWars game."),
+        COMMAND_INVALID_PLAYER_NOT_IN_GAME("command.invalid_player.not_in_game", "&cThe specified player %input% is not in this MissileWars game."),
         COMMAND_ANTISPAM_TEAM_CHANGE("command.antispam.team_change", "&cYou have to wait %seconds% seconds before being able to change the team again."),
         
         GAME_PLAYER_JOINED("game.player_joined", "&e%player% &7joined the game (%team%&7)."),
@@ -154,7 +154,7 @@ public class Messages {
         TEAM_SPECTATOR_TEAM_MAX_REACHED("team.spectator_team.max_reached", "&cThe maximum number of spectators has been reached."),
         TEAM_ALL_TEAMMATES_OFFLINE("team.all_teammates_offline", "&7Everyone from %team% &7is offline."),
         TEAM_HURT_TEAMMATES("team.hurt_teammates", "&cYou must not hurt your teammates."),
-        TEAM_MOVE_MOVED_SENDER("team.move.moved.sender", "&7You moved player %player% from %from%&7 to %to%&7."),
+        TEAM_MOVE_MOVED_SENDER("team.move.moved.sender", "&7You moved the player %player% from %from%&7 to %to%&7."),
         TEAM_MOVE_MOVED_TARGET("team.move.moved.target", "&cYou was moved from %sender% to another game team."),
 
         ARENA_ARENA_LEAVE("arena.arena_leave", "&cYou are not allowed to leave the arena."),
