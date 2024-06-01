@@ -303,7 +303,7 @@ public class GameListener extends GameBoundListener {
         if (player.getGameMode() != GameMode.SURVIVAL) return;
 
         int toY = event.getTo().getBlockY();
-        if (toY > getGame().getArena().getMaxHeight()) {
+        if (toY > getGame().getArena().getMaxMoveHeight()) {
             player.teleport(event.getFrom());
             player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.ARENA_NOT_HIGHER));
         } else if (toY < getGame().getArena().getDeathHeight()) {
