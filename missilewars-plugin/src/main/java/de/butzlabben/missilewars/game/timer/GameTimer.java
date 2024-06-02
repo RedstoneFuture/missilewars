@@ -20,6 +20,8 @@ package de.butzlabben.missilewars.game.timer;
 
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.game.Game;
+import org.bukkit.GameMode;
+import org.bukkit.entity.Player;
 
 /**
  * @author Butzlabben
@@ -67,6 +69,18 @@ public class GameTimer extends Timer {
 
         if (seconds % 10 == 0) {
             game.getScoreboardManager().updateScoreboard();
+        }
+        
+        if (seconds % 4 == 0) {
+            game.getPlayers().values().forEach(mwPlayer -> {
+                if (mwPlayer.getPlayer().getGameMode() != GameMode.SURVIVAL) return;
+                
+                Player player = mwPlayer.getPlayer();
+                if (game.isInGameArea(player.getLocation())) return;
+                
+                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.ARENA_LEAVED));
+                mwPlayer.getTeam().teleportToTeamSpawn(player);
+            });
         }
 
         seconds--;

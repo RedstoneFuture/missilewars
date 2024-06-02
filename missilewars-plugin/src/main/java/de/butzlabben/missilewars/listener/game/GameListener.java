@@ -30,6 +30,7 @@ import de.butzlabben.missilewars.game.enums.JoinIngameBehavior;
 import de.butzlabben.missilewars.game.enums.RejoinIngameBehavior;
 import de.butzlabben.missilewars.game.enums.TeamType;
 import de.butzlabben.missilewars.game.misc.RespawnGoldBlock;
+import de.butzlabben.missilewars.game.misc.TeamSpawnProtection;
 import de.butzlabben.missilewars.game.schematics.objects.Missile;
 import de.butzlabben.missilewars.listener.ShieldListener;
 import de.butzlabben.missilewars.menus.inventory.TeamSelectionMenu;
@@ -187,7 +188,9 @@ public class GameListener extends GameBoundListener {
         Player player = event.getPlayer();
         Team team = getGame().getPlayer(player).getTeam();
 
-        if (team != null) {
+        if (team.getTeamType() == TeamType.PLAYER) {
+            TeamSpawnProtection.regenerateSpawn(team);
+            
             event.setRespawnLocation(team.getSpawn());
             getGame().getEquipmentManager().sendGameItems(player, true);
             getGame().setPlayerAttributes(player);
@@ -207,10 +210,11 @@ public class GameListener extends GameBoundListener {
         if (!isInGameWorld(event.getEntity().getLocation())) return;
 
         Player player = event.getEntity();
-        Team team = getGame().getPlayer(player).getTeam();
+        MWPlayer mwPlayer = getGame().getPlayer(player);
+        Team team = mwPlayer.getTeam();
 
         // check the death cause for choice the death message
-        if (team != null) {
+        if (team.getTeamType() == TeamType.PLAYER) {
 
             if (player.getLastDamageCause() == null) return;
 
@@ -227,7 +231,7 @@ public class GameListener extends GameBoundListener {
         }
 
         event.setDeathMessage(null);
-        if (getGame().getArena().isAutoRespawn()) getGame().autoRespawnPlayer(player);
+        if (getGame().getArena().isAutoRespawn()) getGame().autoRespawnPlayer(mwPlayer);
     }
 
     @EventHandler
@@ -303,7 +307,7 @@ public class GameListener extends GameBoundListener {
         if (player.getGameMode() != GameMode.SURVIVAL) return;
 
         int toY = event.getTo().getBlockY();
-        if (toY > getGame().getArena().getMaxHeight()) {
+        if (toY > getGame().getArena().getMaxMoveHeight()) {
             player.teleport(event.getFrom());
             player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.ARENA_NOT_HIGHER));
         } else if (toY < getGame().getArena().getDeathHeight()) {
@@ -316,7 +320,7 @@ public class GameListener extends GameBoundListener {
 
         if (!getGame().isInGameArea(event.getTo())) {
             if (to != null) Game.knockbackEffect(player, from, to);
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.ARENA_ARENA_LEAVE));
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.ARENA_REACHED_BORDER));
         }
     }
 
