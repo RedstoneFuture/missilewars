@@ -187,7 +187,9 @@ public class GameListener extends GameBoundListener {
         Player player = event.getPlayer();
         Team team = getGame().getPlayer(player).getTeam();
 
-        if (team != null) {
+        if (team.getTeamType() == TeamType.PLAYER) {
+            TeamSpawnProtection.generateSpawn(team);
+            
             event.setRespawnLocation(team.getSpawn());
             getGame().getEquipmentManager().sendGameItems(player, true);
             getGame().setPlayerAttributes(player);
@@ -207,10 +209,11 @@ public class GameListener extends GameBoundListener {
         if (!isInGameWorld(event.getEntity().getLocation())) return;
 
         Player player = event.getEntity();
-        Team team = getGame().getPlayer(player).getTeam();
+        MWPlayer mwPlayer = getGame().getPlayer(player);
+        Team team = mwPlayer.getTeam();
 
         // check the death cause for choice the death message
-        if (team != null) {
+        if (team.getTeamType() == TeamType.PLAYER) {
 
             if (player.getLastDamageCause() == null) return;
 
