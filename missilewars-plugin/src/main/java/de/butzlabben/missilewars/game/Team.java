@@ -23,6 +23,7 @@ import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.enums.TeamType;
+import de.butzlabben.missilewars.game.misc.TeamSpawnProtection;
 import de.butzlabben.missilewars.menus.MenuItem;
 import de.butzlabben.missilewars.player.MWPlayer;
 import de.butzlabben.missilewars.util.MoneyUtil;
@@ -36,7 +37,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
@@ -248,6 +248,11 @@ public class Team {
             default:
                 break;
         }
+    }
+    
+    public void teleportToTeamSpawn(Player player) {
+        TeamSpawnProtection.regenerateSpawn(this);
+        Game.teleportSafely(player, spawn);
     }
     
 }

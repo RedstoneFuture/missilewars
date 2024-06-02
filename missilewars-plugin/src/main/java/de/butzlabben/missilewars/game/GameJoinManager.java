@@ -153,7 +153,7 @@ public class GameJoinManager {
             return;
         }
         
-        player.teleport(mwPlayer.getTeam().getSpawn());
+        mwPlayer.getTeam().teleportToTeamSpawn(player);
         player.setGameMode(GameMode.SPECTATOR);
         
         runCountdownIntervall(player, "§e5");
@@ -176,7 +176,7 @@ public class GameJoinManager {
             return;
         }
         
-        player.teleport(mwPlayer.getTeam().getSpawn());
+        mwPlayer.getTeam().teleportToTeamSpawn(player);
         
         if (mwPlayer.getTeam().getTeamType() == TeamType.PLAYER) {
             // normal team-player join:

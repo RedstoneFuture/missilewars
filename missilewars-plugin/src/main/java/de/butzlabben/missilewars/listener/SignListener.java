@@ -54,7 +54,7 @@ public class SignListener implements Listener {
         Game game = GameManager.getInstance().getGame(sign.getLobby());
         if (game == null) return;
 
-        event.getPlayer().teleport(game.getLobby().getSpawnPoint());
+        game.teleportToLobbySpawn(event.getPlayer());
     }
 
     @EventHandler

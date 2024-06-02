@@ -33,6 +33,7 @@ import de.butzlabben.missilewars.game.enums.TeamType;
 import de.butzlabben.missilewars.game.equipment.EquipmentManager;
 import de.butzlabben.missilewars.game.misc.MotdManager;
 import de.butzlabben.missilewars.game.misc.ScoreboardManager;
+import de.butzlabben.missilewars.game.misc.TeamSpawnProtection;
 import de.butzlabben.missilewars.game.schematics.SchematicFacing;
 import de.butzlabben.missilewars.game.schematics.objects.Missile;
 import de.butzlabben.missilewars.game.schematics.objects.Shield;
@@ -423,12 +424,15 @@ public class Game {
     }
 
     /**
-     * This method respawns the player after short time.
+     * This method respawns the player after a short time.
      *
-     * @param player the target player
+     * @param mwPlayer the target MissileWars player
      */
-    public void autoRespawnPlayer(Player player) {
-        Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> player.spigot().respawn(), 20L);
+    public void autoRespawnPlayer(MWPlayer mwPlayer) {
+        Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> {
+            TeamSpawnProtection.regenerateSpawn(mwPlayer.getTeam());
+            mwPlayer.getPlayer().spigot().respawn();
+            }, 20L);
     }
 
     /**
@@ -717,18 +721,23 @@ public class Game {
     }
 
     public void teleportToFallbackSpawn(Player player) {
-        player.teleport(Config.getFallbackSpawn());
+        teleportSafely(player, Config.getFallbackSpawn());
     }
 
     public void teleportToLobbySpawn(Player player) {
-        player.teleport(lobby.getSpawnPoint());
+        teleportSafely(player, lobby.getSpawnPoint());
     }
 
     public void teleportToArenaSpectatorSpawn(Player player) {
-        player.teleport(arena.getSpectatorSpawn());
+        teleportSafely(player, arena.getSpectatorSpawn());
     }
 
     public void teleportToAfterGameSpawn(Player player) {
-        player.teleport(lobby.getAfterGameSpawn());
+        teleportSafely(player, lobby.getAfterGameSpawn());
+    }
+    
+    public static void teleportSafely(Player player, Location targetLocation) {
+        player.setVelocity(new Vector(0, 0, 0));
+        player.teleport(targetLocation);
     }
 }

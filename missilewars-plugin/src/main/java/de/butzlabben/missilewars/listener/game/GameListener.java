@@ -30,6 +30,7 @@ import de.butzlabben.missilewars.game.enums.JoinIngameBehavior;
 import de.butzlabben.missilewars.game.enums.RejoinIngameBehavior;
 import de.butzlabben.missilewars.game.enums.TeamType;
 import de.butzlabben.missilewars.game.misc.RespawnGoldBlock;
+import de.butzlabben.missilewars.game.misc.TeamSpawnProtection;
 import de.butzlabben.missilewars.game.schematics.objects.Missile;
 import de.butzlabben.missilewars.listener.ShieldListener;
 import de.butzlabben.missilewars.menus.inventory.TeamSelectionMenu;
@@ -188,7 +189,7 @@ public class GameListener extends GameBoundListener {
         Team team = getGame().getPlayer(player).getTeam();
 
         if (team.getTeamType() == TeamType.PLAYER) {
-            TeamSpawnProtection.generateSpawn(team);
+            TeamSpawnProtection.regenerateSpawn(team);
             
             event.setRespawnLocation(team.getSpawn());
             getGame().getEquipmentManager().sendGameItems(player, true);
@@ -230,7 +231,7 @@ public class GameListener extends GameBoundListener {
         }
 
         event.setDeathMessage(null);
-        if (getGame().getArena().isAutoRespawn()) getGame().autoRespawnPlayer(player);
+        if (getGame().getArena().isAutoRespawn()) getGame().autoRespawnPlayer(mwPlayer);
     }
 
     @EventHandler
@@ -319,7 +320,7 @@ public class GameListener extends GameBoundListener {
 
         if (!getGame().isInGameArea(event.getTo())) {
             if (to != null) Game.knockbackEffect(player, from, to);
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.ARENA_ARENA_LEAVE));
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.ARENA_REACHED_BORDER));
         }
     }
 
