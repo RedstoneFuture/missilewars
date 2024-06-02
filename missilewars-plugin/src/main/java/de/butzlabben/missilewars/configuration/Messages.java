@@ -159,7 +159,8 @@ public class Messages {
         TEAM_MOVE_MOVED_SENDER("team.move.moved.sender", "&7You moved %player% in another team."),
         TEAM_MOVE_MOVED_TARGET("team.move.moved.target", "&cYou was moved from %sender% to another team."),
 
-        ARENA_ARENA_LEAVE("arena.arena_leave", "&cYou are not allowed to leave the arena."),
+        ARENA_REACHED_BORDER("arena.reached_border", "&cYou are not allowed to leave the game-arena."),
+        ARENA_LEAVED("arena.leaved", "&cYou overstepped the game-arena border and were teleported back to your team-spawn."),
         ARENA_MISSILE_PLACE_DENY("arena.missile_place_deny", "&cYou are not allowed to place a missile here."),
         ARENA_NOT_HIGHER("arena.not_higher", "&cYou can not go higher."),
         ARENA_KICK_INACTIVITY("arena.kick_inactivity", "&cYou were inactive on MissileWars."),
