@@ -81,6 +81,7 @@ public class Game {
     private final MapVoting mapVoting = new MapVoting(this);
     private final Lobby lobby;
     private final Map<UUID, BukkitTask> playerTasks = new HashMap<>();
+    private final List<Location> portalBlocks = new ArrayList<>();
     private GameState state = GameState.LOBBY;
     private TeamManager teamManager;
     private boolean ready = false;
@@ -531,8 +532,43 @@ public class Game {
         }
 
         createInnerGameArea();
+        
+        savePortalPositions();
     }
 
+    /**
+     * This method goes through all blocks within the arena and saves the portal 
+     * block positions so that they can be checked regularly during the game.
+     */
+    private void savePortalPositions() {
+        
+        long startTime = System.currentTimeMillis();
+        
+        int minX = gameArea.getMinX();
+        int minY = gameArea.getMinY();
+        int minZ = gameArea.getMinZ();
+        
+        int maxX = gameArea.getMaxX();
+        int maxY = gameArea.getMaxY();
+        int maxZ = gameArea.getMaxZ();
+        
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                for (int z = minZ; z <= maxZ; z++) {
+                    
+                    if (gameWorld.getWorld().getBlockAt(x, y, z).getType() == Material.NETHER_PORTAL) 
+                        portalBlocks.add(new Location(gameWorld.getWorld(), x, y, z));
+                }
+            }
+        }
+        
+        long endTime = System.currentTimeMillis();
+        
+        Logger.DEBUG.log("[Portal Position-Cache] Time reached for Portal-Counting: " + (endTime - startTime) + " ms.");
+        Logger.DEBUG.log("[Portal Position-Cache] Founded " + portalBlocks.size() + " Portal blocks.");
+    
+    }
+    
     private void createInnerGameArea() {
 
         // Depending on the rotation of the (major) Game-Area, the spawn points 
@@ -739,5 +775,47 @@ public class Game {
     public static void teleportSafely(Player player, Location targetLocation) {
         player.setVelocity(new Vector(0, 0, 0));
         player.teleport(targetLocation);
+    }
+
+    /**
+     * This method checks all previously saved portal positions to see whether the 
+     * portals are still intact. If not, the game-end is initiated.
+     * 
+     * This could be a more performant version than using the high-frequency 
+     * "BlockPhysicsEvent" event-listener.
+     */
+    public void checkPortals() {
+        
+        for (Location location : portalBlocks) {
+            
+            if (location.getBlock().getType() == Material.NETHER_PORTAL) continue;
+            
+            runWinnerCheck(location);
+            return;
+        }
+    }
+
+    /**
+     * This method determines the winning team based on the position of the destroyed 
+     * portal and brings the game to the game-phase "END".
+     * 
+     * @param location (Location) the (first) detected portal-block location
+     */
+    private void runWinnerCheck(Location location) {
+        
+        Team team1 = getTeamManager().getTeam1();
+        Team team2 = getTeamManager().getTeam2();
+        
+        if (Geometry.isCloser(location, team1.getSpawn(), team2.getSpawn())) {
+            team1.setGameResult(GameResult.LOSE);
+            team2.setGameResult(GameResult.WIN);
+        } else {
+            team1.setGameResult(GameResult.WIN);
+            team2.setGameResult(GameResult.LOSE);
+        }
+
+        sendGameResult();
+        stopGame();
+    
     }
 }

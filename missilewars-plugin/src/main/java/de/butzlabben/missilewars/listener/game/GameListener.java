@@ -25,7 +25,6 @@ import de.butzlabben.missilewars.event.PlayerArenaJoinEvent;
 import de.butzlabben.missilewars.event.PlayerArenaLeaveEvent;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.Team;
-import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.enums.JoinIngameBehavior;
 import de.butzlabben.missilewars.game.enums.RejoinIngameBehavior;
 import de.butzlabben.missilewars.game.enums.TeamType;
@@ -35,7 +34,6 @@ import de.butzlabben.missilewars.game.schematics.objects.Missile;
 import de.butzlabben.missilewars.listener.ShieldListener;
 import de.butzlabben.missilewars.menus.inventory.TeamSelectionMenu;
 import de.butzlabben.missilewars.player.MWPlayer;
-import de.butzlabben.missilewars.util.geometry.Geometry;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -46,7 +44,6 @@ import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -75,29 +72,6 @@ public class GameListener extends GameBoundListener {
         if (getGame().getArena().getFireballConfiguration().isDestroysPortal()) return;
 
         event.blockList().removeIf(b -> b.getType() == Material.NETHER_PORTAL);
-    }
-
-    @EventHandler
-    public void onBlockPhysics(BlockPhysicsEvent event) {
-        if (!isInGameWorld(event.getBlock().getLocation())) return;
-
-        if (event.getChangedType() != Material.NETHER_PORTAL) return;
-
-        Location location = event.getBlock().getLocation();
-
-        Team team1 = getGame().getTeamManager().getTeam1();
-        Team team2 = getGame().getTeamManager().getTeam2();
-
-        if (Geometry.isCloser(location, team1.getSpawn(), team2.getSpawn())) {
-            team1.setGameResult(GameResult.LOSE);
-            team2.setGameResult(GameResult.WIN);
-        } else {
-            team1.setGameResult(GameResult.WIN);
-            team2.setGameResult(GameResult.LOSE);
-        }
-
-        getGame().sendGameResult();
-        getGame().stopGame();
     }
 
     @EventHandler

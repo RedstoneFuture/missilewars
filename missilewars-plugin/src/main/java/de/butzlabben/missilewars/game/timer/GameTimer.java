@@ -85,6 +85,8 @@ public class GameTimer extends Timer {
             });
         }
 
+        game.checkPortals();
+
         seconds--;
     }
 }
