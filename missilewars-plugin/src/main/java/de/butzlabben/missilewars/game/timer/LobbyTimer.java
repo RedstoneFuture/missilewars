@@ -73,13 +73,15 @@ public class LobbyTimer extends Timer implements Runnable {
             case 3:
             case 2:
             case 1:
-                broadcast(Messages.getMessage(true, Messages.MessageEnum.LOBBY_TIMER_GAME_STARTS_IN).replace("%seconds%", Integer.toString(seconds)));
+                broadcast(Messages.getMessage(true, Messages.MessageEnum.LOBBY_TIMER_GAME_STARTS_IN)
+                        .replace("%seconds%", Integer.toString(seconds)));
                 playPling();
                 break;
             case 10:
                 if (getGame().getLobby().getMapChooseProcedure() == MapChooseProcedure.MAPVOTING)
                     getGame().getMapVoting().setVotedArena();
-                broadcast(Messages.getMessage(true, Messages.MessageEnum.LOBBY_TIMER_GAME_STARTS_IN).replace("%seconds%", Integer.toString(seconds)));
+                broadcast(Messages.getMessage(true, Messages.MessageEnum.LOBBY_TIMER_GAME_STARTS_IN)
+                        .replace("%seconds%", Integer.toString(seconds)));
                 playPling();
                 break;
             case 0:
