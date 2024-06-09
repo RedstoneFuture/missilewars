@@ -34,9 +34,7 @@ import de.butzlabben.missilewars.game.schematics.objects.Missile;
 import de.butzlabben.missilewars.listener.ShieldListener;
 import de.butzlabben.missilewars.menus.inventory.TeamSelectionMenu;
 import de.butzlabben.missilewars.player.MWPlayer;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -77,11 +75,24 @@ public class GameListener extends GameBoundListener {
     @EventHandler
     public void onInteract(PlayerInteractEvent event) {
         if (!isInGameWorld(event.getPlayer().getLocation())) return;
-
+        
+        Player player = event.getPlayer();
+        if (player.getGameMode() == GameMode.CREATIVE) return;
+        
+        // Interaction Cancelling for some objects:
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (isSignMaterial(event.getClickedBlock().getType())) {
+                event.setCancelled(true);
+                Logger.DEBUG.log("Cancelling of interaction with '#ALL_SIGNS' (Gamemode: " + player.getGameMode().name() + ").");
+                return;
+            }
+        }
+        
+        // Game-Item handling:
+        
         if (event.getItem() == null) return;
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-
-        Player player = event.getPlayer();
+        
         ItemStack itemStack = event.getItem();
 
         // missile spawn with using of a missile spawn egg
