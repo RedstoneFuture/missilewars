@@ -619,49 +619,11 @@ public class Game {
      * customized message.
      */
     public void sendGameResult() {
-
-        for (Player player : gameWorld.getWorld().getPlayers()) {
-            MWPlayer mwPlayer = getPlayer(player);
-            Team team = mwPlayer.getTeam();
-            
-            if (team.getTeamType() == TeamType.PLAYER) {
-                team.sendMoney(mwPlayer);
-                team.sendGameResultTitle(mwPlayer);
-                team.sendGameResultSound(mwPlayer);
-            } else {
-                sendNeutralGameResultTitle(player);
-            }
-            
-        }
+        GameResultManager resultManager = new GameResultManager(this);
+        resultManager.executeResult();
+        
     }
-
-    /**
-     * This method sends the players the title / subtitle of the
-     * game result there are not in a team (= spectator).
-     */
-    public void sendNeutralGameResultTitle(Player player) {
-        String title;
-        String subTitle;
-
-        if (teamManager.getTeam1().getGameResult() == GameResult.WIN) {
-            title = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_TITLE_WON)
-                    .replace("%team%", teamManager.getTeam1().getName());
-            subTitle = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_SUBTITLE_WON);
-
-        } else if (teamManager.getTeam2().getGameResult() == GameResult.WIN) {
-            title = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_TITLE_WON)
-                    .replace("%team%", teamManager.getTeam2().getName());
-            subTitle = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_SUBTITLE_WON);
-
-        } else {
-            title = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_TITLE_DRAW);
-            subTitle = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_SUBTITLE_DRAW);
-
-        }
-
-        player.sendTitle(title, subTitle);
-    }
-
+    
     /**
      * This method updates the MissileWars signs and the scoreboard.
      */
