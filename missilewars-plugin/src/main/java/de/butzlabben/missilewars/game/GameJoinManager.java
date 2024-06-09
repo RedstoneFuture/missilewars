@@ -177,6 +177,11 @@ public class GameJoinManager {
         }
         
         mwPlayer.getTeam().teleportToTeamSpawn(player);
+        if (isGameJoin) {
+            mwPlayer.getPlayer().playSound(mwPlayer.getPlayer().getLocation(), Sound.ITEM_TRIDENT_THUNDER, 0.6f, 1.4f);
+        } else {
+            mwPlayer.getPlayer().playSound(mwPlayer.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 100, 3);
+        }
         
         if (mwPlayer.getTeam().getTeamType() == TeamType.PLAYER) {
             // normal team-player join:

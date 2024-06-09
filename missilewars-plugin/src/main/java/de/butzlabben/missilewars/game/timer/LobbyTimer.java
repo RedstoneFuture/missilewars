@@ -111,7 +111,6 @@ public class LobbyTimer extends Timer implements Runnable {
      */
     public void executeGameStart() {
         broadcast(Messages.getMessage(true, Messages.MessageEnum.GAME_GAME_STARTS));
-        playPling();
         getGame().startGame();
     }
     
