@@ -18,8 +18,12 @@
 
 package de.butzlabben.missilewars.game.timer;
 
+import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.game.Game;
+import de.butzlabben.missilewars.game.enums.TeamType;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
@@ -28,7 +32,9 @@ import org.bukkit.entity.Player;
  * @since 06.01.2018
  */
 public class GameTimer extends Timer {
-
+    
+    int actionbarMsgCounter = 0;
+    
     public GameTimer(Game game) {
         super(game);
         seconds = game.getArena().getGameDuration() * 60;
@@ -69,20 +75,42 @@ public class GameTimer extends Timer {
                 break;
         }
 
-        if (seconds % 10 == 0) {
+        if (seconds % 5 == 0) {
             game.getScoreboardManager().updateScoreboard();
+            
+            game.getPlayers().values().forEach(mwPlayer -> {
+                Player player = mwPlayer.getPlayer();
+                
+                if (mwPlayer.getTeam().getTeamType() == TeamType.PLAYER) {
+                    
+                    if (mwPlayer.getPlayer().getGameMode() != GameMode.SURVIVAL) return;
+                    
+                    if (game.isInGameArea(player.getLocation())) return;
+                    
+                    player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.ARENA_LEAVED));
+                    mwPlayer.getTeam().teleportToTeamSpawn(player);
+                    
+                }
+            
+            });
         }
         
-        if (seconds % 4 == 0) {
+        if ((Config.getActionbarForSpecEntries().length > 0) && (seconds % Config.getActionbarForSpecDelay() == 0)) {
             game.getPlayers().values().forEach(mwPlayer -> {
-                if (mwPlayer.getPlayer().getGameMode() != GameMode.SURVIVAL) return;
-                
                 Player player = mwPlayer.getPlayer();
-                if (game.isInGameArea(player.getLocation())) return;
                 
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.ARENA_LEAVED));
-                mwPlayer.getTeam().teleportToTeamSpawn(player);
+                if (mwPlayer.getTeam().getTeamType() == TeamType.PLAYER) return;
+                
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, 
+                        TextComponent.fromLegacyText(Config.getActionbarForSpecEntries()[actionbarMsgCounter]));
             });
+            
+            // Array-Iteration:
+            if (actionbarMsgCounter >= Config.getActionbarForSpecEntries().length - 1) {
+                actionbarMsgCounter = 0;
+            } else {
+                actionbarMsgCounter++;
+            }
         }
 
         game.checkPortals();

@@ -241,7 +241,7 @@ public class Messages {
      * to the final text message.
      * 
      * @param messageList the target message list
-     * @return (String) the converted message list
+     * @return (List of Strings) the converted message list
      */
     public static List<String> getConvertedMsgList(List<String> messageList) {
         List<String> convertedMsgList = new ArrayList<>();
@@ -249,6 +249,18 @@ public class Messages {
             convertedMsgList.add(getConvertedMsg(message));
         }
         return convertedMsgList;
+    }
+    
+    /**
+     * This method returns the desired message array. 
+     * Legacy color-codes with '&' will be converted 
+     * to the final text message.
+     * 
+     * @param messageList the target message list
+     * @return (String[]) the converted message array
+     */
+    public static String[] getConvertedMsgArray(List<String> messageList) {
+        return getConvertedMsgList(messageList).toArray(String[]::new);
     }
     
     public static String getPapiMessage(String message, Player player) {

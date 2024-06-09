@@ -131,6 +131,17 @@ public class Config {
                 add("");
                 add("%team2% &7» %team2_color%%team2_amount%");
             }});
+            
+        }
+        
+        cfg.addDefault("actionbar_msg.spectator.delay", 6);
+        
+        if (isNewConfig) {
+            
+            cfg.set("actionbar_msg.spectator.messages", new ArrayList<String>() {{
+                add("&eChoose your team to join: &7/mw teammenu");
+            }});
+            
         }
 
         String gameJoinMenu = "menus.hotbar_menu.game_join_menu";
@@ -402,6 +413,14 @@ public class Config {
     
     public static List<String> getScoreboardEntries() {
         return Messages.getConvertedMsgList(cfg.getStringList("sidebar.entries"));
+    }
+    
+    public static int getActionbarForSpecDelay() {
+        return cfg.getInt("actionbar_msg.spectator.delay");
+    }
+    
+    public static String[] getActionbarForSpecEntries() {
+        return Messages.getConvertedMsgArray(cfg.getStringList("actionbar_msg.spectator.messages"));
     }
     
     public static Map<Integer, Map<Integer, MenuItem>> getGameJoinMenuItems() {
