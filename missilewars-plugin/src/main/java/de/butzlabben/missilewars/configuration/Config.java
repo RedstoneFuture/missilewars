@@ -92,6 +92,8 @@ public class Config {
         cfg.addDefault("replace.material", JUKEBOX.name());
         cfg.addDefault("replace.after_ticks", 2);
         cfg.addDefault("replace.radius", 15);
+        
+        cfg.addDefault("game_result.firework", true);
 
         cfg.addDefault("motd.enable", true);
         cfg.addDefault("motd.lobby", "&6•&e● MissileWars &7| &eLobby");
@@ -325,6 +327,10 @@ public class Config {
 
     public static int getReplaceRadius() {
         return cfg.getInt("replace.radius");
+    }
+    
+    public static boolean isGameResultFirework() {
+        return cfg.getBoolean("game_result.firework");
     }
 
     public static String motdEnded() {

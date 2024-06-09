@@ -1,6 +1,7 @@
 package de.butzlabben.missilewars.game;
 
 import de.butzlabben.missilewars.MissileWars;
+import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.enums.TeamType;
@@ -42,9 +43,12 @@ public class GameResultManager {
             }
         }
         
-        Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> spawnSetOfFireworks(20), 10);
+        if (!Config.isGameResultFirework()) return;
+        
+        Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> spawnSetOfFireworks(15), 10);
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> spawnSetOfFireworks(20), 40);
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> spawnSetOfFireworks(20), 70);
+        Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> spawnSetOfFireworks(15), 100);
         
     }
     
@@ -158,7 +162,7 @@ public class GameResultManager {
     }
     
     private void spawnFirework() {
-        Color winnerTeamColor = null;
+        Color winnerTeamColor;
         
         if (teamManager.getTeam1().getGameResult() == GameResult.WIN) {
             winnerTeamColor = ColorConverter.getColorFromCode(teamManager.getTeam1().getColorCode());
@@ -166,6 +170,9 @@ public class GameResultManager {
         } else if (teamManager.getTeam2().getGameResult() == GameResult.WIN) {
             winnerTeamColor = ColorConverter.getColorFromCode(teamManager.getTeam2().getColorCode());
         
+        } else {
+            return;
+            
         }
         
         Firework firework = game.getGameWorld().getWorld().spawn(game.getArena().getSpectatorSpawn(), Firework.class);
@@ -176,18 +183,25 @@ public class GameResultManager {
         Random random = new Random();
         
         // Create the effect:
-        FireworkEffect.Builder effectBuilder = FireworkEffect.builder()
+        // https://minecraft.tools/en/firework.php
+        
+        FireworkEffect.Builder effectBuilder1 = FireworkEffect.builder()
                 .flicker(true)
                 .trail(true)
-                .with(FireworkEffect.Type.BALL);
-        if (winnerTeamColor != null) {
-            effectBuilder.withColor(ColorUtil.darkenColor(winnerTeamColor, 0.1));
-            effectBuilder.withFade(ColorUtil.darkenColor(winnerTeamColor, 0.5));
-        }
+                .with(FireworkEffect.Type.BALL)
+                .withColor(ColorUtil.darkenColor(winnerTeamColor, 0.1))
+                .withFade(ColorUtil.lightenColor(winnerTeamColor, 0.6));
+        
+        FireworkEffect.Builder effectBuilder2 = FireworkEffect.builder()
+                .flicker(false)
+                .trail(false)
+                .with(FireworkEffect.Type.BURST)
+                .withColor(ColorUtil.darkenColor(winnerTeamColor, 0.5))
+                .withFade(ColorUtil.lightenColor(winnerTeamColor, 0.2));
         
         // Add the effect. (Multiple effects can be added.)
-        fireworkMeta.addEffect(effectBuilder.build());
-        fireworkMeta.setPower(random.nextInt(1, 10));
+        fireworkMeta.addEffects(effectBuilder1.build(), effectBuilder2.build());
+        fireworkMeta.setPower(random.nextInt(1, 7));
         firework.setFireworkMeta(fireworkMeta);
         
         // Flight behavior:
