@@ -22,8 +22,7 @@ import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.enums.TeamType;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
+import de.butzlabben.missilewars.util.PlayerUtil;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
@@ -100,9 +99,7 @@ public class GameTimer extends Timer {
                 Player player = mwPlayer.getPlayer();
                 
                 if (mwPlayer.getTeam().getTeamType() == TeamType.PLAYER) return;
-                
-                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, 
-                        TextComponent.fromLegacyText(Config.getActionbarForSpecEntries()[actionbarMsgCounter]));
+                PlayerUtil.sendActionbarMsg(player, Config.getActionbarForSpecEntries()[actionbarMsgCounter]);
             });
             
             // Array-Iteration:

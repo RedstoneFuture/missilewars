@@ -48,6 +48,7 @@ import de.butzlabben.missilewars.listener.game.GameBoundListener;
 import de.butzlabben.missilewars.listener.game.GameListener;
 import de.butzlabben.missilewars.listener.game.LobbyListener;
 import de.butzlabben.missilewars.player.MWPlayer;
+import de.butzlabben.missilewars.util.PlayerUtil;
 import de.butzlabben.missilewars.util.geometry.GameArea;
 import de.butzlabben.missilewars.util.geometry.Geometry;
 import de.butzlabben.missilewars.util.serialization.Serializer;
@@ -757,26 +758,21 @@ public class Game {
     }
 
     public void teleportToFallbackSpawn(Player player) {
-        teleportSafely(player, Config.getFallbackSpawn());
+        PlayerUtil.teleportSafely(player, Config.getFallbackSpawn());
     }
 
     public void teleportToLobbySpawn(Player player) {
-        teleportSafely(player, lobby.getSpawnPoint());
+        PlayerUtil.teleportSafely(player, lobby.getSpawnPoint());
     }
 
     public void teleportToArenaSpectatorSpawn(Player player) {
-        teleportSafely(player, arena.getSpectatorSpawn());
+        PlayerUtil.teleportSafely(player, arena.getSpectatorSpawn());
     }
 
     public void teleportToAfterGameSpawn(Player player) {
-        teleportSafely(player, lobby.getAfterGameSpawn());
+        PlayerUtil.teleportSafely(player, lobby.getAfterGameSpawn());
     }
     
-    public static void teleportSafely(Player player, Location targetLocation) {
-        player.setVelocity(new Vector(0, 0, 0));
-        player.teleport(targetLocation);
-    }
-
     /**
      * This method checks all previously saved portal positions to see whether the 
      * portals are still intact. If not, the game-end is initiated.

@@ -27,6 +27,7 @@ import de.butzlabben.missilewars.game.misc.TeamSpawnProtection;
 import de.butzlabben.missilewars.menus.MenuItem;
 import de.butzlabben.missilewars.player.MWPlayer;
 import de.butzlabben.missilewars.util.MoneyUtil;
+import de.butzlabben.missilewars.util.PlayerUtil;
 import de.butzlabben.missilewars.util.version.ColorConverter;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -252,7 +253,7 @@ public class Team {
     
     public void teleportToTeamSpawn(Player player) {
         TeamSpawnProtection.regenerateSpawn(this);
-        Game.teleportSafely(player, spawn);
+        PlayerUtil.teleportSafely(player, spawn);
     }
     
 }
