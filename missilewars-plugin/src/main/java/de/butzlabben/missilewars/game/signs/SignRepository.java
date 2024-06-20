@@ -78,7 +78,7 @@ public class SignRepository {
                  JsonReader reader = new JsonReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
                 return gson.fromJson(reader, SignRepository.class);
             } catch (IOException e) {
-                Logger.WARN.log("Could not load missilewars signs: Error: " + e.getMessage());
+                Logger.WARN.log("Could not load MissileWars signs: Error: " + e.getMessage());
             }
 
         }
@@ -103,7 +103,7 @@ public class SignRepository {
             writer.setIndent("  ");
             gson.toJson(this, SignRepository.class, writer);
         } catch (Exception e) {
-            Logger.WARN.log("Could not save missilewars signs: Error: " + e.getMessage());
+            Logger.WARN.log("Could not save MissileWars signs: Error: " + e.getMessage());
         }
     }
 
