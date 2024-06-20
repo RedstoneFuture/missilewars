@@ -53,7 +53,10 @@ public class SignListener implements Listener {
         
         Game game = GameManager.getInstance().getGame(sign.getLobby());
         if (game == null) return;
-
+        
+        // Cancel the event so that the Vanilla sign-edit GUI is not opened before the teleport.
+        event.setCancelled(true);
+        
         game.teleportToLobbySpawn(event.getPlayer());
     }
 
