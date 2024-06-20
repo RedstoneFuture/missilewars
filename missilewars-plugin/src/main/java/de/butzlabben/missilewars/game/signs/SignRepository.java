@@ -89,10 +89,11 @@ public class SignRepository {
         return repository;
     }
 
-
-    public Optional<MWSign> getSign(Location location) {
-        return MissileWars.getInstance().getSignRepository().getSigns()
+    public MWSign getSign(Location location) {
+        Optional<MWSign> optional = MissileWars.getInstance().getSignRepository().getSigns()
                 .stream().filter(sign -> sign.isLocation(location)).findAny();
+
+        return optional.orElse(null);
     }
 
     public void saveData() {
