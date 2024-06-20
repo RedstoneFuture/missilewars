@@ -34,6 +34,7 @@ import de.butzlabben.missilewars.game.schematics.objects.Missile;
 import de.butzlabben.missilewars.listener.ShieldListener;
 import de.butzlabben.missilewars.menus.inventory.TeamSelectionMenu;
 import de.butzlabben.missilewars.player.MWPlayer;
+import de.butzlabben.missilewars.util.version.MaterialHelper;
 import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -81,7 +82,7 @@ public class GameListener extends GameBoundListener {
         
         // Interaction Cancelling for some objects:
         if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-            if (isSignMaterial(event.getClickedBlock().getType())) {
+            if (MaterialHelper.isSignMaterial(event.getClickedBlock().getType())) {
                 event.setCancelled(true);
                 Logger.DEBUG.log("Cancelling of interaction with '#ALL_SIGNS' (Gamemode: " + player.getGameMode().name() + ").");
                 return;

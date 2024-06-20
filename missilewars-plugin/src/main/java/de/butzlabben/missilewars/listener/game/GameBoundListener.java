@@ -29,10 +29,6 @@ public abstract class GameBoundListener implements Listener {
 
     private final Game game;
     
-    // https://jd.papermc.io/paper/1.20.4/org/bukkit/Tag.html#ALL_SIGNS
-    // https://minecraft.fandom.com/wiki/Tag#all_signs
-    Tag<Material> signMaterials = Bukkit.getTag(Tag.REGISTRY_BLOCKS, new NamespacedKey(NamespacedKey.MINECRAFT, "all_signs"), Material.class);
-
     protected GameBoundListener(Game game) {
         this.game = game;
     }
@@ -73,11 +69,5 @@ public abstract class GameBoundListener implements Listener {
 
         mwPlayer.setPlayerInteractEventCancel(true);
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> mwPlayer.setPlayerInteractEventCancel(false), 10);
-    }
-    
-    protected boolean isSignMaterial(Material material) {
-        if (signMaterials == null) return false;
-        
-        return signMaterials.isTagged(material);
     }
 }
