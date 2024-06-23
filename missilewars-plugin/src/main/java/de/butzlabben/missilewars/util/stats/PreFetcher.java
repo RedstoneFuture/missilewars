@@ -119,7 +119,6 @@ public class PreFetcher {
             return new PageGUICreator<>("§ePlayer statistics", names, (item) -> {
                 ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD);
                 SkullMeta sm = (SkullMeta) itemStack.getItemMeta();
-                //noinspection deprecation
                 sm.setOwner(item);
                 sm.setDisplayName(item);
                 itemStack.setItemMeta(sm);
