@@ -49,12 +49,9 @@ public class ShieldListener implements Listener {
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> {
             HandlerList.unregisterAll(this);
             
-            if (!ball.isDead()) {
-                game.spawnShield(player, ball);
-            } else {
-                Logger.WARN.log("Could not spawn the shield, because the snowball-entity is dead now. " + 
-                        "Check the 'fly_time' of the shield-configuration in this arena!");
-            }
+            // Is the snowball-entity dead because of an invalid 'fly_time' of the shield-configuration 
+            // or a projectile hit before.
+            if (!ball.isDead()) game.spawnShield(player, ball);
             
         }, game.getArena().getShieldConfiguration().getFlyTime());
     }
