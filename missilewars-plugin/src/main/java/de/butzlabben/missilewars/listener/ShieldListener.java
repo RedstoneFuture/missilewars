@@ -18,11 +18,11 @@
 
 package de.butzlabben.missilewars.listener;
 
+import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.game.Game;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
@@ -47,11 +47,15 @@ public class ShieldListener implements Listener {
         Bukkit.getPluginManager().registerEvents(this, MissileWars.getInstance());
 
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> {
+            HandlerList.unregisterAll(this);
+            
             if (!ball.isDead()) {
                 game.spawnShield(player, ball);
-                player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1, 1);
+            } else {
+                Logger.WARN.log("Could not spawn the shield, because the snowball-entity is dead now. " + 
+                        "Check the 'fly_time' of the shield-configuration in this arena!");
             }
-            HandlerList.unregisterAll(this);
+            
         }, game.getArena().getShieldConfiguration().getFlyTime());
     }
 

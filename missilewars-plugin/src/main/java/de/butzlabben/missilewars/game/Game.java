@@ -488,6 +488,7 @@ public class Game {
         }
         
         shield.paste(ball);
+        player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1, 1);
     }
 
     /**
