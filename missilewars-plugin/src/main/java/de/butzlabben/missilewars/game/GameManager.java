@@ -31,7 +31,9 @@ import org.bukkit.Location;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Getter
@@ -48,10 +50,10 @@ public class GameManager {
     }
 
     public void restartAll() {
-        var iterator = games.values().iterator();
-        //noinspection WhileLoopReplaceableByForEach
-        while (iterator.hasNext()) {
-            restartGame(iterator.next().getLobby(), false);
+        List<Game> gamesListCache = new ArrayList<>(games.values());
+        
+        for (Game game : gamesListCache) {
+            restartGame(game.getLobby(), false);
         }
     }
 
