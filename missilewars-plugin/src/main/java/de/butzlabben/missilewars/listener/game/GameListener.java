@@ -19,6 +19,7 @@
 package de.butzlabben.missilewars.listener.game;
 
 import de.butzlabben.missilewars.Logger;
+import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.configuration.arena.FallProtectionConfiguration;
 import de.butzlabben.missilewars.event.PlayerArenaJoinEvent;
@@ -42,6 +43,7 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -127,8 +129,17 @@ public class GameListener extends GameBoundListener {
         if (!(snowball.getShooter() instanceof Player)) return;
 
         Player shooter = (Player) snowball.getShooter();
-        ShieldListener shieldListener = new ShieldListener(shooter, getGame());
-        shieldListener.onThrow(event);
+        ShieldListener shieldListener = new ShieldListener(shooter, getGame(), snowball);
+        Bukkit.getPluginManager().registerEvents(shieldListener, MissileWars.getInstance());
+
+        Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> {
+            HandlerList.unregisterAll(shieldListener);
+            
+            // Is the snowball-entity dead because of an invalid 'fly_time' of the shield-configuration 
+            // or a projectile hit before.
+            if (!snowball.isDead()) getGame().spawnShield(shooter, snowball);
+            
+        }, getGame().getArena().getShieldConfiguration().getFlyTime());
     }
 
     @EventHandler
