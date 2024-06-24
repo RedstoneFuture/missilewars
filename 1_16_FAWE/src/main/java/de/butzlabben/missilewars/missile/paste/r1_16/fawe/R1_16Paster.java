@@ -19,18 +19,20 @@
 package de.butzlabben.missilewars.missile.paste.r1_16.fawe;
 
 import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
 import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
+import com.sk89q.worldedit.function.operation.Operation;
+import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.transform.AffineTransform;
 import com.sk89q.worldedit.regions.CuboidRegion;
+import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.World;
 import java.io.File;
-import java.util.HashSet;
 import java.util.Set;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
@@ -45,26 +47,24 @@ public class R1_16Paster {
         World weWorld = new BukkitWorld(world);
 
         try (Clipboard clipboard = ClipboardFormats.findByFile(schematic).load(schematic)) {
+            ClipboardHolder clipboardHolder = new ClipboardHolder(clipboard);
+            clipboardHolder.setTransform(new AffineTransform().rotateY(rotation));
+            Operation pasteBuilder = clipboardHolder
+                    .createPaste(weWorld)
+                    .to(fromBukkitVector(pos))
+                    .ignoreAirBlocks(true)
+                    .build();
 
-            AffineTransform transform = new AffineTransform();
-            transform = transform.rotateY(rotation);
+            Operations.completeBlindly(pasteBuilder);
 
-            clipboard.paste(weWorld, fromBukkitVector(pos), false, false, transform);
-
-            // Replace given blocks
-            Set<Block> replace = new HashSet<>();
-            Vector min = new Vector(pos.getX() - radius, pos.getY() - radius, pos.getZ() - radius);
-            Vector max = new Vector(pos.getX() + radius, pos.getY() + radius, pos.getZ() + radius);
-            for (BlockVector3 v : new CuboidRegion(fromBukkitVector(min), fromBukkitVector(max))) {
-                Block b = world.getBlockAt(v.getBlockX(), v.getBlockY(), v.getBlockZ());
-                if (b.getType() == replaceType) {
-                    replace.add(b);
-                }
-            }
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    replace.forEach(b -> b.setType(Material.AIR));
+                    Vector min = pos.subtract(new Vector(radius, radius, radius));
+                    Vector max = pos.add(new Vector(radius, radius, radius));
+                    weWorld.replaceBlocks(new CuboidRegion(fromBukkitVector(min), fromBukkitVector(max)),
+                    Set.of(BukkitAdapter.adapt(replaceType.createBlockData()).toBaseBlock()),
+                    BukkitAdapter.adapt(Material.AIR.createBlockData()));
                 }
             }.runTaskLater(plugin, replaceTicks);
 
