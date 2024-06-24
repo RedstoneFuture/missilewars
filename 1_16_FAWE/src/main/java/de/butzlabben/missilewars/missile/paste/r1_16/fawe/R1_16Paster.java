@@ -19,6 +19,7 @@
 package de.butzlabben.missilewars.missile.paste.r1_16.fawe;
 
 import com.sk89q.worldedit.EditSession;
+import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.extent.clipboard.Clipboard;
@@ -76,10 +77,12 @@ public class R1_16Paster {
     public void pasteSchematic(File schematic, Vector pos, org.bukkit.World world) {
         World weWorld = new BukkitWorld(world);
 
-        try (Clipboard clipboard = ClipboardFormats.findByFile(schematic).load(schematic)) {
-            EditSession editSession = clipboard.paste(weWorld, fromBukkitVector(pos), false, false, null);
-            editSession.flushQueue();
-
+        try (var clipboard = ClipboardFormats.findByFile(schematic).load(schematic);
+             var session = WorldEdit.getInstance().newEditSession(weWorld)) {
+            Operation paste = new ClipboardHolder(clipboard).createPaste(session).to(fromBukkitVector(pos))
+                    .ignoreAirBlocks(true)
+                    .build();
+            Operations.completeBlindly(paste);
         } catch (Exception e) {
             e.printStackTrace();
         }
