@@ -114,7 +114,7 @@ public class GameArea {
      * according to the current values. The assigned MIN and MAX
      * information can be used to later compare the GameArea more
      * easily with current live positions/areas. In addition, the
-     * area direction is calculated afterwards.
+     * area direction is calculated afterward.
      */
     private void initialize() {
 

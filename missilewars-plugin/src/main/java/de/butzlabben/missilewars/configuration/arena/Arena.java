@@ -57,16 +57,13 @@ public class Arena implements Cloneable {
     @Setter @SerializedName("area") private AreaConfiguration areaConfig = new AreaConfiguration(-30, 0, -72, 30, 256, 72);
     @SerializedName("teamchange_ongoing_game") private boolean teamchangeOngoingGame = false;
 
-    @SerializedName("spectator_spawn")
-    @Setter
+    @Setter @SerializedName("spectator_spawn")
     private Location spectatorSpawn = new Location(null, 0, 100, 0, 90, 0);
 
-    @SerializedName("team1_spawn")
-    @Setter
+    @Setter @SerializedName("team1_spawn")
     private Location team1Spawn = new Location(null, 0.5, 100, 45.5, 180, 0);
 
-    @SerializedName("team2_spawn")
-    @Setter
+    @Setter @SerializedName("team2_spawn")
     private Location team2Spawn = new Location(null, 0.5, 100, -45.5, 0, 0);
 
     // These values are only set after the Config has been read.
@@ -92,6 +89,12 @@ public class Arena implements Cloneable {
     }
 
     public void updateConfig() {
+        
+        // Prevent the (temporary) arena world from being saved as well.
+        spectatorSpawn.setWorld(null);
+        team1Spawn.setWorld(null);
+        team2Spawn.setWorld(null);
+        
         try {
             Serializer.serialize(file, this);
         } catch (IOException e) {

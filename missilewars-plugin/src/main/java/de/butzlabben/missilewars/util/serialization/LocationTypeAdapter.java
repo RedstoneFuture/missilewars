@@ -31,18 +31,19 @@ public class LocationTypeAdapter extends TypeAdapter<Location> {
 
     private final boolean serializeWorld;
 
+    /**
+     * This is the serializer for Bukkit Location objects. 
+     * 
+     * @param serializeWorld "true" if the world should also be serialized. Otherwise, it will not be saved.
+     */
     public LocationTypeAdapter(boolean serializeWorld) {
         this.serializeWorld = serializeWorld;
-    }
-
-    public LocationTypeAdapter() {
-        this(false);
     }
 
     @Override
     public void write(JsonWriter out, Location value) throws IOException {
         out.beginObject();
-        if (serializeWorld && value.getWorld() != null) {
+        if (serializeWorld && isValidWorld(value.getWorld())) {
             out.name("world").value(value.getWorld().getName());
         }
         out.name("x").value(value.getX());
@@ -64,8 +65,8 @@ public class LocationTypeAdapter extends TypeAdapter<Location> {
                     if (!serializeWorld) break;
                     String worldName = in.nextString();
                     World world = Bukkit.getWorld(worldName);
-                    if (world == null) {
-                        Logger.WARN.log("Could not find world \"" + worldName + "\" which is specified at one missilewars sign");
+                    if (!isValidWorld(world)) {
+                        Logger.WARN.log("Could not find world \"" + worldName + "\" which is specified at one MissileWars sign");
                     }
                     location.setWorld(world);
                     break;
@@ -89,5 +90,15 @@ public class LocationTypeAdapter extends TypeAdapter<Location> {
 
         in.endObject();
         return location;
+    }
+
+    /**
+     * This method checks whether the world exists on the server.
+     * 
+     * @param world the target Bukkit world
+     * @return "true", if it exists 
+     */
+    private boolean isValidWorld(World world) {
+        return (world != null);
     }
 }

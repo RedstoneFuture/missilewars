@@ -41,7 +41,7 @@ public class Serializer {
 
     static {
         gson = new GsonBuilder()
-                .registerTypeAdapter(Location.class, new LocationTypeAdapter())
+                .registerTypeAdapter(Location.class, new LocationTypeAdapter(true))
 //                .registerTypeAdapter(EntityType.class, new EntityTypeTypeAdapter())
                 .setPrettyPrinting()
                 .create();
