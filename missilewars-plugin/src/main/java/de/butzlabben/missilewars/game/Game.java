@@ -48,6 +48,7 @@ import de.butzlabben.missilewars.listener.game.GameBoundListener;
 import de.butzlabben.missilewars.listener.game.GameListener;
 import de.butzlabben.missilewars.listener.game.LobbyListener;
 import de.butzlabben.missilewars.player.MWPlayer;
+import de.butzlabben.missilewars.util.PlayerUtil;
 import de.butzlabben.missilewars.util.geometry.GameArea;
 import de.butzlabben.missilewars.util.geometry.Geometry;
 import de.butzlabben.missilewars.util.serialization.Serializer;
@@ -81,6 +82,7 @@ public class Game {
     private final MapVoting mapVoting = new MapVoting(this);
     private final Lobby lobby;
     private final Map<UUID, BukkitTask> playerTasks = new HashMap<>();
+    private final List<Location> portalBlocks = new ArrayList<>();
     private GameState state = GameState.LOBBY;
     private TeamManager teamManager;
     private boolean ready = false;
@@ -486,6 +488,7 @@ public class Game {
         }
         
         shield.paste(ball);
+        player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1, 1);
     }
 
     /**
@@ -531,8 +534,43 @@ public class Game {
         }
 
         createInnerGameArea();
+        
+        savePortalPositions();
     }
 
+    /**
+     * This method goes through all blocks within the arena and saves the portal 
+     * block positions so that they can be checked regularly during the game.
+     */
+    private void savePortalPositions() {
+        
+        long startTime = System.currentTimeMillis();
+        
+        int minX = gameArea.getMinX();
+        int minY = gameArea.getMinY();
+        int minZ = gameArea.getMinZ();
+        
+        int maxX = gameArea.getMaxX();
+        int maxY = gameArea.getMaxY();
+        int maxZ = gameArea.getMaxZ();
+        
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                for (int z = minZ; z <= maxZ; z++) {
+                    
+                    if (gameWorld.getWorld().getBlockAt(x, y, z).getType() == Material.NETHER_PORTAL) 
+                        portalBlocks.add(new Location(gameWorld.getWorld(), x, y, z));
+                }
+            }
+        }
+        
+        long endTime = System.currentTimeMillis();
+        
+        Logger.DEBUG.log("[Portal Position-Cache] Time reached for Portal-Counting: " + (endTime - startTime) + " ms.");
+        Logger.DEBUG.log("[Portal Position-Cache] Founded " + portalBlocks.size() + " Portal blocks.");
+    
+    }
+    
     private void createInnerGameArea() {
 
         // Depending on the rotation of the (major) Game-Area, the spawn points 
@@ -582,49 +620,11 @@ public class Game {
      * customized message.
      */
     public void sendGameResult() {
-
-        for (Player player : gameWorld.getWorld().getPlayers()) {
-            MWPlayer mwPlayer = getPlayer(player);
-            Team team = mwPlayer.getTeam();
-            
-            if (team.getTeamType() == TeamType.PLAYER) {
-                team.sendMoney(mwPlayer);
-                team.sendGameResultTitle(mwPlayer);
-                team.sendGameResultSound(mwPlayer);
-            } else {
-                sendNeutralGameResultTitle(player);
-            }
-            
-        }
+        GameResultManager resultManager = new GameResultManager(this);
+        resultManager.executeResult();
+        
     }
-
-    /**
-     * This method sends the players the title / subtitle of the
-     * game result there are not in a team (= spectator).
-     */
-    public void sendNeutralGameResultTitle(Player player) {
-        String title;
-        String subTitle;
-
-        if (teamManager.getTeam1().getGameResult() == GameResult.WIN) {
-            title = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_TITLE_WON)
-                    .replace("%team%", teamManager.getTeam1().getName());
-            subTitle = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_SUBTITLE_WON);
-
-        } else if (teamManager.getTeam2().getGameResult() == GameResult.WIN) {
-            title = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_TITLE_WON)
-                    .replace("%team%", teamManager.getTeam2().getName());
-            subTitle = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_SUBTITLE_WON);
-
-        } else {
-            title = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_TITLE_DRAW);
-            subTitle = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_SUBTITLE_DRAW);
-
-        }
-
-        player.sendTitle(title, subTitle);
-    }
-
+    
     /**
      * This method updates the MissileWars signs and the scoreboard.
      */
@@ -721,23 +721,60 @@ public class Game {
     }
 
     public void teleportToFallbackSpawn(Player player) {
-        teleportSafely(player, Config.getFallbackSpawn());
+        PlayerUtil.teleportSafely(player, Config.getFallbackSpawn());
     }
 
     public void teleportToLobbySpawn(Player player) {
-        teleportSafely(player, lobby.getSpawnPoint());
+        PlayerUtil.teleportSafely(player, lobby.getSpawnPoint());
     }
 
     public void teleportToArenaSpectatorSpawn(Player player) {
-        teleportSafely(player, arena.getSpectatorSpawn());
+        PlayerUtil.teleportSafely(player, arena.getSpectatorSpawn());
     }
 
     public void teleportToAfterGameSpawn(Player player) {
-        teleportSafely(player, lobby.getAfterGameSpawn());
+        PlayerUtil.teleportSafely(player, lobby.getAfterGameSpawn());
     }
     
-    public static void teleportSafely(Player player, Location targetLocation) {
-        player.setVelocity(new Vector(0, 0, 0));
-        player.teleport(targetLocation);
+    /**
+     * This method checks all previously saved portal positions to see whether the 
+     * portals are still intact. If not, the game-end is initiated.
+     * 
+     * This could be a more performant version than using the high-frequency 
+     * "BlockPhysicsEvent" event-listener.
+     */
+    public void checkPortals() {
+        
+        for (Location location : portalBlocks) {
+            
+            if (location.getBlock().getType() == Material.NETHER_PORTAL) continue;
+            
+            runWinnerCheck(location);
+            return;
+        }
+    }
+
+    /**
+     * This method determines the winning team based on the position of the destroyed 
+     * portal and brings the game to the game-phase "END".
+     * 
+     * @param location (Location) the (first) detected portal-block location
+     */
+    private void runWinnerCheck(Location location) {
+        
+        Team team1 = getTeamManager().getTeam1();
+        Team team2 = getTeamManager().getTeam2();
+        
+        if (Geometry.isCloser(location, team1.getSpawn(), team2.getSpawn())) {
+            team1.setGameResult(GameResult.LOSE);
+            team2.setGameResult(GameResult.WIN);
+        } else {
+            team1.setGameResult(GameResult.WIN);
+            team2.setGameResult(GameResult.LOSE);
+        }
+
+        sendGameResult();
+        stopGame();
+    
     }
 }

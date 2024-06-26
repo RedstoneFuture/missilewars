@@ -18,8 +18,11 @@
 
 package de.butzlabben.missilewars.game.timer;
 
+import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.game.Game;
+import de.butzlabben.missilewars.game.enums.TeamType;
+import de.butzlabben.missilewars.util.PlayerUtil;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
@@ -28,7 +31,9 @@ import org.bukkit.entity.Player;
  * @since 06.01.2018
  */
 public class GameTimer extends Timer {
-
+    
+    int actionbarMsgCounter = 0;
+    
     public GameTimer(Game game) {
         super(game);
         seconds = game.getArena().getGameDuration() * 60;
@@ -47,7 +52,8 @@ public class GameTimer extends Timer {
             case 600:
             case 300:
             case 180:
-                broadcast(Messages.getMessage(true, Messages.MessageEnum.GAME_TIMER_GAME_ENDS_IN_MINUTES).replace("%minutes%", Integer.toString(seconds / 60)));
+                broadcast(Messages.getMessage(true, Messages.MessageEnum.GAME_TIMER_GAME_ENDS_IN_MINUTES)
+                        .replace("%minutes%", Integer.toString(seconds / 60)));
                 break;
             case 60:
             case 30:
@@ -57,7 +63,8 @@ public class GameTimer extends Timer {
             case 3:
             case 2:
             case 1:
-                broadcast(Messages.getMessage(true, Messages.MessageEnum.GAME_TIMER_GAME_ENDS_IN_SECONDS).replace("%seconds%", Integer.toString(seconds)));
+                broadcast(Messages.getMessage(true, Messages.MessageEnum.GAME_TIMER_GAME_ENDS_IN_SECONDS)
+                        .replace("%seconds%", Integer.toString(seconds)));
                 break;
             case 0:
                 game.sendGameResult();
@@ -67,21 +74,43 @@ public class GameTimer extends Timer {
                 break;
         }
 
-        if (seconds % 10 == 0) {
+        if (seconds % 5 == 0) {
             game.getScoreboardManager().updateScoreboard();
-        }
-        
-        if (seconds % 4 == 0) {
+            
             game.getPlayers().values().forEach(mwPlayer -> {
-                if (mwPlayer.getPlayer().getGameMode() != GameMode.SURVIVAL) return;
-                
                 Player player = mwPlayer.getPlayer();
-                if (game.isInGameArea(player.getLocation())) return;
                 
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.ARENA_LEAVED));
-                mwPlayer.getTeam().teleportToTeamSpawn(player);
+                if (mwPlayer.getTeam().getTeamType() == TeamType.PLAYER) {
+                    
+                    if (mwPlayer.getPlayer().getGameMode() != GameMode.SURVIVAL) return;
+                    
+                    if (game.isInGameArea(player.getLocation())) return;
+                    
+                    player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.ARENA_LEAVED));
+                    mwPlayer.getTeam().teleportToTeamSpawn(player);
+                    
+                }
+            
             });
         }
+        
+        if ((Config.getActionbarForSpecEntries().length > 0) && (seconds % Config.getActionbarForSpecDelay() == 0)) {
+            game.getPlayers().values().forEach(mwPlayer -> {
+                Player player = mwPlayer.getPlayer();
+                
+                if (mwPlayer.getTeam().getTeamType() == TeamType.PLAYER) return;
+                PlayerUtil.sendActionbarMsg(player, Config.getActionbarForSpecEntries()[actionbarMsgCounter]);
+            });
+            
+            // Array-Iteration:
+            if (actionbarMsgCounter >= Config.getActionbarForSpecEntries().length - 1) {
+                actionbarMsgCounter = 0;
+            } else {
+                actionbarMsgCounter++;
+            }
+        }
+
+        game.checkPortals();
 
         seconds--;
     }

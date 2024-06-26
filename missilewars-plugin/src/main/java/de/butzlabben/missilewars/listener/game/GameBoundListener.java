@@ -21,15 +21,14 @@ package de.butzlabben.missilewars.listener.game;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.player.MWPlayer;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 public abstract class GameBoundListener implements Listener {
 
     private final Game game;
-
+    
     protected GameBoundListener(Game game) {
         this.game = game;
     }

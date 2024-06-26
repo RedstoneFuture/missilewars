@@ -83,19 +83,32 @@ public class MWCommands extends BaseCommand {
 
         sender.sendMessage(Messages.getPrefix() + "Current games:");
         
+        sender.sendMessage(" ");
+        
         for (Game game : GameManager.getInstance().getGames().values()) {
             TeamManager teamManager = game.getTeamManager();
             
-            sender.sendMessage("§e " + game.getLobby().getName() + "§7 -- Name: »" + game.getLobby().getDisplayName() + "§7« | Status: " + game.getState());
+            sender.sendMessage("§e " + game.getLobby().getName() 
+                    + "§7 -- Name: »" + game.getLobby().getDisplayName() 
+                    + "§7« | Status: " + game.getState());
+            
             sender.sendMessage("§8 - §f" + "Load with startup: §7" + game.getLobby().isAutoLoad());
-            sender.sendMessage("§8 - §f" + "Current Arena: §7" + game.getArena().getName() + "§7 -- Name: »" + game.getArena().getDisplayName() + "§7«");
+            
+            sender.sendMessage("§8 - §f" + "Current Arena: §7" + ((game.getArena() != null) ? game.getArena().getName() : "?") 
+                    + "§7 -- Name: »" + ((game.getArena() != null) ? game.getArena().getDisplayName() : "?") + "§7«");
+            
             sender.sendMessage("§8 - §f" + "Total players: §7" + game.getTotalGameUserAmount() + "x");
+            
             sender.sendMessage("§8 - §f" + "Team 1: §7" + teamManager.getTeam1().getColor() + teamManager.getTeam1().getName()
                     + " §7with " + teamManager.getTeam1().getMembers().size() + " players");
+            
             sender.sendMessage("§8 - §f" + "Team 2: §7" + teamManager.getTeam2().getColor() + teamManager.getTeam2().getName()
                     + " §7with " + teamManager.getTeam2().getMembers().size() + " players");
+            
             sender.sendMessage("§8 - §f" + "Spectators: §7" + teamManager.getTeamSpec().getColor() + teamManager.getTeamSpec().getName()
                     + " §7with " + teamManager.getTeamSpec().getMembers().size() + " players");
+            
+            sender.sendMessage(" ");
         }
 
     }

@@ -19,13 +19,13 @@
 package de.butzlabben.missilewars.listener.game;
 
 import de.butzlabben.missilewars.Logger;
+import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.configuration.arena.FallProtectionConfiguration;
 import de.butzlabben.missilewars.event.PlayerArenaJoinEvent;
 import de.butzlabben.missilewars.event.PlayerArenaLeaveEvent;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.Team;
-import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.enums.JoinIngameBehavior;
 import de.butzlabben.missilewars.game.enums.RejoinIngameBehavior;
 import de.butzlabben.missilewars.game.enums.TeamType;
@@ -35,18 +35,16 @@ import de.butzlabben.missilewars.game.schematics.objects.Missile;
 import de.butzlabben.missilewars.listener.ShieldListener;
 import de.butzlabben.missilewars.menus.inventory.TeamSelectionMenu;
 import de.butzlabben.missilewars.player.MWPlayer;
-import de.butzlabben.missilewars.util.geometry.Geometry;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import de.butzlabben.missilewars.util.version.MaterialHelper;
+import org.bukkit.*;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockPhysicsEvent;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
@@ -78,36 +76,26 @@ public class GameListener extends GameBoundListener {
     }
 
     @EventHandler
-    public void onBlockPhysics(BlockPhysicsEvent event) {
-        if (!isInGameWorld(event.getBlock().getLocation())) return;
-
-        if (event.getChangedType() != Material.NETHER_PORTAL) return;
-
-        Location location = event.getBlock().getLocation();
-
-        Team team1 = getGame().getTeamManager().getTeam1();
-        Team team2 = getGame().getTeamManager().getTeam2();
-
-        if (Geometry.isCloser(location, team1.getSpawn(), team2.getSpawn())) {
-            team1.setGameResult(GameResult.LOSE);
-            team2.setGameResult(GameResult.WIN);
-        } else {
-            team1.setGameResult(GameResult.WIN);
-            team2.setGameResult(GameResult.LOSE);
-        }
-
-        getGame().sendGameResult();
-        getGame().stopGame();
-    }
-
-    @EventHandler
     public void onInteract(PlayerInteractEvent event) {
         if (!isInGameWorld(event.getPlayer().getLocation())) return;
-
+        
+        Player player = event.getPlayer();
+        if (player.getGameMode() == GameMode.CREATIVE) return;
+        
+        // Interaction Cancelling for some objects:
+        if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (MaterialHelper.isSignMaterial(event.getClickedBlock().getType())) {
+                event.setCancelled(true);
+                Logger.DEBUG.log("Cancelling of interaction with '#ALL_SIGNS' (Gamemode: " + player.getGameMode().name() + ").");
+                return;
+            }
+        }
+        
+        // Game-Item handling:
+        
         if (event.getItem() == null) return;
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-
-        Player player = event.getPlayer();
+        
         ItemStack itemStack = event.getItem();
 
         // missile spawn with using of a missile spawn egg
@@ -141,8 +129,17 @@ public class GameListener extends GameBoundListener {
         if (!(snowball.getShooter() instanceof Player)) return;
 
         Player shooter = (Player) snowball.getShooter();
-        ShieldListener shieldListener = new ShieldListener(shooter, getGame());
-        shieldListener.onThrow(event);
+        ShieldListener shieldListener = new ShieldListener(shooter, getGame(), snowball);
+        Bukkit.getPluginManager().registerEvents(shieldListener, MissileWars.getInstance());
+
+        Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> {
+            HandlerList.unregisterAll(shieldListener);
+            
+            // Is the snowball-entity dead because of an invalid 'fly_time' of the shield-configuration 
+            // or a projectile hit before.
+            if (!snowball.isDead()) getGame().spawnShield(shooter, snowball);
+            
+        }, getGame().getArena().getShieldConfiguration().getFlyTime());
     }
 
     @EventHandler

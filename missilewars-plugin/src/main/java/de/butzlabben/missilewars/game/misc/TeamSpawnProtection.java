@@ -1,6 +1,7 @@
 package de.butzlabben.missilewars.game.misc;
 
 import de.butzlabben.missilewars.game.Team;
+import de.butzlabben.missilewars.game.enums.TeamType;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -8,12 +9,13 @@ import org.bukkit.World;
 public class TeamSpawnProtection {
 
     /**
-     * This method regenerates the team spawn by resetting the ground and 
+     * This method regenerates the player-team spawn by resetting the ground and 
      * the area and replacing all previous blocks at this point.
      * 
-     * @param targetTeam (Team) the target team
+     * @param targetTeam (Team) the target player-team
      */
     public static void regenerateSpawn(Team targetTeam) {
+        if (targetTeam.getTeamType() == TeamType.SPECTATOR) return;
 
         Location teamSpawn = targetTeam.getSpawn();
         

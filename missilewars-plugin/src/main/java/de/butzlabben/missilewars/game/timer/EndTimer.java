@@ -37,7 +37,8 @@ public class EndTimer extends Timer {
 
         switch (seconds) {
             case 15:
-                broadcast(Messages.getMessage(true, Messages.MessageEnum.ENDGAME_TIMER_GAME_STARTS_NEW_IN).replace("%seconds%", Integer.toString(seconds)));
+                broadcast(Messages.getMessage(true, Messages.MessageEnum.ENDGAME_TIMER_GAME_STARTS_NEW_IN)
+                        .replace("%seconds%", Integer.toString(seconds)));
                 break;
             case 0:
                 getGame().reset();

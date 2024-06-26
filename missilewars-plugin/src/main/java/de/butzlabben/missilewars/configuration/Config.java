@@ -92,6 +92,8 @@ public class Config {
         cfg.addDefault("replace.material", JUKEBOX.name());
         cfg.addDefault("replace.after_ticks", 2);
         cfg.addDefault("replace.radius", 15);
+        
+        cfg.addDefault("game_result.firework", true);
 
         cfg.addDefault("motd.enable", true);
         cfg.addDefault("motd.lobby", "&6•&e● MissileWars &7| &eLobby");
@@ -131,6 +133,17 @@ public class Config {
                 add("");
                 add("%team2% &7» %team2_color%%team2_amount%");
             }});
+            
+        }
+        
+        cfg.addDefault("actionbar_msg.spectator.delay", 6);
+        
+        if (isNewConfig) {
+            
+            cfg.set("actionbar_msg.spectator.messages", new ArrayList<String>() {{
+                add("&eChoose your team to join: &7/mw teammenu");
+            }});
+            
         }
 
         String gameJoinMenu = "menus.hotbar_menu.game_join_menu";
@@ -315,6 +328,10 @@ public class Config {
     public static int getReplaceRadius() {
         return cfg.getInt("replace.radius");
     }
+    
+    public static boolean isGameResultFirework() {
+        return cfg.getBoolean("game_result.firework");
+    }
 
     public static String motdEnded() {
         return Messages.getConvertedMsg(cfg.getString("motd.ended"));
@@ -402,6 +419,14 @@ public class Config {
     
     public static List<String> getScoreboardEntries() {
         return Messages.getConvertedMsgList(cfg.getStringList("sidebar.entries"));
+    }
+    
+    public static int getActionbarForSpecDelay() {
+        return cfg.getInt("actionbar_msg.spectator.delay");
+    }
+    
+    public static String[] getActionbarForSpecEntries() {
+        return Messages.getConvertedMsgArray(cfg.getStringList("actionbar_msg.spectator.messages"));
     }
     
     public static Map<Integer, Map<Integer, MenuItem>> getGameJoinMenuItems() {
