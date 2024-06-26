@@ -18,18 +18,14 @@
 
 package de.butzlabben.missilewars.listener;
 
-import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.game.Game;
 import lombok.RequiredArgsConstructor;
-import org.bukkit.Bukkit;
-import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Snowball;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.entity.ProjectileLaunchEvent;
 
 /**
  * @author Butzlabben
@@ -40,27 +36,14 @@ public class ShieldListener implements Listener {
 
     private final Player player;
     private final Game game;
-    private Snowball ball;
-
-    public void onThrow(ProjectileLaunchEvent event) {
-        ball = (Snowball) event.getEntity();
-        Bukkit.getPluginManager().registerEvents(this, MissileWars.getInstance());
-
-        Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> {
-            if (!ball.isDead()) {
-                game.spawnShield(player, ball);
-                player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_FLAP, 1, 1);
-            }
-            HandlerList.unregisterAll(this);
-        }, game.getArena().getShieldConfiguration().getFlyTime());
-    }
-
+    private final Snowball snowball;
+    
     @EventHandler
     public void onHit(ProjectileHitEvent event) {
-        if (!event.getEntity().equals(ball)) return;
+        if (!event.getEntity().equals(snowball)) return;
 
         HandlerList.unregisterAll(this);
-        game.spawnShield(player, ball);
+        game.spawnShield(player, snowball);
     }
     
 }

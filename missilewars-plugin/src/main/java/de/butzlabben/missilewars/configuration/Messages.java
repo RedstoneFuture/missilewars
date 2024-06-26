@@ -192,9 +192,10 @@ public class Messages {
         VOTE_ARENA_ALREADY_SELECTED("vote.arena_already_selected", "&cYou have already voted for this arena."),
 
         SIGNEDIT_SIGN_CREATED("signedit.sign_created", "&7Sign was successfully created and connected."),
-        SIGNEDIT_SIGN_REMOVED("signedit.sign_removed", "&7You have successfully removed this missilewars sign."),
-        SIGNEDIT_LOBBY_NOT_FOUND("signedit.lobby_not_found", "&cCould not find lobby %input%."),
-        SIGNEDIT_SIGN_REMOVE_DESC("signedit.sign_remove_desc", "&cYou have to be sneaking in order to remove this sign."),
+        SIGNEDIT_SIGN_REMOVED("signedit.sign_removed", "&7You have successfully removed this MissileWars sign."),
+        SIGNEDIT_EMPTY_LOBBY("signedit.empty_lobby", "&cPlease specify the target lobby name in the second line."),
+        SIGNEDIT_LOBBY_NOT_FOUND("signedit.lobby_not_found", "&cCould not find lobby \"%input%\"."),
+        SIGNEDIT_SIGN_REMOVE_DESC("signedit.sign_remove_desc", "&cThis shield is locked by the MissileWars plugin. Sneak while you are destroying the shield to remove it."),
 
         GAME_STATE_NO_GAME("game_state.no_game", "&cNo Game."),
         GAME_STATE_LOBBY("game_state.lobby", "&aLobby"),
@@ -241,7 +242,7 @@ public class Messages {
      * to the final text message.
      * 
      * @param messageList the target message list
-     * @return (String) the converted message list
+     * @return (List of Strings) the converted message list
      */
     public static List<String> getConvertedMsgList(List<String> messageList) {
         List<String> convertedMsgList = new ArrayList<>();
@@ -249,6 +250,18 @@ public class Messages {
             convertedMsgList.add(getConvertedMsg(message));
         }
         return convertedMsgList;
+    }
+    
+    /**
+     * This method returns the desired message array. 
+     * Legacy color-codes with '&' will be converted 
+     * to the final text message.
+     * 
+     * @param messageList the target message list
+     * @return (String[]) the converted message array
+     */
+    public static String[] getConvertedMsgArray(List<String> messageList) {
+        return getConvertedMsgList(messageList).toArray(String[]::new);
     }
     
     public static String getPapiMessage(String message, Player player) {

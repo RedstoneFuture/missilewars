@@ -50,7 +50,7 @@ public class Arena implements Cloneable {
     @SerializedName("arrow") private ArrowConfiguration arrowConfiguration = new ArrowConfiguration();
     @SerializedName("save_statistics") private boolean saveStatistics = true;
     @SerializedName("fall_protection") private FallProtectionConfiguration fallProtection = new FallProtectionConfiguration();
-    @SerializedName("money") private MoneyConfiguration money = new MoneyConfiguration();
+    @SerializedName("game_result.money") private MoneyConfiguration money = new MoneyConfiguration();
     @SerializedName("equipment_interval") private EquipmentIntervalConfiguration interval = new EquipmentIntervalConfiguration();
     @SerializedName("missile") private MissileConfiguration missileConfiguration = new MissileConfiguration();
     @SerializedName("shield") private ShieldConfiguration shieldConfiguration = new ShieldConfiguration();

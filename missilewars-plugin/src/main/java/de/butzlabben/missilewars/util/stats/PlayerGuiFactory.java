@@ -122,7 +122,6 @@ public class PlayerGuiFactory {
             ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta sm = (SkullMeta) itemStack.getItemMeta();
             if (Config.isShowRealSkins()) {
-                //noinspection deprecation
                 sm.setOwner(name);
             } else {
                 sm.setOwningPlayer(Bukkit.getOfflinePlayer(item.getUuid()));
