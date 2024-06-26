@@ -23,8 +23,7 @@ import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.GameManager;
-import java.util.ArrayList;
-import java.util.List;
+import de.butzlabben.missilewars.util.version.MaterialHelper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,8 +31,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.type.WallSign;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -46,7 +46,7 @@ public class MWSign {
     public boolean isValid() {
         boolean worldExists = location.getWorld() != null;
         boolean lobbyValid = GameManager.getInstance().getGames().containsKey(lobby);
-        boolean blockIsSign = isSign(location.getBlock().getBlockData());
+        boolean blockIsSign = MaterialHelper.isSignMaterial(location.getBlock().getType());
 
         return worldExists && lobbyValid && blockIsSign;
     }
@@ -71,9 +71,9 @@ public class MWSign {
         Bukkit.getScheduler().runTask(MissileWars.getInstance(), () -> editSign(getLocation(), lines));
     }
 
-    public void editSign(Location location, List<String> lines) {
+    private void editSign(Location location, List<String> lines) {
         Block block = location.getBlock();
-        if (!(MWSign.isSign(block.getBlockData()))) {
+        if (!(MaterialHelper.isSignMaterial(block.getType()))) {
             Logger.WARN.log("Configured sign at: " + location + " is not a standing or wall sign");
             return;
         }
@@ -108,9 +108,5 @@ public class MWSign {
                 .replace("%arena%", name)
                 .replace("%max_players%", Integer.toString(maxPlayers))
                 .replace("%players%", Integer.toString(players));
-    }
-    
-    public static boolean isSign(BlockData blockData) {
-        return ((blockData instanceof Sign) || (blockData instanceof WallSign));
     }
 }

@@ -65,7 +65,7 @@ public class LocationTypeAdapter extends TypeAdapter<Location> {
                     String worldName = in.nextString();
                     World world = Bukkit.getWorld(worldName);
                     if (world == null) {
-                        Logger.WARN.log("Could not find world \"" + worldName + "\" which is specified at one missilewars sign");
+                        Logger.WARN.log("Could not find world \"" + worldName + "\" which is specified at one MissileWars sign");
                     }
                     location.setWorld(world);
                     break;

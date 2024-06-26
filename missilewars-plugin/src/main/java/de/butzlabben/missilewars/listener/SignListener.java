@@ -24,85 +24,109 @@ import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.game.signs.MWSign;
 import de.butzlabben.missilewars.game.signs.SignRepository;
+import de.butzlabben.missilewars.util.version.MaterialHelper;
+import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import java.util.Optional;
-
 public class SignListener implements Listener {
-
-    private static final String KEY_SIGN_HEADLINE = "[missilewars]";
 
     @EventHandler
     public void onSignClick(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 
         Block block = event.getClickedBlock();
-        if (!(MWSign.isSign(block.getBlockData()))) return;
-
-        SignRepository repository = MissileWars.getInstance().getSignRepository();
-        Optional<MWSign> optional = repository.getSign(block.getLocation());
-        if (optional.isEmpty()) return;
-
-        MWSign sign = optional.get();
+        if (block == null) return;
+        if (!(MaterialHelper.isSignMaterial(block.getType()))) return;
+        
+        if (event.getPlayer().isSneaking()) return;
+        
+        MWSign sign = getSignRepository().getSign(block.getLocation());
+        if (sign == null) return;
+        
         Game game = GameManager.getInstance().getGame(sign.getLobby());
         if (game == null) return;
-
+        
+        // Cancel the event so that the Vanilla sign-edit GUI is not opened before the teleport.
+        event.setCancelled(true);
+        
         game.teleportToLobbySpawn(event.getPlayer());
     }
 
     @EventHandler
     public void onSignChange(SignChangeEvent event) {
         Block block = event.getBlock();
-        if (!(MWSign.isSign(block.getBlockData()))) return;
+        if (!(MaterialHelper.isSignMaterial(block.getType()))) return;
 
         Player player = event.getPlayer();
         if (!hasManageSignPermission(player)) return;
+        
+        // Check Prefix (line 1):
+        String headLine = event.getLine(0);
+        if (headLine == null) return;
+        if (!isPluginKeyword(headLine)) return;
 
-        String headLine = event.getLine(0).toLowerCase();
-        if (!headLine.equals(KEY_SIGN_HEADLINE)) return;
-
-        String lobbyName = event.getLine(1);
+        // Check Lobby name (line 2):
+        
+        /*
+        * If a sign only contains one color-code at the beginning, this is retained. In difference, 
+        * if it contains several color-codes, the colors are removed completely.
+        * 
+        * For the sake of completeness, the color is generally removed here so that the string search 
+        * with the Lobby name always works correctly.
+         */
+        String lobbyName = ChatColor.stripColor(event.getLine(1));
+        if ((lobbyName == null) || (lobbyName.isBlank())) {
+            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.SIGNEDIT_EMPTY_LOBBY));
+            event.setCancelled(true);
+            return;
+        }
+        
         Game game = GameManager.getInstance().getGame(lobbyName);
-
         if (game != null) {
-            MWSign sign = new MWSign(event.getBlock().getLocation(), lobbyName);
+            
+            // Removing old sign entry if exists:
+            MWSign sign = getSignRepository().getSign(block.getLocation());
+            if (sign != null) getSignRepository().getSigns().remove(sign);
+            
+            // Updating sign content:
+            sign = new MWSign(event.getBlock().getLocation(), lobbyName);
             sign.update();
-
-            SignRepository signRepository = MissileWars.getInstance().getSignRepository();
-            signRepository.getSigns().add(sign);
-            signRepository.saveData();
+            
+            // (Re-)Saving sign in MissileWars in '/data/signs.json':
+            getSignRepository().getSigns().add(sign);
+            getSignRepository().saveData();
 
             player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.SIGNEDIT_SIGN_CREATED));
+            
         } else {
             player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.SIGNEDIT_LOBBY_NOT_FOUND).replace("%input%", lobbyName));
             event.setCancelled(true);
+            
         }
     }
 
     @EventHandler
     public void onSignBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
-        if (!(MWSign.isSign(block.getBlockData()))) return;
+        if (!(MaterialHelper.isSignMaterial(block.getType()))) return;
 
         Player player = event.getPlayer();
         if (!hasManageSignPermission(player)) return;
-
-        SignRepository repository = MissileWars.getInstance().getSignRepository();
-        Optional<MWSign> optional = repository.getSign(block.getLocation());
-        if (optional.isEmpty()) return;
+        
+        MWSign sign = getSignRepository().getSign(block.getLocation());
+        if (sign == null) return;
 
         if (player.isSneaking()) {
-            MWSign sign = optional.get();
-
-            repository.getSigns().remove(sign);
-            repository.saveData();
+            getSignRepository().getSigns().remove(sign);
+            getSignRepository().saveData();
 
             player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.SIGNEDIT_SIGN_REMOVED));
         } else {
@@ -110,8 +134,30 @@ public class SignListener implements Listener {
             event.setCancelled(true);
         }
     }
-
+    
+    @EventHandler
+    public void onSignDrop(BlockDropItemEvent event) {
+        getSignRepository().getSigns().removeIf(mwSign -> !mwSign.isValid());
+        getSignRepository().saveData();
+    }
+    
     private boolean hasManageSignPermission(Player player) {
         return player.hasPermission("mw.sign.manage");
+    }
+
+    /**
+     * This method checks whether the input string corresponds to the 
+     * MissileWars plugin keyword 'missilewars' or 'mw' (case-insensitive) 
+     * in square brackets.
+     * 
+     * @param input (String) the target string
+     * @return 'true', if it equals one of the plugin keywords
+     */
+    private boolean isPluginKeyword(String input) {
+        return ((input.equalsIgnoreCase("[missilewars]")) || (input.equalsIgnoreCase("[mw]")));
+    }
+    
+    private SignRepository getSignRepository() {
+        return MissileWars.getInstance().getSignRepository();
     }
 }

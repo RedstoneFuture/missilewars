@@ -150,7 +150,7 @@ public class MissileWars extends JavaPlugin {
     }
 
     /**
-     * This method registers all events of the missilewars event listener.
+     * This method registers all events of the MissileWars event listener.
      */
     private void registerEvents() {
         playerListener = new PlayerListener();
@@ -161,7 +161,7 @@ public class MissileWars extends JavaPlugin {
     }
 
     /**
-     * This method loads the command manager and registers the missilewars commands.
+     * This method loads the command manager and registers the MissileWars commands.
      */
     private void registerCommands() {
         Logger.BOOT.log("Registering commands");
