@@ -52,9 +52,10 @@ public class R1_16Paster {
              var session = WorldEdit.getInstance().newEditSession(weWorld)) {
             ClipboardHolder clipboardHolder = new ClipboardHolder(clipboard);
             clipboardHolder.setTransform(new AffineTransform().rotateY(rotation));
+            BlockVector3 vec = fromBukkitVector(pos);
             Operation pasteBuilder = clipboardHolder
                     .createPaste(session)
-                    .to(fromBukkitVector(pos))
+                    .to(vec)
                     .ignoreAirBlocks(true)
                     .build();
 
@@ -63,10 +64,9 @@ public class R1_16Paster {
             new BukkitRunnable() {
                 @Override
                 public void run() {
-                    Vector min = pos.subtract(new Vector(radius, radius, radius));
-                    Vector max = pos.add(new Vector(radius, radius, radius));
+                    var rad = BlockVector3.at(radius, radius, radius);
                     try (var session = WorldEdit.getInstance().newEditSession(weWorld)) {
-                        session.replaceBlocks(new CuboidRegion(fromBukkitVector(min), fromBukkitVector(max)),
+                        session.replaceBlocks(new CuboidRegion(vec.subtract(rad), vec.add(rad)),
                                 Set.of(BukkitAdapter.adapt(replaceType.createBlockData()).toBaseBlock()),
                                 BukkitAdapter.adapt(Material.AIR.createBlockData()));
                     }
