@@ -15,7 +15,7 @@
         jdk = pkgs.jdk17;
       in
       {
-        packages.default = pkgs.callPackage ./package.nix { };
+        packages.default = pkgs.callPackage ./package.nix { inherit jdk pkgs; };
         devShell = pkgs.mkShell {
           packages = [
             pkgs.maven

@@ -2,7 +2,7 @@
 let
   buildMavenPackage = (pkgs.maven.override { inherit jdk; }).buildMavenPackage;
 in
-buildMavenPackage rec {
+buildMavenPackage {
   pname = "missilewars";
   src = ./.;
   mvnHash = "sha256-Ihti60D5ag+D/yvmvp+CWkxHkSphfENiz28K01yWkPA=";
