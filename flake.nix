@@ -1,5 +1,5 @@
 {
-  description = "The famous missile wars Minecraft mini game packaged for papermc with Nix.";
+  description = "The famous missile wars Minecraft mini game packaged for Nix.";
 
   inputs = {
     flake-utils.url = "github:numtide/flake-utils";
