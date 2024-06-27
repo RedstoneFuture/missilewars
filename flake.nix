@@ -12,14 +12,15 @@
       system:
       let
         pkgs = import nixpkgs { inherit system; };
+        jdk = pkgs.jdk17;
       in
       {
         packages.default = pkgs.callPackage ./package.nix { };
         devShell = pkgs.mkShell {
           packages = [
             pkgs.maven
-            pkgs.jdk21
             pkgs.papermc
+            jdk
           ];
         };
       }
