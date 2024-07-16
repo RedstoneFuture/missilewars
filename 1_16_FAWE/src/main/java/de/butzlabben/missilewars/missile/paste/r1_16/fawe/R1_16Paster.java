@@ -65,12 +65,9 @@ public class R1_16Paster {
                 @Override
                 public void run() {
                     var rad = BlockVector3.at(radius, radius, radius);
-                    try (var session = WorldEdit.getInstance().newEditSession(weWorld)) {
-                        session.replaceBlocks(new CuboidRegion(vec.subtract(rad), vec.add(rad)),
-                                Set.of(BukkitAdapter.adapt(replaceType.createBlockData()).toBaseBlock()),
-                                BukkitAdapter.adapt(Material.AIR.createBlockData()));
-                    }
-
+                    weWorld.replaceBlocks(new CuboidRegion(vec.subtract(rad), vec.add(rad)), 
+                            Set.of(BukkitAdapter.adapt(replaceType.createBlockData()).toBaseBlock()), 
+                            BukkitAdapter.adapt(Material.AIR.createBlockData()));
                 }
             }.runTaskLater(plugin, replaceTicks);
         } catch (Exception e) {
