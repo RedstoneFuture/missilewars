@@ -44,53 +44,72 @@ import java.util.logging.Level;
  */
 public class R1_16Paster {
 
-    public void pasteMissile(File schematic, Vector pos, int rotation, org.bukkit.World world,
-                             Material glassBlockReplace, int radius, Material replaceType, JavaPlugin plugin, int replaceTicks) {
-        World weWorld = new BukkitWorld(world);
+    public void pasteMissile(File schematic, Vector locationVec, int rotation, org.bukkit.World world,
+                             Material glassBlockReplace, int replaceRadius, Material replaceMaterial, int replaceTicks, JavaPlugin plugin) {
+        
+        pasteSchematic(schematic, locationVec, world, rotation, plugin);
+        
+        // Remove "Replacer-Block" after a short time to update the pasted schematic structure via (normal) WorldEdit:
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                removeTempBlock(locationVec, world, replaceRadius, replaceMaterial);
+            }
+        }.runTaskLater(plugin, replaceTicks);
+    }
 
-        try (Clipboard clipboard = ClipboardFormats.findByFile(schematic).load(schematic);
+    /**
+     * This method executes the paste command via FAWE.
+     * 
+     * @param schematic (File) the target WorldEdit schematic file
+     * @param locationVec (Vector) 
+     * @param world (World) the target world for the WorldEdit action
+     * @param rotation (int) the target schematic rotation
+     * @param plugin (JavaPlugin) the basis plugin
+     */
+    public void pasteSchematic(File schematic, Vector locationVec, org.bukkit.World world, int rotation, JavaPlugin plugin) {
+        World weWorld = new BukkitWorld(world);
+        BlockVector3 blockVec = fromBukkitVector(locationVec);
+
+        try (Clipboard clipboard = ClipboardFormats.findByFile(schematic).load(schematic); 
              var session = WorldEdit.getInstance().newEditSession(weWorld)) {
+            
             ClipboardHolder clipboardHolder = new ClipboardHolder(clipboard);
             clipboardHolder.setTransform(new AffineTransform().rotateY(rotation));
-            BlockVector3 vec = fromBukkitVector(pos);
+            
             Operation pasteBuilder = clipboardHolder
                     .createPaste(session)
-                    .to(vec)
+                    .to(blockVec)
                     .ignoreAirBlocks(true)
                     .build();
-
             Operations.completeBlindly(pasteBuilder);
-
-            new BukkitRunnable() {
-                @Override
-                public void run() {
-                    var rad = BlockVector3.at(radius, radius, radius);
-                    weWorld.replaceBlocks(new CuboidRegion(vec.subtract(rad), vec.add(rad)), 
-                            Set.of(BukkitAdapter.adapt(replaceType.createBlockData()).toBaseBlock()), 
-                            BukkitAdapter.adapt(Material.AIR.createBlockData()));
-                }
-            }.runTaskLater(plugin, replaceTicks);
+            
         } catch (Exception e) {
-            plugin.getLogger().log(Level.SEVERE, "Could not paste schematic", e);
+            plugin.getLogger().log(Level.SEVERE, "Could not paste schematic '" + schematic.getName() 
+                    + "' with FAWE (" + WorldEdit.getVersion() + ")", e);
         }
     }
-
-    public void pasteSchematic(File schematic, Vector pos, org.bukkit.World world) {
+    
+    /**
+     * This method removes the temporary "Replacer-Block", so that the (asynchronously) 
+     * paste structure via FAWE gets an update.
+     * 
+     * @param locationVec (Vector) 
+     * @param world (World) the target world for the WorldEdit action
+     * @param radius (int) the configured update-radius
+     * @param replaceMaterial (Material) the target material for the replacement
+     */
+    private void removeTempBlock(Vector locationVec, org.bukkit.World world, int radius, Material replaceMaterial) {
         World weWorld = new BukkitWorld(world);
-
-        try (var clipboard = ClipboardFormats.findByFile(schematic).load(schematic);
-             var session = WorldEdit.getInstance().newEditSession(weWorld)) {
-            Operation paste = new ClipboardHolder(clipboard)
-                    .createPaste(session)
-                    .to(fromBukkitVector(pos))
-                    .ignoreAirBlocks(true)
-                    .build();
-            Operations.completeBlindly(paste);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        BlockVector3 blockVec = fromBukkitVector(locationVec);
+        
+        var radiusVec = BlockVector3.at(radius, radius, radius);
+        
+        weWorld.replaceBlocks(new CuboidRegion(blockVec.subtract(radiusVec), blockVec.add(radiusVec)), 
+                Set.of(BukkitAdapter.adapt(replaceMaterial.createBlockData()).toBaseBlock()), 
+                BukkitAdapter.adapt(Material.AIR.createBlockData()));
     }
-
+    
     private BlockVector3 fromBukkitVector(org.bukkit.util.Vector pos) {
         return BlockVector3.at(pos.getX(), pos.getY(), pos.getZ());
     }

@@ -43,7 +43,7 @@ public class R1_13WEPasteProvider implements Paster {
     }
 
     @Override
-    public void pasteSchematic(File schematic, Vector position, World world) {
+    public void pasteSchematic(File schematic, Vector position, int rotation, World world) {
         paster.pasteSchematic(schematic, position, world);
     }
 }

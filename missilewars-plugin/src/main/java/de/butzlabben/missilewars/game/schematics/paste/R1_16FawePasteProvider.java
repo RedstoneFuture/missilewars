@@ -39,11 +39,11 @@ public class R1_16FawePasteProvider implements Paster {
     @Override
     public void pasteMissile(File schematic, Vector position, int rotation, World world, Team team) {
         paster.pasteMissile(schematic, position, rotation, world, ColorConverter.getGlassFromColorCode(team.getColorCode()),
-                Config.getReplaceRadius(), Config.getStartReplace(), MissileWars.getInstance(), Config.getReplaceTicks());
+                Config.getReplaceRadius(), Config.getStartReplace(), Config.getReplaceTicks(), MissileWars.getInstance());
     }
 
     @Override
-    public void pasteSchematic(File schematic, Vector position, World world) {
-        paster.pasteSchematic(schematic, position, world);
+    public void pasteSchematic(File schematic, Vector position, int rotation, World world) {
+        paster.pasteSchematic(schematic, position, world, rotation, MissileWars.getInstance());
     }
 }
