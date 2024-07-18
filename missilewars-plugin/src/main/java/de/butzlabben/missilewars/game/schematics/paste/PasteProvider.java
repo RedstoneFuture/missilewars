@@ -21,7 +21,7 @@ package de.butzlabben.missilewars.game.schematics.paste;
 
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
-import de.butzlabben.missilewars.util.version.VersionUtil;
+import lombok.Getter;
 
 /**
  * @author Butzlabben
@@ -29,27 +29,21 @@ import de.butzlabben.missilewars.util.version.VersionUtil;
  */
 public class PasteProvider {
 
+    @Getter
     private static final Paster paster;
 
     static {
         if (MissileWars.getInstance().foundFAWE()) {
-            if (VersionUtil.getVersion() < 16) {
-                paster = new R1_13FawePasteProvider();
-                Logger.DEBUG.log("Chose 1.13 FAWE paster");
-            } else {
-                paster = new R1_16FawePasteProvider();
-                Logger.DEBUG.log("Chose 1.16 FAWE paster");
-            }
+            paster = new FawePasteProvider();
+            Logger.DEBUG.log("Chose FAWE paster.");
         } else {
-            paster = new R1_13WEPasteProvider();
-            Logger.DEBUG.log("Chose 1.13 WE paster");
+            // FAWE Paster works also for (normal) WorldEdit
+            paster = new FawePasteProvider();
+            Logger.DEBUG.log("Chose FAWE paster.");
         }
     }
 
     private PasteProvider() {
     }
 
-    public static Paster getPaster() {
-        return paster;
-    }
 }

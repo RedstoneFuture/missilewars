@@ -33,9 +33,7 @@
     <version>1.0</version>
 
     <modules>
-        <module>1_13</module>
-        <module>1_13_FAWE</module>
-        <module>1_16_FAWE</module>
+        <module>FAWE_Paster</module>
         <module>missilewars-plugin</module>
     </modules>
 
