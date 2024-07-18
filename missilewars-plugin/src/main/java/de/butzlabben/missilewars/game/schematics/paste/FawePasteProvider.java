@@ -37,9 +37,9 @@ public class FawePasteProvider implements Paster {
     FAWE_Paster paster = new FAWE_Paster();
 
     @Override
-    public void pasteMissile(File schematic, Vector position, int rotation, World world, Team team) {
+    public void pasteMissile(File schematic, Vector position, int rotation, World world, Team team, boolean blockUpdate) {
         paster.pasteMissile(schematic, position, rotation, world, ColorConverter.getGlassFromColorCode(team.getColorCode()),
-                Config.getReplaceRadius(), Config.getStartReplace(), Config.getReplaceTicks(), MissileWars.getInstance());
+                Config.getUpdateRadius(), Config.getTempBlockMaterial(), Config.getUpdateDelay(), MissileWars.getInstance(), blockUpdate);
     }
 
     @Override

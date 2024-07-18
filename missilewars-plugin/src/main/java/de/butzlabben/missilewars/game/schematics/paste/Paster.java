@@ -29,7 +29,7 @@ import java.io.File;
  */
 public interface Paster {
 
-    void pasteMissile(File schematic, Vector position, int rotation, org.bukkit.World world, Team team);
+    void pasteMissile(File schematic, Vector position, int rotation, org.bukkit.World world, Team team, boolean blockUpdate);
 
     void pasteSchematic(File schematic, Vector position, int rotation, org.bukkit.World world);
 }

@@ -44,12 +44,13 @@ import java.util.logging.Level;
  */
 public class FAWE_Paster {
 
-    public void pasteMissile(File schematic, Vector locationVec, int rotation, org.bukkit.World world,
-                             Material glassBlockReplace, int replaceRadius, Material replaceMaterial, int replaceTicks, JavaPlugin plugin) {
+    public void pasteMissile(File schematic, Vector locationVec, int rotation, org.bukkit.World world, Material glassBlockReplace, 
+                             int replaceRadius, Material replaceMaterial, int replaceTicks, JavaPlugin plugin, boolean blockUpdate) {
         
         pasteSchematic(schematic, locationVec, rotation, world, plugin);
         
-        // Remove "Replacer-Block" after a short time to update the pasted schematic structure via (normal) WorldEdit:
+        if (!blockUpdate) return;
+        
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -92,12 +93,13 @@ public class FAWE_Paster {
     }
     
     /**
-     * This method removes the temporary "Replacer-Block", so that the (asynchronously) 
-     * paste structure via FAWE gets an update.
+     * This method removes the temporary "Starter-Block", so that the 
+     * (asynchronously on FAWE) pasted schematic structure gets a 
+     * block-update. This remove process happens synchronously for this.
      * 
      * @param locationVec (Vector) the abstract block location
      * @param world (World) the target world for the WorldEdit action
-     * @param replaceRadius (int) the configured "Replace radius" (= half diagonals)
+     * @param replaceRadius (int) the configured "Replace radius" (is calculated like a half-diagonal line here)
      * @param replaceMaterial (Material) the target material for the replacement
      */
     public void removeTempBlock(Vector locationVec, org.bukkit.World world, int replaceRadius, Material replaceMaterial) {
