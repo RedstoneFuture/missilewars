@@ -62,7 +62,7 @@ public class FAWE_Paster {
     /**
      * This method executes the paste command via FAWE.
      * 
-     * @param schematic (File) the target WorldEdit schematic file
+     * @param schematic (File) the target WorldEdit schematic file (all Schematic formats usable, '.schem' recommended)
      * @param locationVec (Vector) the abstract block location
      * @param world (World) the target world for the WorldEdit action
      * @param rotation (int) the target schematic rotation
@@ -99,7 +99,7 @@ public class FAWE_Paster {
      * 
      * @param locationVec (Vector) the abstract block location
      * @param world (World) the target world for the WorldEdit action
-     * @param replaceRadius (int) the configured "Replace radius" (is calculated like a half-diagonal line here)
+     * @param replaceRadius (int) the configured "Replace radius" (is calculated as a half-diagonal block line here)
      * @param replaceMaterial (Material) the target material for the replacement
      */
     public void removeTempBlock(Vector locationVec, org.bukkit.World world, int replaceRadius, Material replaceMaterial) {
