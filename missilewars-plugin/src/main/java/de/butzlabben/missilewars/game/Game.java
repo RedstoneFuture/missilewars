@@ -29,7 +29,6 @@ import de.butzlabben.missilewars.event.GameStopEvent;
 import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
-import de.butzlabben.missilewars.game.enums.TeamType;
 import de.butzlabben.missilewars.game.equipment.EquipmentManager;
 import de.butzlabben.missilewars.game.misc.MotdManager;
 import de.butzlabben.missilewars.game.misc.ScoreboardManager;

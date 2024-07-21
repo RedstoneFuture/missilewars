@@ -1,15 +1,11 @@
 package de.butzlabben.missilewars.menus.hotbar;
 
 import de.butzlabben.missilewars.Logger;
-import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.game.Game;
-import de.butzlabben.missilewars.menus.ItemRequirement;
 import de.butzlabben.missilewars.menus.MenuItem;
 import de.butzlabben.missilewars.player.MWPlayer;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.commons.lang3.tuple.Pair;
-import scala.Int;
 
 import java.util.*;
 

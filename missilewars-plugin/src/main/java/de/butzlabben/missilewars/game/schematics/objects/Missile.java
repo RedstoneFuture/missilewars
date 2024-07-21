@@ -80,7 +80,7 @@ public class Missile extends SchematicObject {
             }
 
             PasteProvider.getPaster().pasteMissile(getSchematic(), pastePos, rotation, loc.getWorld(),
-                    game.getPlayer(p).getTeam());
+                    game.getPlayer(p).getTeam(), Config.isTempBlockEnabled());
         } catch (Exception e) {
             Logger.ERROR.log("Could not load " + getDisplayName());
             e.printStackTrace();
