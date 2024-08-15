@@ -1,5 +1,5 @@
 name: MissileWars
-author: Butzlabben
+authors: [Butzlabben, RedstoneFuture]
 version: ${project.version}
 main: de.butzlabben.missilewars.MissileWars
 api-version: 1.20
