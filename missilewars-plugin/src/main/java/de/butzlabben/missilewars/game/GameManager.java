@@ -53,6 +53,7 @@ public class GameManager {
         List<Game> gamesListCache = new ArrayList<>(games.values());
         
         for (Game game : gamesListCache) {
+            game.setState(GameState.END);
             restartGame(game.getLobby(), false);
         }
     }
