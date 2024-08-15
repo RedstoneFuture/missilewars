@@ -22,6 +22,7 @@ import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.menus.MenuItem;
+import de.butzlabben.missilewars.util.MaterialUtil;
 import de.butzlabben.missilewars.util.SetupUtil;
 import lombok.Getter;
 import org.bukkit.*;
@@ -313,13 +314,7 @@ public class Config {
     }
     
     public static Material getTempBlockMaterial() {
-        String name = cfg.getString("temp_block.material").toUpperCase();
-        try {
-            return valueOf(name);
-        } catch (Exception e) {
-            Logger.WARN.log("Could not use '" + name + "' as temp-block material!");
-        }
-        return null;
+        return MaterialUtil.getMaterial(cfg.getString("temp_block.material"));
     }
 
     public static int getUpdateDelay() {
