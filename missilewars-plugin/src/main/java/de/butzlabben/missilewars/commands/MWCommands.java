@@ -57,7 +57,7 @@ public class MWCommands extends BaseCommand {
 
         sendHelpMessage(sender, "mw.listgames", "/mw listgames", "List the active games.");
         sendHelpMessage(sender, "mw.move", "/mw move <player> <1|2|spec>", "Change the team of a specific player.");
-        sendHelpMessage(sender, "mw.paste", "/mw paste <missile>", "Pastes a missile.");
+        sendHelpMessage(sender, "mw.paste", "/mw paste <missile> [flags, e.g. '-tempblock:true']", "Pastes a missile.");
         sendHelpMessage(sender, "mw.start", "/mw start [lobby]", "Starts the game.");
         sendHelpMessage(sender, "mw.stop", "/mw stop [lobby]", "Stops the game.");
         sendHelpMessage(sender, "mw.appendrestart", "/mw appendrestart [lobby]", "Appends a restart after the next game ends.");
