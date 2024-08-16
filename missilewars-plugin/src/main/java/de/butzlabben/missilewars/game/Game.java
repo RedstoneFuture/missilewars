@@ -478,7 +478,7 @@ public class Game {
         
         itemStack.setAmount(itemStack.getAmount() - 1);
         player.setItemInHand(itemStack);
-        missile.paste(this, player, SchematicFacing.getFacingPlayer(player, this.arena.getMissileConfiguration()));
+        missile.paste(this, player);
     }
 
     /**

@@ -89,9 +89,9 @@ public class Config {
         cfg.addDefault("missiles.folder", "plugins/MissileWars/missiles");
         cfg.addDefault("shields.folder", "plugins/MissileWars/shields");
 
-        cfg.addDefault("temp_block.enable", false);
+        cfg.addDefault("temp_block.enable", true);
         cfg.addDefault("temp_block.material", NOTE_BLOCK.name());
-        cfg.addDefault("temp_block.remove_after_ticks", 2);
+        cfg.addDefault("temp_block.remove_after_ticks", 0);
         cfg.addDefault("temp_block.radius", 8);
         
         cfg.addDefault("game_result.firework", true);

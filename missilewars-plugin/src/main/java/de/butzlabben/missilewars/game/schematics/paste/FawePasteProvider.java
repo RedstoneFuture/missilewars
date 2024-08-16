@@ -19,11 +19,8 @@
 package de.butzlabben.missilewars.game.schematics.paste;
 
 import de.butzlabben.missilewars.MissileWars;
-import de.butzlabben.missilewars.configuration.Config;
-import de.butzlabben.missilewars.game.Team;
 import de.butzlabben.missilewars.missile.paste.v1_20.fawe.FAWE_Paster;
-import de.butzlabben.missilewars.util.version.ColorConverter;
-import org.bukkit.World;
+import org.bukkit.Material;
 import org.bukkit.util.Vector;
 
 import java.io.File;
@@ -37,13 +34,14 @@ public class FawePasteProvider implements Paster {
     FAWE_Paster paster = new FAWE_Paster();
 
     @Override
-    public void pasteMissile(File schematic, Vector position, int rotation, World world, Team team, boolean blockUpdate) {
-        paster.pasteMissile(schematic, position, rotation, world, ColorConverter.getGlassFromColorCode(team.getColorCode()),
-                Config.getUpdateRadius(), Config.getTempBlockMaterial(), Config.getUpdateDelay(), MissileWars.getInstance(), blockUpdate);
+    public void pasteMissile(File schematic, Vector locationVec, int rotation, org.bukkit.World world, boolean blockUpdate, 
+                             Material replaceMaterial, int replaceTicks, int replaceRadius) {
+        paster.pasteMissile(schematic, locationVec, rotation, world, blockUpdate, replaceMaterial, replaceTicks, 
+                replaceRadius, MissileWars.getInstance());
     }
 
     @Override
-    public void pasteSchematic(File schematic, Vector position, int rotation, World world) {
-        paster.pasteSchematic(schematic, position, rotation, world, MissileWars.getInstance());
+    public void pasteSchematic(File schematic, Vector locationVec, int rotation, org.bukkit.World world) {
+        paster.pasteSchematic(schematic, locationVec, rotation, world, MissileWars.getInstance());
     }
 }

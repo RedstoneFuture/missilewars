@@ -44,8 +44,8 @@ import java.util.logging.Level;
  */
 public class FAWE_Paster {
 
-    public void pasteMissile(File schematic, Vector locationVec, int rotation, org.bukkit.World world, Material glassBlockReplace, 
-                             int replaceRadius, Material replaceMaterial, int replaceTicks, JavaPlugin plugin, boolean blockUpdate) {
+    public void pasteMissile(File schematic, Vector locationVec, int rotation, org.bukkit.World world, boolean blockUpdate, 
+                             Material replaceMaterial, int replaceTicks, int replaceRadius, JavaPlugin plugin) {
         
         pasteSchematic(schematic, locationVec, rotation, world, plugin);
         
@@ -54,7 +54,7 @@ public class FAWE_Paster {
         new BukkitRunnable() {
             @Override
             public void run() {
-                removeTempBlock(locationVec, world, replaceRadius, replaceMaterial);
+                removeTempBlock(locationVec, world, replaceMaterial, replaceRadius);
             }
         }.runTaskLater(plugin, replaceTicks);
     }
@@ -99,10 +99,10 @@ public class FAWE_Paster {
      * 
      * @param locationVec (Vector) the abstract block location
      * @param world (World) the target world for the WorldEdit action
-     * @param replaceRadius (int) the configured "Replace radius" (is calculated as a half-diagonal block line here)
      * @param replaceMaterial (Material) the target material for the replacement
+     * @param replaceRadius (int) the configured "Replace radius" (is calculated as a half-diagonal block line here)
      */
-    public void removeTempBlock(Vector locationVec, org.bukkit.World world, int replaceRadius, Material replaceMaterial) {
+    public void removeTempBlock(Vector locationVec, org.bukkit.World world, Material replaceMaterial, int replaceRadius) {
         int startX = locationVec.getBlockX() - replaceRadius;
         int endX = locationVec.getBlockX() + replaceRadius;
         int startY = locationVec.getBlockY() - replaceRadius;

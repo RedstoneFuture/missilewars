@@ -18,7 +18,7 @@
 
 package de.butzlabben.missilewars.game.schematics.paste;
 
-import de.butzlabben.missilewars.game.Team;
+import org.bukkit.Material;
 import org.bukkit.util.Vector;
 
 import java.io.File;
@@ -29,7 +29,8 @@ import java.io.File;
  */
 public interface Paster {
 
-    void pasteMissile(File schematic, Vector position, int rotation, org.bukkit.World world, Team team, boolean blockUpdate);
+    void pasteMissile(File schematic, Vector locationVec, int rotation, org.bukkit.World world, boolean blockUpdate, 
+                      Material replaceMaterial, int replaceTicks, int replaceRadius);
 
-    void pasteSchematic(File schematic, Vector position, int rotation, org.bukkit.World world);
+    void pasteSchematic(File schematic, Vector locationVec, int rotation, org.bukkit.World world);
 }

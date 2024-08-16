@@ -22,6 +22,7 @@ import co.aikar.commands.BukkitCommandCompletionContext;
 import co.aikar.commands.CommandCompletions;
 import co.aikar.commands.PaperCommandManager;
 import com.google.common.collect.ImmutableList;
+import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.GameManager;
 import org.bukkit.command.CommandSender;
@@ -36,6 +37,7 @@ public class MWCommandCompletions {
 
         registerGamesResult();
         registerMissilesResult();
+        registerMissileFlagsResult();
         registerArenasResult();
         registerTeamsResult();
         registerGamePlayerResult();
@@ -56,6 +58,23 @@ public class MWCommandCompletions {
             if (game == null) return null;
 
             return game.getArena().getMissileConfiguration().getSchematicNames();
+        });
+    }
+    
+    private void registerMissileFlagsResult() {
+        commandCompletions.registerCompletion("missile-flags", c -> {
+            CommandSender sender = c.getSender();
+
+            if (!(sender instanceof Player)) return null;
+            Player player = (Player) sender;
+
+            Game game = GameManager.getInstance().getGame(player.getLocation());
+            if (game == null) return null;
+            
+            return ImmutableList.of("-tempblock:" + Config.isTempBlockEnabled(), 
+                    "-tempblock_material:" + Config.getTempBlockMaterial(), 
+                    "-tempblock_delay:" + Config.getUpdateDelay(), 
+                    "-tempblock_radius:" + Config.getUpdateRadius());
         });
     }
 
