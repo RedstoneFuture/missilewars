@@ -100,7 +100,9 @@ public class FAWE_Paster {
      * @param locationVec (Vector) the abstract block location
      * @param world (World) the target world for the WorldEdit action
      * @param replaceMaterial (Material) the target material for the replacement
-     * @param replaceRadius (int) the configured "Replace radius" (is calculated as a half-diagonal block line here)
+     * @param replaceRadius (int) the configured "Replace radius" 
+     *                      The value is used as the block-limit for the “Starter-Block” check and represents 
+     *                      a half of the cuboid-edge length with the Schematic-Origin as starting point.
      */
     public void removeTempBlock(Vector locationVec, org.bukkit.World world, Material replaceMaterial, int replaceRadius) {
         int startX = locationVec.getBlockX() - replaceRadius;
