@@ -221,20 +221,11 @@ public class MissileWars extends JavaPlugin {
             Logger.WARN.log("====================================================");
         }
 
-        if (version.contains("beta")) {
-            Logger.WARN.log("NOTE: This is a beta version which means, that it may not be fully stable");
+        if (version.contains("snapshot") || version.contains("dev")) {
+            Logger.WARN.log("NOTE: This is a snapshot for testing. Errors may occur in new or revised modules. " +
+                    "Do not use this version on a production server!");
         }
-
-        if (getDescription().getAuthors().size() > 1) {
-            StringBuilder sb = new StringBuilder();
-            for (String author : getDescription().getAuthors()) {
-                if (author.equals("Butzlabben"))
-                    continue;
-                sb.append(author);
-                sb.append(" ");
-            }
-            Logger.BOOT.log("Other authors: " + sb);
-        }
+        
     }
-
+    
 }
