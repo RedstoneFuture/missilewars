@@ -23,6 +23,7 @@ import de.butzlabben.missilewars.configuration.lobby.Lobby;
 import de.butzlabben.missilewars.configuration.arena.Arena;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.GameManager;
+import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.player.MWPlayer;
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import org.bukkit.OfflinePlayer;
@@ -76,7 +77,7 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
 
                 // %missilewars_lobby_gamestate_<lobby name or 'this'>%
                 if (params.startsWith("lobby_gamestate_")) {
-                    return GameManager.getInstance().getGameStateMessage(null);
+                    return GameState.ERROR.getGameStateMsg();
                 }
 
                 // if (params.startsWith("lobby_")) return "§c§oThis is not a lobby area!";
@@ -102,7 +103,7 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
             
             // %missilewars_lobby_gamestate_<lobby name or 'this'>%
             if (params.equalsIgnoreCase("lobby_gamestate_" + lobby.getName())) {
-                return GameManager.getInstance().getGameStateMessage(game);
+                return game.getState().getGameStateMsg();
             }
             
             // %missilewars_lobby_mapvote_state_<lobby name or 'this'>%

@@ -192,20 +192,4 @@ public class GameManager {
         return null;
     }
     
-    public String getGameStateMessage(Game game) {
-        
-        if (game == null) return Messages.getMessage(false, Messages.MessageEnum.GAME_STATE_NO_GAME);
-        
-        switch (game.getState()) {
-            case LOBBY:
-                return Messages.getMessage(false, Messages.MessageEnum.GAME_STATE_LOBBY);
-            case INGAME:
-                return Messages.getMessage(false, Messages.MessageEnum.GAME_STATE_INGAME);
-            case END:
-                return Messages.getMessage(false, Messages.MessageEnum.GAME_STATE_END);
-            default:
-                return Messages.getMessage(false, Messages.MessageEnum.GAME_STATE_ERROR);
-        }
-    }
-    
 }

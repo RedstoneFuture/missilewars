@@ -23,6 +23,7 @@ import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.GameManager;
+import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.util.version.MaterialHelper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -86,10 +87,12 @@ public class MWSign {
 
     private String replace(String line, Game game) {
 
-        String state = GameManager.getInstance().getGameStateMessage(game);
+        String gameStateMsg = GameState.ERROR.getGameStateMsg();
         String name = "-";
         
         if (game != null) {
+            gameStateMsg = game.getState().getGameStateMsg();
+            
             switch (game.getState()) {
                 case LOBBY:
                     name = game.getLobby().getDisplayName();
@@ -104,7 +107,7 @@ public class MWSign {
         int maxPlayers = (game == null ? 0 : game.getLobby().getMaxPlayers());
         int players = (game == null ? 0 : game.getPlayerAmount());
 
-        return line.replace("%state%", state)
+        return line.replace("%state%", gameStateMsg)
                 .replace("%arena%", name)
                 .replace("%max_players%", Integer.toString(maxPlayers))
                 .replace("%players%", Integer.toString(players));

@@ -18,13 +18,25 @@
 
 package de.butzlabben.missilewars.game.enums;
 
+import de.butzlabben.missilewars.configuration.Messages;
+import lombok.Getter;
+
 /**
  * @author Butzlabben
  * @since 01.01.2018
  */
+@Getter
 public enum GameState {
 
-    LOBBY,
-    INGAME,
-    END
+    LOBBY (Messages.getMessage(false, Messages.MessageEnum.GAME_STATE_LOBBY)),
+    INGAME (Messages.getMessage(false, Messages.MessageEnum.GAME_STATE_INGAME)),
+    END (Messages.getMessage(false, Messages.MessageEnum.GAME_STATE_END)),
+    ERROR (Messages.getMessage(false, Messages.MessageEnum.GAME_STATE_ERROR));
+
+    private final String gameStateMsg;
+    
+    GameState(String gameStateMsg) {
+        this.gameStateMsg = gameStateMsg;
+    }
+    
 }
