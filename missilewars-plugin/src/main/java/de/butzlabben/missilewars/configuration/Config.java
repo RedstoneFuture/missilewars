@@ -86,8 +86,8 @@ public class Config {
         cfg.addDefault("lobbies.folder", "plugins/MissileWars/lobbies");
         cfg.addDefault("lobbies.default_lobby", "lobby0.yml");
 
-        cfg.addDefault("missiles.folder", "plugins/MissileWars/missiles");
-        cfg.addDefault("shields.folder", "plugins/MissileWars/shields");
+        cfg.addDefault("missiles.folder", "plugins/MissileWars/schematics/missiles");
+        cfg.addDefault("shields.folder", "plugins/MissileWars/schematics/shields");
 
         cfg.addDefault("temp_block.enable", true);
         cfg.addDefault("temp_block.material", NOTE_BLOCK.name());
