@@ -197,7 +197,7 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
                 
                 // %missilewars_player_lobby_displayname%
                 if (params.equalsIgnoreCase("player_lobby_displayname")) {
-                    return game.getLobby().getDisplayName();
+                    return mwPlayer.getGame().getLobby().getDisplayName();
                 }
                 
                 // %missilewars_player_team_name%
