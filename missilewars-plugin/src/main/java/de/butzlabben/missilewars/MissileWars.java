@@ -25,6 +25,8 @@ import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.game.misc.MissileWarsPlaceholder;
+import de.butzlabben.missilewars.game.schematics.paste.FawePasteProvider;
+import de.butzlabben.missilewars.game.schematics.paste.Paster;
 import de.butzlabben.missilewars.game.signs.CheckRunnable;
 import de.butzlabben.missilewars.game.signs.SignRepository;
 import de.butzlabben.missilewars.game.stats.StatsFetcher;
@@ -60,14 +62,12 @@ public class MissileWars extends JavaPlugin {
     public final String version = getDescription().getVersion();
     private SignRepository signRepository;
     public PaperCommandManager commandManager;
-
-    private boolean foundFAWE;
-
-    @Getter
-    private PlayerListener playerListener;
-    @Getter
-    private SignListener signListener;
-
+    
+    @Getter private PlayerListener playerListener;
+    @Getter private SignListener signListener;
+    
+    @Getter private Paster schematicPaster;
+    
     public MissileWars() {
         instance = this;
     }
@@ -83,7 +83,7 @@ public class MissileWars extends JavaPlugin {
 
         Logger.BOOT.log("Loading properties...");
 
-        // delete old missile wars temp-worlds from the last server session
+        // delete the old MissileWars (temporary) arena world from the last server session, if still exists
         deleteTempWorlds();
 
         Config.load();
@@ -103,27 +103,24 @@ public class MissileWars extends JavaPlugin {
         GameManager.getInstance().loadGamesOnStartup();
 
         new Metrics(this, 3749);
-
-        // Check if FAWE is installed
-        foundFAWE = Bukkit.getPluginManager().getPlugin("FastAsyncWorldEdit") != null;
-
+        
         GameManager.getInstance().getGames().values().forEach(game -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (!game.isIn(player.getLocation())) continue;
                 game.teleportToLobbySpawn(player);
             }
         });
-
-        MoneyUtil.giveMoney(null, -1);
-
+        
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, new CheckRunnable(), 20, 20 * 10);
 
         if (Config.isPrefetchPlayers()) {
             PreFetcher.preFetchPlayers(new StatsFetcher(new Date(0L), ""));
         }
-
-        checkPlaceholderAPI();
-
+        
+        initialWeSupport();
+        initialPapiSupport();
+        MoneyUtil.giveMoney(null, -1);
+        
         ConfigurationSerialization.registerClass(PlayerData.class);
 
         endTime = System.currentTimeMillis();
@@ -137,18 +134,32 @@ public class MissileWars extends JavaPlugin {
 
         ConnectionHolder.close();
     }
+    
+    /**
+     * This method checks which kind of WorldEdit Solution is installed. The paste 
+     * supplier is prepared on the basis of this.
+     */
+    private void initialWeSupport() {
+        if (Bukkit.getPluginManager().getPlugin("FastAsyncWorldEdit") != null) {
+            schematicPaster = new FawePasteProvider();
+            Logger.NORMAL.log("FastAsyncWorldEdit is installed. The Schematic Paster is prepared for the behavior of FAWE.");
+        } else {
+            schematicPaster = new FawePasteProvider();
+            Logger.NORMAL.log("(Normal) WorldEdit is installed. The Schematic Paster is prepared for the behavior of WE.");
+        }
+    }
 
     /**
      * This method checks if the PlaceholderAPI is installed. When it is
      * installed, a message is sent to the log.
      */
-    private void checkPlaceholderAPI() {
+    private void initialPapiSupport() {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new MissileWarsPlaceholder(this).register();
             Logger.NORMAL.log("The PlaceholderAPI is installed. New placeholders are provided by MissileWars.");
         }
     }
-
+    
     /**
      * This method registers all events of the MissileWars event listener.
      */
@@ -178,16 +189,7 @@ public class MissileWars extends JavaPlugin {
         commandManager.registerCommand(new UserCommands());
         commandManager.registerCommand(new SetupCommands());
     }
-
-    /**
-     * This method checks if FAWE (FastAsyncWorldEdit) is installed.
-     *
-     * @return true, if it's installed
-     */
-    public boolean foundFAWE() {
-        return foundFAWE;
-    }
-
+    
     /**
      * This methode deletes the temp arena worlds of the MW game.
      */
@@ -215,9 +217,8 @@ public class MissileWars extends JavaPlugin {
 
         if (VersionUtil.getVersion() < 20) {
             Logger.WARN.log("====================================================");
-            Logger.WARN.log("It seems that you are using version older than 1.20");
-            Logger.WARN.log("There is no guarantee for this to work");
-            Logger.WARN.log("Proceed with extreme caution");
+            Logger.WARN.log("It seems that you are using version older than 1.20.");
+            Logger.WARN.log("There is no guarantee for this to work.");
             Logger.WARN.log("====================================================");
         }
 

@@ -1,8 +1,8 @@
 package de.butzlabben.missilewars.game.schematics.objects;
 
 import de.butzlabben.missilewars.Logger;
+import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Config;
-import de.butzlabben.missilewars.game.schematics.paste.PasteProvider;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Snowball;
@@ -29,7 +29,7 @@ public class Shield extends SchematicObject {
             Location loc = ball.getLocation();
             Vector pastePos = new Vector(loc.getX(), loc.getY(), loc.getZ());
             
-            PasteProvider.getPaster().pasteSchematic(getSchematic(), pastePos, 0, loc.getWorld());
+            MissileWars.getInstance().getSchematicPaster().pasteSchematic(getSchematic(), pastePos, 0, loc.getWorld());
         } catch (Exception e) {
             Logger.ERROR.log("Could not load " + getDisplayName());
             e.printStackTrace();
