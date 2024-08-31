@@ -29,7 +29,6 @@ import de.butzlabben.missilewars.event.GameStopEvent;
 import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
-import de.butzlabben.missilewars.game.enums.TeamType;
 import de.butzlabben.missilewars.game.equipment.EquipmentManager;
 import de.butzlabben.missilewars.game.misc.MotdManager;
 import de.butzlabben.missilewars.game.misc.ScoreboardManager;
@@ -53,6 +52,7 @@ import de.butzlabben.missilewars.util.geometry.GameArea;
 import de.butzlabben.missilewars.util.geometry.Geometry;
 import de.butzlabben.missilewars.util.serialization.Serializer;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 import org.bukkit.*;
 import org.bukkit.entity.Fireball;
@@ -76,6 +76,7 @@ import java.util.function.Consumer;
 @ToString(of = {"gameWorld", "players", "lobby", "arena", "state"})
 public class Game {
 
+    @Setter private GameState state = GameState.LOBBY;
     private static final Map<String, Integer> cycles = new HashMap<>();
     private static int fights = 0;
     private final Map<UUID, MWPlayer> players = new HashMap<>();
@@ -83,7 +84,6 @@ public class Game {
     private final Lobby lobby;
     private final Map<UUID, BukkitTask> playerTasks = new HashMap<>();
     private final List<Location> portalBlocks = new ArrayList<>();
-    private GameState state = GameState.LOBBY;
     private TeamManager teamManager;
     private boolean ready = false;
     private boolean restart = false;
@@ -315,9 +315,21 @@ public class Game {
     }
     
     public void resetGame() {
-        // Teleporting players; the event listener will handle the teleport event
-        applyForAllPlayers(this::teleportToAfterGameSpawn);
+        
+        Logger.DEBUG.log("Stopping");
 
+        for (BukkitTask bt : playerTasks.values()) {
+            bt.cancel();
+        }
+
+        Logger.DEBUG.log("Stopping for players");
+        for (Player player : gameWorld.getWorld().getPlayers()) {
+
+            Logger.DEBUG.log("Stopping for: " + player.getName());
+            teleportToAfterGameSpawn(player);
+
+        }
+        
         // Deactivation of all event handlers
         HandlerList.unregisterAll(listener);
         taskManager.stopTimer();
@@ -466,7 +478,7 @@ public class Game {
         
         itemStack.setAmount(itemStack.getAmount() - 1);
         player.setItemInHand(itemStack);
-        missile.paste(this, player, SchematicFacing.getFacingPlayer(player, this.arena.getMissileConfiguration()));
+        missile.paste(this, player);
     }
 
     /**

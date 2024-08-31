@@ -29,7 +29,7 @@ public class Shield extends SchematicObject {
             Location loc = ball.getLocation();
             Vector pastePos = new Vector(loc.getX(), loc.getY(), loc.getZ());
             
-            PasteProvider.getPaster().pasteSchematic(getSchematic(), pastePos, loc.getWorld());
+            PasteProvider.getPaster().pasteSchematic(getSchematic(), pastePos, 0, loc.getWorld());
         } catch (Exception e) {
             Logger.ERROR.log("Could not load " + getDisplayName());
             e.printStackTrace();

@@ -56,37 +56,52 @@ public class Missile extends SchematicObject {
         return new File(Config.getMissilesFolder());
     }
     
-    public void paste(Game game, Player p, SchematicFacing mf) {
-        if (mf == null)
-            return;
+    public void paste(Game game, Player player) {
+        
+        boolean hasTempBlock = Config.isTempBlockEnabled();
+        Material tempBlockMaterial = Config.getTempBlockMaterial();
+        int tempBlockDelay = Config.getUpdateDelay();
+        int tempBlockRadius = Config.getUpdateRadius();
+        
+        paste(game, player, hasTempBlock, tempBlockMaterial, tempBlockDelay, tempBlockRadius);
+    }
+
+    public void paste(Game game, Player player, boolean hasTempBlock, Material tempBlockMaterial, int tempBlockDelay, 
+                      int tempBlockRadius) {
+        
+        SchematicFacing schematicFacing = SchematicFacing.getFacingPlayer(player, game.getArena().getMissileConfiguration());
+        if (schematicFacing == null) return;
+        
         try {
-            Location loc = p.getLocation();
+            
+            Location loc = player.getLocation();
             Vector pastePos = new Vector(loc.getX(), loc.getY(), loc.getZ());
             
             pastePos = pastePos.add(new Vector(0, -down, 0));
 
             int rotation = 0;
-            if (mf == SchematicFacing.NORTH) {
+            if (schematicFacing == SchematicFacing.NORTH) {
                 pastePos = pastePos.add(new Vector(0, 0, -dist));
-            } else if (mf == SchematicFacing.SOUTH) {
+            } else if (schematicFacing == SchematicFacing.SOUTH) {
                 pastePos = pastePos.add(new Vector(0, 0, dist));
                 rotation = 180;
-            } else if (mf == SchematicFacing.EAST) {
+            } else if (schematicFacing == SchematicFacing.EAST) {
                 pastePos = pastePos.add(new Vector(dist, 0, 0));
                 rotation = 270;
-            } else if (mf == SchematicFacing.WEST) {
+            } else if (schematicFacing == SchematicFacing.WEST) {
                 pastePos = pastePos.add(new Vector(-dist, 0, 0));
                 rotation = 90;
             }
-
-            PasteProvider.getPaster().pasteMissile(getSchematic(), pastePos, rotation, loc.getWorld(),
-                    game.getPlayer(p).getTeam());
+            
+            PasteProvider.getPaster().pasteMissile(getSchematic(), pastePos, rotation, loc.getWorld(), hasTempBlock, 
+                    tempBlockMaterial, tempBlockDelay, tempBlockRadius);
+            
         } catch (Exception e) {
             Logger.ERROR.log("Could not load " + getDisplayName());
             e.printStackTrace();
         }
     }
-    
+
     /**
      * This method provides the missile spawn item based on the
      * mob spawn item specification in the arena configuration.
@@ -116,5 +131,4 @@ public class Missile extends SchematicObject {
         String name = material.name();
         return name.contains("SPAWN_EGG") || name.equals("MONSTER_EGG");
     }
-    
 }

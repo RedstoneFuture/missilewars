@@ -1,8 +1,8 @@
 name: MissileWars
-author: Butzlabben
+authors: [Butzlabben, RedstoneFuture]
 version: ${project.version}
 main: de.butzlabben.missilewars.MissileWars
-api-version: 1.13
+api-version: 1.20
 depend: [ WorldEdit ]
 softdepend: [ Vault, FastAsyncWorldEdit, PlaceholderAPI ]
 

@@ -46,12 +46,12 @@ public class MissileConfiguration extends SchematicConfiguration {
     private boolean westFacing = true;
 
     private List<Missile> schematics = new ArrayList<>() {{
-        add(new Missile("Tomahawk.schematic", "&aTomahawk", 3, EntityType.CREEPER, 2, 2));
-        add(new Missile("Cruiser.schematic", "&eCruiser", 2, EntityType.BLAZE, 2, 2));
-        add(new Missile("Sword.schematic", "&7Sword", 2, EntityType.SKELETON, 2, 2));
-        add(new Missile("Juggernaut.schematic", "&4Juggernaut", 1, EntityType.MUSHROOM_COW, 2, 2));
-        add(new Missile("Piranha.schematic", "&3Piranha", 3, EntityType.HORSE, 2, 2));
-        add(new Missile("Tunnelbore.schematic", "&0Tunnelbore", 1, EntityType.ENDERMAN, 2, 2));
+        add(new Missile("Tomahawk.schem", "&a%schematic_name_compact%", 3, EntityType.CREEPER, 0, 2));
+        add(new Missile("Cruiser.schem", "&e%schematic_name_compact%", 2, EntityType.BLAZE, 0, 2));
+        add(new Missile("Sword.schem", "&7%schematic_name_compact%", 2, EntityType.SKELETON, 0, 2));
+        add(new Missile("Juggernaut.schem", "&4%schematic_name_compact%", 2, EntityType.MUSHROOM_COW, 0, 2));
+        add(new Missile("Piranha.schem", "&3%schematic_name_compact%", 3, EntityType.HORSE, 0, 2));
+        add(new Missile("Tunnelbore.schem", "&0%schematic_name_compact%", 1, EntityType.ENDERMAN, 0, 2));
     }};
 
 

@@ -31,7 +31,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import org.apache.commons.lang.Validate;
 import org.bukkit.Location;
 import org.bukkit.World;
 
@@ -131,7 +130,6 @@ public class Serializer {
     }
 
     private static String replaceColorStrings(char replace, char replacement, String textToTranslate) {
-        Validate.notNull(textToTranslate, "Cannot translate null text");
         char[] b = textToTranslate.toCharArray();
 
         for (int i = 0; i < b.length - 1; ++i) {

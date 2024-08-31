@@ -29,10 +29,11 @@ import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.game.enums.TeamType;
 import de.butzlabben.missilewars.game.enums.VoteState;
-import de.butzlabben.missilewars.game.schematics.SchematicFacing;
 import de.butzlabben.missilewars.game.schematics.objects.Missile;
 import de.butzlabben.missilewars.game.timer.LobbyTimer;
 import de.butzlabben.missilewars.player.MWPlayer;
+import de.butzlabben.missilewars.util.MaterialUtil;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -56,7 +57,7 @@ public class MWCommands extends BaseCommand {
 
         sendHelpMessage(sender, "mw.listgames", "/mw listgames", "List the active games.");
         sendHelpMessage(sender, "mw.move", "/mw move <player> <1|2|spec>", "Change the team of a specific player.");
-        sendHelpMessage(sender, "mw.paste", "/mw paste <missile>", "Pastes a missile.");
+        sendHelpMessage(sender, "mw.paste", "/mw paste <missile> [flags, e.g. '-tempblock:true']", "Pastes a missile.");
         sendHelpMessage(sender, "mw.start", "/mw start [lobby]", "Starts the game.");
         sendHelpMessage(sender, "mw.stop", "/mw stop [lobby]", "Stops the game.");
         sendHelpMessage(sender, "mw.appendrestart", "/mw appendrestart [lobby]", "Appends a restart after the next game ends.");
@@ -212,7 +213,7 @@ public class MWCommands extends BaseCommand {
     }
 
     @Subcommand("paste")
-    @CommandCompletion("@missiles @nothing")
+    @CommandCompletion("@missiles @missile-flags @missile-flags @missile-flags @missile-flags @nothing")
     @CommandPermission("mw.paste")
     public void pasteCommand(CommandSender sender, String[] args) {
 
@@ -224,7 +225,7 @@ public class MWCommands extends BaseCommand {
             return;
         }
 
-        if (args.length > 1) {
+        if (args.length > 5) {
             player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
             return;
         }
@@ -241,9 +242,40 @@ public class MWCommands extends BaseCommand {
                     .replace("%input%", args[0]));
             return;
         }
-
-        SchematicFacing schematicFacing = SchematicFacing.getFacingPlayer(player, game.getArena().getMissileConfiguration());
-        missile.paste(game, player, schematicFacing);
+        
+        boolean hasTempBlock = Config.isTempBlockEnabled();
+        Material tempBlockMaterial = Config.getTempBlockMaterial();
+        int tempBlockDelay = Config.getUpdateDelay();
+        int tempBlockRadius = Config.getUpdateRadius();
+        
+        for (int i = 1; i < args.length; i++) {
+            if (args[i].toLowerCase().startsWith("-tempblock:")) {
+                hasTempBlock = Boolean.parseBoolean(args[i].split(":", 2)[1]);
+                continue;
+            }
+            if (args[i].toLowerCase().startsWith("-tempblock_material:")) {
+                tempBlockMaterial = MaterialUtil.getMaterial(args[i].split(":", 2)[1]);
+                continue;
+            }
+            if (args[i].toLowerCase().startsWith("-tempblock_delay:")) {
+                tempBlockDelay = Integer.parseInt(args[i].split(":", 2)[1]);
+                continue;
+            }
+            if (args[i].toLowerCase().startsWith("-tempblock_radius:")) {
+                tempBlockRadius = Integer.parseInt(args[i].split(":", 2)[1]);
+                continue;
+            }
+        }
+        
+        missile.paste(game, player, hasTempBlock, tempBlockMaterial, tempBlockDelay, tempBlockRadius);
+        
+        sender.sendMessage(Messages.getPrefix() + "Missile §7" + missile.getDisplayName() + " §fis placed.");
+        sender.sendMessage("§8 - §f" + "Temp-Block (for block-updater) enabled: §7" + hasTempBlock);
+        sender.sendMessage("§8 - §f" + "Temp-Block material: §7" + tempBlockMaterial);
+        sender.sendMessage("§8 - §f" + "Temp-Block delay: §7" + tempBlockDelay + " server ticks");
+        sender.sendMessage("§8 - §f" + "Temp-Block radius: §7" + tempBlockRadius + " blocks");
+        sender.sendMessage(" ");
+        
     }
 
     @Subcommand("start")

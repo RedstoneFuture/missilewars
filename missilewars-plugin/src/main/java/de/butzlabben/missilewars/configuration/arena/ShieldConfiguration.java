@@ -41,7 +41,7 @@ public class ShieldConfiguration extends SchematicConfiguration {
     @SerializedName("fly_time") private int flyTime = 20;
 
     private List<Shield> schematics = new ArrayList<>() {{
-        add(new Shield("shield.schematic", "&cShield", 1));
+        add(new Shield("shield.schem", "&c%schematic_name_compact%", 1));
     }};
 
 

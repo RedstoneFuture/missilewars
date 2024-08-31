@@ -22,6 +22,7 @@ import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.menus.MenuItem;
+import de.butzlabben.missilewars.util.MaterialUtil;
 import de.butzlabben.missilewars.util.SetupUtil;
 import lombok.Getter;
 import org.bukkit.*;
@@ -31,8 +32,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.util.*;
 
-import static org.bukkit.Material.JUKEBOX;
-import static org.bukkit.Material.valueOf;
+import static org.bukkit.Material.*;
 
 /**
  * @author Butzlabben
@@ -89,9 +89,10 @@ public class Config {
         cfg.addDefault("missiles.folder", "plugins/MissileWars/missiles");
         cfg.addDefault("shields.folder", "plugins/MissileWars/shields");
 
-        cfg.addDefault("replace.material", JUKEBOX.name());
-        cfg.addDefault("replace.after_ticks", 2);
-        cfg.addDefault("replace.radius", 15);
+        cfg.addDefault("temp_block.enable", true);
+        cfg.addDefault("temp_block.material", NOTE_BLOCK.name());
+        cfg.addDefault("temp_block.remove_after_ticks", 0);
+        cfg.addDefault("temp_block.radius", 8);
         
         cfg.addDefault("game_result.firework", true);
 
@@ -308,25 +309,20 @@ public class Config {
         return cfg.getString("shields.folder");
     }
     
-    /**
-     * This method gets the minecraft material type of the block to start missiles.
-     */
-    public static Material getStartReplace() {
-        String name = cfg.getString("replace.material").toUpperCase();
-        try {
-            return valueOf(name);
-        } catch (Exception e) {
-            Logger.WARN.log("Could not use " + name + " as start material!");
-        }
-        return null;
+    public static boolean isTempBlockEnabled() {
+        return cfg.getBoolean("temp_block.enable");
+    }
+    
+    public static Material getTempBlockMaterial() {
+        return MaterialUtil.getMaterial(cfg.getString("temp_block.material"));
     }
 
-    public static int getReplaceTicks() {
-        return cfg.getInt("replace.after_ticks");
+    public static int getUpdateDelay() {
+        return cfg.getInt("temp_block.remove_after_ticks");
     }
 
-    public static int getReplaceRadius() {
-        return cfg.getInt("replace.radius");
+    public static int getUpdateRadius() {
+        return cfg.getInt("temp_block.radius");
     }
     
     public static boolean isGameResultFirework() {
