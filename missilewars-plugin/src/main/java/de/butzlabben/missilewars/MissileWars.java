@@ -88,11 +88,12 @@ public class MissileWars extends JavaPlugin {
 
         Config.load();
         Messages.load();
-        SetupUtil.saveDefaultSchematics(new File(Config.getMissilesFolder()), "missiles.zip");
-        SetupUtil.saveDefaultSchematics(new File(Config.getShieldsFolder()), "shields.zip");
-
-        new File(Config.getLobbiesFolder()).mkdirs();
-
+        
+        new File(Config.getGamesFolder()).mkdirs();
+        
+        SetupUtil.saveDefaultFiles(Config.getMissilesFolder(), "missiles.zip", this);
+        SetupUtil.saveDefaultFiles(Config.getShieldsFolder(), "shields.zip", this);
+        
         this.signRepository = SignRepository.load();
 
         registerEvents();

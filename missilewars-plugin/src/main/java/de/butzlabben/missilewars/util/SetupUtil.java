@@ -92,154 +92,81 @@ public class SetupUtil {
         }
     }
     
-    public static void checkMap(String worldName) {
-        File arenasFolder = new File(Config.getArenasFolder());
-        File file = new File(arenasFolder, worldName);
-        if (!file.isDirectory()) {
-            String resource = "MissileWars-Arena.zip";
-
-            Logger.WARN.log("There was no map found with the name \"" + worldName + "\"");
-            Logger.BOOT.log("Copying default map (" + resource + ")");
-
-            try {
-                copyZip(resource, file.getPath());
-            } catch (IOException e) {
-                Logger.ERROR.log("Unable to copy new map!");
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public static void saveDefaultSchematics(File schematicFile, String defaultFile) {
-        if (!schematicFile.isDirectory()) {
-
-            Logger.BOOT.log("Copying default schematic ressource folder (" + defaultFile + ")");
-
-            try {
-                copyZip(defaultFile, schematicFile.getPath());
-            } catch (IOException e) {
-                Logger.ERROR.log("Unable to copy schematic ressource folder '" + defaultFile + "'!");
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private static void copyFile(String resource, String out) {
-        File file = new File(out);
-        if (!file.exists()) {
-            try {
-                InputStream in = MissileWars.getInstance().getResource(resource);
-                Files.copy(in, file.toPath());
-            } catch (IOException e) {
-                Logger.ERROR.log("Wasn't able to create Config");
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private static void copyFolder(String resource, String outputFolder) throws IOException {
-        copyResourcesToDirectory(jarForClass(MissileWars.class, null), resource, outputFolder);
-    }
-
-    public static void copyZip(String resource, String outputFolder) throws IOException {
-        File out = new File(MissileWars.getInstance().getDataFolder(), resource);
-
-        InputStream in = JavaPlugin.getPlugin(MissileWars.class).getResource(resource);
-
-        Files.copy(in, out.toPath());
-
-        unzip(out.getPath(), outputFolder);
-
-        // delete the ZIP files after server stopping
-        out.deleteOnExit();
-    }
-
-    public static void unzip(String zipFilePath, String destDirectory) throws IOException {
-        File destDir = new File(destDirectory);
-        if (!destDir.exists()) {
-            destDir.mkdir();
-        }
-        ZipInputStream zipIn = new ZipInputStream(new FileInputStream(zipFilePath));
-
-        ZipEntry entry = zipIn.getNextEntry();
-        // iterates over entries in the zip file
-        while (entry != null) {
-            String filePath = destDirectory + File.separator + entry.getName();
-            if (!entry.isDirectory()) {
-                // if the entry is a file, extracts it
-                extractFile(zipIn, filePath);
-            } else {
-                // if the entry is a directory, make the directory
-                File dir = new File(filePath);
-                dir.mkdir();
-            }
-            zipIn.closeEntry();
-            entry = zipIn.getNextEntry();
-        }
-        zipIn.close();
-    }
-
     /**
-     * Extracts a zip entry (file entry)
-     *
-     * @param zipIn    the input stream
-     * @param filePath the path to extract it to
+     * Extracts a ZIP file from the plugin's resource folder and saves the contents
+     * into the specified targetPath.
+     * 
+     * @param targetPath The directory where the extracted files should be saved.
+     * @param defaultFile The name of the ZIP file in the plugin's resource folder.
      */
-    private static void extractFile(ZipInputStream zipIn, String filePath) throws IOException {
-        BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(filePath));
-        byte[] bytesIn = new byte[BUFFER_SIZE];
-        int read;
-        while ((read = zipIn.read(bytesIn)) != -1) {
-            bos.write(bytesIn, 0, read);
+    public static void saveDefaultFiles(String targetPath, String defaultFile, JavaPlugin plugin) {
+        // Ensure the target directory exists
+        File targetDir = new File(targetPath);
+        
+        // Check if the target directory already exists; if so, skip extraction
+        if (targetDir.exists()) {
+            Logger.NORMAL.log("Directory '" + targetDir.getPath() + "' already exists. Skipping extraction.");
+            return;
         }
-        bos.close();
-    }
-
-    public static JarFile jarForClass(Class<?> clazz, JarFile defaultJar) {
-        String path = "/" + clazz.getName().replace('.', '/') + ".class";
-        URL jarUrl = clazz.getResource(path);
-        if (jarUrl == null) {
-            return defaultJar;
+        
+        // Create the target directory if it does not exist
+        if (!targetDir.mkdirs()) {
+            Logger.ERROR.log("Failed to create directory '" + targetDir.getPath() + "'");
+            return;
         }
-
-        String url = jarUrl.toString();
-        int bang = url.indexOf("!");
-        String JAR_URI_PREFIX = "jar:file:";
-        if (url.startsWith(JAR_URI_PREFIX) && bang != -1) {
-            try {
-                return new JarFile(url.substring(JAR_URI_PREFIX.length(), bang));
-            } catch (IOException e) {
-                throw new IllegalStateException("Error loading jar file.", e);
+        
+        // Get the resource as an InputStream
+        try (InputStream in = plugin.getResource(defaultFile)) {
+            if (in == null) {
+                Logger.ERROR.log("Unable to find resource '" + defaultFile + "'!");
+                return;
             }
-        } else {
-            return defaultJar;
+    
+            // Unzip the resource to the target directory
+            Logger.NORMAL.log("Unzipping resource '" + defaultFile + "' to directory: " + targetDir.getPath());
+            unzip(in, targetDir);
+        } catch (IOException e) {
+            Logger.ERROR.log("Failed to unzip resource '" + defaultFile + "'!");
+            e.printStackTrace();
         }
     }
-
-    /**
-     * Copies a directory from a jar file to an external directory.
-     */
-    public static void copyResourcesToDirectory(JarFile fromJar, String jarDir, String destDir) throws IOException {
-        for (Enumeration<JarEntry> entries = fromJar.entries(); entries.hasMoreElements(); ) {
-            JarEntry entry = entries.nextElement();
-            if (entry.getName().startsWith(jarDir + "/") && !entry.isDirectory()) {
-                File dest = new File(destDir + "/" + entry.getName().substring(jarDir.length() + 1));
-                File parent = dest.getParentFile();
-                if (parent != null) {
-                    parent.mkdirs();
-                }
-
-                try (FileOutputStream out = new FileOutputStream(dest); InputStream in = fromJar.getInputStream(entry)) {
-                    byte[] buffer = new byte[8 * 1024];
-
-                    int s;
-                    while ((s = in.read(buffer)) > 0) {
-                        out.write(buffer, 0, s);
+    
+    private static void unzip(InputStream in, File targetDir) throws IOException {
+        try (ZipInputStream zis = new ZipInputStream(in)) {
+            ZipEntry entry;
+            while ((entry = zis.getNextEntry()) != null) {
+                File newFile = new File(targetDir, entry.getName());
+    
+                if (entry.isDirectory()) {
+                    // Handle directory entries
+                    if (!newFile.isDirectory() && !newFile.mkdirs()) {
+                        throw new IOException("Failed to create directory " + newFile);
                     }
-                } catch (IOException e) {
-                    throw new IOException("Could not copy asset from jar file", e);
+                } else {
+                    // Check if file already exists and decide whether to overwrite or not
+                    if (newFile.exists()) {
+                        Logger.WARN.log("File " + newFile.getName() + " already exists. Skipping.");
+                        continue; // Skip if the file exists
+                    }
+    
+                    // Ensure parent directory exists
+                    File parent = newFile.getParentFile();
+                    if (!parent.isDirectory() && !parent.mkdirs()) {
+                        throw new IOException("Failed to create directory " + parent);
+                    }
+    
+                    // Write file content
+                    try (FileOutputStream fos = new FileOutputStream(newFile)) {
+                        byte[] buffer = new byte[1024];
+                        int len;
+                        while ((len = zis.read(buffer)) > 0) {
+                            fos.write(buffer, 0, len);
+                        }
+                    }
                 }
+                zis.closeEntry();
             }
         }
     }
+
 }

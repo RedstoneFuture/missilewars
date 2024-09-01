@@ -71,7 +71,8 @@ public class Arenas {
                     Logger.WARN.log("There are several arenas configured with the name \"" + arena.getName() + "\". Arenas must have a unique name");
                     continue;
                 }
-                SetupUtil.checkMap(arena.getTemplateWorld());
+                SetupUtil.saveDefaultFiles(Config.getArenasFolder() + File.separator + arena.getTemplateWorld(), 
+                        "MissileWars-Arena.zip", MissileWars.getInstance());
                 arena.updateConfig();
                 ARENAS.put(arena.getName(), arena);
             } catch (IOException exception) {
