@@ -98,6 +98,12 @@
             <version>1.18.34</version>
             <scope>provided</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>de.redstoneworld.redutilities</groupId>
+            <artifactId>redutilities</artifactId>
+            <version>0.0.14-Snapshot</version>
+        </dependency>
     </dependencies>
 
     <build>
