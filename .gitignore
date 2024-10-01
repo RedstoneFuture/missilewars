@@ -20,5 +20,9 @@ out/
 .idea/
 *.iml
 
+# Nix
+result
+
 # Misc
 .DS_Store
+
