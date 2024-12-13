@@ -18,7 +18,6 @@
 
 package de.butzlabben.missilewars.configuration.arena;
 
-import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -26,9 +25,9 @@ import lombok.ToString;
 @Getter
 @ToString
 @RequiredArgsConstructor
-public class FireballConfiguration {
+public class MoneyConfig {
 
-    private String name = "Fireball";
-    private int occurrence = 2;
-    @SerializedName("destroy_portal") private boolean destroysPortal = false;
+    private int win = 80;
+    private int loss = 50;
+    private int draw = 30;
 }

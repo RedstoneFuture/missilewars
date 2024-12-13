@@ -21,7 +21,7 @@ package de.butzlabben.missilewars.configuration.lobby;
 import com.google.gson.annotations.SerializedName;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.configuration.Config;
-import de.butzlabben.missilewars.configuration.arena.AreaConfiguration;
+import de.butzlabben.missilewars.configuration.arena.AreaConfig;
 import de.butzlabben.missilewars.configuration.arena.Arena;
 import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.game.enums.JoinIngameBehavior;
@@ -62,7 +62,7 @@ public class Lobby {
     @SerializedName("team_spectator") private GameTeamConfiguration teamConfigSpec = new GameTeamConfiguration("Spectator", "&f");
     @Setter @SerializedName("spawn_point") private Location spawnPoint = Config.getFallbackSpawn().add(40, 0, 0);
     @Setter @SerializedName("after_game_spawn") private Location afterGameSpawn = Config.getFallbackSpawn();
-    @Setter @SerializedName("area") private AreaConfiguration areaConfig = AreaConfiguration.aroundLocation(spawnPoint, 20);
+    @Setter @SerializedName("area") private AreaConfig areaConfig = AreaConfig.aroundLocation(spawnPoint, 20);
     @SerializedName("map_choose_procedure") private MapChooseProcedure mapChooseProcedure = MapChooseProcedure.FIRST;
     @SerializedName("join_ongoing_game") private JoinIngameBehavior joinIngameBehavior = JoinIngameBehavior.SPECTATOR;
     @SerializedName("rejoin_ongoing_game") private RejoinIngameBehavior rejoinIngameBehavior = RejoinIngameBehavior.LAST_TEAM;

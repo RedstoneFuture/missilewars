@@ -236,7 +236,7 @@ public class MWCommands extends BaseCommand {
             return;
         }
 
-        Missile missile = (Missile) game.getArena().getMissileConfiguration().getSchematicFromFileName(args[0]);
+        Missile missile = (Missile) game.getArena().getMissileConfig().getSchematicFromFileName(args[0]);
         if (missile == null) {
             player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_INVALID_MISSILE)
                     .replace("%input%", args[0]));

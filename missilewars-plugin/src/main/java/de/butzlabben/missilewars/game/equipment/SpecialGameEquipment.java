@@ -60,8 +60,8 @@ public class SpecialGameEquipment {
      */
     private void createSpecialEquipmentList() {
         
-        int arrowOccurrence = game.getArena().getArrowConfiguration().getOccurrence();
-        int fireballOccurrence = game.getArena().getFireballConfiguration().getOccurrence();
+        int arrowOccurrence = game.getArena().getArrowConfig().getOccurrence();
+        int fireballOccurrence = game.getArena().getFireballConfig().getOccurrence();
 
         for (int i = arrowOccurrence; i > 0; i--) {
             specialEquipmentList.add(arrow);
@@ -77,7 +77,7 @@ public class SpecialGameEquipment {
      * This method creates the arrow item stack.
      */
     private void createArrow() {
-        arrow = new ItemStack(Material.ARROW, game.getArena().getArrowConfiguration().getAmount());
+        arrow = new ItemStack(Material.ARROW, game.getArena().getArrowConfig().getAmount());
     }
 
     /**
@@ -86,7 +86,7 @@ public class SpecialGameEquipment {
     private void createFireball() {
         fireball = new ItemStack(Material.FIRE_CHARGE);
         ItemMeta fireballMeta = fireball.getItemMeta();
-        fireballMeta.setDisplayName(game.getArena().getFireballConfiguration().getName());
+        fireballMeta.setDisplayName(game.getArena().getFireballConfig().getName());
         fireball.setItemMeta(fireballMeta);
     }
 

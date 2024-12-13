@@ -69,7 +69,7 @@ public class Missile extends SchematicObject {
     public void paste(Game game, Player player, boolean hasTempBlock, Material tempBlockMaterial, int tempBlockDelay, 
                       int tempBlockRadius) {
         
-        SchematicFacing schematicFacing = SchematicFacing.getFacingPlayer(player, game.getArena().getMissileConfiguration());
+        SchematicFacing schematicFacing = SchematicFacing.getFacingPlayer(player, game.getArena().getMissileConfig());
         if (schematicFacing == null) return;
         
         try {

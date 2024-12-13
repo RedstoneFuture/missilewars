@@ -18,6 +18,7 @@
 
 package de.butzlabben.missilewars.configuration.arena;
 
+import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -25,9 +26,8 @@ import lombok.ToString;
 @Getter
 @ToString
 @RequiredArgsConstructor
-public class MoneyConfiguration {
+public class GameRespawnConfig {
 
-    private int win = 80;
-    private int loss = 50;
-    private int draw = 30;
+    @SerializedName("send_bow") private boolean sendBow = true;
+    @SerializedName("send_pickaxe") private boolean sendPickaxe = false;
 }

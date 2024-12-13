@@ -18,6 +18,9 @@
 
 package de.butzlabben.missilewars.configuration.arena;
 
+import com.google.gson.annotations.SerializedName;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -25,8 +28,23 @@ import lombok.ToString;
 @Getter
 @ToString
 @RequiredArgsConstructor
-public class ArrowConfiguration {
+public class EquipmentIntervalConfig {
 
-    private int occurrence = 2;
-    private int amount = 3;
+    @SerializedName("custom_start_interval") private int customStartInterval = 10;
+    @SerializedName("reset_after_respawn") private boolean resetAfterRespawn = true;
+    @SerializedName("custom_respawn_interval") private int customRespawnInterval = 10;
+
+    @SerializedName("intervals_by_team_amount") private Map<String, Integer> intervalsByTeamAmount = new HashMap<>() {{
+        put("1", 15);
+        put("2", 20);
+        put("4", 25);
+    }};
+
+    @SerializedName("interval_factor_by_game_time") private Map<String, Double> intervalFactorByGameTime = new HashMap<>() {{
+        put("1800", 1.0);
+        put("900", 0.9);
+        put("600", 0.8);
+        put("300", 0.7);
+    }};
+
 }

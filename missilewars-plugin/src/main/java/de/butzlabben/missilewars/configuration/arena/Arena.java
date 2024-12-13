@@ -39,22 +39,22 @@ public class Arena implements Cloneable {
     @SerializedName("display_material") private String displayMaterial = "STONE";
     @SerializedName("template_world") private String templateWorld = "default_map";
     @SerializedName("auto_respawn") private boolean autoRespawn = true;
-    @SerializedName("game_spawn") private GameSpawnConfiguration spawn = new GameSpawnConfiguration();
-    @SerializedName("game_respawn") private GameRespawnConfiguration respawn = new GameRespawnConfiguration();
+    @SerializedName("game_spawn") private GameSpawnConfig spawn = new GameSpawnConfig();
+    @SerializedName("game_respawn") private GameRespawnConfig respawn = new GameRespawnConfig();
     @SerializedName("do_tile_drops") private boolean doTileDrops = false;
     @SerializedName("keep_inventory") private boolean keepInventory = false;
     @SerializedName("max_move_height") private int maxMoveHeight = 170;
     @SerializedName("death_height") private int deathHeight = 65;
     @SerializedName("game_duration") private int gameDuration = 30;
-    @SerializedName("fireball") private FireballConfiguration fireballConfiguration = new FireballConfiguration();
-    @SerializedName("arrow") private ArrowConfiguration arrowConfiguration = new ArrowConfiguration();
+    @SerializedName("fireball") private FireballConfig fireballConfig = new FireballConfig();
+    @SerializedName("arrow") private ArrowConfig arrowConfig = new ArrowConfig();
     @SerializedName("save_statistics") private boolean saveStatistics = true;
-    @SerializedName("fall_protection") private FallProtectionConfiguration fallProtection = new FallProtectionConfiguration();
-    @SerializedName("game_result.money") private MoneyConfiguration money = new MoneyConfiguration();
-    @SerializedName("equipment_interval") private EquipmentIntervalConfiguration interval = new EquipmentIntervalConfiguration();
-    @SerializedName("missile") private MissileConfiguration missileConfiguration = new MissileConfiguration();
-    @SerializedName("shield") private ShieldConfiguration shieldConfiguration = new ShieldConfiguration();
-    @Setter @SerializedName("area") private AreaConfiguration areaConfig = new AreaConfiguration(-30, 0, -72, 30, 256, 72);
+    @SerializedName("fall_protection") private FallProtectionConfig fallProtection = new FallProtectionConfig();
+    @SerializedName("game_result.money") private MoneyConfig money = new MoneyConfig();
+    @SerializedName("equipment_interval") private EquipmentIntervalConfig interval = new EquipmentIntervalConfig();
+    @SerializedName("missile") private MissileConfig missileConfig = new MissileConfig();
+    @SerializedName("shield") private ShieldConfig shieldConfig = new ShieldConfig();
+    @Setter @SerializedName("area") private AreaConfig areaConfig = new AreaConfig(-30, 0, -72, 30, 256, 72);
     @SerializedName("teamchange_ongoing_game") private boolean teamchangeOngoingGame = false;
 
     @SerializedName("spectator_spawn")

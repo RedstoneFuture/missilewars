@@ -35,7 +35,7 @@ import java.util.*;
 @Getter
 @ToString
 @RequiredArgsConstructor
-public class MissileConfiguration extends SchematicConfiguration {
+public class MissileConfig extends SchematicConfiguration {
 
     // TODO pretty names
     private boolean onlyBlockPlaceable = false;

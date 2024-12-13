@@ -19,7 +19,7 @@
 package de.butzlabben.missilewars.game.schematics;
 
 import de.butzlabben.missilewars.Logger;
-import de.butzlabben.missilewars.configuration.arena.MissileConfiguration;
+import de.butzlabben.missilewars.configuration.arena.MissileConfig;
 import de.butzlabben.missilewars.util.missile.Interval;
 import org.bukkit.entity.Player;
 
@@ -46,7 +46,7 @@ public enum SchematicFacing {
         this.secondary = secondary;
     }
 
-    public static SchematicFacing getFacing(double degree, MissileConfiguration configuration) {
+    public static SchematicFacing getFacing(double degree, MissileConfig configuration) {
         List<SchematicFacing> values = Arrays.stream(SchematicFacing.values()).filter(f -> configuration.getEnabledFacings().contains(f)).collect(Collectors.toList());
         SchematicFacing facing = null;
         for (SchematicFacing fac : values) {
@@ -72,7 +72,7 @@ public enum SchematicFacing {
         return facing;
     }
 
-    public static SchematicFacing getFacingPlayer(Player playerSelf, MissileConfiguration configuration) {
+    public static SchematicFacing getFacingPlayer(Player playerSelf, MissileConfig configuration) {
         float y = playerSelf.getLocation().getYaw();
         if (y < 0) {
             y += 360;

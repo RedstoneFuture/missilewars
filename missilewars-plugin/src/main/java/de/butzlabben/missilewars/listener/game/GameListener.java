@@ -21,7 +21,7 @@ package de.butzlabben.missilewars.listener.game;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.PluginMessages;
-import de.butzlabben.missilewars.configuration.arena.FallProtectionConfiguration;
+import de.butzlabben.missilewars.configuration.arena.FallProtectionConfig;
 import de.butzlabben.missilewars.event.PlayerArenaJoinEvent;
 import de.butzlabben.missilewars.event.PlayerArenaLeaveEvent;
 import de.butzlabben.missilewars.game.Game;
@@ -70,7 +70,7 @@ public class GameListener extends GameBoundListener {
         if (!isInGameWorld(event.getLocation())) return;
 
         if (event.getEntity().getType() != EntityType.FIREBALL) return;
-        if (getGame().getArena().getFireballConfiguration().isDestroysPortal()) return;
+        if (getGame().getArena().getFireballConfig().isDestroysPortal()) return;
 
         event.blockList().removeIf(b -> b.getType() == Material.NETHER_PORTAL);
     }
@@ -103,7 +103,7 @@ public class GameListener extends GameBoundListener {
             event.setCancelled(true);
 
             // Can missiles only be spawned if the item interaction was performed on a block (no air)?
-            boolean isOnlyBlockPlaceable = getGame().getArena().getMissileConfiguration().isOnlyBlockPlaceable();
+            boolean isOnlyBlockPlaceable = getGame().getArena().getMissileConfig().isOnlyBlockPlaceable();
             if (isOnlyBlockPlaceable) {
                 if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
             }
@@ -139,7 +139,7 @@ public class GameListener extends GameBoundListener {
             // or a projectile hit before.
             if (!snowball.isDead()) getGame().spawnShield(shooter, snowball);
             
-        }, getGame().getArena().getShieldConfiguration().getFlyTime());
+        }, getGame().getArena().getShieldConfig().getFlyTime());
     }
 
     @EventHandler
@@ -193,7 +193,7 @@ public class GameListener extends GameBoundListener {
             getGame().setPlayerAttributes(player);
             getGame().getPlayer(player).getPlayerEquipmentRandomizer().resetPlayerInterval();
 
-            FallProtectionConfiguration fallProtection = getGame().getArena().getFallProtection();
+            FallProtectionConfig fallProtection = getGame().getArena().getFallProtection();
             if (fallProtection.isEnabled()) {
                 new RespawnGoldBlock(player, fallProtection.getDuration(), fallProtection.isMessageOnlyOnStart(), getGame());
             }

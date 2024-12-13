@@ -18,7 +18,6 @@
 
 package de.butzlabben.missilewars.configuration.arena;
 
-import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -26,8 +25,8 @@ import lombok.ToString;
 @Getter
 @ToString
 @RequiredArgsConstructor
-public class GameRespawnConfiguration {
+public class ArrowConfig {
 
-    @SerializedName("send_bow") private boolean sendBow = true;
-    @SerializedName("send_pickaxe") private boolean sendPickaxe = false;
+    private int occurrence = 2;
+    private int amount = 3;
 }

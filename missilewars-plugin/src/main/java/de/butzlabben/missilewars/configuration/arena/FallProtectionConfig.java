@@ -26,8 +26,9 @@ import lombok.ToString;
 @Getter
 @ToString
 @RequiredArgsConstructor
-public class GameSpawnConfiguration {
+public class FallProtectionConfig {
 
-    @SerializedName("send_bow") private boolean sendBow = true;
-    @SerializedName("send_pickaxe") private boolean sendPickaxe = false;
+    private boolean enabled = true;
+    private int duration = 60;
+    @SerializedName("message_only_on_start") private boolean messageOnlyOnStart = false;
 }

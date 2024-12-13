@@ -457,7 +457,7 @@ public class Game {
     public void spawnMissile(Player player, ItemStack itemStack) {
 
         // Are missiles only allowed to spawn inside the arena, between the two arena spawn points?
-        boolean isOnlyBetweenSpawnPlaceable = this.arena.getMissileConfiguration().isOnlyBetweenSpawnPlaceable();
+        boolean isOnlyBetweenSpawnPlaceable = this.arena.getMissileConfig().isOnlyBetweenSpawnPlaceable();
         if (isOnlyBetweenSpawnPlaceable) {
             if (!isInInnerGameArea(player.getLocation())) {
                 player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.ARENA_MISSILE_PLACE_DENY));
@@ -468,7 +468,7 @@ public class Game {
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta == null) return;
         
-        Missile missile = (Missile) this.arena.getMissileConfiguration().getSchematicFromDisplayName(itemMeta.getDisplayName());
+        Missile missile = (Missile) this.arena.getMissileConfig().getSchematicFromDisplayName(itemMeta.getDisplayName());
         if (missile == null) {
             player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_INVALID_MISSILE)
                     .replace("%input%", itemMeta.getDisplayName()));
@@ -491,7 +491,7 @@ public class Game {
         ItemMeta itemMeta = ball.getItem().getItemMeta();
         if (itemMeta == null) return;
 
-        Shield shield = (Shield) this.arena.getShieldConfiguration().getSchematicFromDisplayName(itemMeta.getDisplayName());
+        Shield shield = (Shield) this.arena.getShieldConfig().getSchematicFromDisplayName(itemMeta.getDisplayName());
         if (shield == null) {
             player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_INVALID_SHIELD)
                     .replace("%input%", itemMeta.getDisplayName()));
@@ -525,8 +525,8 @@ public class Game {
             throw new IllegalStateException("Arena already set");
         }
 
-        arena.getMissileConfiguration().check();
-        arena.getShieldConfiguration().check();
+        arena.getMissileConfig().check();
+        arena.getShieldConfig().check();
 
         this.arena = arena.clone();
         gameWorld = new GameWorld(this, arena.getTemplateWorld());

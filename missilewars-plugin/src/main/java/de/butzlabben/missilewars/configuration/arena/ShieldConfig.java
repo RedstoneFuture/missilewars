@@ -36,7 +36,7 @@ import java.util.Set;
 @Getter
 @ToString
 @RequiredArgsConstructor
-public class ShieldConfiguration extends SchematicConfiguration {
+public class ShieldConfig extends SchematicConfiguration {
 
     @SerializedName("fly_time") private int flyTime = 20;
 
