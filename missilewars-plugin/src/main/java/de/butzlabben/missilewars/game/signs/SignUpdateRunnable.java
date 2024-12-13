@@ -21,7 +21,7 @@ package de.butzlabben.missilewars.game.signs;
 import de.butzlabben.missilewars.MissileWars;
 import java.util.List;
 
-public class CheckRunnable implements Runnable {
+public class SignUpdateRunnable implements Runnable {
 
     @Override
     public void run() {

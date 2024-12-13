@@ -27,7 +27,7 @@ import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.game.misc.MissileWarsPlaceholder;
 import de.butzlabben.missilewars.game.schematics.paste.FawePasteProvider;
 import de.butzlabben.missilewars.game.schematics.paste.Paster;
-import de.butzlabben.missilewars.game.signs.CheckRunnable;
+import de.butzlabben.missilewars.game.signs.SignUpdateRunnable;
 import de.butzlabben.missilewars.game.signs.SignRepository;
 import de.butzlabben.missilewars.game.stats.StatsFetcher;
 import de.butzlabben.missilewars.listener.PlayerListener;
@@ -112,7 +112,7 @@ public class MissileWars extends JavaPlugin {
             }
         });
         
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, new CheckRunnable(), 20, 20 * 10);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, new SignUpdateRunnable(), 20, 20 * 10);
 
         if (Config.isPrefetchPlayers()) {
             PreFetcher.preFetchPlayers(new StatsFetcher(new Date(0L), ""));
