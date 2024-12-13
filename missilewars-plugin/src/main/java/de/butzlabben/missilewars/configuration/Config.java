@@ -21,10 +21,12 @@ package de.butzlabben.missilewars.configuration;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.game.GameManager;
+import de.butzlabben.missilewars.initialization.ConfigLoader;
+import de.butzlabben.missilewars.initialization.FileManager;
 import de.butzlabben.missilewars.menus.MenuItem;
 import de.butzlabben.missilewars.util.MaterialUtil;
-import de.butzlabben.missilewars.util.SetupUtil;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -39,32 +41,27 @@ import static org.bukkit.Material.*;
  * @since 01.01.2018
  */
 public class Config {
-
-    private static final File DIR = MissileWars.getInstance().getDataFolder();
-    private static final File FILE = new File(DIR, "config.yml");
-    private static YamlConfiguration cfg;
-    private static boolean isNewConfig = false;
+    
+    @Getter private static final File FILE = new File(MissileWars.getInstance().getDataFolder(), "config.yml");
+    @Setter private static YamlConfiguration cfg;
+    
+    private final static boolean isNewConfig = !FILE.exists();
 
     public static void load() {
 
-        // check if the directory and the file exists or create it new
-        isNewConfig = SetupUtil.isNewConfig(DIR, FILE);
-
-        // try to load the config
-        cfg = SetupUtil.getLoadedConfig(FILE);
-
-        // copy the config input
-        cfg.options().copyDefaults(true);
-
-        // validate the config options
+        cfg = ConfigLoader.loadConfigFile(FILE);
+        
+        // Validate the settings and re-save the cleaned config-file.
         addDefaults();
-
-        // re-save the config with only validated options
-        SetupUtil.safeFile(FILE, cfg);
-        cfg = SetupUtil.getLoadedConfig(FILE);
-
+        
+        save();
     }
-
+    
+    public static void save() {
+        FileManager.safeFile(FILE, cfg);
+        cfg = ConfigLoader.getLoadedConfig(FILE);
+    }
+    
     private static void addDefaults() {
         cfg.addDefault("debug", false);
         if (debug()) {
@@ -254,7 +251,7 @@ public class Config {
         cfg.set("fallback_spawn.pitch", spawnLocation.getPitch());
 
         // re-save the config with only validated options
-        SetupUtil.safeFile(FILE, cfg);
+        FileManager.safeFile(FILE, cfg);
     }
     
     public static YamlConfiguration getConfig() {
