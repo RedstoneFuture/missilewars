@@ -19,11 +19,9 @@
 package de.butzlabben.missilewars.configuration.game;
 
 import com.google.gson.annotations.SerializedName;
-import de.butzlabben.missilewars.Logger;
-import de.butzlabben.missilewars.configuration.Config;
-import de.butzlabben.missilewars.configuration.arena.modules.AreaConfig;
 import de.butzlabben.missilewars.configuration.arena.ArenaConfig;
-import de.butzlabben.missilewars.configuration.game.modules.GameTeamConfiguration;
+import de.butzlabben.missilewars.configuration.game.modules.GameTeamConfig;
+import de.butzlabben.missilewars.configuration.game.modules.LobbyConfig;
 import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.game.enums.JoinIngameBehavior;
 import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
@@ -34,9 +32,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
 
 import java.io.File;
 import java.io.IOException;
@@ -50,23 +45,19 @@ import java.util.stream.Collectors;
 public class GameConfig {
 
     // The values defined here are only valid if there is no Config yet.
-    private String name = "lobby0";
+    private String name = "game0";
     @SerializedName("display_name") private String displayName = "&eDefault game";
     @SerializedName("auto_load") private boolean autoLoad = true;
-    @SerializedName("world") private String worldName = getBukkitDefaultWorld().getName();
-    @SerializedName("lobby_time") private int lobbyTime = 60;
     @SerializedName("min_players") private int minPlayers = 2;
     @SerializedName("max_players") private int maxPlayers = 20;
     @SerializedName("max_spectators") private int maxSpectators = -1;
-    @SerializedName("team_1") private GameTeamConfiguration team1Config = new GameTeamConfiguration("Team1", "&c");
-    @SerializedName("team_2") private GameTeamConfiguration team2Config = new GameTeamConfiguration("Team2", "&a");
-    @SerializedName("team_spectator") private GameTeamConfiguration teamConfigSpec = new GameTeamConfiguration("Spectator", "&f");
-    @Setter @SerializedName("spawn_point") private Location spawnPoint = Config.getFallbackSpawn().add(40, 0, 0);
-    @Setter @SerializedName("after_game_spawn") private Location afterGameSpawn = Config.getFallbackSpawn();
-    @Setter @SerializedName("area") private AreaConfig areaConfig = AreaConfig.aroundLocation(spawnPoint, 20);
+    @SerializedName("team_1") private GameTeamConfig team1Config = new GameTeamConfig("Team1", "&c");
+    @SerializedName("team_2") private GameTeamConfig team2Config = new GameTeamConfig("Team2", "&a");
+    @SerializedName("team_spectator") private GameTeamConfig teamConfigSpec = new GameTeamConfig("Spectator", "&f");
     @SerializedName("map_choose_procedure") private MapChooseProcedure mapChooseProcedure = MapChooseProcedure.FIRST;
     @SerializedName("join_ongoing_game") private JoinIngameBehavior joinIngameBehavior = JoinIngameBehavior.SPECTATOR;
     @SerializedName("rejoin_ongoing_game") private RejoinIngameBehavior rejoinIngameBehavior = RejoinIngameBehavior.LAST_TEAM;
+    @SerializedName("lobby") private LobbyConfig lobbyConfig = new LobbyConfig();
     @SerializedName("possible_arenas") private List<String> possibleArenas = new ArrayList<>() {{
         add("arena0");
     }};
@@ -74,20 +65,8 @@ public class GameConfig {
     // These values are only set after the Config has been read.
     @Setter private transient GameArea area;
     @Setter private transient File file;
-
-    public World getBukkitWorld() {
-        World world = Bukkit.getWorld(worldName);
-        if (world == null) {
-            Logger.ERROR.log("Could not find any world with the name: " + worldName);
-            Logger.ERROR.log("Please correct this in the configuration of lobby \"" + name + "\"");
-        }
-        return world;
-    }
-
-    private World getBukkitDefaultWorld() {
-        return Bukkit.getWorlds().get(0);
-    }
-
+    
+    
     public List<ArenaConfig> getArenas() {
         return possibleArenas
                 .stream()
