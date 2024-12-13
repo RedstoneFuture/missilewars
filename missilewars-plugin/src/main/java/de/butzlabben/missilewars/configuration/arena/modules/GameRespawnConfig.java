@@ -16,7 +16,7 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.configuration.arena;
+package de.butzlabben.missilewars.configuration.arena.modules;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
@@ -26,9 +26,8 @@ import lombok.ToString;
 @Getter
 @ToString
 @RequiredArgsConstructor
-public class FallProtectionConfig {
+public class GameRespawnConfig {
 
-    private boolean enabled = true;
-    private int duration = 60;
-    @SerializedName("message_only_on_start") private boolean messageOnlyOnStart = false;
+    @SerializedName("send_bow") private boolean sendBow = true;
+    @SerializedName("send_pickaxe") private boolean sendPickaxe = false;
 }

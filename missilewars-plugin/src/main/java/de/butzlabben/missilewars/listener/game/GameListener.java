@@ -21,7 +21,7 @@ package de.butzlabben.missilewars.listener.game;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.PluginMessages;
-import de.butzlabben.missilewars.configuration.arena.FallProtectionConfig;
+import de.butzlabben.missilewars.configuration.arena.modules.FallProtectionConfig;
 import de.butzlabben.missilewars.event.PlayerArenaJoinEvent;
 import de.butzlabben.missilewars.event.PlayerArenaLeaveEvent;
 import de.butzlabben.missilewars.game.Game;

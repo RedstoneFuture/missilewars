@@ -19,7 +19,7 @@
 package de.butzlabben.missilewars.game.schematics;
 
 import de.butzlabben.missilewars.Logger;
-import de.butzlabben.missilewars.configuration.arena.MissileConfig;
+import de.butzlabben.missilewars.configuration.arena.modules.MissileConfig;
 import de.butzlabben.missilewars.util.missile.Interval;
 import org.bukkit.entity.Player;
 

@@ -18,7 +18,7 @@
 
 package de.butzlabben.missilewars.util.geometry;
 
-import de.butzlabben.missilewars.configuration.arena.AreaConfig;
+import de.butzlabben.missilewars.configuration.arena.modules.AreaConfig;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;

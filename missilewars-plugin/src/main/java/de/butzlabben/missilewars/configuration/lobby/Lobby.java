@@ -21,7 +21,7 @@ package de.butzlabben.missilewars.configuration.lobby;
 import com.google.gson.annotations.SerializedName;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.configuration.Config;
-import de.butzlabben.missilewars.configuration.arena.AreaConfig;
+import de.butzlabben.missilewars.configuration.arena.modules.AreaConfig;
 import de.butzlabben.missilewars.configuration.arena.Arena;
 import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.game.enums.JoinIngameBehavior;
