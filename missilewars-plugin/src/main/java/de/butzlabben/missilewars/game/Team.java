@@ -25,8 +25,8 @@ import de.butzlabben.missilewars.game.enums.TeamType;
 import de.butzlabben.missilewars.game.misc.TeamSpawnProtection;
 import de.butzlabben.missilewars.menus.MenuItem;
 import de.butzlabben.missilewars.player.MWPlayer;
-import de.butzlabben.missilewars.util.PlayerUtil;
 import de.butzlabben.missilewars.util.version.ColorConverter;
+import de.redstoneworld.redutilities.player.Teleport;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -174,7 +174,7 @@ public class Team {
     
     public void teleportToTeamSpawn(Player player) {
         TeamSpawnProtection.regenerateSpawn(this);
-        PlayerUtil.teleportSafely(player, spawn);
+        Teleport.teleportSafely(player, spawn);
     }
     
 }

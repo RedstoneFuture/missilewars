@@ -22,7 +22,7 @@ import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.enums.TeamType;
-import de.butzlabben.missilewars.util.PlayerUtil;
+import de.redstoneworld.redutilities.player.Messages;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
@@ -99,7 +99,7 @@ public class GameTimer extends Timer {
                 Player player = mwPlayer.getPlayer();
                 
                 if (mwPlayer.getTeam().getTeamType() == TeamType.PLAYER) return;
-                PlayerUtil.sendActionbarMsg(player, Config.getActionbarForSpecEntries()[actionbarMsgCounter]);
+                Messages.sendActionbarMsg(player, Config.getActionbarForSpecEntries()[actionbarMsgCounter]);
             });
             
             // Array-Iteration:

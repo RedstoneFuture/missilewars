@@ -46,10 +46,10 @@ import de.butzlabben.missilewars.listener.game.GameBoundListener;
 import de.butzlabben.missilewars.listener.game.GameListener;
 import de.butzlabben.missilewars.listener.game.LobbyListener;
 import de.butzlabben.missilewars.player.MWPlayer;
-import de.butzlabben.missilewars.util.PlayerUtil;
 import de.butzlabben.missilewars.util.geometry.GameArea;
 import de.butzlabben.missilewars.util.geometry.Geometry;
 import de.butzlabben.missilewars.util.serialization.Serializer;
+import de.redstoneworld.redutilities.player.Teleport;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -732,19 +732,19 @@ public class Game {
     }
 
     public void teleportToFallbackSpawn(Player player) {
-        PlayerUtil.teleportSafely(player, Config.getFallbackSpawn());
+        Teleport.teleportSafely(player, Config.getFallbackSpawn());
     }
 
     public void teleportToLobbySpawn(Player player) {
-        PlayerUtil.teleportSafely(player, lobby.getSpawnPoint());
+        Teleport.teleportSafely(player, lobby.getSpawnPoint());
     }
 
     public void teleportToArenaSpectatorSpawn(Player player) {
-        PlayerUtil.teleportSafely(player, arena.getSpectatorSpawn());
+        Teleport.teleportSafely(player, arena.getSpectatorSpawn());
     }
 
     public void teleportToAfterGameSpawn(Player player) {
-        PlayerUtil.teleportSafely(player, lobby.getAfterGameSpawn());
+        Teleport.teleportSafely(player, lobby.getAfterGameSpawn());
     }
     
     /**
