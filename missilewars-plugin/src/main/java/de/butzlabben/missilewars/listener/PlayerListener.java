@@ -158,7 +158,7 @@ public class PlayerListener implements Listener {
         if (!onJoinGame.isCancelled()) {
             game.updateGameInfo();
             logEventDebugMessage(player, game);
-            Logger.NORMAL.log(player.getName() + " joint the MW game " + game.getLobby().getName());
+            Logger.NORMAL.log(player.getName() + " joint the MW game " + game.getGameConfig().getName());
         } else {
             Logger.DEBUG.log("Canceling game join for " + player.getName());
         }
@@ -172,7 +172,7 @@ public class PlayerListener implements Listener {
 
         game.updateGameInfo();
         logEventDebugMessage(player, game);
-        Logger.NORMAL.log(player.getName() + " left the MW game " + game.getLobby().getName());
+        Logger.NORMAL.log(player.getName() + " left the MW game " + game.getGameConfig().getName());
 
         return onLeaveGame;
     }
@@ -196,7 +196,7 @@ public class PlayerListener implements Listener {
 
         Logger.DEBUG.log("Location: " + player.getLocation());
         Logger.DEBUG.log("Current game amount: " + GameManager.getInstance().getGameAmount());
-        Logger.DEBUG.log("Lobby: " + game.getLobby().getDisplayName());
+        Logger.DEBUG.log("Lobby: " + game.getGameConfig().getDisplayName());
         Logger.DEBUG.log("Team 1: " + game.getTeamManager().getTeam1());
         Logger.DEBUG.log("Team 2: " + game.getTeamManager().getTeam2());
 

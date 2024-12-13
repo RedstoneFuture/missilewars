@@ -88,7 +88,7 @@ public class MWCommandCompletions {
             Game game = GameManager.getInstance().getGame(player.getLocation());
             if (game == null) return null;
 
-            return game.getLobby().getPossibleArenas();
+            return game.getGameConfig().getPossibleArenas();
         });
     }
     

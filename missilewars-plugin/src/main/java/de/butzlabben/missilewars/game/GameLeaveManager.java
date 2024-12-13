@@ -68,7 +68,7 @@ public class GameLeaveManager {
         }
 
         if (message != null) {
-            game.broadcast(message.replace("%max_players%", Integer.toString(game.getLobby().getMaxPlayers()))
+            game.broadcast(message.replace("%max_players%", Integer.toString(game.getGameConfig().getMaxPlayers()))
                     .replace("%players%", Integer.toString(game.getPlayerAmount()))
                     .replace("%player%", player.getName())
                     .replace("%team%", team.getFullname()));
@@ -77,7 +77,7 @@ public class GameLeaveManager {
         player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
         
         if (game.getState() == GameState.LOBBY) {
-            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.LOBBY_LEFT).replace("%lobby_name%", game.getLobby().getDisplayName()));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.LOBBY_LEFT).replace("%lobby_name%", game.getGameConfig().getDisplayName()));
         } else if (game.getState() == GameState.INGAME) {
             player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_LEFT).replace("%arena_name%", game.getArena().getDisplayName()));
         }

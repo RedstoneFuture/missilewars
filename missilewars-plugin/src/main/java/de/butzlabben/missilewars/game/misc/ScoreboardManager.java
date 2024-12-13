@@ -21,13 +21,11 @@ package de.butzlabben.missilewars.game.misc;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.Team;
-import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.player.MWPlayer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
@@ -249,7 +247,7 @@ public class ScoreboardManager {
         text = text.replace("%team1_amount%", Integer.toString(team1.getMembers().size()));
         text = text.replace("%team2_amount%", Integer.toString(team2.getMembers().size()));
 
-        text = text.replace("%lobby_name%", game.getLobby().getDisplayName());
+        text = text.replace("%lobby_name%", game.getGameConfig().getDisplayName());
         text = text.replace("%arena_name%", arenaDisplayName);
 
         text = text.replace("%time%", Integer.toString(game.getGameDuration()));

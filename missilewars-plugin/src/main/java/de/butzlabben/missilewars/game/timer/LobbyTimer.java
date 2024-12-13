@@ -78,7 +78,7 @@ public class LobbyTimer extends Timer implements Runnable {
                 playPling();
                 break;
             case 10:
-                if (getGame().getLobby().getMapChooseProcedure() == MapChooseProcedure.MAPVOTING)
+                if (getGame().getGameConfig().getMapChooseProcedure() == MapChooseProcedure.MAPVOTING)
                     getGame().getMapVoting().setVotedArena();
                 broadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.LOBBY_TIMER_GAME_STARTS_IN)
                         .replace("%seconds%", Integer.toString(seconds)));

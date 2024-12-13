@@ -61,7 +61,7 @@ public class UserCommands extends BaseCommand {
             return;
         }
         
-        if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING) {
+        if (game.getGameConfig().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING) {
             player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.VOTE_CANT_VOTE));
             return;
         }
@@ -88,7 +88,7 @@ public class UserCommands extends BaseCommand {
             return;
         }
         
-        if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING) {
+        if (game.getGameConfig().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING) {
             player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.VOTE_CANT_VOTE));
             return;
         }

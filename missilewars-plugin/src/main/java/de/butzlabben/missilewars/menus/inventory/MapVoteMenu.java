@@ -8,7 +8,6 @@ import com.github.stefvanschie.inventoryframework.pane.component.PercentageBar;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.arena.Arena;
 import de.butzlabben.missilewars.game.Game;
-import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
 import de.butzlabben.missilewars.menus.MenuItem;
 import de.butzlabben.missilewars.menus.MenuUtils;
 import de.butzlabben.missilewars.player.MWPlayer;
@@ -49,7 +48,7 @@ public class MapVoteMenu {
         MenuItem.setDisplayName(forwardsItemActive, Config.MapVoteMenuItems.FORWARDS_ITEM_ACTIVE.getMessage());
         MenuItem.setDisplayName(forwardsItemInactive, Config.MapVoteMenuItems.FORWARDS_ITEM_INACTIVE.getMessage());
         
-        for (Arena arena : game.getLobby().getArenas()) {
+        for (Arena arena : game.getGameConfig().getArenas()) {
             arenaDisplayNames.put(arena.getDisplayName(), arena);
         }
         
@@ -73,7 +72,7 @@ public class MapVoteMenu {
         backwards = new OutlinePane(3, 5, 1, 1);
         forwards = new OutlinePane(5, 5, 1, 1);
         
-        int maxPages = (int) Math.ceil(game.getLobby().getArenas().size() / 5d);
+        int maxPages = (int) Math.ceil(game.getGameConfig().getArenas().size() / 5d);
         int offset = 0;
         for (int page = 1; page <= maxPages; page++) {
             
@@ -86,9 +85,9 @@ public class MapVoteMenu {
                 
                 // Are there any other arenas?
                 int nextArenaId = (offset * 5) + n - 1;
-                if (game.getLobby().getArenas().size() < (nextArenaId + 1)) break;
+                if (game.getGameConfig().getArenas().size() < (nextArenaId + 1)) break;
                 
-                Arena arena = game.getLobby().getArenas().get(nextArenaId);
+                Arena arena = game.getGameConfig().getArenas().get(nextArenaId);
                 
                 // arena item:
                 ItemStack item = new ItemStack(Material.valueOf(arena.getDisplayMaterial().toUpperCase()));

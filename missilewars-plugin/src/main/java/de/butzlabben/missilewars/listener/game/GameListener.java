@@ -327,8 +327,8 @@ public class GameListener extends GameBoundListener {
 
         Player player = event.getPlayer();
 
-        JoinIngameBehavior joinBehavior = getGame().getLobby().getJoinIngameBehavior();
-        RejoinIngameBehavior rejoinBehavior = getGame().getLobby().getRejoinIngameBehavior();
+        JoinIngameBehavior joinBehavior = getGame().getGameConfig().getJoinIngameBehavior();
+        RejoinIngameBehavior rejoinBehavior = getGame().getGameConfig().getRejoinIngameBehavior();
         boolean isKnownPlayer = getGame().getGameLeaveManager().isKnownPlayer(player.getUniqueId());
         Team lastTeam = getGame().getGameLeaveManager().getLastTeamOfKnownPlayer(player.getUniqueId());
         

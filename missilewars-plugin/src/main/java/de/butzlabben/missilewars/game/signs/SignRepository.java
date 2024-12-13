@@ -109,6 +109,6 @@ public class SignRepository {
     }
 
     public List<MWSign> getSigns(Game game) {
-        return signs.stream().filter(s -> s.getLobby().equals(game.getLobby().getName())).collect(Collectors.toList());
+        return signs.stream().filter(s -> s.getLobby().equals(game.getGameConfig().getName())).collect(Collectors.toList());
     }
 }

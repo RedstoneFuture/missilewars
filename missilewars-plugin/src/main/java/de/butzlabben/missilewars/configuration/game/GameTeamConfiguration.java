@@ -16,7 +16,7 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.configuration.lobby;
+package de.butzlabben.missilewars.configuration.game;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

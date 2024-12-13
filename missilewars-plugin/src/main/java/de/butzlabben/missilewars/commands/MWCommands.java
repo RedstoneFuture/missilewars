@@ -89,11 +89,11 @@ public class MWCommands extends BaseCommand {
         for (Game game : GameManager.getInstance().getGames().values()) {
             TeamManager teamManager = game.getTeamManager();
             
-            sender.sendMessage("§e " + game.getLobby().getName() 
-                    + "§7 -- Name: »" + game.getLobby().getDisplayName() 
+            sender.sendMessage("§e " + game.getGameConfig().getName() 
+                    + "§7 -- Name: »" + game.getGameConfig().getDisplayName() 
                     + "§7« | Status: " + game.getState());
             
-            sender.sendMessage("§8 - §f" + "Load with startup: §7" + game.getLobby().isAutoLoad());
+            sender.sendMessage("§8 - §f" + "Load with startup: §7" + game.getGameConfig().isAutoLoad());
             
             sender.sendMessage("§8 - §f" + "Current Arena: §7" + ((game.getArena() != null) ? game.getArena().getName() : "?") 
                     + "§7 -- Name: »" + ((game.getArena() != null) ? game.getArena().getDisplayName() : "?") + "§7«");

@@ -19,7 +19,7 @@
 package de.butzlabben.missilewars.game;
 
 import de.butzlabben.missilewars.Logger;
-import de.butzlabben.missilewars.configuration.lobby.Lobby;
+import de.butzlabben.missilewars.configuration.game.GameConfig;
 import de.butzlabben.missilewars.game.enums.TeamType;
 import lombok.Getter;
 
@@ -31,7 +31,7 @@ import java.util.UUID;
 public class TeamManager {
     
     private final Game game;
-    private final Lobby lobby;
+    private final GameConfig gameConfig;
     
     @Getter private Team team1;
     @Getter private Team team2;
@@ -41,11 +41,11 @@ public class TeamManager {
     
     public TeamManager(Game game) {
         this.game = game;
-        this.lobby = game.getLobby();
+        this.gameConfig = game.getGameConfig();
         
-        team1 = new Team(lobby.getTeam1Config().getName(), lobby.getTeam1Config().getColor(), game, TeamType.PLAYER);
-        team2 = new Team(lobby.getTeam2Config().getName(), lobby.getTeam2Config().getColor(), game, TeamType.PLAYER);
-        teamSpec = new Team(lobby.getTeamConfigSpec().getName(), lobby.getTeamConfigSpec().getColor(), game, TeamType.SPECTATOR);
+        team1 = new Team(gameConfig.getTeam1Config().getName(), gameConfig.getTeam1Config().getColor(), game, TeamType.PLAYER);
+        team2 = new Team(gameConfig.getTeam2Config().getName(), gameConfig.getTeam2Config().getColor(), game, TeamType.PLAYER);
+        teamSpec = new Team(gameConfig.getTeamConfigSpec().getName(), gameConfig.getTeamConfigSpec().getColor(), game, TeamType.SPECTATOR);
         
         team1.initialTeam();
         team2.initialTeam();

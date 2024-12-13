@@ -102,7 +102,7 @@ public class LobbyListener extends GameBoundListener {
     public void onRespawn(PlayerRespawnEvent event) {
         if (!isInLobbyArea(event.getPlayer().getLocation())) return;
 
-        event.setRespawnLocation(getGame().getLobby().getSpawnPoint());
+        event.setRespawnLocation(getGame().getGameConfig().getSpawnPoint());
     }
 
     @EventHandler

@@ -95,7 +95,7 @@ public class MWSign {
             
             switch (game.getState()) {
                 case LOBBY:
-                    name = game.getLobby().getDisplayName();
+                    name = game.getGameConfig().getDisplayName();
                     break;
                 case INGAME:
                 case END:
@@ -104,7 +104,7 @@ public class MWSign {
             }
         }
 
-        int maxPlayers = (game == null ? 0 : game.getLobby().getMaxPlayers());
+        int maxPlayers = (game == null ? 0 : game.getGameConfig().getMaxPlayers());
         int players = (game == null ? 0 : game.getPlayerAmount());
 
         return line.replace("%state%", gameStateMsg)

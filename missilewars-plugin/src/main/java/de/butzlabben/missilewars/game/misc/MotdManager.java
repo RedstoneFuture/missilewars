@@ -53,7 +53,7 @@ public class MotdManager {
             }
             
             motd = ChatColor.translateAlternateColorCodes('&', newMotd)
-                    .replace("%max_players%", Integer.toString(game.getLobby().getMaxPlayers()))
+                    .replace("%max_players%", Integer.toString(game.getGameConfig().getMaxPlayers()))
                     .replace("%players%", Integer.toString(game.getPlayerAmount()))
                     .replace("%prefix%", PluginMessages.getPrefix());
         }

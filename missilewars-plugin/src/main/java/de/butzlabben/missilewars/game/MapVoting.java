@@ -66,7 +66,7 @@ public class MapVoting {
             return;
         }
         
-        if (!game.getLobby().getArenas().contains(arena)) {
+        if (!game.getGameConfig().getArenas().contains(arena)) {
             player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.VOTE_MAP_NOT_AVAILABLE));
             return;
         }
@@ -99,7 +99,7 @@ public class MapVoting {
     private Arena getVotedArena() {
 
         // If no one voted:
-        if (arenaVotes.isEmpty()) return game.getLobby().getArenas().get(0);
+        if (arenaVotes.isEmpty()) return game.getGameConfig().getArenas().get(0);
 
         Arena arena = arenaVotes.values().stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
                 .entrySet()
@@ -124,7 +124,7 @@ public class MapVoting {
      * This method unlocks the map voting.
      */
     public void startVote() {
-        if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING)
+        if (game.getGameConfig().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING)
             throw new IllegalStateException("Defined map choose procedure is not \"MAPVOTING\"");
 
         state = VoteState.RUNNING;
@@ -134,7 +134,7 @@ public class MapVoting {
      * This method locks the map voting again.
      */
     public void stopVote() {
-        if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING)
+        if (game.getGameConfig().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING)
             throw new IllegalStateException("Defined map choose procedure is not \"MAPVOTING\"");
 
         state = VoteState.FINISH;
@@ -147,14 +147,14 @@ public class MapVoting {
      * @return (Boolean) true, if only one map exists for this lobby
      */
     public boolean onlyOneArenaFound() {
-        return (game.getLobby().getArenas().size() == 1);
+        return (game.getGameConfig().getArenas().size() == 1);
     }
 
     /**
      * This method sets the selected arena of map voting for the current game.
      */
     public void setVotedArena() {
-        if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING)
+        if (game.getGameConfig().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING)
             throw new IllegalStateException("Defined map choose procedure is not \"MAPVOTING\"");
 
         if (onlyOneArenaFound()) return;

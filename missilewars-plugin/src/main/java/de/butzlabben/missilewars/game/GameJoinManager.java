@@ -215,7 +215,7 @@ public class GameJoinManager {
             broadcastMsg = PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_PLAYER_JOINED);
         }
         
-        game.broadcast(broadcastMsg.replace("%max_players%", Integer.toString(game.getLobby().getMaxPlayers()))
+        game.broadcast(broadcastMsg.replace("%max_players%", Integer.toString(game.getGameConfig().getMaxPlayers()))
                 .replace("%players%", Integer.toString(game.getPlayerAmount()))
                 .replace("%player%", player.getName())
                 .replace("%team%", (mwPlayer.getTeam() != null) ? mwPlayer.getTeam().getFullname() : "?"));
@@ -231,7 +231,7 @@ public class GameJoinManager {
             broadcastMsg = PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_PLAYER_SWITCHED);
         }
         
-        game.broadcast(broadcastMsg.replace("%max_players%", Integer.toString(game.getLobby().getMaxPlayers()))
+        game.broadcast(broadcastMsg.replace("%max_players%", Integer.toString(game.getGameConfig().getMaxPlayers()))
                 .replace("%players%", Integer.toString(game.getPlayerAmount()))
                 .replace("%player%", player.getName())
                 .replace("%from%", oldTeam.getFullname())
@@ -257,7 +257,7 @@ public class GameJoinManager {
             }
         }
         
-        player.sendMessage(privateMsg.replace("%max_players%", Integer.toString(game.getLobby().getMaxPlayers()))
+        player.sendMessage(privateMsg.replace("%max_players%", Integer.toString(game.getGameConfig().getMaxPlayers()))
                 .replace("%players%", Integer.toString(game.getPlayerAmount()))
                 .replace("%player%", player.getName())
                 .replace("%team%", (mwPlayer.getTeam() != null) ? mwPlayer.getTeam().getFullname() : "?"));
@@ -286,7 +286,7 @@ public class GameJoinManager {
      */
     public void runTeleportEventForPlayer(Player player) {
         Bukkit.getPluginManager().callEvent(new PlayerTeleportEvent(player,
-                Config.getFallbackSpawn(), game.getLobby().getSpawnPoint()));
+                Config.getFallbackSpawn(), game.getGameConfig().getSpawnPoint()));
     }
     
 }

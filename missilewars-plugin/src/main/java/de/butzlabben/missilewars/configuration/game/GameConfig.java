@@ -16,7 +16,7 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.configuration.lobby;
+package de.butzlabben.missilewars.configuration.game;
 
 import com.google.gson.annotations.SerializedName;
 import de.butzlabben.missilewars.Logger;
@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 @Getter
 @ToString
 @RequiredArgsConstructor
-public class Lobby {
+public class GameConfig {
 
     // The values defined here are only valid if there is no Config yet.
     private String name = "lobby0";

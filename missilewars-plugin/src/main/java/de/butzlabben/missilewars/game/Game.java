@@ -23,7 +23,7 @@ import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.configuration.arena.Arena;
-import de.butzlabben.missilewars.configuration.lobby.Lobby;
+import de.butzlabben.missilewars.configuration.game.GameConfig;
 import de.butzlabben.missilewars.event.GameStartEvent;
 import de.butzlabben.missilewars.event.GameStopEvent;
 import de.butzlabben.missilewars.game.enums.GameResult;
@@ -80,7 +80,7 @@ public class Game {
     private static int fights = 0;
     private final Map<UUID, MWPlayer> players = new HashMap<>();
     private final MapVoting mapVoting = new MapVoting(this);
-    private final Lobby lobby;
+    private final GameConfig gameConfig;
     private final Map<UUID, BukkitTask> playerTasks = new HashMap<>();
     private final List<Location> portalBlocks = new ArrayList<>();
     private TeamManager teamManager;
@@ -99,30 +99,30 @@ public class Game {
     private TaskManager taskManager;
     private int remainingGameDuration;
     
-    public Game(Lobby lobby) {
-        Logger.BOOT.log("Loading lobby \"" + lobby.getName() + "\".");
-        this.lobby = lobby;
+    public Game(GameConfig gameConfig) {
+        Logger.BOOT.log("Loading lobby \"" + gameConfig.getName() + "\".");
+        this.gameConfig = gameConfig;
 
-        if (lobby.getBukkitWorld() == null) {
-            Logger.ERROR.log("Lobby world \"" + lobby.getName() + "\" must not be null");
+        if (gameConfig.getBukkitWorld() == null) {
+            Logger.ERROR.log("Lobby world \"" + gameConfig.getName() + "\" must not be null");
             return;
         }
 
         try {
-            Serializer.setWorldAtAllLocations(lobby, lobby.getBukkitWorld());
+            Serializer.setWorldAtAllLocations(gameConfig, gameConfig.getBukkitWorld());
         } catch (Exception exception) {
-            Logger.ERROR.log("Could not inject world object at lobby \"" + lobby.getName() + "\".");
+            Logger.ERROR.log("Could not inject world object at lobby \"" + gameConfig.getName() + "\".");
             exception.printStackTrace();
             return;
         }
 
-        if (lobby.getPossibleArenas().isEmpty()) {
-            Logger.ERROR.log("At least one valid arena must be set at lobby \"" + lobby.getName() + "\".");
+        if (gameConfig.getPossibleArenas().isEmpty()) {
+            Logger.ERROR.log("At least one valid arena must be set at lobby \"" + gameConfig.getName() + "\".");
             return;
         }
 
-        if (lobby.getPossibleArenas().stream().noneMatch(Arenas::existsArena)) {
-            Logger.ERROR.log("None of the specified arenas match a real arena for the lobby \"" + lobby.getName() + "\".");
+        if (gameConfig.getPossibleArenas().stream().noneMatch(Arenas::existsArena)) {
+            Logger.ERROR.log("None of the specified arenas match a real arena for the lobby \"" + gameConfig.getName() + "\".");
             return;
         }
         
@@ -137,14 +137,14 @@ public class Game {
         taskManager = new TaskManager(this);
         taskManager.stopTimer();
         updateGameListener(new LobbyListener(this));
-        taskManager.setTimer(new LobbyTimer(this, lobby.getLobbyTime()));
+        taskManager.setTimer(new LobbyTimer(this, gameConfig.getLobbyTime()));
         taskManager.runTimer(0, 20);
         state = GameState.LOBBY;
 
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> applyForAllPlayers(player -> gameJoinManager.runTeleportEventForPlayer(player)), 2);
 
         if (Config.isSetup()) {
-            Logger.WARN.log("Did not fully initialize lobby \"" + lobby.getName() + "\" as the plugin is in setup mode");
+            Logger.WARN.log("Did not fully initialize lobby \"" + gameConfig.getName() + "\" as the plugin is in setup mode");
             return;
         }
 
@@ -153,22 +153,22 @@ public class Game {
         gameLeaveManager = new GameLeaveManager(this);
         
         // choose the game arena
-        if (lobby.getMapChooseProcedure() == MapChooseProcedure.FIRST) {
-            setArena(lobby.getArenas().get(0));
+        if (gameConfig.getMapChooseProcedure() == MapChooseProcedure.FIRST) {
+            setArena(gameConfig.getArenas().get(0));
             prepareGame();
 
-        } else if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPCYCLE) {
-            final int lastMapIndex = cycles.getOrDefault(lobby.getName(), -1);
-            List<Arena> arenas = lobby.getArenas();
+        } else if (gameConfig.getMapChooseProcedure() == MapChooseProcedure.MAPCYCLE) {
+            final int lastMapIndex = cycles.getOrDefault(gameConfig.getName(), -1);
+            List<Arena> arenas = gameConfig.getArenas();
             int index = lastMapIndex >= arenas.size() - 1 ? 0 : lastMapIndex + 1;
-            cycles.put(lobby.getName(), index);
+            cycles.put(gameConfig.getName(), index);
             setArena(arenas.get(index));
             prepareGame();
 
-        } else if (lobby.getMapChooseProcedure() == MapChooseProcedure.MAPVOTING) {
+        } else if (gameConfig.getMapChooseProcedure() == MapChooseProcedure.MAPVOTING) {
             if (mapVoting.onlyOneArenaFound()) {
-                setArena(lobby.getArenas().get(0));
-                Logger.WARN.log("Only one arena was found for the lobby \"" + lobby.getName() + "\". The configured map voting was skipped.");
+                setArena(gameConfig.getArenas().get(0));
+                Logger.WARN.log("Only one arena was found for the lobby \"" + gameConfig.getName() + "\". The configured map voting was skipped.");
                 prepareGame();
             } else {
                 mapVoting.startVote();
@@ -297,7 +297,7 @@ public class Game {
             return;
         }
 
-        GameManager.getInstance().restartGame(lobby, false);
+        GameManager.getInstance().restartGame(gameConfig, false);
     }
 
     public void appendRestart() {
@@ -351,7 +351,7 @@ public class Game {
      * @return true, if it's in the Lobby-Area
      */
     public boolean isInLobbyArea(Location location) {
-        return Geometry.isInsideIn(location, lobby.getArea());
+        return Geometry.isInsideIn(location, gameConfig.getArea());
     }
 
     /**
@@ -655,7 +655,7 @@ public class Game {
      * @return (boolean) 'true' if to few players are in the lobby 
      */
     public boolean areToFewPlayers() {
-        int minSize = lobby.getMinPlayers();
+        int minSize = gameConfig.getMinPlayers();
         int currentSize = teamManager.getTeam1().getMembers().size() + teamManager.getTeam2().getMembers().size();
         return currentSize < minSize;
     }
@@ -668,7 +668,7 @@ public class Game {
      * @return (boolean) 'true' if to many players are in the lobby 
      */
     public boolean areTooManyPlayers() {
-        int maxSize = lobby.getMaxPlayers();
+        int maxSize = gameConfig.getMaxPlayers();
         
         if (maxSize == -1) return false;
         
@@ -682,7 +682,7 @@ public class Game {
      * @return (boolean) 'true' if to many spectators are in the lobby 
      */
     public boolean areTooManySpectators() {
-        int maxSize = lobby.getMaxSpectators();
+        int maxSize = gameConfig.getMaxSpectators();
         
         if (maxSize == -1) return false;
         
@@ -736,7 +736,7 @@ public class Game {
     }
 
     public void teleportToLobbySpawn(Player player) {
-        Teleport.teleportSafely(player, lobby.getSpawnPoint());
+        Teleport.teleportSafely(player, gameConfig.getSpawnPoint());
     }
 
     public void teleportToArenaSpectatorSpawn(Player player) {
@@ -744,7 +744,7 @@ public class Game {
     }
 
     public void teleportToAfterGameSpawn(Player player) {
-        Teleport.teleportSafely(player, lobby.getAfterGameSpawn());
+        Teleport.teleportSafely(player, gameConfig.getAfterGameSpawn());
     }
     
     /**
