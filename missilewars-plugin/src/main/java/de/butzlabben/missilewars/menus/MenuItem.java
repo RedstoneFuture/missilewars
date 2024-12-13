@@ -4,7 +4,7 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.configuration.ActionSet;
-import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.player.MWPlayer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -112,11 +112,11 @@ public class MenuItem {
     }
     
     private void updatePapiValues(Player player) {
-        finalDisplayName = Messages.getPapiMessage(displayName, player);
+        finalDisplayName = PluginMessages.getPapiMessage(displayName, player);
 
         finalLoreList.clear();
         for (String lore : loreList) {
-            finalLoreList.add(Messages.getPapiMessage(lore, player));
+            finalLoreList.add(PluginMessages.getPapiMessage(lore, player));
         }
     }
     

@@ -20,7 +20,7 @@ package de.butzlabben.missilewars.game.signs;
 
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
-import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.game.enums.GameState;
@@ -63,10 +63,10 @@ public class MWSign {
         }
         Game game = GameManager.getInstance().getGame(getLobby());
         List<String> lines = new ArrayList<>();
-        lines.add(replace(Messages.getMessage(false, Messages.MessageEnum.SIGN_0), game));
-        lines.add(replace(Messages.getMessage(false, Messages.MessageEnum.SIGN_1), game));
-        lines.add(replace(Messages.getMessage(false, Messages.MessageEnum.SIGN_2), game));
-        lines.add(replace(Messages.getMessage(false, Messages.MessageEnum.SIGN_3), game));
+        lines.add(replace(PluginMessages.getMessage(false, PluginMessages.MessageEnum.SIGN_0), game));
+        lines.add(replace(PluginMessages.getMessage(false, PluginMessages.MessageEnum.SIGN_1), game));
+        lines.add(replace(PluginMessages.getMessage(false, PluginMessages.MessageEnum.SIGN_2), game));
+        lines.add(replace(PluginMessages.getMessage(false, PluginMessages.MessageEnum.SIGN_3), game));
 
         // Run sync
         Bukkit.getScheduler().runTask(MissileWars.getInstance(), () -> editSign(getLocation(), lines));

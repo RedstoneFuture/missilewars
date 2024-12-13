@@ -21,7 +21,7 @@ package de.butzlabben.missilewars;
 import co.aikar.commands.PaperCommandManager;
 import de.butzlabben.missilewars.commands.*;
 import de.butzlabben.missilewars.configuration.Config;
-import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.game.misc.MissileWarsPlaceholder;
@@ -87,7 +87,7 @@ public class MissileWars extends JavaPlugin {
         deleteTempWorlds();
 
         Config.load();
-        Messages.load();
+        PluginMessages.load();
         
         new File(Config.getGamesFolder()).mkdirs();
         

@@ -25,7 +25,7 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
 import de.butzlabben.missilewars.configuration.Config;
-import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.GameManager;
 import org.bukkit.command.CommandSender;
@@ -41,7 +41,7 @@ public class SetupCommands extends BaseCommand {
     @Default
     @CommandPermission("mw.setup")
     public void setupCommands(CommandSender sender, String[] args) {
-        sender.sendMessage(Messages.getPrefix() + "§fSetup usage: §7/mw setup <main|lobby|arena> ...");
+        sender.sendMessage(PluginMessages.getPrefix() + "§fSetup usage: §7/mw setup <main|lobby|arena> ...");
     }
 
     @Subcommand("main")
@@ -56,7 +56,7 @@ public class SetupCommands extends BaseCommand {
                 if (!senderIsPlayer(sender)) return;
 
                 Config.setFallbackSpawn(player.getLocation());
-                player.sendMessage(Messages.getPrefix() + "§fSet new 'fallbackSpawn' to " + player.getLocation() + ".");
+                player.sendMessage(PluginMessages.getPrefix() + "§fSet new 'fallbackSpawn' to " + player.getLocation() + ".");
             }
 
             @Subcommand("teleport|tp")
@@ -65,7 +65,7 @@ public class SetupCommands extends BaseCommand {
                 if (!senderIsPlayer(sender)) return;
 
                 player.teleport(Config.getFallbackSpawn());
-                player.sendMessage(Messages.getPrefix() + "§fTeleported to 'fallbackSpawn'.");
+                player.sendMessage(PluginMessages.getPrefix() + "§fTeleported to 'fallbackSpawn'.");
             }
 
         }
@@ -84,7 +84,7 @@ public class SetupCommands extends BaseCommand {
             return true;
         }
 
-        sender.sendMessage(Messages.getPrefix() + "§cYou are not a player");
+        sender.sendMessage(PluginMessages.getPrefix() + "§cYou are not a player");
         return false;
     }
 
@@ -102,7 +102,7 @@ public class SetupCommands extends BaseCommand {
 
                 game.getArena().setSpectatorSpawn(player.getLocation());
                 game.getArena().updateConfig();
-                player.sendMessage(Messages.getPrefix() + "§fSet new 'spectatorSpawn' to " + player.getLocation() + ".");
+                player.sendMessage(PluginMessages.getPrefix() + "§fSet new 'spectatorSpawn' to " + player.getLocation() + ".");
             }
 
             @Subcommand("teleport|tp")
@@ -112,7 +112,7 @@ public class SetupCommands extends BaseCommand {
                 if (!isValidGame(args)) return;
 
                 player.teleport(game.getArena().getSpectatorSpawn());
-                player.sendMessage(Messages.getPrefix() + "§fTeleported to 'spectatorSpawn'.");
+                player.sendMessage(PluginMessages.getPrefix() + "§fTeleported to 'spectatorSpawn'.");
             }
 
         }
@@ -128,7 +128,7 @@ public class SetupCommands extends BaseCommand {
 
                 game.getArena().setTeam1Spawn(player.getLocation());
                 game.getArena().updateConfig();
-                player.sendMessage(Messages.getPrefix() + "§fSet new 'team1Spawn' to " + player.getLocation() + ".");
+                player.sendMessage(PluginMessages.getPrefix() + "§fSet new 'team1Spawn' to " + player.getLocation() + ".");
             }
 
             @Subcommand("teleport|tp")
@@ -138,7 +138,7 @@ public class SetupCommands extends BaseCommand {
                 if (!isValidGame(args)) return;
 
                 player.teleport(game.getArena().getTeam1Spawn());
-                player.sendMessage(Messages.getPrefix() + "§fTeleported to 'team1Spawn'.");
+                player.sendMessage(PluginMessages.getPrefix() + "§fTeleported to 'team1Spawn'.");
             }
 
         }
@@ -154,7 +154,7 @@ public class SetupCommands extends BaseCommand {
 
                 game.getArena().setTeam2Spawn(player.getLocation());
                 game.getArena().updateConfig();
-                player.sendMessage(Messages.getPrefix() + "§fSet new 'team2Spawn' to " + player.getLocation() + ".");
+                player.sendMessage(PluginMessages.getPrefix() + "§fSet new 'team2Spawn' to " + player.getLocation() + ".");
             }
 
             @Subcommand("teleport|tp")
@@ -164,7 +164,7 @@ public class SetupCommands extends BaseCommand {
                 if (!isValidGame(args)) return;
 
                 player.teleport(game.getArena().getTeam2Spawn());
-                player.sendMessage(Messages.getPrefix() + "§fTeleported to 'team2Spawn'.");
+                player.sendMessage(PluginMessages.getPrefix() + "§fTeleported to 'team2Spawn'.");
             }
 
         }
@@ -184,7 +184,7 @@ public class SetupCommands extends BaseCommand {
                     game.getArena().getArea().setPosition1(player.getLocation());
                     game.getArena().setAreaConfig(game.getArena().getArea().getAreaConfiguration());
                     game.getArena().updateConfig();
-                    player.sendMessage(Messages.getPrefix() + "§fSet new 'arena area' (position 1) to " + player.getLocation() + ".");
+                    player.sendMessage(PluginMessages.getPrefix() + "§fSet new 'arena area' (position 1) to " + player.getLocation() + ".");
                 }
 
                 @Subcommand("teleport|tp")
@@ -194,7 +194,7 @@ public class SetupCommands extends BaseCommand {
                     if (!isValidGame(args)) return;
 
                     player.teleport(game.getArena().getArea().getPosition1());
-                    player.sendMessage(Messages.getPrefix() + "§fTeleported to 'arena area' (position 1): " + game.getArena().getArea().getPosition1().toString());
+                    player.sendMessage(PluginMessages.getPrefix() + "§fTeleported to 'arena area' (position 1): " + game.getArena().getArea().getPosition1().toString());
                 }
 
             }
@@ -211,7 +211,7 @@ public class SetupCommands extends BaseCommand {
                     game.getArena().getArea().setPosition2(player.getLocation());
                     game.getArena().setAreaConfig(game.getArena().getArea().getAreaConfiguration());
                     game.getArena().updateConfig();
-                    player.sendMessage(Messages.getPrefix() + "§fSet new 'arena area' (position 2) to " + player.getLocation() + ".");
+                    player.sendMessage(PluginMessages.getPrefix() + "§fSet new 'arena area' (position 2) to " + player.getLocation() + ".");
                 }
 
                 @Subcommand("teleport|tp")
@@ -221,7 +221,7 @@ public class SetupCommands extends BaseCommand {
                     if (!isValidGame(args)) return;
 
                     player.teleport(game.getArena().getArea().getPosition2());
-                    player.sendMessage(Messages.getPrefix() + "§fTeleported to 'arena area' (position 2): " + game.getArena().getArea().getPosition2().toString());
+                    player.sendMessage(PluginMessages.getPrefix() + "§fTeleported to 'arena area' (position 2): " + game.getArena().getArea().getPosition2().toString());
                 }
 
             }
@@ -243,7 +243,7 @@ public class SetupCommands extends BaseCommand {
 
                 game.getLobby().setSpawnPoint(player.getLocation());
                 game.getLobby().updateConfig();
-                player.sendMessage(Messages.getPrefix() + "§fSet new 'spawnPoint' to " + player.getLocation() + ".");
+                player.sendMessage(PluginMessages.getPrefix() + "§fSet new 'spawnPoint' to " + player.getLocation() + ".");
             }
 
             @Subcommand("teleport|tp")
@@ -253,7 +253,7 @@ public class SetupCommands extends BaseCommand {
                 if (!isValidGame(args)) return;
 
                 player.teleport(game.getLobby().getSpawnPoint());
-                player.sendMessage(Messages.getPrefix() + "§fTeleported to 'spawnPoint'.");
+                player.sendMessage(PluginMessages.getPrefix() + "§fTeleported to 'spawnPoint'.");
             }
 
         }
@@ -269,7 +269,7 @@ public class SetupCommands extends BaseCommand {
 
                 game.getLobby().setAfterGameSpawn(player.getLocation());
                 game.getLobby().updateConfig();
-                player.sendMessage(Messages.getPrefix() + "§fSet new 'afterGameSpawn' to " + player.getLocation() + ".");
+                player.sendMessage(PluginMessages.getPrefix() + "§fSet new 'afterGameSpawn' to " + player.getLocation() + ".");
             }
 
             @Subcommand("teleport|tp")
@@ -279,7 +279,7 @@ public class SetupCommands extends BaseCommand {
                 if (!isValidGame(args)) return;
 
                 player.teleport(game.getLobby().getAfterGameSpawn());
-                player.sendMessage(Messages.getPrefix() + "§fTeleported to 'afterGameSpawn'.");
+                player.sendMessage(PluginMessages.getPrefix() + "§fTeleported to 'afterGameSpawn'.");
             }
 
         }
@@ -299,7 +299,7 @@ public class SetupCommands extends BaseCommand {
                     game.getLobby().getArea().setPosition1(player.getLocation());
                     game.getLobby().setAreaConfig(game.getLobby().getArea().getAreaConfiguration());
                     game.getLobby().updateConfig();
-                    player.sendMessage(Messages.getPrefix() + "§fSet new 'lobby area' (position 1) to " + player.getLocation() + ".");
+                    player.sendMessage(PluginMessages.getPrefix() + "§fSet new 'lobby area' (position 1) to " + player.getLocation() + ".");
                 }
 
                 @Subcommand("teleport|tp")
@@ -309,7 +309,7 @@ public class SetupCommands extends BaseCommand {
                     if (!isValidGame(args)) return;
 
                     player.teleport(game.getLobby().getArea().getPosition1());
-                    player.sendMessage(Messages.getPrefix() + "§fTeleported to 'lobby area' (position 1): " + game.getLobby().getArea().getPosition1().toString());
+                    player.sendMessage(PluginMessages.getPrefix() + "§fTeleported to 'lobby area' (position 1): " + game.getLobby().getArea().getPosition1().toString());
                 }
 
             }
@@ -326,7 +326,7 @@ public class SetupCommands extends BaseCommand {
                     game.getLobby().getArea().setPosition2(player.getLocation());
                     game.getLobby().setAreaConfig(game.getLobby().getArea().getAreaConfiguration());
                     game.getLobby().updateConfig();
-                    player.sendMessage(Messages.getPrefix() + "§fSet new 'lobby area' (position 2) to " + player.getLocation() + ".");
+                    player.sendMessage(PluginMessages.getPrefix() + "§fSet new 'lobby area' (position 2) to " + player.getLocation() + ".");
                 }
 
                 @Subcommand("teleport|tp")
@@ -336,7 +336,7 @@ public class SetupCommands extends BaseCommand {
                     if (!isValidGame(args)) return;
 
                     player.teleport(game.getLobby().getArea().getPosition2());
-                    player.sendMessage(Messages.getPrefix() + "§fTeleported to 'lobby area' (position 2): " + game.getLobby().getArea().getPosition2().toString());
+                    player.sendMessage(PluginMessages.getPrefix() + "§fTeleported to 'lobby area' (position 2): " + game.getLobby().getArea().getPosition2().toString());
                 }
 
             }
@@ -356,13 +356,13 @@ public class SetupCommands extends BaseCommand {
         if (args.length == 1) {
             game = GameManager.getInstance().getGame(args[0]);
             if (game == null) {
-                player.sendMessage(Messages.getPrefix() + "§cGame not found.");
+                player.sendMessage(PluginMessages.getPrefix() + "§cGame not found.");
                 return false;
             }
         } else {
             game = GameManager.getInstance().getGame(player.getLocation());
             if (game == null) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_IN_GAME_AREA));
+                player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_NOT_IN_GAME_AREA));
                 return false;
             }
         }

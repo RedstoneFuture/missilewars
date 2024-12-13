@@ -35,7 +35,7 @@ import java.util.List;
  * @author Butzlabben
  * @since 13.08.2018
  */
-public class Messages {
+public class PluginMessages {
 
     private static final File DIR = MissileWars.getInstance().getDataFolder();
     private static final File FILE = new File(DIR, "messages.yml");

@@ -19,7 +19,7 @@
 package de.butzlabben.missilewars.game.misc;
 
 import de.butzlabben.missilewars.configuration.Config;
-import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.enums.GameState;
 import lombok.Getter;
@@ -55,7 +55,7 @@ public class MotdManager {
             motd = ChatColor.translateAlternateColorCodes('&', newMotd)
                     .replace("%max_players%", Integer.toString(game.getLobby().getMaxPlayers()))
                     .replace("%players%", Integer.toString(game.getPlayerAmount()))
-                    .replace("%prefix%", Messages.getPrefix());
+                    .replace("%prefix%", PluginMessages.getPrefix());
         }
     }
 }

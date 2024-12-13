@@ -66,7 +66,7 @@ public class ActionSet {
             
             Logger.DEBUG.log("Run Action: " + a.getActionType() + " -> '" + a.data + "'");
             
-            String data = Messages.getPapiMessage(a.getData(), player).replace("%prefix%", Messages.getPrefix());
+            String data = PluginMessages.getPapiMessage(a.getData(), player).replace("%prefix%", PluginMessages.getPrefix());
             switch (a.getActionType()) {
                 case PLAYER_CMD:
                     player.performCommand(data);

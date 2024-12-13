@@ -1,6 +1,6 @@
 package de.butzlabben.missilewars.menus;
 
-import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.player.MWPlayer;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -28,9 +28,9 @@ public class ItemRequirement {
         if (type == Type.NULL) return true;
 
         boolean result = false;
-        String finalPermission = Messages.getPapiMessage(permission, mwPlayer.getPlayer());
-        String finalInput = Messages.getPapiMessage(input, mwPlayer.getPlayer());
-        String finalOutput = Messages.getPapiMessage(output, mwPlayer.getPlayer());
+        String finalPermission = PluginMessages.getPapiMessage(permission, mwPlayer.getPlayer());
+        String finalInput = PluginMessages.getPapiMessage(input, mwPlayer.getPlayer());
+        String finalOutput = PluginMessages.getPapiMessage(output, mwPlayer.getPlayer());
         
         if (type == Type.HAS_PERMISSION) {
             if ((finalPermission.isEmpty()) || (finalPermission.isBlank())) return false;

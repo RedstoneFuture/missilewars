@@ -18,7 +18,7 @@
 
 package de.butzlabben.missilewars.game.timer;
 
-import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
 import de.butzlabben.missilewars.player.MWPlayer;
@@ -59,7 +59,7 @@ public class LobbyTimer extends Timer implements Runnable {
             if (getGame().areToFewPlayers()) {
                 seconds = startTime;
                 remaining = 90;
-                broadcast(Messages.getMessage(true, Messages.MessageEnum.LOBBY_NOT_ENOUGH_PLAYERS));
+                broadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.LOBBY_NOT_ENOUGH_PLAYERS));
                 return;
             }
         }
@@ -73,20 +73,20 @@ public class LobbyTimer extends Timer implements Runnable {
             case 3:
             case 2:
             case 1:
-                broadcast(Messages.getMessage(true, Messages.MessageEnum.LOBBY_TIMER_GAME_STARTS_IN)
+                broadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.LOBBY_TIMER_GAME_STARTS_IN)
                         .replace("%seconds%", Integer.toString(seconds)));
                 playPling();
                 break;
             case 10:
                 if (getGame().getLobby().getMapChooseProcedure() == MapChooseProcedure.MAPVOTING)
                     getGame().getMapVoting().setVotedArena();
-                broadcast(Messages.getMessage(true, Messages.MessageEnum.LOBBY_TIMER_GAME_STARTS_IN)
+                broadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.LOBBY_TIMER_GAME_STARTS_IN)
                         .replace("%seconds%", Integer.toString(seconds)));
                 playPling();
                 break;
             case 0:
                 if (!getGame().getTeamManager().hasBalancedTeamSizes()) {
-                    broadcast(Messages.getMessage(true, Messages.MessageEnum.LOBBY_TEAMS_UNEQUAL));
+                    broadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.LOBBY_TEAMS_UNEQUAL));
                     seconds = startTime;
                     return;
                 }
@@ -110,7 +110,7 @@ public class LobbyTimer extends Timer implements Runnable {
      * are informed about the start.
      */
     public void executeGameStart() {
-        broadcast(Messages.getMessage(true, Messages.MessageEnum.GAME_GAME_STARTS));
+        broadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_GAME_STARTS));
         getGame().startGame();
     }
     

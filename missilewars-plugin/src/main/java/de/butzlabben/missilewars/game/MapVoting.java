@@ -18,7 +18,7 @@
 
 package de.butzlabben.missilewars.game;
 
-import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.configuration.arena.Arena;
 import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
 import de.butzlabben.missilewars.game.enums.VoteState;
@@ -52,22 +52,22 @@ public class MapVoting {
     public void addVote(Player player, String arenaName) {
         
         if (state == VoteState.NULL) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_CHANGE_TEAM_NOT_NOW));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.VOTE_CHANGE_TEAM_NOT_NOW));
             return;
         } else if (state == VoteState.FINISH) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_CHANGE_TEAM_NO_LONGER_NOW));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.VOTE_CHANGE_TEAM_NO_LONGER_NOW));
             return;
         }
 
         Arena arena = Arenas.getFromName(arenaName);
         if (arena == null) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_MAP)
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_INVALID_MAP)
                     .replace("%input%", arenaName));
             return;
         }
         
         if (!game.getLobby().getArenas().contains(arena)) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_MAP_NOT_AVAILABLE));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.VOTE_MAP_NOT_AVAILABLE));
             return;
         }
 
@@ -76,7 +76,7 @@ public class MapVoting {
         if (arenaVotes.containsKey(mwPlayer)) {
 
             if (arenaVotes.get(mwPlayer) == arena) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_ARENA_ALREADY_SELECTED)
+                player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.VOTE_ARENA_ALREADY_SELECTED)
                         .replace("%map%", arena.getDisplayName()));
                 return;
             }
@@ -88,7 +88,7 @@ public class MapVoting {
         // add the new vote
         arenaVotes.put(mwPlayer, arena);
 
-        player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_SUCCESS).replace("%map%", arena.getDisplayName()));
+        player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.VOTE_SUCCESS).replace("%map%", arena.getDisplayName()));
     }
 
     /**
@@ -166,7 +166,7 @@ public class MapVoting {
         if (arena == null) throw new IllegalStateException("Voted arena is not present");
         game.setArena(arena);
 
-        game.broadcast(Messages.getMessage(true, Messages.MessageEnum.VOTE_FINISHED)
+        game.broadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.VOTE_FINISHED)
                 .replace("%map%", game.getArena().getDisplayName()));
 
         game.prepareGame();

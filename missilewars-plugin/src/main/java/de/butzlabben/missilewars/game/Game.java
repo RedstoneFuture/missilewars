@@ -21,7 +21,7 @@ package de.butzlabben.missilewars.game;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Config;
-import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.configuration.arena.Arena;
 import de.butzlabben.missilewars.configuration.lobby.Lobby;
 import de.butzlabben.missilewars.event.GameStartEvent;
@@ -33,7 +33,6 @@ import de.butzlabben.missilewars.game.equipment.EquipmentManager;
 import de.butzlabben.missilewars.game.misc.MotdManager;
 import de.butzlabben.missilewars.game.misc.ScoreboardManager;
 import de.butzlabben.missilewars.game.misc.TeamSpawnProtection;
-import de.butzlabben.missilewars.game.schematics.SchematicFacing;
 import de.butzlabben.missilewars.game.schematics.objects.Missile;
 import de.butzlabben.missilewars.game.schematics.objects.Shield;
 import de.butzlabben.missilewars.game.signs.MWSign;
@@ -461,7 +460,7 @@ public class Game {
         boolean isOnlyBetweenSpawnPlaceable = this.arena.getMissileConfiguration().isOnlyBetweenSpawnPlaceable();
         if (isOnlyBetweenSpawnPlaceable) {
             if (!isInInnerGameArea(player.getLocation())) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.ARENA_MISSILE_PLACE_DENY));
+                player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.ARENA_MISSILE_PLACE_DENY));
                 return;
             }
         }
@@ -471,7 +470,7 @@ public class Game {
         
         Missile missile = (Missile) this.arena.getMissileConfiguration().getSchematicFromDisplayName(itemMeta.getDisplayName());
         if (missile == null) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_MISSILE)
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_INVALID_MISSILE)
                     .replace("%input%", itemMeta.getDisplayName()));
             return;
         }
@@ -494,7 +493,7 @@ public class Game {
 
         Shield shield = (Shield) this.arena.getShieldConfiguration().getSchematicFromDisplayName(itemMeta.getDisplayName());
         if (shield == null) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_SHIELD)
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_INVALID_SHIELD)
                     .replace("%input%", itemMeta.getDisplayName()));
             return;
         }

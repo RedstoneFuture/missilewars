@@ -19,7 +19,7 @@
 package de.butzlabben.missilewars.listener;
 
 import de.butzlabben.missilewars.MissileWars;
-import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.game.signs.MWSign;
@@ -84,7 +84,7 @@ public class SignListener implements Listener {
          */
         String lobbyName = ChatColor.stripColor(event.getLine(1));
         if ((lobbyName == null) || (lobbyName.isBlank())) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.SIGNEDIT_EMPTY_LOBBY));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.SIGNEDIT_EMPTY_LOBBY));
             event.setCancelled(true);
             return;
         }
@@ -104,10 +104,10 @@ public class SignListener implements Listener {
             getSignRepository().getSigns().add(sign);
             getSignRepository().saveData();
 
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.SIGNEDIT_SIGN_CREATED));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.SIGNEDIT_SIGN_CREATED));
             
         } else {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.SIGNEDIT_LOBBY_NOT_FOUND).replace("%input%", lobbyName));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.SIGNEDIT_LOBBY_NOT_FOUND).replace("%input%", lobbyName));
             event.setCancelled(true);
             
         }
@@ -128,9 +128,9 @@ public class SignListener implements Listener {
             getSignRepository().getSigns().remove(sign);
             getSignRepository().saveData();
 
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.SIGNEDIT_SIGN_REMOVED));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.SIGNEDIT_SIGN_REMOVED));
         } else {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.SIGNEDIT_SIGN_REMOVE_DESC));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.SIGNEDIT_SIGN_REMOVE_DESC));
             event.setCancelled(true);
         }
     }

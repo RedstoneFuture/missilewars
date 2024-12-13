@@ -22,7 +22,6 @@ import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.lobby.Lobby;
-import de.butzlabben.missilewars.configuration.Messages;
 import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.util.geometry.GameArea;
 import de.butzlabben.missilewars.util.serialization.Serializer;

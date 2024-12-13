@@ -19,7 +19,7 @@
 package de.butzlabben.missilewars.game.misc;
 
 import de.butzlabben.missilewars.MissileWars;
-import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.util.version.BlockSetterProvider;
@@ -123,7 +123,7 @@ public class RespawnGoldBlock implements Listener {
             BlockSetterProvider.getBlockDataSetter().setData(loc.getBlock(), map.get(loc).getValue());
         }
         map.clear();
-        player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.FALL_PROTECTION_END));
+        player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.FALL_PROTECTION_END));
         Bukkit.getScheduler().cancelTask(task);
         HandlerList.unregisterAll(this);
     }
@@ -135,7 +135,7 @@ public class RespawnGoldBlock implements Listener {
     private void sendFallProtectionMessage() {
         double seconds = (double) duration / 20;
         if ((seconds == Math.floor(seconds)) && !Double.isInfinite(seconds)) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.FALL_PROTECTION_START).replace("%seconds%", Integer.toString((int) seconds)));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.FALL_PROTECTION_START).replace("%seconds%", Integer.toString((int) seconds)));
         }
     }
 
@@ -150,7 +150,7 @@ public class RespawnGoldBlock implements Listener {
             map.clear();
             Bukkit.getScheduler().cancelTask(task);
             HandlerList.unregisterAll(this);
-            eventPlayer.sendMessage(Messages.getMessage(true, Messages.MessageEnum.FALL_PROTECTION_DEACTIVATED));
+            eventPlayer.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.FALL_PROTECTION_DEACTIVATED));
         }
     }
 }

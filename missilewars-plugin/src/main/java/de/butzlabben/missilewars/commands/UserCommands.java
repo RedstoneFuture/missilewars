@@ -24,7 +24,7 @@ import co.aikar.commands.annotation.CommandCompletion;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Subcommand;
 import de.butzlabben.missilewars.MissileWars;
-import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.game.Team;
@@ -46,23 +46,23 @@ public class UserCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length < 1) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_MAP_NEEDED));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_MAP_NEEDED));
             return;
         }
 
         if (args.length > 1) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
             return;
         }
 
         Game game = GameManager.getInstance().getGame(player.getLocation());
         if (game == null) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_IN_GAME_AREA));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_NOT_IN_GAME_AREA));
             return;
         }
         
         if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_CANT_VOTE));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.VOTE_CANT_VOTE));
             return;
         }
         
@@ -78,18 +78,18 @@ public class UserCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length > 0) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
             return;
         }
         
         Game game = GameManager.getInstance().getGame(player.getLocation());
         if (game == null) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_IN_GAME_AREA));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_NOT_IN_GAME_AREA));
             return;
         }
         
         if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_CANT_VOTE));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.VOTE_CANT_VOTE));
             return;
         }
         
@@ -97,7 +97,7 @@ public class UserCommands extends BaseCommand {
         // But only in the LOBBY Game-State.
         
         if (game.getState() != GameState.LOBBY) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_CHANGE_TEAM_NO_LONGER_NOW));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.VOTE_CHANGE_TEAM_NO_LONGER_NOW));
             return;
         }
         
@@ -114,18 +114,18 @@ public class UserCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length < 1) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TEAM_NUMBER_NEEDED));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_TEAM_NUMBER_NEEDED));
             return;
         }
 
         if (args.length > 1) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
             return;
         }
 
         Game game = GameManager.getInstance().getGame(player.getLocation());
         if (game == null) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_IN_GAME_AREA));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_NOT_IN_GAME_AREA));
             return;
         }
         
@@ -136,7 +136,7 @@ public class UserCommands extends BaseCommand {
                 if (!game.getArena().isTeamchangeOngoingGame()) {
                     // Is too late for team change (last seconds of lobby waiting-time)?
                     if (game.getTaskManager().getTimer().getSeconds() < 10) {
-                        player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_CHANGE_TEAM_NO_LONGER_NOW));
+                        player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.TEAM_CHANGE_TEAM_NO_LONGER_NOW));
                         return;
                     }
                 }
@@ -145,20 +145,20 @@ public class UserCommands extends BaseCommand {
         } else if (game.getState() == GameState.INGAME) {
             // Is team change only in lobby allowed?
             if (!game.getArena().isTeamchangeOngoingGame()) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_CHANGE_TEAM_NOT_NOW));
+                player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.TEAM_CHANGE_TEAM_NOT_NOW));
                 return;
             }
             
             // Anti-Spam Check:
             if (mwPlayer.getWaitTimeForTeamChange() > 0) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_ANTISPAM_TEAM_CHANGE)
+                player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_ANTISPAM_TEAM_CHANGE)
                         .replace("%seconds%", Long.toString(mwPlayer.getWaitTimeForTeamChange())));
                 return;
             }
             mwPlayer.setLastTeamChangeTime();
             
         } else {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_CHANGE_TEAM_NOT_NOW));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.TEAM_CHANGE_TEAM_NOT_NOW));
             return;
             
         }
@@ -171,7 +171,7 @@ public class UserCommands extends BaseCommand {
             case "1":
             case "team1":
                 if (!player.hasPermission("mw.change.team.player")) {
-                    Messages.getMessage(true, Messages.MessageEnum.NO_PERMISSION);
+                    PluginMessages.getMessage(true, PluginMessages.MessageEnum.NO_PERMISSION);
                     return;
                 }
                 to = game.getTeamManager().getTeam1();
@@ -179,7 +179,7 @@ public class UserCommands extends BaseCommand {
             case "2":
             case "team2":
                 if (!player.hasPermission("mw.change.team.player")) {
-                    Messages.getMessage(true, Messages.MessageEnum.NO_PERMISSION);
+                    PluginMessages.getMessage(true, PluginMessages.MessageEnum.NO_PERMISSION);
                     return;
                 }
                 to = game.getTeamManager().getTeam2();
@@ -187,26 +187,26 @@ public class UserCommands extends BaseCommand {
             case "spec":
             case "spectator":
                 if (!player.hasPermission("mw.change.team.spectator")) {
-                    Messages.getMessage(true, Messages.MessageEnum.NO_PERMISSION);
+                    PluginMessages.getMessage(true, PluginMessages.MessageEnum.NO_PERMISSION);
                     return;
                 }
                 to = game.getTeamManager().getTeamSpec();
                 break;
             default:
-                sender.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_TEAM));
+                sender.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_INVALID_TEAM));
                 return;
         }
         
         // Is the same team?
         if (from == to) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_CHANGE_ALREADY_IN_TEAM));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.TEAM_CHANGE_ALREADY_IN_TEAM));
             return;
         }
         
         // Would the number of team members be too far apart?
         if (game.getState() != GameState.LOBBY) {
             if (!game.getTeamManager().isValidFairSwitch(from, to)) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_CHANGE_UNFAIR_TEAM_SIZE));
+                player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.TEAM_CHANGE_UNFAIR_TEAM_SIZE));
                 return;
             }
         }
@@ -214,12 +214,12 @@ public class UserCommands extends BaseCommand {
         // Checking max-user values:
         if (to == game.getTeamManager().getTeamSpec()) {
             if (game.areTooManySpectators()) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_SPECTATOR_TEAM_MAX_REACHED));
+                player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.TEAM_SPECTATOR_TEAM_MAX_REACHED));
                 return;
             }
         } else {
             if (game.areTooManyPlayers()) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_PLAYER_TEAM_MAX_REACHED));
+                player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.TEAM_PLAYER_TEAM_MAX_REACHED));
                 return;
             }
         }
@@ -236,13 +236,13 @@ public class UserCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length > 0) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
             return;
         }
         
         Game game = GameManager.getInstance().getGame(player.getLocation());
         if (game == null) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_IN_GAME_AREA));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_NOT_IN_GAME_AREA));
             return;
         }
         
@@ -261,13 +261,13 @@ public class UserCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length > 0) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
             return;
         }
 
         Game game = GameManager.getInstance().getGame(player.getLocation());
         if (game == null) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_IN_GAME_AREA));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_NOT_IN_GAME_AREA));
             return;
         }
 

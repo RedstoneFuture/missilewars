@@ -23,7 +23,7 @@ import co.aikar.commands.annotation.*;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Config;
-import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.game.*;
 import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.enums.GameState;
@@ -74,7 +74,7 @@ public class MWCommands extends BaseCommand {
     @CommandPermission("mw.version")
     public void versionCommand(CommandSender sender, String[] args) {
         
-        sender.sendMessage(Messages.getPrefix() + "Installed version: " + MissileWars.getInstance().version + " by RedstoneFuture & Butzlabben");
+        sender.sendMessage(PluginMessages.getPrefix() + "Installed version: " + MissileWars.getInstance().version + " by RedstoneFuture & Butzlabben");
     }
 
     @Subcommand("listgames|list|games")
@@ -82,7 +82,7 @@ public class MWCommands extends BaseCommand {
     @CommandPermission("mw.listgames")
     public void listgamesCommand(CommandSender sender, String[] args) {
 
-        sender.sendMessage(Messages.getPrefix() + "Current games:");
+        sender.sendMessage(PluginMessages.getPrefix() + "Current games:");
         
         sender.sendMessage(" ");
         
@@ -123,31 +123,31 @@ public class MWCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length < 2) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TEAM_NUMBER_NEEDED));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_TEAM_NUMBER_NEEDED));
             return;
         }
 
         if (args.length > 2) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
             return;
         }
 
         Game game = GameManager.getInstance().getGame(player.getLocation());
         if (game == null) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_IN_GAME_AREA));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_NOT_IN_GAME_AREA));
             return;
         }
         
         Player targetPlayer = MissileWars.getInstance().getServer().getPlayer(args[0]);
         if (targetPlayer == null) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_PLAYER_NOT_ONLINE)
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_INVALID_PLAYER_NOT_ONLINE)
                     .replace("%input%", args[0]));
             return;
         }
         
         MWPlayer targetMwPlayer = game.getPlayer(targetPlayer);
         if (targetMwPlayer == null) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_PLAYER_NOT_IN_GAME)
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_INVALID_PLAYER_NOT_IN_GAME)
                     .replace("%input%", args[0]));
             return;
         }
@@ -172,13 +172,13 @@ public class MWCommands extends BaseCommand {
                 to = game.getTeamManager().getTeamSpec();
                 break;
             default:
-                sender.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_TEAM));
+                sender.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_INVALID_TEAM));
                 return;
         }
         
         // Is the same team?
         if (from == to) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_MOVE_ALREADY_IN_TEAM)
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.TEAM_MOVE_ALREADY_IN_TEAM)
                     .replace("%player%", targetPlayer.getName()));
             return;
         }
@@ -186,25 +186,25 @@ public class MWCommands extends BaseCommand {
         if (game.getState() != GameState.END) {
             // Is the player the last one from his team?
             if ((from.getTeamType() == TeamType.PLAYER) && (from.getMembers().size() == 1)) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_MOVE_IS_LAST_PLAYER)
+                player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.TEAM_MOVE_IS_LAST_PLAYER)
                     .replace("%from%", from.getFullname()));
                 return;
             }
             
         } else {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_MOVE_TEAM_NOT_NOW));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.TEAM_MOVE_TEAM_NOT_NOW));
             return;
             
         }
         
         // The "isValidFairSwitch()" validation and max-user check is skipped here.
         
-        sender.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_MOVE_MOVED_SENDER)
+        sender.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.TEAM_MOVE_MOVED_SENDER)
                 .replace("%player%", targetPlayer.getName())
                 .replace("%from%", from.getFullname())
                 .replace("%to%", to.getFullname()));
         
-        targetPlayer.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_MOVE_MOVED_TARGET)
+        targetPlayer.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.TEAM_MOVE_MOVED_TARGET)
                 .replace("%sender%", player.getName())
                 .replace("%from%", from.getFullname())
                 .replace("%to%", to.getFullname()));
@@ -221,24 +221,24 @@ public class MWCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length < 1) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_MISSILE_NEEDED));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_MISSILE_NEEDED));
             return;
         }
 
         if (args.length > 5) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
             return;
         }
 
         Game game = GameManager.getInstance().getGame(player.getLocation());
         if (game == null) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_IN_GAME_AREA));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_NOT_IN_GAME_AREA));
             return;
         }
 
         Missile missile = (Missile) game.getArena().getMissileConfiguration().getSchematicFromFileName(args[0]);
         if (missile == null) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_MISSILE)
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_INVALID_MISSILE)
                     .replace("%input%", args[0]));
             return;
         }
@@ -269,7 +269,7 @@ public class MWCommands extends BaseCommand {
         
         missile.paste(game, player, hasTempBlock, tempBlockMaterial, tempBlockDelay, tempBlockRadius);
         
-        sender.sendMessage(Messages.getPrefix() + "Missile §7" + missile.getDisplayName() + " §fis placed.");
+        sender.sendMessage(PluginMessages.getPrefix() + "Missile §7" + missile.getDisplayName() + " §fis placed.");
         sender.sendMessage("§8 - §f" + "Temp-Block (for block-updater) enabled: §7" + hasTempBlock);
         sender.sendMessage("§8 - §f" + "Temp-Block material: §7" + tempBlockMaterial);
         sender.sendMessage("§8 - §f" + "Temp-Block delay: §7" + tempBlockDelay + " server ticks");
@@ -287,7 +287,7 @@ public class MWCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length > 1) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
             return;
         }
 
@@ -296,20 +296,20 @@ public class MWCommands extends BaseCommand {
         if (args.length == 1) {
             game = GameManager.getInstance().getGame(args[0]);
             if (game == null) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_GAME)
+                player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_INVALID_GAME)
                         .replace("%input%", args[0]));
                 return;
             }
         } else {
             game = GameManager.getInstance().getGame(player.getLocation());
             if (game == null) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_IN_GAME_AREA));
+                player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_NOT_IN_GAME_AREA));
                 return;
             }
         }
 
         if (game.getState() != GameState.LOBBY) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_ALREADY_STARTET));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_ALREADY_STARTET));
             return;
         }
 
@@ -317,7 +317,7 @@ public class MWCommands extends BaseCommand {
             if (game.getMapVoting().getState() == VoteState.RUNNING) {
                 game.getMapVoting().setVotedArena();
             } else {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_CAN_NOT_STARTET));
+                player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_CAN_NOT_STARTET));
                 return;
             }
         }
@@ -335,7 +335,7 @@ public class MWCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length > 1) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
             return;
         }
 
@@ -344,14 +344,14 @@ public class MWCommands extends BaseCommand {
         if (args.length == 1) {
             game = GameManager.getInstance().getGame(args[0]);
             if (game == null) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_GAME)
+                player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_INVALID_GAME)
                         .replace("%input%", args[0]));
                 return;
             }
         } else {
             game = GameManager.getInstance().getGame(player.getLocation());
             if (game == null) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_IN_GAME_AREA));
+                player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_NOT_IN_GAME_AREA));
                 return;
             }
         }
@@ -370,7 +370,7 @@ public class MWCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length > 1) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
             return;
         }
 
@@ -379,26 +379,26 @@ public class MWCommands extends BaseCommand {
         if (args.length == 1) {
             game = GameManager.getInstance().getGame(args[0]);
             if (game == null) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_GAME)
+                player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_INVALID_GAME)
                         .replace("%input%", args[0]));
                 return;
             }
         } else {
             game = GameManager.getInstance().getGame(player.getLocation());
             if (game == null) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_IN_GAME_AREA));
+                player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_NOT_IN_GAME_AREA));
                 return;
             }
         }
 
         GameManager.getInstance().getGames().values().forEach(Game::appendRestart);
-        sender.sendMessage(Messages.getMessage(true, Messages.MessageEnum.SERVER_RESTART_AFTER_GAME));
+        sender.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.SERVER_RESTART_AFTER_GAME));
     }
 
     static boolean senderIsPlayer(CommandSender sender) {
         if (sender instanceof Player) return true;
 
-        sender.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_ONLY_PLAYERS));
+        sender.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_ONLY_PLAYERS));
         return false;
     }
 
@@ -411,15 +411,15 @@ public class MWCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length > 0) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
             return;
         }
 
         Config.load();
-        Messages.load();
+        PluginMessages.load();
         Arenas.load();
 
-        player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.DEBUG_RELOAD_CONFIG));
+        player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.DEBUG_RELOAD_CONFIG));
     }
 
     @Subcommand("debug")
@@ -431,7 +431,7 @@ public class MWCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length > 0) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
             return;
         }
 
@@ -442,7 +442,7 @@ public class MWCommands extends BaseCommand {
             Logger.NORMAL.log(game.toString());
         }
 
-        player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.DEBUG_PRINTED_DEBUG_MSG));
+        player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.DEBUG_PRINTED_DEBUG_MSG));
     }
 
     @Subcommand("restartall")
@@ -454,26 +454,26 @@ public class MWCommands extends BaseCommand {
         Player player = (Player) sender;
 
         if (args.length > 0) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_TO_MANY_ARGUMENTS));
             return;
         }
 
         if (GameManager.getInstance().getGames().size() > 10) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.DEBUG_RESTART_ALL_GAMES_WARN));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.DEBUG_RESTART_ALL_GAMES_WARN));
         }
 
         GameManager.getInstance().restartAll();
-        player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.DEBUG_RESTART_ALL_GAMES));
+        player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.DEBUG_RESTART_ALL_GAMES));
     }
 
     static void sendHelpMessage(CommandSender sender, String permission, String command, String description) {
         if (sender instanceof Player) {
             if (!sender.hasPermission(permission)) return;
         }
-        sender.sendMessage(Messages.getPrefix() + command + " - " + description);
+        sender.sendMessage(PluginMessages.getPrefix() + command + " - " + description);
     }
     
     static void sendHelpMessage(CommandSender sender, String command, String description) {
-        sender.sendMessage(Messages.getPrefix() + command + " - " + description);
+        sender.sendMessage(PluginMessages.getPrefix() + command + " - " + description);
     }
 }

@@ -18,7 +18,7 @@
 
 package de.butzlabben.missilewars.game.timer;
 
-import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.game.Game;
 
 /**
@@ -37,7 +37,7 @@ public class EndTimer extends Timer {
 
         switch (seconds) {
             case 15:
-                broadcast(Messages.getMessage(true, Messages.MessageEnum.ENDGAME_TIMER_GAME_STARTS_NEW_IN)
+                broadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.ENDGAME_TIMER_GAME_STARTS_NEW_IN)
                         .replace("%seconds%", Integer.toString(seconds)));
                 break;
             case 0:

@@ -330,15 +330,15 @@ public class Config {
     }
 
     public static String motdEnded() {
-        return Messages.getConvertedMsg(cfg.getString("motd.ended"));
+        return PluginMessages.getConvertedMsg(cfg.getString("motd.ended"));
     }
 
     public static String motdGame() {
-        return Messages.getConvertedMsg(cfg.getString("motd.ingame"));
+        return PluginMessages.getConvertedMsg(cfg.getString("motd.ingame"));
     }
 
     public static String motdLobby() {
-        return Messages.getConvertedMsg(cfg.getString("motd.lobby"));
+        return PluginMessages.getConvertedMsg(cfg.getString("motd.lobby"));
     }
 
     public static boolean motdEnabled() {
@@ -402,11 +402,11 @@ public class Config {
     }
 
     public static String getScoreboardTitle() {
-        return Messages.getConvertedMsg(cfg.getString("sidebar.title"));
+        return PluginMessages.getConvertedMsg(cfg.getString("sidebar.title"));
     }
 
     public static String getScoreboardMembersStyle() {
-        return Messages.getConvertedMsg(cfg.getString("sidebar.member_list_style"));
+        return PluginMessages.getConvertedMsg(cfg.getString("sidebar.member_list_style"));
     }
 
     public static int getScoreboardMembersMax() {
@@ -414,7 +414,7 @@ public class Config {
     }
     
     public static List<String> getScoreboardEntries() {
-        return Messages.getConvertedMsgList(cfg.getStringList("sidebar.entries"));
+        return PluginMessages.getConvertedMsgList(cfg.getStringList("sidebar.entries"));
     }
     
     public static int getActionbarForSpecDelay() {
@@ -422,7 +422,7 @@ public class Config {
     }
     
     public static String[] getActionbarForSpecEntries() {
-        return Messages.getConvertedMsgArray(cfg.getStringList("actionbar_msg.spectator.messages"));
+        return PluginMessages.getConvertedMsgArray(cfg.getStringList("actionbar_msg.spectator.messages"));
     }
     
     public static Map<Integer, Map<Integer, MenuItem>> getGameJoinMenuItems() {
@@ -437,12 +437,12 @@ public class Config {
             ConfigurationSection cfg = Config.cfg.getConfigurationSection(gameJoinMenu + ".items." + item);
             MenuItem menuItem = new MenuItem(cfg.getInt("slot"), cfg.getInt("priority"));
 
-            menuItem.setDisplayName(Messages.getConvertedMsg(cfg.getString("display_name")));
+            menuItem.setDisplayName(PluginMessages.getConvertedMsg(cfg.getString("display_name")));
             menuItem.setMaterialName(cfg.getString("material"));
             menuItem.setItemRequirement(cfg);
-            menuItem.setLoreList(Messages.getConvertedMsgList(cfg.getStringList("lore")));
-            menuItem.setLeftClickActions(new ActionSet(Messages.getConvertedMsgList(cfg.getStringList("left_click_actions"))));
-            menuItem.setRightClickActions(new ActionSet(Messages.getConvertedMsgList(cfg.getStringList("right_click_actions"))));
+            menuItem.setLoreList(PluginMessages.getConvertedMsgList(cfg.getStringList("lore")));
+            menuItem.setLeftClickActions(new ActionSet(PluginMessages.getConvertedMsgList(cfg.getStringList("left_click_actions"))));
+            menuItem.setRightClickActions(new ActionSet(PluginMessages.getConvertedMsgList(cfg.getStringList("right_click_actions"))));
             
             int slot = menuItem.getSlot();
             Map<Integer, MenuItem> itemsInSlot = new HashMap<>();
@@ -461,7 +461,7 @@ public class Config {
     }
     
     public static String getTeamSelectionMenuTitle() {
-        return Messages.getConvertedMsg(cfg.getString("menus.inventory_menu.team_selection_menu.title"));
+        return PluginMessages.getConvertedMsg(cfg.getString("menus.inventory_menu.team_selection_menu.title"));
     }
     
     @Getter
@@ -475,12 +475,12 @@ public class Config {
         }
         
         public String getMessage() {
-            return Messages.getConvertedMsg(cfg.getString(getPath()));
+            return PluginMessages.getConvertedMsg(cfg.getString(getPath()));
         }
     }
     
     public static String getMapVoteMenuTitle() {
-        return Messages.getConvertedMsg(cfg.getString("menus.inventory_menu.map_vote_menu.title"));
+        return PluginMessages.getConvertedMsg(cfg.getString("menus.inventory_menu.map_vote_menu.title"));
     }
     
     @Getter
@@ -499,7 +499,7 @@ public class Config {
         }
         
         public String getMessage() {
-            return Messages.getConvertedMsg(cfg.getString(getPath()));
+            return PluginMessages.getConvertedMsg(cfg.getString(getPath()));
         }
     }
     

@@ -2,7 +2,7 @@ package de.butzlabben.missilewars.game;
 
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Config;
-import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.enums.TeamType;
 import de.butzlabben.missilewars.player.MWPlayer;
@@ -87,16 +87,16 @@ public class GameResultManager {
 
         switch (mwPlayer.getTeam().getGameResult()) {
             case WIN:
-                title = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_TITLE_WINNER);
-                subTitle = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_SUBTITLE_WINNER);
+                title = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_TITLE_WINNER);
+                subTitle = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_SUBTITLE_WINNER);
                 break;
             case LOSE:
-                title = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_TITLE_LOSER);
-                subTitle = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_SUBTITLE_LOSER);
+                title = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_TITLE_LOSER);
+                subTitle = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_SUBTITLE_LOSER);
                 break;
             case DRAW:
-                title = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_TITLE_DRAW);
-                subTitle = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_SUBTITLE_DRAW);
+                title = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_TITLE_DRAW);
+                subTitle = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_SUBTITLE_DRAW);
                 break;
             default:
                 title = null;
@@ -137,18 +137,18 @@ public class GameResultManager {
         String subTitle;
 
         if (teamManager.getTeam1().getGameResult() == GameResult.WIN) {
-            title = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_TITLE_WON)
+            title = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_TITLE_WON)
                     .replace("%team%", teamManager.getTeam1().getName());
-            subTitle = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_SUBTITLE_WON);
+            subTitle = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_SUBTITLE_WON);
 
         } else if (teamManager.getTeam2().getGameResult() == GameResult.WIN) {
-            title = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_TITLE_WON)
+            title = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_TITLE_WON)
                     .replace("%team%", teamManager.getTeam2().getName());
-            subTitle = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_SUBTITLE_WON);
+            subTitle = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_SUBTITLE_WON);
 
         } else {
-            title = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_TITLE_DRAW);
-            subTitle = Messages.getMessage(false, Messages.MessageEnum.GAME_RESULT_SUBTITLE_DRAW);
+            title = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_TITLE_DRAW);
+            subTitle = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_SUBTITLE_DRAW);
 
         }
 
