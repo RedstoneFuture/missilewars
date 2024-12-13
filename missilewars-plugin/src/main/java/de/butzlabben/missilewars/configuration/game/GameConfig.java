@@ -23,6 +23,7 @@ import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.arena.modules.AreaConfig;
 import de.butzlabben.missilewars.configuration.arena.ArenaConfig;
+import de.butzlabben.missilewars.configuration.game.modules.GameTeamConfiguration;
 import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.game.enums.JoinIngameBehavior;
 import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
