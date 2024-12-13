@@ -22,7 +22,7 @@ import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.arena.ArenaConfig;
-import de.butzlabben.missilewars.util.SetupUtil;
+import de.butzlabben.missilewars.initialization.FileManager;
 import de.butzlabben.missilewars.util.serialization.Serializer;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -46,8 +46,8 @@ public class Arenas {
         folder.mkdirs();
 
         // Get all arena files or create a new one
-        File[] files = folder.listFiles();
-        if (files.length == 0) {
+        File[] arenaFiles = folder.listFiles();
+        if (arenaFiles.length == 0) {
             File defaultArena = new File(folder, "arena0.yml");
             try {
                 defaultArena.createNewFile();
@@ -59,10 +59,10 @@ public class Arenas {
                 Bukkit.getPluginManager().disablePlugin(MissileWars.getInstance());
                 return;
             }
-            files = new File[] {defaultArena};
+            arenaFiles = new File[] {defaultArena};
         }
 
-        for (File config : files) {
+        for (File config : arenaFiles) {
             if (!config.getName().endsWith(".yml") && !config.getName().endsWith(".yaml")) continue;
             try {
                 ArenaConfig arenaConfig = Serializer.deserialize(config, ArenaConfig.class);
@@ -71,7 +71,7 @@ public class Arenas {
                     Logger.WARN.log("There are several arenas configured with the name \"" + arenaConfig.getName() + "\". Arenas must have a unique name");
                     continue;
                 }
-                SetupUtil.saveDefaultFiles(Config.getArenasFolder() + File.separator + arenaConfig.getTemplateWorld(), 
+                FileManager.saveDefaultResource(Config.getArenasFolder() + File.separator + "default_map", 
                         "MissileWars-Arena.zip", MissileWars.getInstance());
                 arenaConfig.updateConfig();
                 ARENAS.put(arenaConfig.getName(), arenaConfig);
