@@ -22,7 +22,7 @@ import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.PluginMessages;
-import de.butzlabben.missilewars.configuration.arena.Arena;
+import de.butzlabben.missilewars.configuration.arena.ArenaConfig;
 import de.butzlabben.missilewars.configuration.game.GameConfig;
 import de.butzlabben.missilewars.event.GameStartEvent;
 import de.butzlabben.missilewars.event.GameStopEvent;
@@ -90,7 +90,7 @@ public class Game {
     private GameArea gameArea;
     private GameArea innerGameArea;
     private long timestart;
-    private Arena arena;
+    private ArenaConfig arenaConfig;
     private ScoreboardManager scoreboardManager;
     private GameJoinManager gameJoinManager;
     private GameLeaveManager gameLeaveManager;
@@ -154,20 +154,20 @@ public class Game {
         
         // choose the game arena
         if (gameConfig.getMapChooseProcedure() == MapChooseProcedure.FIRST) {
-            setArena(gameConfig.getArenas().get(0));
+            setArenaConfig(gameConfig.getArenas().get(0));
             prepareGame();
 
         } else if (gameConfig.getMapChooseProcedure() == MapChooseProcedure.MAPCYCLE) {
             final int lastMapIndex = cycles.getOrDefault(gameConfig.getName(), -1);
-            List<Arena> arenas = gameConfig.getArenas();
-            int index = lastMapIndex >= arenas.size() - 1 ? 0 : lastMapIndex + 1;
+            List<ArenaConfig> arenaConfigs = gameConfig.getArenas();
+            int index = lastMapIndex >= arenaConfigs.size() - 1 ? 0 : lastMapIndex + 1;
             cycles.put(gameConfig.getName(), index);
-            setArena(arenas.get(index));
+            setArenaConfig(arenaConfigs.get(index));
             prepareGame();
 
         } else if (gameConfig.getMapChooseProcedure() == MapChooseProcedure.MAPVOTING) {
             if (mapVoting.onlyOneArenaFound()) {
-                setArena(gameConfig.getArenas().get(0));
+                setArenaConfig(gameConfig.getArenas().get(0));
                 Logger.WARN.log("Only one arena was found for the lobby \"" + gameConfig.getName() + "\". The configured map voting was skipped.");
                 prepareGame();
             } else {
@@ -185,7 +185,7 @@ public class Game {
      * now already defined.
      */
     public void prepareGame() {
-        if (this.arena == null) {
+        if (this.arenaConfig == null) {
             throw new IllegalStateException("The arena is not yet set");
         }
         
@@ -232,7 +232,7 @@ public class Game {
         World world = gameWorld.getWorld();
 
         if (world == null) {
-            Logger.ERROR.log("Could not start game in arena \"" + arena.getName() + "\". World is null");
+            Logger.ERROR.log("Could not start game in arena \"" + arenaConfig.getName() + "\". World is null");
             return;
         }
 
@@ -280,7 +280,7 @@ public class Game {
 
         updateMOTD();
 
-        if (arena.isSaveStatistics()) {
+        if (arenaConfig.isSaveStatistics()) {
             FightStats stats = new FightStats(this);
             stats.insert();
         }
@@ -457,7 +457,7 @@ public class Game {
     public void spawnMissile(Player player, ItemStack itemStack) {
 
         // Are missiles only allowed to spawn inside the arena, between the two arena spawn points?
-        boolean isOnlyBetweenSpawnPlaceable = this.arena.getMissileConfig().isOnlyBetweenSpawnPlaceable();
+        boolean isOnlyBetweenSpawnPlaceable = this.arenaConfig.getMissileConfig().isOnlyBetweenSpawnPlaceable();
         if (isOnlyBetweenSpawnPlaceable) {
             if (!isInInnerGameArea(player.getLocation())) {
                 player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.ARENA_MISSILE_PLACE_DENY));
@@ -468,7 +468,7 @@ public class Game {
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta == null) return;
         
-        Missile missile = (Missile) this.arena.getMissileConfig().getSchematicFromDisplayName(itemMeta.getDisplayName());
+        Missile missile = (Missile) this.arenaConfig.getMissileConfig().getSchematicFromDisplayName(itemMeta.getDisplayName());
         if (missile == null) {
             player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_INVALID_MISSILE)
                     .replace("%input%", itemMeta.getDisplayName()));
@@ -491,7 +491,7 @@ public class Game {
         ItemMeta itemMeta = ball.getItem().getItemMeta();
         if (itemMeta == null) return;
 
-        Shield shield = (Shield) this.arena.getShieldConfig().getSchematicFromDisplayName(itemMeta.getDisplayName());
+        Shield shield = (Shield) this.arenaConfig.getShieldConfig().getSchematicFromDisplayName(itemMeta.getDisplayName());
         if (shield == null) {
             player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_INVALID_SHIELD)
                     .replace("%input%", itemMeta.getDisplayName()));
@@ -520,26 +520,26 @@ public class Game {
         fb.setBounce(false);
     }
 
-    public void setArena(Arena arena) {
-        if (this.arena != null) {
+    public void setArenaConfig(ArenaConfig arenaConfig) {
+        if (this.arenaConfig != null) {
             throw new IllegalStateException("Arena already set");
         }
 
-        arena.getMissileConfig().check();
-        arena.getShieldConfig().check();
+        arenaConfig.getMissileConfig().check();
+        arenaConfig.getShieldConfig().check();
 
-        this.arena = arena.clone();
-        gameWorld = new GameWorld(this, arena.getTemplateWorld());
+        this.arenaConfig = arenaConfig.clone();
+        gameWorld = new GameWorld(this, arenaConfig.getTemplateWorld());
         gameWorld.load();
-        gameArea = new GameArea(gameWorld.getWorld(), arena.getAreaConfig());
+        gameArea = new GameArea(gameWorld.getWorld(), arenaConfig.getAreaConfig());
 
         try {
-            Serializer.setWorldAtAllLocations(this.arena, gameWorld.getWorld());
-            teamManager.getTeam1().setSpawn(this.arena.getTeam1Spawn());
-            teamManager.getTeam2().setSpawn(this.arena.getTeam2Spawn());
-            teamManager.getTeamSpec().setSpawn(this.arena.getSpectatorSpawn());
+            Serializer.setWorldAtAllLocations(this.arenaConfig, gameWorld.getWorld());
+            teamManager.getTeam1().setSpawn(this.arenaConfig.getTeam1Spawn());
+            teamManager.getTeam2().setSpawn(this.arenaConfig.getTeam2Spawn());
+            teamManager.getTeamSpec().setSpawn(this.arenaConfig.getSpectatorSpawn());
         } catch (Exception exception) {
-            Logger.ERROR.log("Could not inject world object at arena " + this.arena.getName());
+            Logger.ERROR.log("Could not inject world object at arena " + this.arenaConfig.getName());
             exception.printStackTrace();
             return;
         }
@@ -692,11 +692,11 @@ public class Game {
     
     public int getGameDuration() {
         int time = 0;
-        if (arena == null) return time;
+        if (arenaConfig == null) return time;
         
         if (state == GameState.LOBBY) {
             // Show the planned duration of the next game:
-            time = arena.getGameDuration();
+            time = arenaConfig.getGameDuration();
         } else if (state == GameState.INGAME) {
             // Show the remaining duration of the running game:
             time = getTaskManager().getTimer().getSeconds() / 60;
@@ -740,7 +740,7 @@ public class Game {
     }
 
     public void teleportToArenaSpectatorSpawn(Player player) {
-        Teleport.teleportSafely(player, arena.getSpectatorSpawn());
+        Teleport.teleportSafely(player, arenaConfig.getSpectatorSpawn());
     }
 
     public void teleportToAfterGameSpawn(Player player) {

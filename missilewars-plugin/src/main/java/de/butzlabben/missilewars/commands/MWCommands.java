@@ -95,8 +95,8 @@ public class MWCommands extends BaseCommand {
             
             sender.sendMessage("§8 - §f" + "Load with startup: §7" + game.getGameConfig().isAutoLoad());
             
-            sender.sendMessage("§8 - §f" + "Current Arena: §7" + ((game.getArena() != null) ? game.getArena().getName() : "?") 
-                    + "§7 -- Name: »" + ((game.getArena() != null) ? game.getArena().getDisplayName() : "?") + "§7«");
+            sender.sendMessage("§8 - §f" + "Current Arena: §7" + ((game.getArenaConfig() != null) ? game.getArenaConfig().getName() : "?") 
+                    + "§7 -- Name: »" + ((game.getArenaConfig() != null) ? game.getArenaConfig().getDisplayName() : "?") + "§7«");
             
             sender.sendMessage("§8 - §f" + "Total players: §7" + game.getTotalGameUserAmount() + "x");
             
@@ -236,7 +236,7 @@ public class MWCommands extends BaseCommand {
             return;
         }
 
-        Missile missile = (Missile) game.getArena().getMissileConfig().getSchematicFromFileName(args[0]);
+        Missile missile = (Missile) game.getArenaConfig().getMissileConfig().getSchematicFromFileName(args[0]);
         if (missile == null) {
             player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_INVALID_MISSILE)
                     .replace("%input%", args[0]));
@@ -438,7 +438,7 @@ public class MWCommands extends BaseCommand {
         int i = 0;
         Logger.NORMAL.log("Starting to print debug information for MissileWars v" + MissileWars.getInstance().version);
         for (Game game : GameManager.getInstance().getGames().values()) {
-            Logger.NORMAL.log("Printing state for arena " + game.getArena().getName() + ". Number: " + i);
+            Logger.NORMAL.log("Printing state for arena " + game.getArenaConfig().getName() + ". Number: " + i);
             Logger.NORMAL.log(game.toString());
         }
 

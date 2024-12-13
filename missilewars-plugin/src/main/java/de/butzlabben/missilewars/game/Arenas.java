@@ -21,7 +21,7 @@ package de.butzlabben.missilewars.game;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Config;
-import de.butzlabben.missilewars.configuration.arena.Arena;
+import de.butzlabben.missilewars.configuration.arena.ArenaConfig;
 import de.butzlabben.missilewars.util.SetupUtil;
 import de.butzlabben.missilewars.util.serialization.Serializer;
 import lombok.Getter;
@@ -35,7 +35,7 @@ import java.util.Map;
 public class Arenas {
 
     @Getter
-    private static final Map<String, Arena> ARENAS = new HashMap<>();
+    private static final Map<String, ArenaConfig> ARENAS = new HashMap<>();
 
     public static void load() {
         ARENAS.clear();
@@ -51,7 +51,7 @@ public class Arenas {
             File defaultArena = new File(folder, "arena0.yml");
             try {
                 defaultArena.createNewFile();
-                Serializer.serialize(defaultArena, new Arena());
+                Serializer.serialize(defaultArena, new ArenaConfig());
             } catch (IOException exception) {
                 Logger.ERROR.log("Could not create default arena config");
                 Logger.ERROR.log("As there are no arenas present, the plugin is shutting down");
@@ -65,16 +65,16 @@ public class Arenas {
         for (File config : files) {
             if (!config.getName().endsWith(".yml") && !config.getName().endsWith(".yaml")) continue;
             try {
-                Arena arena = Serializer.deserialize(config, Arena.class);
-                arena.setFile(config);
-                if (existsArena(arena.getName())) {
-                    Logger.WARN.log("There are several arenas configured with the name \"" + arena.getName() + "\". Arenas must have a unique name");
+                ArenaConfig arenaConfig = Serializer.deserialize(config, ArenaConfig.class);
+                arenaConfig.setFile(config);
+                if (existsArena(arenaConfig.getName())) {
+                    Logger.WARN.log("There are several arenas configured with the name \"" + arenaConfig.getName() + "\". Arenas must have a unique name");
                     continue;
                 }
-                SetupUtil.saveDefaultFiles(Config.getArenasFolder() + File.separator + arena.getTemplateWorld(), 
+                SetupUtil.saveDefaultFiles(Config.getArenasFolder() + File.separator + arenaConfig.getTemplateWorld(), 
                         "MissileWars-Arena.zip", MissileWars.getInstance());
-                arena.updateConfig();
-                ARENAS.put(arena.getName(), arena);
+                arenaConfig.updateConfig();
+                ARENAS.put(arenaConfig.getName(), arenaConfig);
             } catch (IOException exception) {
                 Logger.ERROR.log("Could not load config for arena " + config.getName());
                 exception.printStackTrace();
@@ -82,7 +82,7 @@ public class Arenas {
         }
     }
 
-    public static Arena getFromName(String arenaName) {
+    public static ArenaConfig getFromName(String arenaName) {
         if (ARENAS.containsKey(arenaName)) return ARENAS.get(arenaName);
         return null;
     }

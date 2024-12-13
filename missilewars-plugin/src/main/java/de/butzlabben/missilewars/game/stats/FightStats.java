@@ -41,7 +41,7 @@ public class FightStats {
     public FightStats(Game game) {
         this.game = game;
 
-        arenaName = game.getArena().getName();
+        arenaName = game.getArenaConfig().getName();
         timeStart = game.getTimestart();
         timeElapsed = System.currentTimeMillis() - timeStart;
         teamWon = getGameResultCode();

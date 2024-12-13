@@ -61,13 +61,13 @@ public class GameResultManager {
 
         switch (mwPlayer.getTeam().getGameResult()) {
             case WIN:
-                money = game.getArena().getMoney().getWin();
+                money = game.getArenaConfig().getMoney().getWin();
                 break;
             case LOSE:
-                money = game.getArena().getMoney().getLoss();
+                money = game.getArenaConfig().getMoney().getLoss();
                 break;
             case DRAW:
-                money = game.getArena().getMoney().getDraw();
+                money = game.getArenaConfig().getMoney().getDraw();
                 break;
             default:
                 money = 0;
@@ -175,7 +175,7 @@ public class GameResultManager {
             
         }
         
-        Firework firework = game.getGameWorld().getWorld().spawn(game.getArena().getSpectatorSpawn(), Firework.class);
+        Firework firework = game.getGameWorld().getWorld().spawn(game.getArenaConfig().getSpectatorSpawn(), Firework.class);
         FireworkMeta fireworkMeta = firework.getFireworkMeta();
         
         fireworkMeta.clearEffects();

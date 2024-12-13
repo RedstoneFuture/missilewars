@@ -126,8 +126,8 @@ public class GameWorld {
             World world = Bukkit.createWorld(new WorldCreator(worldName));
             Bukkit.getWorlds().add(world);
 
-            world.setGameRule(GameRule.DO_TILE_DROPS, game.getArena().isDoTileDrops());
-            world.setGameRule(GameRule.KEEP_INVENTORY, game.getArena().isKeepInventory());
+            world.setGameRule(GameRule.DO_TILE_DROPS, game.getArenaConfig().isDoTileDrops());
+            world.setGameRule(GameRule.KEEP_INVENTORY, game.getArenaConfig().isKeepInventory());
         }
     }
 

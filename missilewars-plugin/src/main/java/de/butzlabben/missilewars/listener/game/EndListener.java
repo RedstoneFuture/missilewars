@@ -53,7 +53,7 @@ public class EndListener extends GameBoundListener {
     public void onRespawn(PlayerRespawnEvent event) {
         if (!isInGameWorld(event.getPlayer().getLocation())) return;
 
-        event.setRespawnLocation(getGame().getArena().getSpectatorSpawn());
+        event.setRespawnLocation(getGame().getArenaConfig().getSpectatorSpawn());
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -64,7 +64,7 @@ public class EndListener extends GameBoundListener {
         MWPlayer mwPlayer = getGame().getPlayer(player);
 
         event.setDeathMessage(null);
-        if (getGame().getArena().isAutoRespawn()) getGame().autoRespawnPlayer(mwPlayer);
+        if (getGame().getArenaConfig().isAutoRespawn()) getGame().autoRespawnPlayer(mwPlayer);
     }
 
     @EventHandler

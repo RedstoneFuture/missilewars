@@ -132,8 +132,8 @@ public class UserCommands extends BaseCommand {
         MWPlayer mwPlayer = game.getPlayer(player);
         
         if (game.getState() == GameState.LOBBY) {
-            if (game.getArena() != null) {
-                if (!game.getArena().isTeamchangeOngoingGame()) {
+            if (game.getArenaConfig() != null) {
+                if (!game.getArenaConfig().isTeamchangeOngoingGame()) {
                     // Is too late for team change (last seconds of lobby waiting-time)?
                     if (game.getTaskManager().getTimer().getSeconds() < 10) {
                         player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.TEAM_CHANGE_TEAM_NO_LONGER_NOW));
@@ -144,7 +144,7 @@ public class UserCommands extends BaseCommand {
             
         } else if (game.getState() == GameState.INGAME) {
             // Is team change only in lobby allowed?
-            if (!game.getArena().isTeamchangeOngoingGame()) {
+            if (!game.getArenaConfig().isTeamchangeOngoingGame()) {
                 player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.TEAM_CHANGE_TEAM_NOT_NOW));
                 return;
             }

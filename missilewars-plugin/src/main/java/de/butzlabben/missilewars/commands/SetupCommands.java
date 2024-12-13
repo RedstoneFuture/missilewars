@@ -100,8 +100,8 @@ public class SetupCommands extends BaseCommand {
                 if (!senderIsPlayer(sender)) return;
                 if (!isValidGame(args)) return;
 
-                game.getArena().setSpectatorSpawn(player.getLocation());
-                game.getArena().updateConfig();
+                game.getArenaConfig().setSpectatorSpawn(player.getLocation());
+                game.getArenaConfig().updateConfig();
                 player.sendMessage(PluginMessages.getPrefix() + "§fSet new 'spectatorSpawn' to " + player.getLocation() + ".");
             }
 
@@ -111,7 +111,7 @@ public class SetupCommands extends BaseCommand {
                 if (!senderIsPlayer(sender)) return;
                 if (!isValidGame(args)) return;
 
-                player.teleport(game.getArena().getSpectatorSpawn());
+                player.teleport(game.getArenaConfig().getSpectatorSpawn());
                 player.sendMessage(PluginMessages.getPrefix() + "§fTeleported to 'spectatorSpawn'.");
             }
 
@@ -126,8 +126,8 @@ public class SetupCommands extends BaseCommand {
                 if (!senderIsPlayer(sender)) return;
                 if (!isValidGame(args)) return;
 
-                game.getArena().setTeam1Spawn(player.getLocation());
-                game.getArena().updateConfig();
+                game.getArenaConfig().setTeam1Spawn(player.getLocation());
+                game.getArenaConfig().updateConfig();
                 player.sendMessage(PluginMessages.getPrefix() + "§fSet new 'team1Spawn' to " + player.getLocation() + ".");
             }
 
@@ -137,7 +137,7 @@ public class SetupCommands extends BaseCommand {
                 if (!senderIsPlayer(sender)) return;
                 if (!isValidGame(args)) return;
 
-                player.teleport(game.getArena().getTeam1Spawn());
+                player.teleport(game.getArenaConfig().getTeam1Spawn());
                 player.sendMessage(PluginMessages.getPrefix() + "§fTeleported to 'team1Spawn'.");
             }
 
@@ -152,8 +152,8 @@ public class SetupCommands extends BaseCommand {
                 if (!senderIsPlayer(sender)) return;
                 if (!isValidGame(args)) return;
 
-                game.getArena().setTeam2Spawn(player.getLocation());
-                game.getArena().updateConfig();
+                game.getArenaConfig().setTeam2Spawn(player.getLocation());
+                game.getArenaConfig().updateConfig();
                 player.sendMessage(PluginMessages.getPrefix() + "§fSet new 'team2Spawn' to " + player.getLocation() + ".");
             }
 
@@ -163,7 +163,7 @@ public class SetupCommands extends BaseCommand {
                 if (!senderIsPlayer(sender)) return;
                 if (!isValidGame(args)) return;
 
-                player.teleport(game.getArena().getTeam2Spawn());
+                player.teleport(game.getArenaConfig().getTeam2Spawn());
                 player.sendMessage(PluginMessages.getPrefix() + "§fTeleported to 'team2Spawn'.");
             }
 
@@ -181,9 +181,9 @@ public class SetupCommands extends BaseCommand {
                     if (!senderIsPlayer(sender)) return;
                     if (!isValidGame(args)) return;
 
-                    game.getArena().getArea().setPosition1(player.getLocation());
-                    game.getArena().setAreaConfig(game.getArena().getArea().getAreaConfiguration());
-                    game.getArena().updateConfig();
+                    game.getArenaConfig().getArea().setPosition1(player.getLocation());
+                    game.getArenaConfig().setAreaConfig(game.getArenaConfig().getArea().getAreaConfiguration());
+                    game.getArenaConfig().updateConfig();
                     player.sendMessage(PluginMessages.getPrefix() + "§fSet new 'arena area' (position 1) to " + player.getLocation() + ".");
                 }
 
@@ -193,8 +193,8 @@ public class SetupCommands extends BaseCommand {
                     if (!senderIsPlayer(sender)) return;
                     if (!isValidGame(args)) return;
 
-                    player.teleport(game.getArena().getArea().getPosition1());
-                    player.sendMessage(PluginMessages.getPrefix() + "§fTeleported to 'arena area' (position 1): " + game.getArena().getArea().getPosition1().toString());
+                    player.teleport(game.getArenaConfig().getArea().getPosition1());
+                    player.sendMessage(PluginMessages.getPrefix() + "§fTeleported to 'arena area' (position 1): " + game.getArenaConfig().getArea().getPosition1().toString());
                 }
 
             }
@@ -208,9 +208,9 @@ public class SetupCommands extends BaseCommand {
                     if (!senderIsPlayer(sender)) return;
                     if (!isValidGame(args)) return;
 
-                    game.getArena().getArea().setPosition2(player.getLocation());
-                    game.getArena().setAreaConfig(game.getArena().getArea().getAreaConfiguration());
-                    game.getArena().updateConfig();
+                    game.getArenaConfig().getArea().setPosition2(player.getLocation());
+                    game.getArenaConfig().setAreaConfig(game.getArenaConfig().getArea().getAreaConfiguration());
+                    game.getArenaConfig().updateConfig();
                     player.sendMessage(PluginMessages.getPrefix() + "§fSet new 'arena area' (position 2) to " + player.getLocation() + ".");
                 }
 
@@ -220,8 +220,8 @@ public class SetupCommands extends BaseCommand {
                     if (!senderIsPlayer(sender)) return;
                     if (!isValidGame(args)) return;
 
-                    player.teleport(game.getArena().getArea().getPosition2());
-                    player.sendMessage(PluginMessages.getPrefix() + "§fTeleported to 'arena area' (position 2): " + game.getArena().getArea().getPosition2().toString());
+                    player.teleport(game.getArenaConfig().getArea().getPosition2());
+                    player.sendMessage(PluginMessages.getPrefix() + "§fTeleported to 'arena area' (position 2): " + game.getArenaConfig().getArea().getPosition2().toString());
                 }
 
             }

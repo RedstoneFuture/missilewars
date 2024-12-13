@@ -20,7 +20,7 @@ package de.butzlabben.missilewars.game.misc;
 
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.game.GameConfig;
-import de.butzlabben.missilewars.configuration.arena.Arena;
+import de.butzlabben.missilewars.configuration.arena.ArenaConfig;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.game.enums.GameState;
@@ -88,13 +88,13 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
                 if (params.startsWith("player_")) return noInformation;
             }
             
-            if (playerGame.getArena() == null) {
+            if (playerGame.getArenaConfig() == null) {
                 // if (params.startsWith("arena_")) return "§c§oThis is not a game arena!";
                 if (params.startsWith("arena_")) return noInformation;
             }
 
             if (params.startsWith("lobby_")) params = params.replace("this", playerGame.getGameConfig().getName());
-            if (params.startsWith("arena_")) params = params.replace("this", playerGame.getArena().getName());
+            if (params.startsWith("arena_")) params = params.replace("this", playerGame.getArenaConfig().getName());
             
         }
         
@@ -173,21 +173,21 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
                 }
             }
             
-            for (Arena arena : gameConfig.getArenas()) {
+            for (ArenaConfig arenaConfig : gameConfig.getArenas()) {
 
                 // %missilewars_arena_displayname_<arena name or 'this'>%
-                if (params.equalsIgnoreCase("arena_displayname_" + arena.getName())) {
-                    return arena.getDisplayName();
+                if (params.equalsIgnoreCase("arena_displayname_" + arenaConfig.getName())) {
+                    return arenaConfig.getDisplayName();
                 }
 
                 // %missilewars_arena_missileamount_<arena name or 'this'>%
-                if (params.equalsIgnoreCase("arena_missileamount_" + arena.getName())) {
-                    return Integer.toString(arena.getMissileConfig().getSchematics().size());
+                if (params.equalsIgnoreCase("arena_missileamount_" + arenaConfig.getName())) {
+                    return Integer.toString(arenaConfig.getMissileConfig().getSchematics().size());
                 }
                 
                 // %missilewars_arena_gameduration_<arena name or 'this'>%
-                if (params.equalsIgnoreCase("arena_gameduration_" + arena.getName())) {
-                    return Integer.toString(arena.getGameDuration());
+                if (params.equalsIgnoreCase("arena_gameduration_" + arenaConfig.getName())) {
+                    return Integer.toString(arenaConfig.getGameDuration());
                 }
                 
             }

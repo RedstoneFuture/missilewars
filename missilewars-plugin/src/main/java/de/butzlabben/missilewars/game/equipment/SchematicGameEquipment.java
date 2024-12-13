@@ -52,13 +52,13 @@ public class SchematicGameEquipment {
     private void createSchematicEquipmentList(SchematicObject.schematicType schematicType) {
 
         if (schematicType == SchematicObject.schematicType.MISSILE) {
-            for (SchematicObject object : game.getArena().getMissileConfig().getSchematics()) {
+            for (SchematicObject object : game.getArenaConfig().getMissileConfig().getSchematics()) {
                 for (int i = object.getOccurrence(); i > 0; i--) {
                     schematicEquipmentList.add(object);
                 }
             }
         } else if (schematicType == SchematicObject.schematicType.SHIELD) {
-            for (SchematicObject object : game.getArena().getShieldConfig().getSchematics()) {
+            for (SchematicObject object : game.getArenaConfig().getShieldConfig().getSchematics()) {
                 for (int i = object.getOccurrence(); i > 0; i--) {
                     schematicEquipmentList.add(object);
                 }

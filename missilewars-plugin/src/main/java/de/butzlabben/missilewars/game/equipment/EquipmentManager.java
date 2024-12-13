@@ -58,7 +58,7 @@ public class EquipmentManager {
     public void createGameItems() {
 
         // Will it be used?
-        if (game.getArena().getSpawn().isSendBow() || game.getArena().getRespawn().isSendBow()) {
+        if (game.getArenaConfig().getSpawn().isSendBow() || game.getArenaConfig().getRespawn().isSendBow()) {
 
             ItemStack bow = new ItemStack(Material.BOW);
             bow.addEnchantment(Enchantment.ARROW_FIRE, 1);
@@ -72,7 +72,7 @@ public class EquipmentManager {
         }
 
         // Will it be used?
-        if (game.getArena().getSpawn().isSendPickaxe() || game.getArena().getRespawn().isSendPickaxe()) {
+        if (game.getArenaConfig().getSpawn().isSendPickaxe() || game.getArenaConfig().getRespawn().isSendPickaxe()) {
 
             ItemStack pickaxe = new ItemStack(Material.IRON_PICKAXE);
             ItemMeta pickaxeMeta = pickaxe.getItemMeta();
@@ -93,7 +93,7 @@ public class EquipmentManager {
     public void sendGameItems(Player player, boolean isRespawn) {
 
         if (isRespawn) {
-            if (game.getArena().isKeepInventory()) return;
+            if (game.getArenaConfig().isKeepInventory()) return;
 
         } else {
             // clear inventory
@@ -107,13 +107,13 @@ public class EquipmentManager {
         // send kit items
         if (isRespawn) {
 
-            if (game.getArena().getRespawn().isSendBow()) player.getInventory().addItem(this.customBow);
-            if (game.getArena().getRespawn().isSendPickaxe()) player.getInventory().addItem(this.customPickaxe);
+            if (game.getArenaConfig().getRespawn().isSendBow()) player.getInventory().addItem(this.customBow);
+            if (game.getArenaConfig().getRespawn().isSendPickaxe()) player.getInventory().addItem(this.customPickaxe);
 
         } else {
 
-            if (game.getArena().getSpawn().isSendBow()) player.getInventory().addItem(this.customBow);
-            if (game.getArena().getSpawn().isSendPickaxe()) player.getInventory().addItem(this.customPickaxe);
+            if (game.getArenaConfig().getSpawn().isSendBow()) player.getInventory().addItem(this.customBow);
+            if (game.getArenaConfig().getSpawn().isSendPickaxe()) player.getInventory().addItem(this.customPickaxe);
 
         }
     }

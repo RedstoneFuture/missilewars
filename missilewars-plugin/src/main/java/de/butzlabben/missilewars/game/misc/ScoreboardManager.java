@@ -69,11 +69,11 @@ public class ScoreboardManager {
         team1 = game.getTeamManager().getTeam1();
         team2 = game.getTeamManager().getTeam2();
 
-        if (game.getArena() == null) {
+        if (game.getArenaConfig() == null) {
             // using of placeholders until the arena is not set
             setArenaDisplayName("?");
         } else {
-            setArenaDisplayName(game.getArena().getDisplayName());
+            setArenaDisplayName(game.getArenaConfig().getDisplayName());
         }
 
         // register Scoreboard

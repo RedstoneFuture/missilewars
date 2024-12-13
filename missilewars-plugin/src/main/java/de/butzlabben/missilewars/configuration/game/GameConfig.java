@@ -22,7 +22,7 @@ import com.google.gson.annotations.SerializedName;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.arena.modules.AreaConfig;
-import de.butzlabben.missilewars.configuration.arena.Arena;
+import de.butzlabben.missilewars.configuration.arena.ArenaConfig;
 import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.game.enums.JoinIngameBehavior;
 import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
@@ -87,7 +87,7 @@ public class GameConfig {
         return Bukkit.getWorlds().get(0);
     }
 
-    public List<Arena> getArenas() {
+    public List<ArenaConfig> getArenas() {
         return possibleArenas
                 .stream()
                 .map(Arenas::getFromName)

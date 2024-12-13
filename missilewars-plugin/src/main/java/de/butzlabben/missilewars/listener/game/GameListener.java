@@ -70,7 +70,7 @@ public class GameListener extends GameBoundListener {
         if (!isInGameWorld(event.getLocation())) return;
 
         if (event.getEntity().getType() != EntityType.FIREBALL) return;
-        if (getGame().getArena().getFireballConfig().isDestroysPortal()) return;
+        if (getGame().getArenaConfig().getFireballConfig().isDestroysPortal()) return;
 
         event.blockList().removeIf(b -> b.getType() == Material.NETHER_PORTAL);
     }
@@ -103,7 +103,7 @@ public class GameListener extends GameBoundListener {
             event.setCancelled(true);
 
             // Can missiles only be spawned if the item interaction was performed on a block (no air)?
-            boolean isOnlyBlockPlaceable = getGame().getArena().getMissileConfig().isOnlyBlockPlaceable();
+            boolean isOnlyBlockPlaceable = getGame().getArenaConfig().getMissileConfig().isOnlyBlockPlaceable();
             if (isOnlyBlockPlaceable) {
                 if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
             }
@@ -139,7 +139,7 @@ public class GameListener extends GameBoundListener {
             // or a projectile hit before.
             if (!snowball.isDead()) getGame().spawnShield(shooter, snowball);
             
-        }, getGame().getArena().getShieldConfig().getFlyTime());
+        }, getGame().getArenaConfig().getShieldConfig().getFlyTime());
     }
 
     @EventHandler
@@ -193,12 +193,12 @@ public class GameListener extends GameBoundListener {
             getGame().setPlayerAttributes(player);
             getGame().getPlayer(player).getPlayerEquipmentRandomizer().resetPlayerInterval();
 
-            FallProtectionConfig fallProtection = getGame().getArena().getFallProtection();
+            FallProtectionConfig fallProtection = getGame().getArenaConfig().getFallProtection();
             if (fallProtection.isEnabled()) {
                 new RespawnGoldBlock(player, fallProtection.getDuration(), fallProtection.isMessageOnlyOnStart(), getGame());
             }
         } else {
-            event.setRespawnLocation(getGame().getArena().getSpectatorSpawn());
+            event.setRespawnLocation(getGame().getArenaConfig().getSpectatorSpawn());
         }
     }
 
@@ -228,7 +228,7 @@ public class GameListener extends GameBoundListener {
         }
 
         event.setDeathMessage(null);
-        if (getGame().getArena().isAutoRespawn()) getGame().autoRespawnPlayer(mwPlayer);
+        if (getGame().getArenaConfig().isAutoRespawn()) getGame().autoRespawnPlayer(mwPlayer);
     }
 
     @EventHandler
@@ -304,10 +304,10 @@ public class GameListener extends GameBoundListener {
         if (player.getGameMode() != GameMode.SURVIVAL) return;
 
         int toY = event.getTo().getBlockY();
-        if (toY > getGame().getArena().getMaxMoveHeight()) {
+        if (toY > getGame().getArenaConfig().getMaxMoveHeight()) {
             player.teleport(event.getFrom());
             player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.ARENA_NOT_HIGHER));
-        } else if (toY < getGame().getArena().getDeathHeight()) {
+        } else if (toY < getGame().getArenaConfig().getDeathHeight()) {
             player.setLastDamageCause(new EntityDamageEvent(player, EntityDamageEvent.DamageCause.FALL, 20));
             player.damage(20.0D);
         }

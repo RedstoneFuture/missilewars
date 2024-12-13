@@ -36,7 +36,7 @@ public class GameTimer extends Timer {
     
     public GameTimer(Game game) {
         super(game);
-        seconds = game.getArena().getGameDuration() * 60;
+        seconds = game.getArenaConfig().getGameDuration() * 60;
     }
 
     @Override

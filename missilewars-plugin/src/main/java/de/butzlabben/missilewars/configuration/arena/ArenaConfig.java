@@ -32,7 +32,7 @@ import java.io.IOException;
 
 @Getter
 @ToString
-public class Arena implements Cloneable {
+public class ArenaConfig implements Cloneable {
 
     // The values defined here are only valid if there is no Config yet.
     private String name = "arena0";
@@ -74,14 +74,14 @@ public class Arena implements Cloneable {
     @Setter private transient GameArea area;
     @Setter private transient File file;
 
-    public Arena() {
+    public ArenaConfig() {
 
     }
     
     @Override
-    public Arena clone() {
+    public ArenaConfig clone() {
         try {
-            Arena clone = (Arena) super.clone();
+            ArenaConfig clone = (ArenaConfig) super.clone();
             clone.spectatorSpawn = spectatorSpawn.clone();
             clone.team1Spawn = team1Spawn.clone();
             clone.team2Spawn = team2Spawn.clone();

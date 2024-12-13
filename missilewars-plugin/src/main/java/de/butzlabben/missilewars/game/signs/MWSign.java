@@ -99,7 +99,7 @@ public class MWSign {
                     break;
                 case INGAME:
                 case END:
-                    name = game.getArena().getDisplayName();
+                    name = game.getArenaConfig().getDisplayName();
                     break;
             }
         }

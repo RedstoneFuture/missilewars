@@ -200,8 +200,8 @@ public class PlayerListener implements Listener {
         Logger.DEBUG.log("Team 1: " + game.getTeamManager().getTeam1());
         Logger.DEBUG.log("Team 2: " + game.getTeamManager().getTeam2());
 
-        if (game.getArena() != null) {
-            Logger.DEBUG.log("Arena: " + game.getArena().getDisplayName());
+        if (game.getArenaConfig() != null) {
+            Logger.DEBUG.log("Arena: " + game.getArenaConfig().getDisplayName());
         } else {
             Logger.DEBUG.log("Arena: not yet selected (Map Voting)");
         }
