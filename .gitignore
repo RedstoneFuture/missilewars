@@ -1,5 +1,12 @@
-# Maven
+# --------------------------------------------------------
+# Custom '.gitignore' Template v. 0.1
+# --------------------------------------------------------
+
+# === Maven Specific ===
+# Target directory where compiled classes and build artifacts are stored
 target/
+
+# Temporary files created during Maven builds
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup
@@ -7,18 +14,44 @@ pom.xml.next
 release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
+
+# Maven wrapper binary (should not be committed, it can be downloaded)
+.mvn/wrapper/maven-wrapper.jar
+
+# Timing properties from Maven builds
 .mvn/timing.properties
 
-# Eclipse
-bin/
-.settings
-.project
-.classpath
+# === IDE Specific ===
+# IntelliJ IDEA project files and configurations
+.idea/          # IntelliJ IDEA project folder (includes settings, caches, etc.)
+*.iml           # IntelliJ module files
 
-# IntelliJ
-out/
-.idea/
-*.iml
+# Eclipse project files
+.settings/      # Eclipse settings folder
+.classpath      # Eclipse classpath configuration
+.project        # Eclipse project configuration
 
-# Misc
+# === Operating System Specific ===
+# macOS Finder metadata files
 .DS_Store
+
+# Windows Thumbs.db cache
+Thumbs.db
+
+# === Log and Backup Files ===
+# Logs and temporary files
+*.log           # Log files
+*.bak           # Backup files
+*.swp           # Swap files created by editors
+
+# === Build Tools ===
+# Gradle build folder
+build/
+
+# === Java Generated Files ===
+# JAR files (compiled Java libraries)
+*.jar
+# WAR files (web application archives)
+*.war
+# EAR files (enterprise application archives)
+*.ear
