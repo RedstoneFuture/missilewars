@@ -137,7 +137,6 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.5.2</version>
                 <configuration>
-                    <dependencyReducedPomLocation>${project.build.directory}/dependency-reduced-pom.xml</dependencyReducedPomLocation>
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
