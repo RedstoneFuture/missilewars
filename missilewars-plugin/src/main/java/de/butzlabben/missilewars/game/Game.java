@@ -72,15 +72,15 @@ import java.util.function.Consumer;
  */
 
 @Getter
-@ToString(of = {"gameWorld", "players", "lobby", "arena", "state"})
+@ToString(of = {"state", "gameConfig", "players", "gameWorld", "gameArea"})
 public class Game {
 
     @Setter private GameState state = GameState.LOBBY;
+    private final GameConfig gameConfig;
     private static final Map<String, Integer> cycles = new HashMap<>();
     private static int fights = 0;
     private final Map<UUID, MWPlayer> players = new HashMap<>();
     private final MapVoting mapVoting = new MapVoting(this);
-    private final GameConfig gameConfig;
     private final Map<UUID, BukkitTask> playerTasks = new HashMap<>();
     private final List<Location> portalBlocks = new ArrayList<>();
     private TeamManager teamManager;
@@ -99,30 +99,30 @@ public class Game {
     private TaskManager taskManager;
     private int remainingGameDuration;
     
-    public Game(GameConfig gameConfig) {
-        Logger.BOOT.log("Loading lobby \"" + gameConfig.getName() + "\".");
-        this.gameConfig = gameConfig;
+    public Game(GameConfig game) {
+        Logger.BOOT.log("Loading game \"" + game.getName() + "\".");
+        this.gameConfig = game;
 
-        if (gameConfig.getBukkitWorld() == null) {
-            Logger.ERROR.log("Lobby world \"" + gameConfig.getName() + "\" must not be null");
+        if (gameConfig.getLobbyConfig().getBukkitWorld() == null) {
+            Logger.ERROR.log("Lobby world of the game \"" + gameConfig.getName() + "\" can not be null.");
             return;
         }
 
         try {
-            Serializer.setWorldAtAllLocations(gameConfig, gameConfig.getBukkitWorld());
+            Serializer.setWorldAtAllLocations(gameConfig, gameConfig.getLobbyConfig().getBukkitWorld());
         } catch (Exception exception) {
-            Logger.ERROR.log("Could not inject world object at lobby \"" + gameConfig.getName() + "\".");
+            Logger.ERROR.log("Could not inject world object from game \"" + gameConfig.getName() + "\".");
             exception.printStackTrace();
             return;
         }
 
         if (gameConfig.getPossibleArenas().isEmpty()) {
-            Logger.ERROR.log("At least one valid arena must be set at lobby \"" + gameConfig.getName() + "\".");
+            Logger.ERROR.log("No valid arena found in game \"" + gameConfig.getName() + "\".");
             return;
         }
 
         if (gameConfig.getPossibleArenas().stream().noneMatch(Arenas::existsArena)) {
-            Logger.ERROR.log("None of the specified arenas match a real arena for the lobby \"" + gameConfig.getName() + "\".");
+            Logger.ERROR.log("None of the specified arenas match a real arena for the game \"" + gameConfig.getName() + "\".");
             return;
         }
         
@@ -137,14 +137,14 @@ public class Game {
         taskManager = new TaskManager(this);
         taskManager.stopTimer();
         updateGameListener(new LobbyListener(this));
-        taskManager.setTimer(new LobbyTimer(this, gameConfig.getLobbyTime()));
+        taskManager.setTimer(new LobbyTimer(this, gameConfig.getLobbyConfig().getLobbyTime()));
         taskManager.runTimer(0, 20);
         state = GameState.LOBBY;
 
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> applyForAllPlayers(player -> gameJoinManager.runTeleportEventForPlayer(player)), 2);
 
         if (Config.isSetup()) {
-            Logger.WARN.log("Did not fully initialize lobby \"" + gameConfig.getName() + "\" as the plugin is in setup mode");
+            Logger.WARN.log("Did not fully initialize game \"" + gameConfig.getName() + "\" as the plugin is in setup mode");
             return;
         }
 
@@ -154,21 +154,21 @@ public class Game {
         
         // choose the game arena
         if (gameConfig.getMapChooseProcedure() == MapChooseProcedure.FIRST) {
-            setArenaConfig(gameConfig.getArenas().get(0));
+            setArena(gameConfig.getArenas().get(0));
             prepareGame();
 
         } else if (gameConfig.getMapChooseProcedure() == MapChooseProcedure.MAPCYCLE) {
             final int lastMapIndex = cycles.getOrDefault(gameConfig.getName(), -1);
-            List<ArenaConfig> arenaConfigs = gameConfig.getArenas();
-            int index = lastMapIndex >= arenaConfigs.size() - 1 ? 0 : lastMapIndex + 1;
+            List<ArenaConfig> arenas = gameConfig.getArenas();
+            int index = lastMapIndex >= arenas.size() - 1 ? 0 : lastMapIndex + 1;
             cycles.put(gameConfig.getName(), index);
-            setArenaConfig(arenaConfigs.get(index));
+            setArena(arenas.get(index));
             prepareGame();
 
         } else if (gameConfig.getMapChooseProcedure() == MapChooseProcedure.MAPVOTING) {
             if (mapVoting.onlyOneArenaFound()) {
-                setArenaConfig(gameConfig.getArenas().get(0));
-                Logger.WARN.log("Only one arena was found for the lobby \"" + gameConfig.getName() + "\". The configured map voting was skipped.");
+                setArena(gameConfig.getArenas().get(0));
+                Logger.WARN.log("Only one arena was found for the game \"" + gameConfig.getName() + "\". The configured map voting was skipped.");
                 prepareGame();
             } else {
                 mapVoting.startVote();
@@ -218,7 +218,7 @@ public class Game {
     }
 
     private void updateMOTD() {
-        if (!Config.isMultipleLobbies()) {
+        if (!Config.useMultipleGames()) {
             MotdManager.getInstance().updateMOTD(this);
         }
     }
@@ -520,7 +520,7 @@ public class Game {
         fb.setBounce(false);
     }
 
-    public void setArenaConfig(ArenaConfig arenaConfig) {
+    public void setArena(ArenaConfig arenaConfig) {
         if (this.arenaConfig != null) {
             throw new IllegalStateException("Arena already set");
         }
@@ -736,7 +736,7 @@ public class Game {
     }
 
     public void teleportToLobbySpawn(Player player) {
-        Teleport.teleportSafely(player, gameConfig.getSpawnPoint());
+        Teleport.teleportSafely(player, gameConfig.getLobbyConfig().getSpawnPoint());
     }
 
     public void teleportToArenaSpectatorSpawn(Player player) {
@@ -744,7 +744,7 @@ public class Game {
     }
 
     public void teleportToAfterGameSpawn(Player player) {
-        Teleport.teleportSafely(player, gameConfig.getAfterGameSpawn());
+        Teleport.teleportSafely(player, gameConfig.getLobbyConfig().getAfterGameSpawn());
     }
     
     /**

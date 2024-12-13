@@ -164,7 +164,7 @@ public class MapVoting {
 
         ArenaConfig arenaConfig = game.getMapVoting().getVotedArena();
         if (arenaConfig == null) throw new IllegalStateException("Voted arena is not present");
-        game.setArenaConfig(arenaConfig);
+        game.setArena(arenaConfig);
 
         game.broadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.VOTE_FINISHED)
                 .replace("%map%", game.getArenaConfig().getDisplayName()));
