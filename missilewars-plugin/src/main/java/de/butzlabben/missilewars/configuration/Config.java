@@ -79,9 +79,9 @@ public class Config {
 
         cfg.addDefault("arenas.folder", "plugins/MissileWars/arenas");
 
-        cfg.addDefault("lobbies.multiple_lobbies", false);
-        cfg.addDefault("lobbies.folder", "plugins/MissileWars/lobbies");
-        cfg.addDefault("lobbies.default_lobby", "lobby0.yml");
+        cfg.addDefault("games.multiple_games", false);
+        cfg.addDefault("games.folder", "plugins/MissileWars/games");
+        cfg.addDefault("games.default_game", "game0.yml");
 
         cfg.addDefault("missiles.folder", "plugins/MissileWars/schematics/missiles");
         cfg.addDefault("shields.folder", "plugins/MissileWars/schematics/shields");
@@ -286,16 +286,16 @@ public class Config {
         return cfg.getString("arenas.folder");
     }
 
-    public static boolean isMultipleLobbies() {
-        return cfg.getBoolean("lobbies.multiple_lobbies");
+    public static boolean useMultipleGames() {
+        return cfg.getBoolean("games.multiple_games");
     }
 
-    public static String getLobbiesFolder() {
-        return cfg.getString("lobbies.folder");
+    public static String getGamesFolder() {
+        return cfg.getString("games.folder");
     }
 
-    public static String getDefaultLobby() {
-        return cfg.getString("lobbies.default_lobby");
+    public static String getDefaultGame() {
+        return cfg.getString("games.default_game");
     }
 
     public static String getMissilesFolder() {
