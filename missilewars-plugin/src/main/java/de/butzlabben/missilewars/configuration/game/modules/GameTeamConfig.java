@@ -30,7 +30,7 @@ import java.util.Map;
 @Getter
 @ToString
 @AllArgsConstructor
-public class GameTeamConfiguration implements ConfigurationSerializable {
+public class GameTeamConfig implements ConfigurationSerializable {
 
     private String name;
     private String color;
