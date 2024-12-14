@@ -141,10 +141,10 @@ public class MapVoting {
     }
 
     /**
-     * This method checks if there is only one arena map available for this lobby and 
+     * This method checks if there is only one arena map available for this game and 
      * therefore no map vote is necessary.
      * 
-     * @return (Boolean) true, if only one map exists for this lobby
+     * @return (Boolean) true, if only one map exists for this game
      */
     public boolean onlyOneArenaFound() {
         return (game.getGameConfig().getArenas().size() == 1);
