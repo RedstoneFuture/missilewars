@@ -241,7 +241,7 @@ public class SetupCommands extends BaseCommand {
                 if (!senderIsPlayer(sender)) return;
                 if (!isValidGame(args)) return;
 
-                game.getGameConfig().setSpawnPoint(player.getLocation());
+                game.getGameConfig().getLobbyConfig().setSpawnPoint(player.getLocation());
                 game.getGameConfig().updateConfig();
                 player.sendMessage(PluginMessages.getPrefix() + "§fSet new 'spawnPoint' to " + player.getLocation() + ".");
             }
@@ -252,7 +252,7 @@ public class SetupCommands extends BaseCommand {
                 if (!senderIsPlayer(sender)) return;
                 if (!isValidGame(args)) return;
 
-                player.teleport(game.getGameConfig().getSpawnPoint());
+                player.teleport(game.getGameConfig().getLobbyConfig().getSpawnPoint());
                 player.sendMessage(PluginMessages.getPrefix() + "§fTeleported to 'spawnPoint'.");
             }
 
@@ -267,7 +267,7 @@ public class SetupCommands extends BaseCommand {
                 if (!senderIsPlayer(sender)) return;
                 if (!isValidGame(args)) return;
 
-                game.getGameConfig().setAfterGameSpawn(player.getLocation());
+                game.getGameConfig().getLobbyConfig().setAfterGameSpawn(player.getLocation());
                 game.getGameConfig().updateConfig();
                 player.sendMessage(PluginMessages.getPrefix() + "§fSet new 'afterGameSpawn' to " + player.getLocation() + ".");
             }
@@ -278,7 +278,7 @@ public class SetupCommands extends BaseCommand {
                 if (!senderIsPlayer(sender)) return;
                 if (!isValidGame(args)) return;
 
-                player.teleport(game.getGameConfig().getAfterGameSpawn());
+                player.teleport(game.getGameConfig().getLobbyConfig().getAfterGameSpawn());
                 player.sendMessage(PluginMessages.getPrefix() + "§fTeleported to 'afterGameSpawn'.");
             }
 
@@ -297,7 +297,7 @@ public class SetupCommands extends BaseCommand {
                     if (!isValidGame(args)) return;
 
                     game.getGameConfig().getArea().setPosition1(player.getLocation());
-                    game.getGameConfig().setAreaConfig(game.getGameConfig().getArea().getAreaConfiguration());
+                    game.getGameConfig().getLobbyConfig().setAreaConfig(game.getGameConfig().getArea().getAreaConfiguration());
                     game.getGameConfig().updateConfig();
                     player.sendMessage(PluginMessages.getPrefix() + "§fSet new 'lobby area' (position 1) to " + player.getLocation() + ".");
                 }
@@ -324,7 +324,7 @@ public class SetupCommands extends BaseCommand {
                     if (!isValidGame(args)) return;
 
                     game.getGameConfig().getArea().setPosition2(player.getLocation());
-                    game.getGameConfig().setAreaConfig(game.getGameConfig().getArea().getAreaConfiguration());
+                    game.getGameConfig().getLobbyConfig().setAreaConfig(game.getGameConfig().getArea().getAreaConfiguration());
                     game.getGameConfig().updateConfig();
                     player.sendMessage(PluginMessages.getPrefix() + "§fSet new 'lobby area' (position 2) to " + player.getLocation() + ".");
                 }
