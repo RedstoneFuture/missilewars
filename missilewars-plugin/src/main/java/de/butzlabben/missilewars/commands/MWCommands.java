@@ -31,6 +31,7 @@ import de.butzlabben.missilewars.game.enums.TeamType;
 import de.butzlabben.missilewars.game.enums.VoteState;
 import de.butzlabben.missilewars.game.schematics.objects.Missile;
 import de.butzlabben.missilewars.game.timer.LobbyTimer;
+import de.butzlabben.missilewars.initialization.ConfigLoader;
 import de.butzlabben.missilewars.player.MWPlayer;
 import de.butzlabben.missilewars.util.MaterialUtil;
 import org.bukkit.Material;
@@ -415,8 +416,7 @@ public class MWCommands extends BaseCommand {
             return;
         }
 
-        Config.load();
-        PluginMessages.load();
+        ConfigLoader.loadConfigs();
         Arenas.load();
 
         player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.DEBUG_RELOAD_CONFIG));
