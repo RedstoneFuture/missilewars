@@ -247,7 +247,7 @@ public class ScoreboardManager {
         text = text.replace("%team1_amount%", Integer.toString(team1.getMembers().size()));
         text = text.replace("%team2_amount%", Integer.toString(team2.getMembers().size()));
 
-        text = text.replace("%lobby_name%", game.getGameConfig().getDisplayName());
+        text = text.replace("%game_name%", game.getGameConfig().getDisplayName());
         text = text.replace("%arena_name%", arenaDisplayName);
 
         text = text.replace("%time%", Integer.toString(game.getGameDuration()));

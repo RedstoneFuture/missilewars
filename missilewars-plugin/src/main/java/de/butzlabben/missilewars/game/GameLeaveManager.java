@@ -77,7 +77,7 @@ public class GameLeaveManager {
         player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
         
         if (game.getState() == GameState.LOBBY) {
-            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.LOBBY_LEFT).replace("%lobby_name%", game.getGameConfig().getDisplayName()));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.LOBBY_LEFT).replace("%game_name%", game.getGameConfig().getDisplayName()));
         } else if (game.getState() == GameState.INGAME) {
             player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_LEFT).replace("%arena_name%", game.getArenaConfig().getDisplayName()));
         }
