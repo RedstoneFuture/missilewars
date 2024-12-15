@@ -54,7 +54,7 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
     @Override
     @NotNull
     public String getVersion() {
-        return "0.0.2";
+        return "0.0.3";
     }
 
     // This is required or else PlaceholderAPI will unregister the expansion on reload
