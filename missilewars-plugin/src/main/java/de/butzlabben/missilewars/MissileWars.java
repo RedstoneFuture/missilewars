@@ -21,32 +21,25 @@ package de.butzlabben.missilewars;
 import co.aikar.commands.PaperCommandManager;
 import de.butzlabben.missilewars.commands.*;
 import de.butzlabben.missilewars.configuration.Config;
-import de.butzlabben.missilewars.configuration.PluginMessages;
-import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.game.misc.MissileWarsPlaceholder;
 import de.butzlabben.missilewars.game.schematics.paste.FawePasteProvider;
 import de.butzlabben.missilewars.game.schematics.paste.Paster;
-import de.butzlabben.missilewars.game.signs.SignUpdateRunnable;
 import de.butzlabben.missilewars.game.signs.SignRepository;
 import de.butzlabben.missilewars.game.stats.StatsFetcher;
+import de.butzlabben.missilewars.initialization.FileManager;
+import de.butzlabben.missilewars.initialization.GamesInitialization;
 import de.butzlabben.missilewars.listener.PlayerListener;
 import de.butzlabben.missilewars.listener.SignListener;
-import de.butzlabben.missilewars.player.PlayerData;
 import de.butzlabben.missilewars.util.ConnectionHolder;
 import de.butzlabben.missilewars.util.MoneyUtil;
-import de.butzlabben.missilewars.util.SetupUtil;
 import de.butzlabben.missilewars.util.stats.PreFetcher;
 import de.butzlabben.missilewars.util.version.VersionUtil;
 import lombok.Getter;
-import org.apache.commons.io.FileUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.util.Date;
 
 /**
@@ -82,57 +75,38 @@ public class MissileWars extends JavaPlugin {
         sendPluginInfo();
 
         Logger.BOOT.log("Loading properties...");
-
-        // delete the old MissileWars (temporary) arena world from the last server session, if still exists
-        deleteTempWorlds();
-
-        Config.load();
-        PluginMessages.load();
         
-        new File(Config.getGamesFolder()).mkdirs();
+        FileManager.setupRoutine();
         
-        SetupUtil.saveDefaultFiles(Config.getMissilesFolder(), "missiles.zip", this);
-        SetupUtil.saveDefaultFiles(Config.getShieldsFolder(), "shields.zip", this);
+        signRepository = SignRepository.load();
         
-        this.signRepository = SignRepository.load();
-
         registerEvents();
         registerCommands();
 
-        Arenas.load();
-
-        GameManager.getInstance().loadGamesOnStartup();
-
+        // special Dependency-Management:
         new Metrics(this, 3749);
-        
-        GameManager.getInstance().getGames().values().forEach(game -> {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (!game.isIn(player.getLocation())) continue;
-                game.teleportToLobbySpawn(player);
-            }
-        });
-        
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, new SignUpdateRunnable(), 20, 20 * 10);
-
-        if (Config.isPrefetchPlayers()) {
-            PreFetcher.preFetchPlayers(new StatsFetcher(new Date(0L), ""));
-        }
         
         initialWeSupport();
         initialPapiSupport();
         MoneyUtil.giveMoney(null, -1);
         
-        ConfigurationSerialization.registerClass(PlayerData.class);
-
+        GamesInitialization.initialize();
+        
+        // Warm-up for Stats:
+        if (Config.isPrefetchPlayers()) {
+            PreFetcher.preFetchPlayers(new StatsFetcher(new Date(0L), ""));
+        }
+        
         endTime = System.currentTimeMillis();
         Logger.SUCCESS.log("MissileWars was enabled in " + (endTime - startTime) + "ms");
+        
     }
 
     @Override
     public void onDisable() {
+        
         GameManager.getInstance().disableAll();
-        deleteTempWorlds();
-
+        FileManager.shotDownRoutine();
         ConnectionHolder.close();
     }
     
@@ -191,23 +165,6 @@ public class MissileWars extends JavaPlugin {
         commandManager.registerCommand(new SetupCommands());
     }
     
-    /**
-     * This methode deletes the temp arena worlds of the MW game.
-     */
-    private void deleteTempWorlds() {
-        File[] dirs = Bukkit.getWorldContainer().listFiles();
-        if (dirs == null) return;
-
-        for (File dir : dirs) {
-            if (dir.getName().startsWith("mw-")) {
-                try {
-                    FileUtils.deleteDirectory(dir);
-                } catch (Exception ignored) {
-                }
-            }
-        }
-    }
-
     /**
      * This method sends information about the version, version
      * warnings (if necessary) and authors in the console.
