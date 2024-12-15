@@ -42,7 +42,7 @@ public class MissileWarsPlaceholder extends PlaceholderExpansion {
     @Override
     @NotNull
     public String getAuthor() {
-        return "Daniel Nägele";
+        return "RedstoneFuture";
     }
 
     @Override
