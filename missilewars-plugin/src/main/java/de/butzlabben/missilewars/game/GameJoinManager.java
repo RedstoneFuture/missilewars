@@ -286,7 +286,7 @@ public class GameJoinManager {
      */
     public void runTeleportEventForPlayer(Player player) {
         Bukkit.getPluginManager().callEvent(new PlayerTeleportEvent(player,
-                Config.getFallbackSpawn(), game.getGameConfig().getSpawnPoint()));
+                Config.getFallbackSpawn(), game.getGameConfig().getLobbyConfig().getSpawnPoint()));
     }
     
 }
