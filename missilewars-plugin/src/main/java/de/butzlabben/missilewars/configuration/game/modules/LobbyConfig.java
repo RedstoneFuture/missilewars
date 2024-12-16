@@ -35,7 +35,6 @@ import org.bukkit.World;
 @RequiredArgsConstructor
 public class LobbyConfig {
     
-    private String name = "arena0";
     @SerializedName("world") private String worldName = getBukkitDefaultWorld().getName();
     @SerializedName("lobby_time") private int lobbyTime = 60;
     @Setter @SerializedName("spawn_point") private Location spawnPoint = Config.getFallbackSpawn().add(40, 0, 0);
@@ -50,7 +49,7 @@ public class LobbyConfig {
         World world = Bukkit.getWorld(worldName);
         if (world == null) {
             Logger.ERROR.log("Could not find any world with the name: " + worldName);
-            Logger.ERROR.log("Please correct this in the configuration of lobby \"" + name + "\"");
+            Logger.ERROR.log("Please correct this in the configuration.");
         }
         return world;
     }
