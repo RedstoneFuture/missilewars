@@ -82,14 +82,14 @@ public class SignListener implements Listener {
         * For the sake of completeness, the color is generally removed here so that the string search 
         * with the Lobby name always works correctly.
          */
-        String lobbyName = ChatColor.stripColor(event.getLine(1));
-        if ((lobbyName == null) || (lobbyName.isBlank())) {
+        String gameName = ChatColor.stripColor(event.getLine(1));
+        if ((gameName == null) || (gameName.isBlank())) {
             player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.SIGNEDIT_EMPTY_GAME));
             event.setCancelled(true);
             return;
         }
         
-        Game game = GameManager.getInstance().getGame(lobbyName);
+        Game game = GameManager.getInstance().getGame(gameName);
         if (game != null) {
             
             // Removing old sign entry if exists:
@@ -97,7 +97,7 @@ public class SignListener implements Listener {
             if (sign != null) getSignRepository().getSigns().remove(sign);
             
             // Updating sign content:
-            sign = new MWSign(event.getBlock().getLocation(), lobbyName);
+            sign = new MWSign(event.getBlock().getLocation(), gameName);
             sign.update();
             
             // (Re-)Saving sign in MissileWars in '/data/signs.json':
@@ -107,7 +107,7 @@ public class SignListener implements Listener {
             player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.SIGNEDIT_SIGN_CREATED));
             
         } else {
-            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.SIGNEDIT_GAME_NOT_FOUND).replace("%input%", lobbyName));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.SIGNEDIT_GAME_NOT_FOUND).replace("%input%", gameName));
             event.setCancelled(true);
             
         }
