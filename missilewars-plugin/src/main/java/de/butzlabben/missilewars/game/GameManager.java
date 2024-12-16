@@ -79,10 +79,10 @@ public class GameManager {
             Logger.WARN.log("No game-configs found. Creating default one.");
             File gamesFolder = new File(Config.getGamesFolder());
             gamesFolder.mkdirs();
-            File defaultGame = new File(gamesFolder, Config.getDefaultGame());
+            File defaultConfig = new File(gamesFolder, Config.getDefaultGame());
             try {
-                defaultGame.createNewFile();
-                Serializer.serialize(defaultGame, new GameConfig());
+                defaultConfig.createNewFile();
+                Serializer.serialize(defaultConfig, new GameConfig());
             } catch (IOException exception) {
                 Logger.ERROR.log("Could not create default arena config");
                 Logger.ERROR.log("As there are no arenas present, the plugin is shutting down");
@@ -90,7 +90,7 @@ public class GameManager {
                 Bukkit.getPluginManager().disablePlugin(MissileWars.getInstance());
                 return;
             }
-            gameFiles = new File[] {defaultGame};
+            gameFiles = new File[] {defaultConfig};
         }
 
         for (File config : gameFiles) {

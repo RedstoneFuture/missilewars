@@ -48,10 +48,10 @@ public class Arenas {
         // Get all arena files or create a new one
         File[] arenaFiles = folder.listFiles();
         if (arenaFiles.length == 0) {
-            File defaultArena = new File(folder, "arena0.yml");
+            File defaultConfig = new File(folder, "arena0.yml");
             try {
-                defaultArena.createNewFile();
-                Serializer.serialize(defaultArena, new ArenaConfig());
+                defaultConfig.createNewFile();
+                Serializer.serialize(defaultConfig, new ArenaConfig());
             } catch (IOException exception) {
                 Logger.ERROR.log("Could not create default arena config");
                 Logger.ERROR.log("As there are no arenas present, the plugin is shutting down");
@@ -59,7 +59,7 @@ public class Arenas {
                 Bukkit.getPluginManager().disablePlugin(MissileWars.getInstance());
                 return;
             }
-            arenaFiles = new File[] {defaultArena};
+            arenaFiles = new File[] {defaultConfig};
         }
 
         for (File config : arenaFiles) {
