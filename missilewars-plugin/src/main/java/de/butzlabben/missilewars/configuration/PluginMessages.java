@@ -191,8 +191,8 @@ public class PluginMessages {
 
         SIGNEDIT_SIGN_CREATED("signedit.sign_created", "&7Sign was successfully created and connected."),
         SIGNEDIT_SIGN_REMOVED("signedit.sign_removed", "&7You have successfully removed this MissileWars sign."),
-        SIGNEDIT_EMPTY_LOBBY("signedit.empty_lobby", "&cPlease specify the target lobby name in the second line."),
-        SIGNEDIT_LOBBY_NOT_FOUND("signedit.lobby_not_found", "&cCould not find lobby \"%input%\"."),
+        SIGNEDIT_EMPTY_GAME("signedit.empty_game", "&cPlease specify the target game name in the second line."),
+        SIGNEDIT_GAME_NOT_FOUND("signedit.game_not_found", "&cCould not find game \"%input%\"."),
         SIGNEDIT_SIGN_REMOVE_DESC("signedit.sign_remove_desc", "&cThis shield is locked by the MissileWars plugin. Sneak while you are destroying the shield to remove it."),
 
         GAME_STATE_NO_GAME("game_state.no_game", "&cNo Game."),

@@ -84,7 +84,7 @@ public class SignListener implements Listener {
          */
         String lobbyName = ChatColor.stripColor(event.getLine(1));
         if ((lobbyName == null) || (lobbyName.isBlank())) {
-            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.SIGNEDIT_EMPTY_LOBBY));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.SIGNEDIT_EMPTY_GAME));
             event.setCancelled(true);
             return;
         }
@@ -107,7 +107,7 @@ public class SignListener implements Listener {
             player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.SIGNEDIT_SIGN_CREATED));
             
         } else {
-            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.SIGNEDIT_LOBBY_NOT_FOUND).replace("%input%", lobbyName));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.SIGNEDIT_GAME_NOT_FOUND).replace("%input%", lobbyName));
             event.setCancelled(true);
             
         }

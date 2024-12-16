@@ -175,7 +175,7 @@ public class Config {
 
             cfg.addDefault(gameJoinMenu + ".items.mapVote_active.priority", 1);
             cfg.addDefault(gameJoinMenu + ".items.mapVote_active.view_requirement.type", "string equals");
-            cfg.addDefault(gameJoinMenu + ".items.mapVote_active.view_requirement.input", "%missilewars_lobby_mapvote_state_this%");
+            cfg.addDefault(gameJoinMenu + ".items.mapVote_active.view_requirement.input", "%missilewars_game_mapvote_state_this%");
             cfg.addDefault(gameJoinMenu + ".items.mapVote_active.view_requirement.output", "RUNNING");
             
             cfg.set(gameJoinMenu + ".items.mapVote_active.lore", new ArrayList<String>() {{
@@ -216,11 +216,11 @@ public class Config {
             cfg.addDefault(gameJoinMenu + ".items.areaInfo.priority", 0);
 
             cfg.set(gameJoinMenu + ".items.areaInfo.lore", new ArrayList<String>() {{
-                add("&e> &fLobby: &7%missilewars_lobby_displayname_this%");
+                add("&e> &fLobby: &7%missilewars_game_displayname_this%");
                 add("&e> &fArena: &7%missilewars_arena_displayname_this%");
-                add("&e> &fGame-Time: &7%missilewars_lobby_gameduration_this% min");
+                add("&e> &fGame-Time: &7%missilewars_game_gameduration_this% min");
                 add("&e> &fMissiles: &7%missilewars_arena_missileamount_this%x");
-                add("&e> &fArena-Size: &7%missilewars_lobby_arenasize_X_this% x %missilewars_lobby_arenasize_Z_this% blocks");
+                add("&e> &fArena-Size: &7%missilewars_game_arenasize_X_this% x %missilewars_game_arenasize_Z_this% blocks");
             }});
             
             cfg.set(gameJoinMenu + ".items.areaInfo.left_click_actions", new ArrayList<String>());
