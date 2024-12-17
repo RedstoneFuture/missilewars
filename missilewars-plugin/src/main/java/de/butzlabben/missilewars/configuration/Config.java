@@ -21,10 +21,12 @@ package de.butzlabben.missilewars.configuration;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.game.GameManager;
+import de.butzlabben.missilewars.initialization.ConfigLoader;
+import de.butzlabben.missilewars.initialization.FileManager;
 import de.butzlabben.missilewars.menus.MenuItem;
 import de.butzlabben.missilewars.util.MaterialUtil;
-import de.butzlabben.missilewars.util.SetupUtil;
 import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -39,32 +41,27 @@ import static org.bukkit.Material.*;
  * @since 01.01.2018
  */
 public class Config {
-
-    private static final File DIR = MissileWars.getInstance().getDataFolder();
-    private static final File FILE = new File(DIR, "config.yml");
-    private static YamlConfiguration cfg;
-    private static boolean isNewConfig = false;
+    
+    @Getter private static final File FILE = new File(MissileWars.getInstance().getDataFolder(), "config.yml");
+    @Setter private static YamlConfiguration cfg;
+    
+    private final static boolean isNewConfig = !FILE.exists();
 
     public static void load() {
 
-        // check if the directory and the file exists or create it new
-        isNewConfig = SetupUtil.isNewConfig(DIR, FILE);
-
-        // try to load the config
-        cfg = SetupUtil.getLoadedConfig(FILE);
-
-        // copy the config input
-        cfg.options().copyDefaults(true);
-
-        // validate the config options
+        cfg = ConfigLoader.loadConfigFile(FILE);
+        
+        // Validate the settings and re-save the cleaned config-file.
         addDefaults();
-
-        // re-save the config with only validated options
-        SetupUtil.safeFile(FILE, cfg);
-        cfg = SetupUtil.getLoadedConfig(FILE);
-
+        
+        save();
     }
-
+    
+    public static void save() {
+        FileManager.safeFile(FILE, cfg);
+        cfg = ConfigLoader.getLoadedConfig(FILE);
+    }
+    
     private static void addDefaults() {
         cfg.addDefault("debug", false);
         if (debug()) {
@@ -82,12 +79,12 @@ public class Config {
 
         cfg.addDefault("arenas.folder", "plugins/MissileWars/arenas");
 
-        cfg.addDefault("lobbies.multiple_lobbies", false);
-        cfg.addDefault("lobbies.folder", "plugins/MissileWars/lobbies");
-        cfg.addDefault("lobbies.default_lobby", "lobby0.yml");
+        cfg.addDefault("games.multiple_games", false);
+        cfg.addDefault("games.folder", "plugins/MissileWars/games");
+        cfg.addDefault("games.default_game", "game0.yml");
 
-        cfg.addDefault("missiles.folder", "plugins/MissileWars/missiles");
-        cfg.addDefault("shields.folder", "plugins/MissileWars/shields");
+        cfg.addDefault("missiles.folder", "plugins/MissileWars/schematics/missiles");
+        cfg.addDefault("shields.folder", "plugins/MissileWars/schematics/shields");
 
         cfg.addDefault("temp_block.enable", true);
         cfg.addDefault("temp_block.material", NOTE_BLOCK.name());
@@ -178,7 +175,7 @@ public class Config {
 
             cfg.addDefault(gameJoinMenu + ".items.mapVote_active.priority", 1);
             cfg.addDefault(gameJoinMenu + ".items.mapVote_active.view_requirement.type", "string equals");
-            cfg.addDefault(gameJoinMenu + ".items.mapVote_active.view_requirement.input", "%missilewars_lobby_mapvote_state_this%");
+            cfg.addDefault(gameJoinMenu + ".items.mapVote_active.view_requirement.input", "%missilewars_game_mapvote_state_this%");
             cfg.addDefault(gameJoinMenu + ".items.mapVote_active.view_requirement.output", "RUNNING");
             
             cfg.set(gameJoinMenu + ".items.mapVote_active.lore", new ArrayList<String>() {{
@@ -219,11 +216,11 @@ public class Config {
             cfg.addDefault(gameJoinMenu + ".items.areaInfo.priority", 0);
 
             cfg.set(gameJoinMenu + ".items.areaInfo.lore", new ArrayList<String>() {{
-                add("&e> &fLobby: &7%missilewars_lobby_displayname_this%");
+                add("&e> &fLobby: &7%missilewars_game_displayname_this%");
                 add("&e> &fArena: &7%missilewars_arena_displayname_this%");
-                add("&e> &fGame-Time: &7%missilewars_lobby_gameduration_this% min");
+                add("&e> &fGame-Time: &7%missilewars_game_gameduration_this% min");
                 add("&e> &fMissiles: &7%missilewars_arena_missileamount_this%x");
-                add("&e> &fArena-Size: &7%missilewars_lobby_arenasize_X_this% x %missilewars_lobby_arenasize_Z_this% blocks");
+                add("&e> &fArena-Size: &7%missilewars_game_arenasize_X_this% x %missilewars_game_arenasize_Z_this% blocks");
             }});
             
             cfg.set(gameJoinMenu + ".items.areaInfo.left_click_actions", new ArrayList<String>());
@@ -254,7 +251,7 @@ public class Config {
         cfg.set("fallback_spawn.pitch", spawnLocation.getPitch());
 
         // re-save the config with only validated options
-        SetupUtil.safeFile(FILE, cfg);
+        FileManager.safeFile(FILE, cfg);
     }
     
     public static YamlConfiguration getConfig() {
@@ -289,16 +286,16 @@ public class Config {
         return cfg.getString("arenas.folder");
     }
 
-    public static boolean isMultipleLobbies() {
-        return cfg.getBoolean("lobbies.multiple_lobbies");
+    public static boolean useMultipleGames() {
+        return cfg.getBoolean("games.multiple_games");
     }
 
-    public static String getLobbiesFolder() {
-        return cfg.getString("lobbies.folder");
+    public static String getGamesFolder() {
+        return cfg.getString("games.folder");
     }
 
-    public static String getDefaultLobby() {
-        return cfg.getString("lobbies.default_lobby");
+    public static String getDefaultGame() {
+        return cfg.getString("games.default_game");
     }
 
     public static String getMissilesFolder() {
@@ -330,15 +327,15 @@ public class Config {
     }
 
     public static String motdEnded() {
-        return Messages.getConvertedMsg(cfg.getString("motd.ended"));
+        return PluginMessages.getConvertedMsg(cfg.getString("motd.ended"));
     }
 
     public static String motdGame() {
-        return Messages.getConvertedMsg(cfg.getString("motd.ingame"));
+        return PluginMessages.getConvertedMsg(cfg.getString("motd.ingame"));
     }
 
     public static String motdLobby() {
-        return Messages.getConvertedMsg(cfg.getString("motd.lobby"));
+        return PluginMessages.getConvertedMsg(cfg.getString("motd.lobby"));
     }
 
     public static boolean motdEnabled() {
@@ -402,11 +399,11 @@ public class Config {
     }
 
     public static String getScoreboardTitle() {
-        return Messages.getConvertedMsg(cfg.getString("sidebar.title"));
+        return PluginMessages.getConvertedMsg(cfg.getString("sidebar.title"));
     }
 
     public static String getScoreboardMembersStyle() {
-        return Messages.getConvertedMsg(cfg.getString("sidebar.member_list_style"));
+        return PluginMessages.getConvertedMsg(cfg.getString("sidebar.member_list_style"));
     }
 
     public static int getScoreboardMembersMax() {
@@ -414,7 +411,7 @@ public class Config {
     }
     
     public static List<String> getScoreboardEntries() {
-        return Messages.getConvertedMsgList(cfg.getStringList("sidebar.entries"));
+        return PluginMessages.getConvertedMsgList(cfg.getStringList("sidebar.entries"));
     }
     
     public static int getActionbarForSpecDelay() {
@@ -422,7 +419,7 @@ public class Config {
     }
     
     public static String[] getActionbarForSpecEntries() {
-        return Messages.getConvertedMsgArray(cfg.getStringList("actionbar_msg.spectator.messages"));
+        return PluginMessages.getConvertedMsgArray(cfg.getStringList("actionbar_msg.spectator.messages"));
     }
     
     public static Map<Integer, Map<Integer, MenuItem>> getGameJoinMenuItems() {
@@ -437,12 +434,12 @@ public class Config {
             ConfigurationSection cfg = Config.cfg.getConfigurationSection(gameJoinMenu + ".items." + item);
             MenuItem menuItem = new MenuItem(cfg.getInt("slot"), cfg.getInt("priority"));
 
-            menuItem.setDisplayName(Messages.getConvertedMsg(cfg.getString("display_name")));
+            menuItem.setDisplayName(PluginMessages.getConvertedMsg(cfg.getString("display_name")));
             menuItem.setMaterialName(cfg.getString("material"));
             menuItem.setItemRequirement(cfg);
-            menuItem.setLoreList(Messages.getConvertedMsgList(cfg.getStringList("lore")));
-            menuItem.setLeftClickActions(new ActionSet(Messages.getConvertedMsgList(cfg.getStringList("left_click_actions"))));
-            menuItem.setRightClickActions(new ActionSet(Messages.getConvertedMsgList(cfg.getStringList("right_click_actions"))));
+            menuItem.setLoreList(PluginMessages.getConvertedMsgList(cfg.getStringList("lore")));
+            menuItem.setLeftClickActions(new ActionSet(PluginMessages.getConvertedMsgList(cfg.getStringList("left_click_actions"))));
+            menuItem.setRightClickActions(new ActionSet(PluginMessages.getConvertedMsgList(cfg.getStringList("right_click_actions"))));
             
             int slot = menuItem.getSlot();
             Map<Integer, MenuItem> itemsInSlot = new HashMap<>();
@@ -461,7 +458,7 @@ public class Config {
     }
     
     public static String getTeamSelectionMenuTitle() {
-        return Messages.getConvertedMsg(cfg.getString("menus.inventory_menu.team_selection_menu.title"));
+        return PluginMessages.getConvertedMsg(cfg.getString("menus.inventory_menu.team_selection_menu.title"));
     }
     
     @Getter
@@ -475,12 +472,12 @@ public class Config {
         }
         
         public String getMessage() {
-            return Messages.getConvertedMsg(cfg.getString(getPath()));
+            return PluginMessages.getConvertedMsg(cfg.getString(getPath()));
         }
     }
     
     public static String getMapVoteMenuTitle() {
-        return Messages.getConvertedMsg(cfg.getString("menus.inventory_menu.map_vote_menu.title"));
+        return PluginMessages.getConvertedMsg(cfg.getString("menus.inventory_menu.map_vote_menu.title"));
     }
     
     @Getter
@@ -499,7 +496,7 @@ public class Config {
         }
         
         public String getMessage() {
-            return Messages.getConvertedMsg(cfg.getString(getPath()));
+            return PluginMessages.getConvertedMsg(cfg.getString(getPath()));
         }
     }
     

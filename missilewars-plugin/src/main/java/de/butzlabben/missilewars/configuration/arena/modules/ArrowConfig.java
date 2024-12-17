@@ -16,34 +16,17 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.game.schematics.paste;
+package de.butzlabben.missilewars.configuration.arena.modules;
 
-
-import de.butzlabben.missilewars.Logger;
-import de.butzlabben.missilewars.MissileWars;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-/**
- * @author Butzlabben
- * @since 23.09.2018
- */
-public class PasteProvider {
+@Getter
+@ToString
+@RequiredArgsConstructor
+public class ArrowConfig {
 
-    @Getter
-    private static final Paster paster;
-
-    static {
-        if (MissileWars.getInstance().foundFAWE()) {
-            paster = new FawePasteProvider();
-            Logger.DEBUG.log("Chose FAWE paster.");
-        } else {
-            // FAWE Paster works also for (normal) WorldEdit
-            paster = new FawePasteProvider();
-            Logger.DEBUG.log("Chose FAWE paster.");
-        }
-    }
-
-    private PasteProvider() {
-    }
-
+    private int occurrence = 2;
+    private int amount = 3;
 }

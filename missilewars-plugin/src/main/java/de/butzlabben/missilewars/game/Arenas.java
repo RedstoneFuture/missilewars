@@ -21,8 +21,8 @@ package de.butzlabben.missilewars.game;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Config;
-import de.butzlabben.missilewars.configuration.arena.Arena;
-import de.butzlabben.missilewars.util.SetupUtil;
+import de.butzlabben.missilewars.configuration.arena.ArenaConfig;
+import de.butzlabben.missilewars.initialization.FileManager;
 import de.butzlabben.missilewars.util.serialization.Serializer;
 import lombok.Getter;
 import org.bukkit.Bukkit;
@@ -35,7 +35,7 @@ import java.util.Map;
 public class Arenas {
 
     @Getter
-    private static final Map<String, Arena> ARENAS = new HashMap<>();
+    private static final Map<String, ArenaConfig> ARENAS = new HashMap<>();
 
     public static void load() {
         ARENAS.clear();
@@ -46,12 +46,12 @@ public class Arenas {
         folder.mkdirs();
 
         // Get all arena files or create a new one
-        File[] files = folder.listFiles();
-        if (files.length == 0) {
-            File defaultArena = new File(folder, "arena0.yml");
+        File[] arenaFiles = folder.listFiles();
+        if (arenaFiles.length == 0) {
+            File defaultConfig = new File(folder, "arena0.yml");
             try {
-                defaultArena.createNewFile();
-                Serializer.serialize(defaultArena, new Arena());
+                defaultConfig.createNewFile();
+                Serializer.serialize(defaultConfig, new ArenaConfig());
             } catch (IOException exception) {
                 Logger.ERROR.log("Could not create default arena config");
                 Logger.ERROR.log("As there are no arenas present, the plugin is shutting down");
@@ -59,21 +59,22 @@ public class Arenas {
                 Bukkit.getPluginManager().disablePlugin(MissileWars.getInstance());
                 return;
             }
-            files = new File[] {defaultArena};
+            arenaFiles = new File[] {defaultConfig};
         }
 
-        for (File config : files) {
+        for (File config : arenaFiles) {
             if (!config.getName().endsWith(".yml") && !config.getName().endsWith(".yaml")) continue;
             try {
-                Arena arena = Serializer.deserialize(config, Arena.class);
-                arena.setFile(config);
-                if (existsArena(arena.getName())) {
-                    Logger.WARN.log("There are several arenas configured with the name \"" + arena.getName() + "\". Arenas must have a unique name");
+                ArenaConfig arenaConfig = Serializer.deserialize(config, ArenaConfig.class);
+                arenaConfig.setFile(config);
+                if (existsArena(arenaConfig.getName())) {
+                    Logger.WARN.log("There are several arenas configured with the name \"" + arenaConfig.getName() + "\". Arenas must have a unique name");
                     continue;
                 }
-                SetupUtil.checkMap(arena.getTemplateWorld());
-                arena.updateConfig();
-                ARENAS.put(arena.getName(), arena);
+                FileManager.saveDefaultResource(Config.getArenasFolder() + File.separator + "default_map", 
+                        "MissileWars-Arena.zip", MissileWars.getInstance());
+                arenaConfig.updateConfig();
+                ARENAS.put(arenaConfig.getName(), arenaConfig);
             } catch (IOException exception) {
                 Logger.ERROR.log("Could not load config for arena " + config.getName());
                 exception.printStackTrace();
@@ -81,7 +82,7 @@ public class Arenas {
         }
     }
 
-    public static Arena getFromName(String arenaName) {
+    public static ArenaConfig getFromName(String arenaName) {
         if (ARENAS.containsKey(arenaName)) return ARENAS.get(arenaName);
         return null;
     }

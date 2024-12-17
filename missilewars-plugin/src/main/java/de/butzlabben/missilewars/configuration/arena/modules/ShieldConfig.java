@@ -16,7 +16,7 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.configuration.arena;
+package de.butzlabben.missilewars.configuration.arena.modules;
 
 import com.google.gson.annotations.SerializedName;
 import de.butzlabben.missilewars.Logger;
@@ -36,7 +36,7 @@ import java.util.Set;
 @Getter
 @ToString
 @RequiredArgsConstructor
-public class ShieldConfiguration extends SchematicConfiguration {
+public class ShieldConfig extends SchematicConfiguration {
 
     @SerializedName("fly_time") private int flyTime = 20;
 

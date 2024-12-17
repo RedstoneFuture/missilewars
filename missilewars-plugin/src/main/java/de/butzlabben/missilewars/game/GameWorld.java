@@ -20,7 +20,7 @@ package de.butzlabben.missilewars.game;
 
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.configuration.Config;
-import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.PluginMessages;
 import java.io.File;
 import java.io.IOException;
 import lombok.Getter;
@@ -65,7 +65,7 @@ public class GameWorld {
         synchronized (lock) {
             Bukkit.getOnlinePlayers().forEach(p -> {
                 if (p.isDead() && p.getWorld().getName().equals(worldName)) {
-                    p.kickPlayer(Messages.getMessage(true, Messages.MessageEnum.ARENA_KICK_INACTIVITY));
+                    p.kickPlayer(PluginMessages.getMessage(true, PluginMessages.MessageEnum.ARENA_KICK_INACTIVITY));
                 }
             });
         }
@@ -126,8 +126,8 @@ public class GameWorld {
             World world = Bukkit.createWorld(new WorldCreator(worldName));
             Bukkit.getWorlds().add(world);
 
-            world.setGameRule(GameRule.DO_TILE_DROPS, game.getArena().isDoTileDrops());
-            world.setGameRule(GameRule.KEEP_INVENTORY, game.getArena().isKeepInventory());
+            world.setGameRule(GameRule.DO_TILE_DROPS, game.getArenaConfig().isDoTileDrops());
+            world.setGameRule(GameRule.KEEP_INVENTORY, game.getArenaConfig().isKeepInventory());
         }
     }
 

@@ -20,8 +20,8 @@ package de.butzlabben.missilewars.listener.game;
 
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
-import de.butzlabben.missilewars.configuration.Messages;
-import de.butzlabben.missilewars.configuration.arena.FallProtectionConfiguration;
+import de.butzlabben.missilewars.configuration.PluginMessages;
+import de.butzlabben.missilewars.configuration.arena.modules.FallProtectionConfig;
 import de.butzlabben.missilewars.event.PlayerArenaJoinEvent;
 import de.butzlabben.missilewars.event.PlayerArenaLeaveEvent;
 import de.butzlabben.missilewars.game.Game;
@@ -70,7 +70,7 @@ public class GameListener extends GameBoundListener {
         if (!isInGameWorld(event.getLocation())) return;
 
         if (event.getEntity().getType() != EntityType.FIREBALL) return;
-        if (getGame().getArena().getFireballConfiguration().isDestroysPortal()) return;
+        if (getGame().getArenaConfig().getFireballConfig().isDestroysPortal()) return;
 
         event.blockList().removeIf(b -> b.getType() == Material.NETHER_PORTAL);
     }
@@ -103,7 +103,7 @@ public class GameListener extends GameBoundListener {
             event.setCancelled(true);
 
             // Can missiles only be spawned if the item interaction was performed on a block (no air)?
-            boolean isOnlyBlockPlaceable = getGame().getArena().getMissileConfiguration().isOnlyBlockPlaceable();
+            boolean isOnlyBlockPlaceable = getGame().getArenaConfig().getMissileConfig().isOnlyBlockPlaceable();
             if (isOnlyBlockPlaceable) {
                 if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
             }
@@ -139,7 +139,7 @@ public class GameListener extends GameBoundListener {
             // or a projectile hit before.
             if (!snowball.isDead()) getGame().spawnShield(shooter, snowball);
             
-        }, getGame().getArena().getShieldConfiguration().getFlyTime());
+        }, getGame().getArenaConfig().getShieldConfig().getFlyTime());
     }
 
     @EventHandler
@@ -173,7 +173,7 @@ public class GameListener extends GameBoundListener {
 
         // same team
         if (team == getGame().getPlayer(player).getTeam()) {
-            shooter.sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_HURT_TEAMMATES));
+            shooter.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.TEAM_HURT_TEAMMATES));
             event.setCancelled(true);
         }
     }
@@ -193,12 +193,12 @@ public class GameListener extends GameBoundListener {
             getGame().setPlayerAttributes(player);
             getGame().getPlayer(player).getPlayerEquipmentRandomizer().resetPlayerInterval();
 
-            FallProtectionConfiguration fallProtection = getGame().getArena().getFallProtection();
+            FallProtectionConfig fallProtection = getGame().getArenaConfig().getFallProtection();
             if (fallProtection.isEnabled()) {
                 new RespawnGoldBlock(player, fallProtection.getDuration(), fallProtection.isMessageOnlyOnStart(), getGame());
             }
         } else {
-            event.setRespawnLocation(getGame().getArena().getSpectatorSpawn());
+            event.setRespawnLocation(getGame().getArenaConfig().getSpectatorSpawn());
         }
     }
 
@@ -219,16 +219,16 @@ public class GameListener extends GameBoundListener {
             EntityDamageEvent.DamageCause damageCause = player.getLastDamageCause().getCause();
 
             if (damageCause == EntityDamageEvent.DamageCause.BLOCK_EXPLOSION || damageCause == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION) {
-                deathBroadcast = Messages.getMessage(true, Messages.MessageEnum.DIED_EXPLOSION).replace("%player%", player.getDisplayName());
+                deathBroadcast = PluginMessages.getMessage(true, PluginMessages.MessageEnum.DIED_EXPLOSION).replace("%player%", player.getDisplayName());
             } else {
-                deathBroadcast = Messages.getMessage(true, Messages.MessageEnum.DIED_NORMAL).replace("%player%", player.getDisplayName());
+                deathBroadcast = PluginMessages.getMessage(true, PluginMessages.MessageEnum.DIED_NORMAL).replace("%player%", player.getDisplayName());
             }
 
             getGame().broadcast(deathBroadcast);
         }
 
         event.setDeathMessage(null);
-        if (getGame().getArena().isAutoRespawn()) getGame().autoRespawnPlayer(mwPlayer);
+        if (getGame().getArenaConfig().isAutoRespawn()) getGame().autoRespawnPlayer(mwPlayer);
     }
 
     @EventHandler
@@ -304,10 +304,10 @@ public class GameListener extends GameBoundListener {
         if (player.getGameMode() != GameMode.SURVIVAL) return;
 
         int toY = event.getTo().getBlockY();
-        if (toY > getGame().getArena().getMaxMoveHeight()) {
+        if (toY > getGame().getArenaConfig().getMaxMoveHeight()) {
             player.teleport(event.getFrom());
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.ARENA_NOT_HIGHER));
-        } else if (toY < getGame().getArena().getDeathHeight()) {
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.ARENA_NOT_HIGHER));
+        } else if (toY < getGame().getArenaConfig().getDeathHeight()) {
             player.setLastDamageCause(new EntityDamageEvent(player, EntityDamageEvent.DamageCause.FALL, 20));
             player.damage(20.0D);
         }
@@ -317,7 +317,7 @@ public class GameListener extends GameBoundListener {
 
         if (!getGame().isInGameArea(event.getTo())) {
             if (to != null) Game.knockbackEffect(player, from, to);
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.ARENA_REACHED_BORDER));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.ARENA_REACHED_BORDER));
         }
     }
 
@@ -327,14 +327,14 @@ public class GameListener extends GameBoundListener {
 
         Player player = event.getPlayer();
 
-        JoinIngameBehavior joinBehavior = getGame().getLobby().getJoinIngameBehavior();
-        RejoinIngameBehavior rejoinBehavior = getGame().getLobby().getRejoinIngameBehavior();
+        JoinIngameBehavior joinBehavior = getGame().getGameConfig().getJoinIngameBehavior();
+        RejoinIngameBehavior rejoinBehavior = getGame().getGameConfig().getRejoinIngameBehavior();
         boolean isKnownPlayer = getGame().getGameLeaveManager().isKnownPlayer(player.getUniqueId());
         Team lastTeam = getGame().getGameLeaveManager().getLastTeamOfKnownPlayer(player.getUniqueId());
         
         // A: Forbidden the game join:
         if ((!isKnownPlayer && joinBehavior == JoinIngameBehavior.FORBIDDEN) || (isKnownPlayer && rejoinBehavior == RejoinIngameBehavior.FORBIDDEN)) {
-            event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_ENTER_ARENA));
+            event.getPlayer().sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_NOT_ENTER_ARENA));
             event.setCancelled(true);
             return;
         }
@@ -348,11 +348,11 @@ public class GameListener extends GameBoundListener {
                 
             } else if (isKnownPlayer && rejoinBehavior == RejoinIngameBehavior.LAST_TEAM && lastTeam.getTeamType() == TeamType.PLAYER 
                     && !getGame().areTooManySpectators()) {
-                event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_PLAYER_TEAM_MAX_REACHED));
+                event.getPlayer().sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.TEAM_PLAYER_TEAM_MAX_REACHED));
                 getGame().getGameJoinManager().runPlayerJoin(player, TeamType.SPECTATOR);
                 
             } else {
-                event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_MAX_REACHED));
+                event.getPlayer().sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_MAX_REACHED));
                 event.setCancelled(true);
                 
             }
@@ -370,7 +370,7 @@ public class GameListener extends GameBoundListener {
                 getGame().getGameJoinManager().runPlayerJoin(player, TeamType.PLAYER);
                 
             } else {
-                event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_SPECTATOR_TEAM_MAX_REACHED));
+                event.getPlayer().sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.TEAM_SPECTATOR_TEAM_MAX_REACHED));
                 event.setCancelled(true);
                 
             }

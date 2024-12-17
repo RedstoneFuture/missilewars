@@ -16,7 +16,7 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.configuration.arena;
+package de.butzlabben.missilewars.configuration.arena.modules;
 
 import com.google.gson.annotations.SerializedName;
 import java.util.HashMap;
@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 @Getter
 @ToString
 @AllArgsConstructor
-public class AreaConfiguration implements ConfigurationSerializable {
+public class AreaConfig implements ConfigurationSerializable {
 
     @SerializedName("min_x") private int minX;
     @SerializedName("min_y") private int minY;
@@ -49,8 +49,8 @@ public class AreaConfiguration implements ConfigurationSerializable {
      *
      * @return an area configuration around the location
      */
-    public static AreaConfiguration aroundLocation(Location location, int margin) {
-        return new AreaConfiguration(location.getBlockX() - margin,
+    public static AreaConfig aroundLocation(Location location, int margin) {
+        return new AreaConfig(location.getBlockX() - margin,
                 0,
                 location.getBlockZ() - margin,
                 location.getBlockX() + margin,

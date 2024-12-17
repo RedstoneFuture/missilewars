@@ -16,18 +16,34 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.configuration.arena;
+package de.butzlabben.missilewars.configuration.game.modules;
 
-import com.google.gson.annotations.SerializedName;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import org.bukkit.configuration.serialization.ConfigurationSerializable;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Getter
 @ToString
-@RequiredArgsConstructor
-public class GameRespawnConfiguration {
+@AllArgsConstructor
+public class GameTeamConfig implements ConfigurationSerializable {
 
-    @SerializedName("send_bow") private boolean sendBow = true;
-    @SerializedName("send_pickaxe") private boolean sendPickaxe = false;
+    private String name;
+    private String color;
+    
+    /**
+     * This method is used to save the config entries in the config file.
+     */
+    @Override
+    @NotNull
+    public Map<String, Object> serialize() {
+        Map<String, Object> serialized = new HashMap<>();
+        serialized.put("name", name);
+        serialized.put("color", color);
+        return serialized;
+    }
 }

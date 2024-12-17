@@ -18,7 +18,7 @@
 
 package de.butzlabben.missilewars.util.geometry;
 
-import de.butzlabben.missilewars.configuration.arena.AreaConfiguration;
+import de.butzlabben.missilewars.configuration.arena.modules.AreaConfig;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
@@ -97,7 +97,7 @@ public class GameArea {
      * @param world      (World) the target world for the desired area
      * @param areaConfig (AreaConfiguration) the loaded Area-Configuration from which the data is taken
      */
-    public GameArea(World world, AreaConfiguration areaConfig) {
+    public GameArea(World world, AreaConfig areaConfig) {
 
         this.world = world;
 
@@ -153,8 +153,8 @@ public class GameArea {
         }
     }
 
-    public AreaConfiguration getAreaConfiguration() {
-        return new AreaConfiguration(position1.getBlockX(), position1.getBlockY(), position1.getBlockZ(),
+    public AreaConfig getAreaConfiguration() {
+        return new AreaConfig(position1.getBlockX(), position1.getBlockY(), position1.getBlockZ(),
                 position2.getBlockX(), position2.getBlockY(), position2.getBlockZ());
     }
 

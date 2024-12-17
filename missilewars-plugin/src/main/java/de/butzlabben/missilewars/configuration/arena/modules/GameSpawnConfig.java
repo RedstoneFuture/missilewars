@@ -16,7 +16,7 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.configuration.arena;
+package de.butzlabben.missilewars.configuration.arena.modules;
 
 import com.google.gson.annotations.SerializedName;
 import lombok.Getter;
@@ -26,9 +26,8 @@ import lombok.ToString;
 @Getter
 @ToString
 @RequiredArgsConstructor
-public class FireballConfiguration {
+public class GameSpawnConfig {
 
-    private String name = "Fireball";
-    private int occurrence = 2;
-    @SerializedName("destroy_portal") private boolean destroysPortal = false;
+    @SerializedName("send_bow") private boolean sendBow = true;
+    @SerializedName("send_pickaxe") private boolean sendPickaxe = false;
 }

@@ -19,8 +19,10 @@
 package de.butzlabben.missilewars.configuration;
 
 import de.butzlabben.missilewars.MissileWars;
-import de.butzlabben.missilewars.util.SetupUtil;
+import de.butzlabben.missilewars.initialization.ConfigLoader;
+import de.butzlabben.missilewars.initialization.FileManager;
 import lombok.Getter;
+import lombok.Setter;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -35,32 +37,28 @@ import java.util.List;
  * @author Butzlabben
  * @since 13.08.2018
  */
-public class Messages {
-
-    private static final File DIR = MissileWars.getInstance().getDataFolder();
-    private static final File FILE = new File(DIR, "messages.yml");
-    private static YamlConfiguration cfg;
-    private static boolean isNewConfig = false;
+public class PluginMessages {
+    
+    @Getter private static final File FILE = new File(MissileWars.getInstance().getDataFolder(), "messages.yml");
+    @Setter private static YamlConfiguration cfg;
+    
+    private final static boolean isNewConfig = !FILE.exists();
 
     public static void load() {
 
-        // check if the directory and the file exists or create it new
-        isNewConfig = SetupUtil.isNewConfig(DIR, FILE);
-
-        // try to load the config
-        cfg = SetupUtil.getLoadedConfig(FILE);
-
-        // copy the config input
-        cfg.options().copyDefaults(true);
-
-        // validate the config options
+        cfg = ConfigLoader.loadConfigFile(FILE);
+        
+        // Validate the settings and re-save the cleaned config-file.
         addDefaults();
-
-        // re-save the config with only validated options
-        SetupUtil.safeFile(FILE, cfg);
-        cfg = SetupUtil.getLoadedConfig(FILE);
+        
+        save();
     }
-
+    
+    public static void save() {
+        FileManager.safeFile(FILE, cfg);
+        cfg = ConfigLoader.getLoadedConfig(FILE);
+    }
+    
     private static void addDefaults() {
 
         for (MessageEnum msg : MessageEnum.values()) {
@@ -193,8 +191,8 @@ public class Messages {
 
         SIGNEDIT_SIGN_CREATED("signedit.sign_created", "&7Sign was successfully created and connected."),
         SIGNEDIT_SIGN_REMOVED("signedit.sign_removed", "&7You have successfully removed this MissileWars sign."),
-        SIGNEDIT_EMPTY_LOBBY("signedit.empty_lobby", "&cPlease specify the target lobby name in the second line."),
-        SIGNEDIT_LOBBY_NOT_FOUND("signedit.lobby_not_found", "&cCould not find lobby \"%input%\"."),
+        SIGNEDIT_EMPTY_GAME("signedit.empty_game", "&cPlease specify the target game name in the second line."),
+        SIGNEDIT_GAME_NOT_FOUND("signedit.game_not_found", "&cCould not find game \"%input%\"."),
         SIGNEDIT_SIGN_REMOVE_DESC("signedit.sign_remove_desc", "&cThis shield is locked by the MissileWars plugin. Sneak while you are destroying the shield to remove it."),
 
         GAME_STATE_NO_GAME("game_state.no_game", "&cNo Game."),

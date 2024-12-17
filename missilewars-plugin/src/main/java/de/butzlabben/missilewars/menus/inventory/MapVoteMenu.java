@@ -6,9 +6,8 @@ import com.github.stefvanschie.inventoryframework.pane.OutlinePane;
 import com.github.stefvanschie.inventoryframework.pane.PaginatedPane;
 import com.github.stefvanschie.inventoryframework.pane.component.PercentageBar;
 import de.butzlabben.missilewars.configuration.Config;
-import de.butzlabben.missilewars.configuration.arena.Arena;
+import de.butzlabben.missilewars.configuration.arena.ArenaConfig;
 import de.butzlabben.missilewars.game.Game;
-import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
 import de.butzlabben.missilewars.menus.MenuItem;
 import de.butzlabben.missilewars.menus.MenuUtils;
 import de.butzlabben.missilewars.player.MWPlayer;
@@ -20,7 +19,7 @@ import java.util.Map;
 
 public class MapVoteMenu {
     
-    private final Map<String, Arena> arenaDisplayNames = new HashMap<>();
+    private final Map<String, ArenaConfig> arenaDisplayNames = new HashMap<>();
     
     private final MWPlayer mwPlayer;
     private final Game game;
@@ -49,8 +48,8 @@ public class MapVoteMenu {
         MenuItem.setDisplayName(forwardsItemActive, Config.MapVoteMenuItems.FORWARDS_ITEM_ACTIVE.getMessage());
         MenuItem.setDisplayName(forwardsItemInactive, Config.MapVoteMenuItems.FORWARDS_ITEM_INACTIVE.getMessage());
         
-        for (Arena arena : game.getLobby().getArenas()) {
-            arenaDisplayNames.put(arena.getDisplayName(), arena);
+        for (ArenaConfig arenaConfig : game.getGameConfig().getArenas()) {
+            arenaDisplayNames.put(arenaConfig.getDisplayName(), arenaConfig);
         }
         
         gui = new ChestGui(6, getTitle());
@@ -73,7 +72,7 @@ public class MapVoteMenu {
         backwards = new OutlinePane(3, 5, 1, 1);
         forwards = new OutlinePane(5, 5, 1, 1);
         
-        int maxPages = (int) Math.ceil(game.getLobby().getArenas().size() / 5d);
+        int maxPages = (int) Math.ceil(game.getGameConfig().getArenas().size() / 5d);
         int offset = 0;
         for (int page = 1; page <= maxPages; page++) {
             
@@ -86,27 +85,27 @@ public class MapVoteMenu {
                 
                 // Are there any other arenas?
                 int nextArenaId = (offset * 5) + n - 1;
-                if (game.getLobby().getArenas().size() < (nextArenaId + 1)) break;
+                if (game.getGameConfig().getArenas().size() < (nextArenaId + 1)) break;
                 
-                Arena arena = game.getLobby().getArenas().get(nextArenaId);
+                ArenaConfig arenaConfig = game.getGameConfig().getArenas().get(nextArenaId);
                 
                 // arena item:
-                ItemStack item = new ItemStack(Material.valueOf(arena.getDisplayMaterial().toUpperCase()));
+                ItemStack item = new ItemStack(Material.valueOf(arenaConfig.getDisplayMaterial().toUpperCase()));
                 MenuItem.hideMetaValues(item);
                 MenuItem.setDisplayName(item, Config.MapVoteMenuItems.MAP_ITEM.getMessage()
-                        .replace("{arena-name}", arena.getDisplayName()));
-                if (game.getMapVoting().isVotedMapOfPlayer(arena, mwPlayer)) MenuItem.setEnchantment(item);
+                        .replace("{arena-name}", arenaConfig.getDisplayName()));
+                if (game.getMapVoting().isVotedMapOfPlayer(arenaConfig, mwPlayer)) MenuItem.setEnchantment(item);
                 
                 arenas.addItem(new GuiItem(item));
                 
                 // vote percent display
                 voteResultBar = new PercentageBar(1, n - 1, 8, 1);
-                voteResultBar.setPercentage((float) (game.getMapVoting().getPercentOf(arena) / 100));
+                voteResultBar.setPercentage((float) (game.getMapVoting().getPercentOf(arenaConfig) / 100));
                 
                 ItemStack impactDisplayItem = new ItemStack(Material.YELLOW_STAINED_GLASS_PANE);
                 MenuItem.hideMetaValues(item);
                 MenuItem.setDisplayName(impactDisplayItem, Config.MapVoteMenuItems.VOTE_RESULT_BAR.getMessage()
-                        .replace("{vote-percent}", game.getMapVoting().getPercentOfMsg(arena)));
+                        .replace("{vote-percent}", game.getMapVoting().getPercentOfMsg(arenaConfig)));
                 voteResultBar.setFillItem(new GuiItem(impactDisplayItem));
                 
                 ItemStack backgroundItem = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);

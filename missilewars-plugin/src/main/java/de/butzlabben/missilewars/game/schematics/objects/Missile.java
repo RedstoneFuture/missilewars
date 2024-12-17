@@ -19,10 +19,10 @@
 package de.butzlabben.missilewars.game.schematics.objects;
 
 import de.butzlabben.missilewars.Logger;
+import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.schematics.SchematicFacing;
-import de.butzlabben.missilewars.game.schematics.paste.PasteProvider;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.EntityType;
@@ -69,7 +69,7 @@ public class Missile extends SchematicObject {
     public void paste(Game game, Player player, boolean hasTempBlock, Material tempBlockMaterial, int tempBlockDelay, 
                       int tempBlockRadius) {
         
-        SchematicFacing schematicFacing = SchematicFacing.getFacingPlayer(player, game.getArena().getMissileConfiguration());
+        SchematicFacing schematicFacing = SchematicFacing.getFacingPlayer(player, game.getArenaConfig().getMissileConfig());
         if (schematicFacing == null) return;
         
         try {
@@ -93,7 +93,7 @@ public class Missile extends SchematicObject {
                 rotation = 90;
             }
             
-            PasteProvider.getPaster().pasteMissile(getSchematic(), pastePos, rotation, loc.getWorld(), hasTempBlock, 
+            MissileWars.getInstance().getSchematicPaster().pasteMissile(getSchematic(), pastePos, rotation, loc.getWorld(), hasTempBlock, 
                     tempBlockMaterial, tempBlockDelay, tempBlockRadius);
             
         } catch (Exception e) {

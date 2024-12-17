@@ -16,16 +16,19 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.game.signs;
+package de.butzlabben.missilewars.configuration.arena.modules;
 
-import de.butzlabben.missilewars.MissileWars;
-import java.util.List;
+import com.google.gson.annotations.SerializedName;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
-public class CheckRunnable implements Runnable {
+@Getter
+@ToString
+@RequiredArgsConstructor
+public class FallProtectionConfig {
 
-    @Override
-    public void run() {
-        List<MWSign> signs = MissileWars.getInstance().getSignRepository().getSigns();
-        signs.forEach(MWSign::update);
-    }
+    private boolean enabled = true;
+    private int duration = 60;
+    @SerializedName("message_only_on_start") private boolean messageOnlyOnStart = false;
 }

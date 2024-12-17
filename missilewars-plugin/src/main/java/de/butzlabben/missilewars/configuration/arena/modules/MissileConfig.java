@@ -16,7 +16,7 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.configuration.arena;
+package de.butzlabben.missilewars.configuration.arena.modules;
 
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.game.schematics.SchematicConfiguration;
@@ -35,7 +35,7 @@ import java.util.*;
 @Getter
 @ToString
 @RequiredArgsConstructor
-public class MissileConfiguration extends SchematicConfiguration {
+public class MissileConfig extends SchematicConfiguration {
 
     // TODO pretty names
     private boolean onlyBlockPlaceable = false;

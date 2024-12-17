@@ -16,18 +16,16 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.configuration.arena;
+package de.butzlabben.missilewars.game.signs;
 
-import com.google.gson.annotations.SerializedName;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import de.butzlabben.missilewars.MissileWars;
+import java.util.List;
 
-@Getter
-@ToString
-@RequiredArgsConstructor
-public class GameSpawnConfiguration {
+public class SignUpdateRunnable implements Runnable {
 
-    @SerializedName("send_bow") private boolean sendBow = true;
-    @SerializedName("send_pickaxe") private boolean sendPickaxe = false;
+    @Override
+    public void run() {
+        List<MWSign> signs = MissileWars.getInstance().getSignRepository().getSigns();
+        signs.forEach(MWSign::update);
+    }
 }

@@ -21,30 +21,25 @@ package de.butzlabben.missilewars;
 import co.aikar.commands.PaperCommandManager;
 import de.butzlabben.missilewars.commands.*;
 import de.butzlabben.missilewars.configuration.Config;
-import de.butzlabben.missilewars.configuration.Messages;
-import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.game.misc.MissileWarsPlaceholder;
-import de.butzlabben.missilewars.game.signs.CheckRunnable;
+import de.butzlabben.missilewars.game.schematics.paste.FawePasteProvider;
+import de.butzlabben.missilewars.game.schematics.paste.Paster;
 import de.butzlabben.missilewars.game.signs.SignRepository;
 import de.butzlabben.missilewars.game.stats.StatsFetcher;
+import de.butzlabben.missilewars.initialization.FileManager;
+import de.butzlabben.missilewars.initialization.GamesInitialization;
 import de.butzlabben.missilewars.listener.PlayerListener;
 import de.butzlabben.missilewars.listener.SignListener;
-import de.butzlabben.missilewars.player.PlayerData;
 import de.butzlabben.missilewars.util.ConnectionHolder;
 import de.butzlabben.missilewars.util.MoneyUtil;
-import de.butzlabben.missilewars.util.SetupUtil;
 import de.butzlabben.missilewars.util.stats.PreFetcher;
 import de.butzlabben.missilewars.util.version.VersionUtil;
 import lombok.Getter;
-import org.apache.commons.io.FileUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.serialization.ConfigurationSerialization;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.util.Date;
 
 /**
@@ -60,14 +55,12 @@ public class MissileWars extends JavaPlugin {
     public final String version = getDescription().getVersion();
     private SignRepository signRepository;
     public PaperCommandManager commandManager;
-
-    private boolean foundFAWE;
-
-    @Getter
-    private PlayerListener playerListener;
-    @Getter
-    private SignListener signListener;
-
+    
+    @Getter private PlayerListener playerListener;
+    @Getter private SignListener signListener;
+    
+    @Getter private Paster schematicPaster;
+    
     public MissileWars() {
         instance = this;
     }
@@ -82,73 +75,66 @@ public class MissileWars extends JavaPlugin {
         sendPluginInfo();
 
         Logger.BOOT.log("Loading properties...");
-
-        // delete old missile wars temp-worlds from the last server session
-        deleteTempWorlds();
-
-        Config.load();
-        Messages.load();
-        SetupUtil.saveDefaultSchematics(new File(Config.getMissilesFolder()), "missiles.zip");
-        SetupUtil.saveDefaultSchematics(new File(Config.getShieldsFolder()), "shields.zip");
-
-        new File(Config.getLobbiesFolder()).mkdirs();
-
-        this.signRepository = SignRepository.load();
-
+        
+        FileManager.setupRoutine();
+        
+        signRepository = SignRepository.load();
+        
         registerEvents();
         registerCommands();
 
-        Arenas.load();
-
-        GameManager.getInstance().loadGamesOnStartup();
-
+        // special Dependency-Management:
         new Metrics(this, 3749);
-
-        // Check if FAWE is installed
-        foundFAWE = Bukkit.getPluginManager().getPlugin("FastAsyncWorldEdit") != null;
-
-        GameManager.getInstance().getGames().values().forEach(game -> {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (!game.isIn(player.getLocation())) continue;
-                game.teleportToLobbySpawn(player);
-            }
-        });
-
+        
+        initialWeSupport();
+        initialPapiSupport();
         MoneyUtil.giveMoney(null, -1);
-
-        Bukkit.getScheduler().runTaskTimerAsynchronously(this, new CheckRunnable(), 20, 20 * 10);
-
+        
+        GamesInitialization.initialize();
+        
+        // Warm-up for Stats:
         if (Config.isPrefetchPlayers()) {
             PreFetcher.preFetchPlayers(new StatsFetcher(new Date(0L), ""));
         }
-
-        checkPlaceholderAPI();
-
-        ConfigurationSerialization.registerClass(PlayerData.class);
-
+        
         endTime = System.currentTimeMillis();
         Logger.SUCCESS.log("MissileWars was enabled in " + (endTime - startTime) + "ms");
+        
     }
 
     @Override
     public void onDisable() {
+        
         GameManager.getInstance().disableAll();
-        deleteTempWorlds();
-
+        FileManager.shotDownRoutine();
         ConnectionHolder.close();
+    }
+    
+    /**
+     * This method checks which kind of WorldEdit Solution is installed. The paste 
+     * supplier is prepared on the basis of this.
+     */
+    private void initialWeSupport() {
+        if (Bukkit.getPluginManager().getPlugin("FastAsyncWorldEdit") != null) {
+            schematicPaster = new FawePasteProvider();
+            Logger.NORMAL.log("FastAsyncWorldEdit is installed. The Schematic Paster is prepared for the behavior of FAWE.");
+        } else {
+            schematicPaster = new FawePasteProvider();
+            Logger.NORMAL.log("(Normal) WorldEdit is installed. The Schematic Paster is prepared for the behavior of WE.");
+        }
     }
 
     /**
      * This method checks if the PlaceholderAPI is installed. When it is
      * installed, a message is sent to the log.
      */
-    private void checkPlaceholderAPI() {
+    private void initialPapiSupport() {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new MissileWarsPlaceholder(this).register();
             Logger.NORMAL.log("The PlaceholderAPI is installed. New placeholders are provided by MissileWars.");
         }
     }
-
+    
     /**
      * This method registers all events of the MissileWars event listener.
      */
@@ -178,33 +164,7 @@ public class MissileWars extends JavaPlugin {
         commandManager.registerCommand(new UserCommands());
         commandManager.registerCommand(new SetupCommands());
     }
-
-    /**
-     * This method checks if FAWE (FastAsyncWorldEdit) is installed.
-     *
-     * @return true, if it's installed
-     */
-    public boolean foundFAWE() {
-        return foundFAWE;
-    }
-
-    /**
-     * This methode deletes the temp arena worlds of the MW game.
-     */
-    private void deleteTempWorlds() {
-        File[] dirs = Bukkit.getWorldContainer().listFiles();
-        if (dirs == null) return;
-
-        for (File dir : dirs) {
-            if (dir.getName().startsWith("mw-")) {
-                try {
-                    FileUtils.deleteDirectory(dir);
-                } catch (Exception ignored) {
-                }
-            }
-        }
-    }
-
+    
     /**
      * This method sends information about the version, version
      * warnings (if necessary) and authors in the console.
@@ -215,26 +175,16 @@ public class MissileWars extends JavaPlugin {
 
         if (VersionUtil.getVersion() < 20) {
             Logger.WARN.log("====================================================");
-            Logger.WARN.log("It seems that you are using version older than 1.20");
-            Logger.WARN.log("There is no guarantee for this to work");
-            Logger.WARN.log("Proceed with extreme caution");
+            Logger.WARN.log("It seems that you are using version older than 1.20.");
+            Logger.WARN.log("There is no guarantee for this to work.");
             Logger.WARN.log("====================================================");
         }
 
-        if (version.contains("beta")) {
-            Logger.WARN.log("NOTE: This is a beta version which means, that it may not be fully stable");
+        if (version.contains("snapshot") || version.contains("dev")) {
+            Logger.WARN.log("NOTE: This is a snapshot for testing. Errors may occur in new or revised modules. " +
+                    "Do not use this version on a production server!");
         }
-
-        if (getDescription().getAuthors().size() > 1) {
-            StringBuilder sb = new StringBuilder();
-            for (String author : getDescription().getAuthors()) {
-                if (author.equals("Butzlabben"))
-                    continue;
-                sb.append(author);
-                sb.append(" ");
-            }
-            Logger.BOOT.log("Other authors: " + sb);
-        }
+        
     }
-
+    
 }

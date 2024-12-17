@@ -22,7 +22,7 @@ import com.mojang.authlib.GameProfile;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Config;
-import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.game.stats.PlayerStats;
 import de.butzlabben.missilewars.game.stats.PlayerStatsComparator;
 import de.butzlabben.missilewars.inventory.OrcItem;
@@ -76,7 +76,7 @@ public class PlayerGuiFactory {
         int currentSize = names.size();
         if (realSize > currentSize) {
             if (Config.isContactAuth()) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.STATS_FETCHING_PLAYERS)
+                player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.STATS_FETCHING_PLAYERS)
                         .replace("%current_size%", Integer.toString(currentSize))
                         .replace("%real_size%", Integer.toString(realSize)));
                 ForkJoinPool.commonPool().execute(() -> {

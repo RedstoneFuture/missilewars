@@ -19,7 +19,7 @@
 package de.butzlabben.missilewars.listener.game;
 
 import de.butzlabben.missilewars.Logger;
-import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.event.PlayerArenaJoinEvent;
 import de.butzlabben.missilewars.event.PlayerArenaLeaveEvent;
 import de.butzlabben.missilewars.game.Game;
@@ -102,7 +102,7 @@ public class LobbyListener extends GameBoundListener {
     public void onRespawn(PlayerRespawnEvent event) {
         if (!isInLobbyArea(event.getPlayer().getLocation())) return;
 
-        event.setRespawnLocation(getGame().getLobby().getSpawnPoint());
+        event.setRespawnLocation(getGame().getGameConfig().getLobbyConfig().getSpawnPoint());
     }
 
     @EventHandler
@@ -168,11 +168,11 @@ public class LobbyListener extends GameBoundListener {
             getGame().getGameJoinManager().runPlayerJoin(player, TeamType.PLAYER);
             
         } else if (!getGame().areTooManySpectators()) {
-            event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_PLAYER_TEAM_MAX_REACHED));
+            event.getPlayer().sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.TEAM_PLAYER_TEAM_MAX_REACHED));
             getGame().getGameJoinManager().runPlayerJoin(player, TeamType.SPECTATOR);
             
         } else {
-            event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_MAX_REACHED));
+            event.getPlayer().sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_MAX_REACHED));
             event.setCancelled(true);
             
         }

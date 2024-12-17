@@ -21,7 +21,7 @@ package de.butzlabben.missilewars.game;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Config;
-import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.game.enums.TeamType;
 import de.butzlabben.missilewars.menus.hotbar.GameJoinMenu;
@@ -80,7 +80,7 @@ public class GameJoinManager {
             Team lastTeam = game.getGameLeaveManager().getLastTeamOfKnownPlayer(player.getUniqueId());
             
             if (isKnownPlayer) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_REJOINED)
+                player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_REJOINED)
                         .replace("%last-team%", lastTeam.getFullname()));
                 
                 if (lastTeam.getTeamType() == targetTeamType) team = lastTeam;
@@ -210,12 +210,12 @@ public class GameJoinManager {
         
         String broadcastMsg;
         if (game.getState() == GameState.LOBBY) {
-            broadcastMsg = Messages.getMessage(true, Messages.MessageEnum.LOBBY_PLAYER_JOINED);
+            broadcastMsg = PluginMessages.getMessage(true, PluginMessages.MessageEnum.LOBBY_PLAYER_JOINED);
         } else {
-            broadcastMsg = Messages.getMessage(true, Messages.MessageEnum.GAME_PLAYER_JOINED);
+            broadcastMsg = PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_PLAYER_JOINED);
         }
         
-        game.broadcast(broadcastMsg.replace("%max_players%", Integer.toString(game.getLobby().getMaxPlayers()))
+        game.broadcast(broadcastMsg.replace("%max_players%", Integer.toString(game.getGameConfig().getMaxPlayers()))
                 .replace("%players%", Integer.toString(game.getPlayerAmount()))
                 .replace("%player%", player.getName())
                 .replace("%team%", (mwPlayer.getTeam() != null) ? mwPlayer.getTeam().getFullname() : "?"));
@@ -226,12 +226,12 @@ public class GameJoinManager {
         
         String broadcastMsg;
         if (game.getState() == GameState.LOBBY) {
-            broadcastMsg = Messages.getMessage(true, Messages.MessageEnum.LOBBY_PLAYER_SWITCHED);
+            broadcastMsg = PluginMessages.getMessage(true, PluginMessages.MessageEnum.LOBBY_PLAYER_SWITCHED);
         } else {
-            broadcastMsg = Messages.getMessage(true, Messages.MessageEnum.GAME_PLAYER_SWITCHED);
+            broadcastMsg = PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_PLAYER_SWITCHED);
         }
         
-        game.broadcast(broadcastMsg.replace("%max_players%", Integer.toString(game.getLobby().getMaxPlayers()))
+        game.broadcast(broadcastMsg.replace("%max_players%", Integer.toString(game.getGameConfig().getMaxPlayers()))
                 .replace("%players%", Integer.toString(game.getPlayerAmount()))
                 .replace("%player%", player.getName())
                 .replace("%from%", oldTeam.getFullname())
@@ -244,20 +244,20 @@ public class GameJoinManager {
         String privateMsg;
         if (mwPlayer.getTeam() == teamManager.getTeamSpec()) {
             if (isTeamSwitch) {
-                privateMsg = Messages.getMessage(true, Messages.MessageEnum.TEAM_SPECTATOR_TEAM_SWITCH);
+                privateMsg = PluginMessages.getMessage(true, PluginMessages.MessageEnum.TEAM_SPECTATOR_TEAM_SWITCH);
             } else {
-                privateMsg = Messages.getMessage(true, Messages.MessageEnum.TEAM_SPECTATOR_TEAM_ASSIGNED);
+                privateMsg = PluginMessages.getMessage(true, PluginMessages.MessageEnum.TEAM_SPECTATOR_TEAM_ASSIGNED);
             }
             
         } else {
             if (isTeamSwitch) {
-                privateMsg = Messages.getMessage(true, Messages.MessageEnum.TEAM_PLAYER_TEAM_SWITCH);
+                privateMsg = PluginMessages.getMessage(true, PluginMessages.MessageEnum.TEAM_PLAYER_TEAM_SWITCH);
             } else {
-                privateMsg = Messages.getMessage(true, Messages.MessageEnum.TEAM_PLAYER_TEAM_ASSIGNED);
+                privateMsg = PluginMessages.getMessage(true, PluginMessages.MessageEnum.TEAM_PLAYER_TEAM_ASSIGNED);
             }
         }
         
-        player.sendMessage(privateMsg.replace("%max_players%", Integer.toString(game.getLobby().getMaxPlayers()))
+        player.sendMessage(privateMsg.replace("%max_players%", Integer.toString(game.getGameConfig().getMaxPlayers()))
                 .replace("%players%", Integer.toString(game.getPlayerAmount()))
                 .replace("%player%", player.getName())
                 .replace("%team%", (mwPlayer.getTeam() != null) ? mwPlayer.getTeam().getFullname() : "?"));
@@ -286,7 +286,7 @@ public class GameJoinManager {
      */
     public void runTeleportEventForPlayer(Player player) {
         Bukkit.getPluginManager().callEvent(new PlayerTeleportEvent(player,
-                Config.getFallbackSpawn(), game.getLobby().getSpawnPoint()));
+                Config.getFallbackSpawn(), game.getGameConfig().getLobbyConfig().getSpawnPoint()));
     }
     
 }

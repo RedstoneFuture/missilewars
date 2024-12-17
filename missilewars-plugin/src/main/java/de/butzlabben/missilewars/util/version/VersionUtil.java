@@ -35,32 +35,48 @@ public class VersionUtil {
     public static int getVersion() {
 
         if (version == 0) {
-            // Detect version
+            // Detect version:
             String v = Bukkit.getVersion();
-            if (v.contains("1.20")) version = 20;
-            else if (v.contains("1.19")) version = 19;
-            else if (v.contains("1.18")) version = 18;
-            else if (v.contains("1.17")) version = 17;
-            else if (v.contains("1.16")) version = 16;
-            else if (v.contains("1.15")) version = 15;
-            else if (v.contains("1.14")) version = 14;
-            else if (v.contains("1.13")) version = 13;
-            else if (v.contains("1.12")) version = 12;
-            else if (v.contains("1.11")) version = 11;
-            else if (v.contains("1.10")) version = 10;
-            else if (v.contains("1.9")) version = 9;
-            else if (v.contains("1.8")) version = 8;
-            else if (v.contains("1.7")) version = 7;
-            else if (v.contains("1.6")) version = 6;
-            else if (v.contains("1.5")) version = 5;
-            else if (v.contains("1.4")) version = 4;
-            else if (v.contains("1.3")) version = 3;
+
+            if (v.startsWith("1.22")) {
+                version = 22;
+            } else if (v.startsWith("1.21")) {
+                version = 21;
+            } else if (v.startsWith("1.20")) {
+                version = 20;
+            } else if (v.startsWith("1.19")) {
+                version = 19;
+            } else if (v.startsWith("1.18")) {
+                version = 18;
+            } else if (v.startsWith("1.17")) {
+                version = 17;
+            } else if (v.startsWith("1.16")) {
+                version = 16;
+            } else if (v.startsWith("1.15")) {
+                version = 15;
+            } else if (v.startsWith("1.14")) {
+                version = 14;
+            } else if (v.startsWith("1.13")) {
+                version = 13;
+            } else if (v.startsWith("1.12")) {
+                version = 12;
+            } else if (v.startsWith("1.11")) {
+                version = 11;
+            } else if (v.startsWith("1.10")) {
+                version = 10;
+            } else if (v.startsWith("1.9")) {
+                version = 9;
+            } else if (v.startsWith("1.8")) {
+                version = 8;
+            } else {
+                version = 0;
+            }
         }
 
         if (version == 0) {
             Logger.WARN.log("Unknown version: " + Bukkit.getVersion());
-            Logger.WARN.log("Choosing version 1.13");
-            version = 13;
+            Logger.WARN.log("Choosing version 1.8");
+            version = 8;
         }
         return version;
     }

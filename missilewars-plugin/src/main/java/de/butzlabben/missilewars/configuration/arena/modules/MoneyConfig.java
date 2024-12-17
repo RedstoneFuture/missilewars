@@ -16,7 +16,7 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.configuration.arena;
+package de.butzlabben.missilewars.configuration.arena.modules;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +25,9 @@ import lombok.ToString;
 @Getter
 @ToString
 @RequiredArgsConstructor
-public class ArrowConfiguration {
+public class MoneyConfig {
 
-    private int occurrence = 2;
-    private int amount = 3;
+    private int win = 80;
+    private int loss = 50;
+    private int draw = 30;
 }

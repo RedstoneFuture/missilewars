@@ -25,7 +25,7 @@ import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Default;
 import co.aikar.commands.annotation.Subcommand;
 import de.butzlabben.missilewars.configuration.Config;
-import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.game.stats.PlayerStats;
 import de.butzlabben.missilewars.game.stats.SavedStats;
 import de.butzlabben.missilewars.game.stats.StatsFetcher;
@@ -141,10 +141,10 @@ public class StatsCommands extends BaseCommand {
         // TODO implement more features
 
         if (recommendations.isEmpty()) {
-            player.sendMessage(Messages.getPrefix() + "§aThere are currently no recommendations, everything seems fine :)");
+            player.sendMessage(PluginMessages.getPrefix() + "§aThere are currently no recommendations, everything seems fine :)");
         } else {
-            player.sendMessage(Messages.getPrefix() + "§7=====[ §eMissileWars recommendations §7]=====");
-            recommendations.forEach(str -> player.sendMessage(Messages.getPrefix() + str));
+            player.sendMessage(PluginMessages.getPrefix() + "§7=====[ §eMissileWars recommendations §7]=====");
+            recommendations.forEach(str -> player.sendMessage(PluginMessages.getPrefix() + str));
         }
     }
 
@@ -189,7 +189,7 @@ public class StatsCommands extends BaseCommand {
 
     private StatsFetcher getFetcher(Player player, String[] args) {
         if (!Config.isFightStatsEnabled()) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.STATS_NOT_ENABLED));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.STATS_NOT_ENABLED));
             return null;
         }
         Date from = new Date(0);
@@ -198,7 +198,7 @@ public class StatsCommands extends BaseCommand {
             try {
                 from = format.parse(args[0]);
             } catch (ParseException e) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.STATS_WRONG_DATE_FORMAT));
+                player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.STATS_WRONG_DATE_FORMAT));
                 return null;
             }
             if (args.length > 1) {
@@ -208,10 +208,10 @@ public class StatsCommands extends BaseCommand {
 
         StatsFetcher fetcher = new StatsFetcher(from, arena);
         if (fetcher.getGameCount() < 10) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.STATS_TOO_FEW_GAMES));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.STATS_TOO_FEW_GAMES));
             return null;
         }
-        player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.STATS_LOADING_DATA));
+        player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.STATS_LOADING_DATA));
         return fetcher;
     }
 }

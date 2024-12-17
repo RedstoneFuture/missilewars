@@ -19,7 +19,7 @@
 package de.butzlabben.missilewars.game;
 
 import de.butzlabben.missilewars.MissileWars;
-import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.game.enums.TeamType;
@@ -62,13 +62,13 @@ public class GameLeaveManager {
 
         String message = null;
         if (game.getState() == GameState.LOBBY) {
-            message = Messages.getMessage(true, Messages.MessageEnum.LOBBY_PLAYER_LEFT);
+            message = PluginMessages.getMessage(true, PluginMessages.MessageEnum.LOBBY_PLAYER_LEFT);
         } else if (game.getState() == GameState.INGAME) {
-            message = Messages.getMessage(true, Messages.MessageEnum.GAME_PLAYER_LEFT);
+            message = PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_PLAYER_LEFT);
         }
 
         if (message != null) {
-            game.broadcast(message.replace("%max_players%", Integer.toString(game.getLobby().getMaxPlayers()))
+            game.broadcast(message.replace("%max_players%", Integer.toString(game.getGameConfig().getMaxPlayers()))
                     .replace("%players%", Integer.toString(game.getPlayerAmount()))
                     .replace("%player%", player.getName())
                     .replace("%team%", team.getFullname()));
@@ -77,9 +77,11 @@ public class GameLeaveManager {
         player.setScoreboard(Bukkit.getScoreboardManager().getMainScoreboard());
         
         if (game.getState() == GameState.LOBBY) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.LOBBY_LEFT).replace("%lobby_name%", game.getLobby().getDisplayName()));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.LOBBY_LEFT)
+                    .replace("%game_name%", game.getGameConfig().getDisplayName()));
         } else if (game.getState() == GameState.INGAME) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_LEFT).replace("%arena_name%", game.getArena().getDisplayName()));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_LEFT)
+                    .replace("%arena_name%", game.getArenaConfig().getDisplayName()));
         }
 
     }
@@ -109,7 +111,7 @@ public class GameLeaveManager {
                 game.sendGameResult();
                 game.stopGame();
             });
-            game.broadcast(Messages.getMessage(true, Messages.MessageEnum.TEAM_ALL_TEAMMATES_OFFLINE)
+            game.broadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.TEAM_ALL_TEAMMATES_OFFLINE)
                     .replace("%team%", team.getFullname()));
         }
     }

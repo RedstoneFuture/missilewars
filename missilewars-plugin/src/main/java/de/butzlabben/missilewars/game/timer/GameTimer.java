@@ -19,10 +19,10 @@
 package de.butzlabben.missilewars.game.timer;
 
 import de.butzlabben.missilewars.configuration.Config;
-import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.enums.TeamType;
-import de.butzlabben.missilewars.util.PlayerUtil;
+import de.redstoneworld.redutilities.player.Messages;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 
@@ -36,7 +36,7 @@ public class GameTimer extends Timer {
     
     public GameTimer(Game game) {
         super(game);
-        seconds = game.getArena().getGameDuration() * 60;
+        seconds = game.getArenaConfig().getGameDuration() * 60;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class GameTimer extends Timer {
             case 600:
             case 300:
             case 180:
-                broadcast(Messages.getMessage(true, Messages.MessageEnum.GAME_TIMER_GAME_ENDS_IN_MINUTES)
+                broadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_TIMER_GAME_ENDS_IN_MINUTES)
                         .replace("%minutes%", Integer.toString(seconds / 60)));
                 break;
             case 60:
@@ -63,7 +63,7 @@ public class GameTimer extends Timer {
             case 3:
             case 2:
             case 1:
-                broadcast(Messages.getMessage(true, Messages.MessageEnum.GAME_TIMER_GAME_ENDS_IN_SECONDS)
+                broadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_TIMER_GAME_ENDS_IN_SECONDS)
                         .replace("%seconds%", Integer.toString(seconds)));
                 break;
             case 0:
@@ -86,7 +86,7 @@ public class GameTimer extends Timer {
                     
                     if (game.isInGameArea(player.getLocation())) return;
                     
-                    player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.ARENA_LEAVED));
+                    player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.ARENA_LEAVED));
                     mwPlayer.getTeam().teleportToTeamSpawn(player);
                     
                 }
@@ -99,7 +99,7 @@ public class GameTimer extends Timer {
                 Player player = mwPlayer.getPlayer();
                 
                 if (mwPlayer.getTeam().getTeamType() == TeamType.PLAYER) return;
-                PlayerUtil.sendActionbarMsg(player, Config.getActionbarForSpecEntries()[actionbarMsgCounter]);
+                Messages.sendActionbarMsg(player, Config.getActionbarForSpecEntries()[actionbarMsgCounter]);
             });
             
             // Array-Iteration:

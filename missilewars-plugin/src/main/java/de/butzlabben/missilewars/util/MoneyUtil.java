@@ -19,7 +19,7 @@
 package de.butzlabben.missilewars.util;
 
 import de.butzlabben.missilewars.Logger;
-import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.PluginMessages;
 import java.util.UUID;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
@@ -67,7 +67,7 @@ public class MoneyUtil {
             Logger.WARN.log("Message: " + r.errorMessage);
         } else {
             if (Bukkit.getPlayer(uuid) != null)
-                Bukkit.getPlayer(uuid).sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_RESULT_MONEY).replace("%money%", Integer.toString(money)));
+                Bukkit.getPlayer(uuid).sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_RESULT_MONEY).replace("%money%", Integer.toString(money)));
         }
     }
 }

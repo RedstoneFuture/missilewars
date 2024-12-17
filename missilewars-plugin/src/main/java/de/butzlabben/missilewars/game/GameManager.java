@@ -21,8 +21,7 @@ package de.butzlabben.missilewars.game;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.configuration.Config;
-import de.butzlabben.missilewars.configuration.lobby.Lobby;
-import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.game.GameConfig;
 import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.util.geometry.GameArea;
 import de.butzlabben.missilewars.util.serialization.Serializer;
@@ -55,34 +54,35 @@ public class GameManager {
         
         for (Game game : gamesListCache) {
             game.setState(GameState.END);
-            restartGame(game.getLobby(), false);
+            restartGame(game.getGameConfig(), false);
         }
     }
 
     /**
-     * This method is for starting up the server. The game lobby configurations
-     * are loaded here.
+     * This method is for starting up the server. The game (and included lobby) 
+     * configurations are loaded here.
      */
     public void loadGamesOnStartup() {
-        File[] lobbyFiles = null;
-        if (Config.isMultipleLobbies()) {
-            lobbyFiles = new File(Config.getLobbiesFolder()).listFiles();
+        File[] gameFiles = null;
+        if (Config.useMultipleGames()) {
+            gameFiles = new File(Config.getGamesFolder()).listFiles();
         } else {
-            File lobbiesFolder = new File(Config.getLobbiesFolder());
-            File file = new File(lobbiesFolder, Config.getDefaultLobby());
+            File gamesFolder = new File(Config.getGamesFolder());
+            File file = new File(gamesFolder, Config.getDefaultGame());
             if (file.exists()) {
-                lobbyFiles = new File[] {file};
+                gameFiles = new File[] {file};
             }
         }
-        if (lobbyFiles == null) lobbyFiles = new File[0];
+        if (gameFiles == null) gameFiles = new File[0];
 
-        if (lobbyFiles.length == 0) {
-            Logger.WARN.log("No lobby configs found. Creating default one");
-            File lobbiesFolder = new File(Config.getLobbiesFolder());
-            File file = new File(lobbiesFolder, Config.getDefaultLobby());
+        if (gameFiles.length == 0) {
+            Logger.WARN.log("No game-configs found. Creating default one.");
+            File gamesFolder = new File(Config.getGamesFolder());
+            gamesFolder.mkdirs();
+            File defaultConfig = new File(gamesFolder, Config.getDefaultGame());
             try {
-                file.createNewFile();
-                Serializer.serialize(file, new Lobby());
+                defaultConfig.createNewFile();
+                Serializer.serialize(defaultConfig, new GameConfig());
             } catch (IOException exception) {
                 Logger.ERROR.log("Could not create default arena config");
                 Logger.ERROR.log("As there are no arenas present, the plugin is shutting down");
@@ -90,44 +90,44 @@ public class GameManager {
                 Bukkit.getPluginManager().disablePlugin(MissileWars.getInstance());
                 return;
             }
-            lobbyFiles = new File[] {file};
+            gameFiles = new File[] {defaultConfig};
         }
 
-        for (File lobbyFile : lobbyFiles) {
-            if (lobbyFile == null) continue;
-            if (!lobbyFile.getName().endsWith(".yml") && !lobbyFile.getName().endsWith(".yaml")) continue;
+        for (File config : gameFiles) {
+            if (!config.getName().endsWith(".yml") && !config.getName().endsWith(".yaml")) continue;
 
-            debugStart(lobbyFile);
+            debugStart(config);
         }
     }
 
     /**
-     * This method attempts to read the game lobby configuration and build a game
-     * from it. Config mistakes are recognized and the config is saved again.
+     * This method attempts to read the game (and included lobby) configuration and 
+     * build a game from it. Config mistakes are recognized and the config is saved again.
      *
-     * @param lobbyFile (File) the arena configuration file
+     * @param gameFile (File) the arena configuration file
      */
-    private void debugStart(File lobbyFile) {
-        Logger.BOOT.log("Try to loading lobby of \"" + lobbyFile.getName() + "\"");
+    private void debugStart(File gameFile) {
+        Logger.BOOT.log("Try to loading game from \"" + gameFile.getName() + "\"");
 
         try {
-            Lobby lobby = Serializer.deserialize(lobbyFile, Lobby.class);
+            GameConfig gameConfig = Serializer.deserialize(gameFile, GameConfig.class);
 
-            if (lobby == null) {
-                Logger.ERROR.log("Could not load lobby of \"" + lobbyFile.getName() + "\"");
+            if (gameConfig == null) {
+                Logger.ERROR.log("Could not get game-config from \"" + gameFile.getName() + "\"");
                 return;
             }
 
-            if (getGame(lobby.getName()) != null) {
-                Logger.ERROR.log("A lobby with the same name was already loaded. Names of lobbies must be unique, this lobby will not be loaded");
+            if (getGame(gameConfig.getName()) != null) {
+                Logger.ERROR.log("A game with the same name was already loaded. Names of games must be unique. " 
+                        + "This game and his lobby will not be loaded.");
                 return;
             }
 
-            lobby.setFile(lobbyFile);
-            restartGame(lobby, false);
+            gameConfig.setFile(gameFile);
+            restartGame(gameConfig, false);
 
         } catch (IOException exception) {
-            Logger.ERROR.log("Could not load lobby of \"" + lobbyFile.getName() + "\"");
+            Logger.ERROR.log("Could not load game from \"" + gameFile.getName() + "\"");
             exception.printStackTrace();
         }
     }
@@ -135,38 +135,38 @@ public class GameManager {
     /**
      * This method (re)starts a MissileWars game.
      *
-     * @param targetLobby (Lobby) the existing lobby of the game
-     * @param forceStart  true, if it should also (re)start, if it's not an automatically
-     *                    starting game according to the lobby configuration
+     * @param targetGameConfig (GameConfig) the existing game-config of the game
+     * @param forceStart  true, if it should also (re)start, if it's not an automatically 
+     *                    starting game according to the game configuration
      */
-    public void restartGame(Lobby targetLobby, boolean forceStart) {
-        if (!targetLobby.isAutoLoad() && !forceStart) return;
+    public void restartGame(GameConfig targetGameConfig, boolean forceStart) {
+        if (!targetGameConfig.isAutoLoad() && !forceStart) return;
 
-        String targetLobbyName = targetLobby.getName();
+        String targetGameName = targetGameConfig.getName();
 
         // reset the old game
-        Game game = getGame(targetLobbyName);
+        Game game = getGame(targetGameName);
         if (game != null) {
             game.resetGame();
         }
 
         // delete the old game from the list
-        games.remove(targetLobbyName);
+        games.remove(targetGameName);
 
-        Logger.DEBUG.log("Old Game disabled.");
+        Logger.DEBUG.log("Old game disabled.");
 
-        // read the game lobby configuration and build a new game and lobby from it
+        // read the game configuration and build a new game and lobby from it
         try {
-            Lobby lobby = Serializer.deserialize(targetLobby.getFile(), Lobby.class);
-            lobby.setFile(targetLobby.getFile());
-            lobby.setArea(new GameArea(lobby.getBukkitWorld(), lobby.getAreaConfig()));
-            lobby.updateConfig();
+            GameConfig gameConfig = Serializer.deserialize(targetGameConfig.getFile(), GameConfig.class);
+            gameConfig.setFile(targetGameConfig.getFile());
+            gameConfig.setArea(new GameArea(gameConfig.getLobbyConfig().getBukkitWorld(), gameConfig.getLobbyConfig().getAreaConfig()));
+            gameConfig.updateConfig();
 
-            Logger.BOOTDONE.log("Reloaded lobby \"" + targetLobbyName + "\" (" + targetLobby.getFile().getName() + ")");
-            addGame(targetLobbyName, new Game(lobby));
+            Logger.BOOTDONE.log("Reloaded game \"" + targetGameName + "\" (" + targetGameConfig.getFile().getName() + ")");
+            addGame(targetGameName, new Game(gameConfig));
 
         } catch (IOException exception) {
-            Logger.ERROR.log("Could not load lobby of \"" + targetLobby.getFile().getName() + "\"");
+            Logger.ERROR.log("Could not load game from \"" + targetGameConfig.getFile().getName() + "\"");
             exception.printStackTrace();
         }
     }
@@ -190,22 +190,6 @@ public class GameManager {
             }
         }
         return null;
-    }
-    
-    public String getGameStateMessage(Game game) {
-        
-        if (game == null) return Messages.getMessage(false, Messages.MessageEnum.GAME_STATE_NO_GAME);
-        
-        switch (game.getState()) {
-            case LOBBY:
-                return Messages.getMessage(false, Messages.MessageEnum.GAME_STATE_LOBBY);
-            case INGAME:
-                return Messages.getMessage(false, Messages.MessageEnum.GAME_STATE_INGAME);
-            case END:
-                return Messages.getMessage(false, Messages.MessageEnum.GAME_STATE_END);
-            default:
-                return Messages.getMessage(false, Messages.MessageEnum.GAME_STATE_ERROR);
-        }
     }
     
 }

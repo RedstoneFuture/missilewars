@@ -18,8 +18,8 @@
 
 package de.butzlabben.missilewars.game;
 
-import de.butzlabben.missilewars.configuration.Messages;
-import de.butzlabben.missilewars.configuration.arena.Arena;
+import de.butzlabben.missilewars.configuration.PluginMessages;
+import de.butzlabben.missilewars.configuration.arena.ArenaConfig;
 import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
 import de.butzlabben.missilewars.game.enums.VoteState;
 import de.butzlabben.missilewars.player.MWPlayer;
@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
 
 public class MapVoting {
 
-    private final Map<MWPlayer, Arena> arenaVotes = new HashMap<>();
+    private final Map<MWPlayer, ArenaConfig> arenaVotes = new HashMap<>();
     private Game game;
     @Getter private VoteState state = VoteState.NULL;
 
@@ -52,22 +52,22 @@ public class MapVoting {
     public void addVote(Player player, String arenaName) {
         
         if (state == VoteState.NULL) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_CHANGE_TEAM_NOT_NOW));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.VOTE_CHANGE_TEAM_NOT_NOW));
             return;
         } else if (state == VoteState.FINISH) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_CHANGE_TEAM_NO_LONGER_NOW));
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.VOTE_CHANGE_TEAM_NO_LONGER_NOW));
             return;
         }
 
-        Arena arena = Arenas.getFromName(arenaName);
-        if (arena == null) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.COMMAND_INVALID_MAP)
+        ArenaConfig arenaConfig = Arenas.getFromName(arenaName);
+        if (arenaConfig == null) {
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.COMMAND_INVALID_MAP)
                     .replace("%input%", arenaName));
             return;
         }
         
-        if (!game.getLobby().getArenas().contains(arena)) {
-            player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_MAP_NOT_AVAILABLE));
+        if (!game.getGameConfig().getArenas().contains(arenaConfig)) {
+            player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.VOTE_MAP_NOT_AVAILABLE));
             return;
         }
 
@@ -75,9 +75,9 @@ public class MapVoting {
 
         if (arenaVotes.containsKey(mwPlayer)) {
 
-            if (arenaVotes.get(mwPlayer) == arena) {
-                player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_ARENA_ALREADY_SELECTED)
-                        .replace("%map%", arena.getDisplayName()));
+            if (arenaVotes.get(mwPlayer) == arenaConfig) {
+                player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.VOTE_ARENA_ALREADY_SELECTED)
+                        .replace("%map%", arenaConfig.getDisplayName()));
                 return;
             }
 
@@ -86,9 +86,9 @@ public class MapVoting {
         }
 
         // add the new vote
-        arenaVotes.put(mwPlayer, arena);
+        arenaVotes.put(mwPlayer, arenaConfig);
 
-        player.sendMessage(Messages.getMessage(true, Messages.MessageEnum.VOTE_SUCCESS).replace("%map%", arena.getDisplayName()));
+        player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.VOTE_SUCCESS).replace("%map%", arenaConfig.getDisplayName()));
     }
 
     /**
@@ -96,27 +96,27 @@ public class MapVoting {
      *
      * @return (Arena) the winner arena for this vote
      */
-    private Arena getVotedArena() {
+    private ArenaConfig getVotedArena() {
 
         // If no one voted:
-        if (arenaVotes.isEmpty()) return game.getLobby().getArenas().get(0);
+        if (arenaVotes.isEmpty()) return game.getGameConfig().getArenas().get(0);
 
-        Arena arena = arenaVotes.values().stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+        ArenaConfig arenaConfig = arenaVotes.values().stream().collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
                 .entrySet()
                 .stream()
                 .max(Map.Entry.comparingByValue()).orElseThrow()
                 .getKey();
 
-        return arena;
+        return arenaConfig;
     }
     
-    public double getPercentOf(Arena arena) {
-        long votes = arenaVotes.values().stream().filter(a -> a.equals(arena)).count();
+    public double getPercentOf(ArenaConfig arenaConfig) {
+        long votes = arenaVotes.values().stream().filter(a -> a.equals(arenaConfig)).count();
         return ((double) votes / arenaVotes.size()) * 100;
     }
     
-    public String getPercentOfMsg(Arena arena) {
-        double result = Math.round(getPercentOf(arena));
+    public String getPercentOfMsg(ArenaConfig arenaConfig) {
+        double result = Math.round(getPercentOf(arenaConfig));
         return Double.toString(result);
     }
     
@@ -124,7 +124,7 @@ public class MapVoting {
      * This method unlocks the map voting.
      */
     public void startVote() {
-        if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING)
+        if (game.getGameConfig().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING)
             throw new IllegalStateException("Defined map choose procedure is not \"MAPVOTING\"");
 
         state = VoteState.RUNNING;
@@ -134,27 +134,27 @@ public class MapVoting {
      * This method locks the map voting again.
      */
     public void stopVote() {
-        if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING)
+        if (game.getGameConfig().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING)
             throw new IllegalStateException("Defined map choose procedure is not \"MAPVOTING\"");
 
         state = VoteState.FINISH;
     }
 
     /**
-     * This method checks if there is only one arena map available for this lobby and 
+     * This method checks if there is only one arena map available for this game and 
      * therefore no map vote is necessary.
      * 
-     * @return (Boolean) true, if only one map exists for this lobby
+     * @return (Boolean) true, if only one map exists for this game
      */
     public boolean onlyOneArenaFound() {
-        return (game.getLobby().getArenas().size() == 1);
+        return (game.getGameConfig().getArenas().size() == 1);
     }
 
     /**
      * This method sets the selected arena of map voting for the current game.
      */
     public void setVotedArena() {
-        if (game.getLobby().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING)
+        if (game.getGameConfig().getMapChooseProcedure() != MapChooseProcedure.MAPVOTING)
             throw new IllegalStateException("Defined map choose procedure is not \"MAPVOTING\"");
 
         if (onlyOneArenaFound()) return;
@@ -162,18 +162,18 @@ public class MapVoting {
 
         stopVote();
 
-        Arena arena = game.getMapVoting().getVotedArena();
-        if (arena == null) throw new IllegalStateException("Voted arena is not present");
-        game.setArena(arena);
+        ArenaConfig arenaConfig = game.getMapVoting().getVotedArena();
+        if (arenaConfig == null) throw new IllegalStateException("Voted arena is not present");
+        game.setArena(arenaConfig);
 
-        game.broadcast(Messages.getMessage(true, Messages.MessageEnum.VOTE_FINISHED)
-                .replace("%map%", game.getArena().getDisplayName()));
+        game.broadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.VOTE_FINISHED)
+                .replace("%map%", game.getArenaConfig().getDisplayName()));
 
         game.prepareGame();
     }
     
-    public boolean isVotedMapOfPlayer(Arena arena, MWPlayer mwPlayer) {
-        return (arenaVotes.get(mwPlayer) == arena);
+    public boolean isVotedMapOfPlayer(ArenaConfig arenaConfig, MWPlayer mwPlayer) {
+        return (arenaVotes.get(mwPlayer) == arenaConfig);
     }
     
 }

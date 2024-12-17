@@ -19,7 +19,7 @@
 package de.butzlabben.missilewars.listener.game;
 
 import de.butzlabben.missilewars.Logger;
-import de.butzlabben.missilewars.configuration.Messages;
+import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.event.PlayerArenaJoinEvent;
 import de.butzlabben.missilewars.event.PlayerArenaLeaveEvent;
 import de.butzlabben.missilewars.game.Game;
@@ -53,7 +53,7 @@ public class EndListener extends GameBoundListener {
     public void onRespawn(PlayerRespawnEvent event) {
         if (!isInGameWorld(event.getPlayer().getLocation())) return;
 
-        event.setRespawnLocation(getGame().getArena().getSpectatorSpawn());
+        event.setRespawnLocation(getGame().getArenaConfig().getSpectatorSpawn());
     }
 
     @EventHandler(priority = EventPriority.HIGH)
@@ -64,7 +64,7 @@ public class EndListener extends GameBoundListener {
         MWPlayer mwPlayer = getGame().getPlayer(player);
 
         event.setDeathMessage(null);
-        if (getGame().getArena().isAutoRespawn()) getGame().autoRespawnPlayer(mwPlayer);
+        if (getGame().getArenaConfig().isAutoRespawn()) getGame().autoRespawnPlayer(mwPlayer);
     }
 
     @EventHandler
@@ -113,14 +113,14 @@ public class EndListener extends GameBoundListener {
         
         Player player = event.getPlayer();
 
-        JoinIngameBehavior joinBehavior = getGame().getLobby().getJoinIngameBehavior();
-        RejoinIngameBehavior rejoinBehavior = getGame().getLobby().getRejoinIngameBehavior();
+        JoinIngameBehavior joinBehavior = getGame().getGameConfig().getJoinIngameBehavior();
+        RejoinIngameBehavior rejoinBehavior = getGame().getGameConfig().getRejoinIngameBehavior();
         boolean isKnownPlayer = getGame().getGameLeaveManager().isKnownPlayer(player.getUniqueId());
         Team lastTeam = getGame().getGameLeaveManager().getLastTeamOfKnownPlayer(player.getUniqueId());
         
         // A: Forbidden the game join:
         if ((!isKnownPlayer && joinBehavior == JoinIngameBehavior.FORBIDDEN) || (isKnownPlayer && rejoinBehavior == RejoinIngameBehavior.FORBIDDEN)) {
-            event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.GAME_NOT_ENTER_ARENA));
+            event.getPlayer().sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_NOT_ENTER_ARENA));
             event.setCancelled(true);
             return;
         }
@@ -133,7 +133,7 @@ public class EndListener extends GameBoundListener {
                 getGame().getGameJoinManager().runPlayerJoin(player, TeamType.SPECTATOR);
                 
             } else {
-                event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_SPECTATOR_TEAM_MAX_REACHED));
+                event.getPlayer().sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.TEAM_SPECTATOR_TEAM_MAX_REACHED));
                 event.setCancelled(true);
                 
             }
@@ -148,7 +148,7 @@ public class EndListener extends GameBoundListener {
                 getGame().getGameJoinManager().runPlayerJoin(player, TeamType.SPECTATOR);
                 
             } else {
-                event.getPlayer().sendMessage(Messages.getMessage(true, Messages.MessageEnum.TEAM_SPECTATOR_TEAM_MAX_REACHED));
+                event.getPlayer().sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.TEAM_SPECTATOR_TEAM_MAX_REACHED));
                 event.setCancelled(true);
                 
             }
