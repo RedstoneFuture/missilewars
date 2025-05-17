@@ -101,6 +101,8 @@ public class MWSign {
                 case END:
                     name = game.getArenaConfig().getDisplayName();
                     break;
+                case ERROR:
+                    break;
             }
         }
 

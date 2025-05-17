@@ -37,6 +37,7 @@ import java.util.UUID;
 public class GameLeaveManager {
     
     private final Game game;
+    @SuppressWarnings("unused")
     private final TeamManager teamManager;
     
     private final HashMap<UUID, Team> leftPlayerCache = new HashMap<>();

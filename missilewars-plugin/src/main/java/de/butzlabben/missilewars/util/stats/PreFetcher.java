@@ -33,6 +33,8 @@ import java.util.Map;
 import java.util.UUID;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -56,6 +58,7 @@ public class PreFetcher {
     @RequiredArgsConstructor
     public static class PrePlayerFetchRunnable implements Runnable {
 
+        @SuppressWarnings("unused")
         private static final int MAX_SKIN_FETCHES = 10;
         private final StatsFetcher fetcher;
         private boolean shouldStop = false;
@@ -119,7 +122,7 @@ public class PreFetcher {
             return new PageGUICreator<>("§ePlayer statistics", names, (item) -> {
                 ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD);
                 SkullMeta sm = (SkullMeta) itemStack.getItemMeta();
-                sm.setOwner(item);
+                sm.setOwningPlayer(Bukkit.getOfflinePlayer(UUID.fromString(item)));
                 sm.setDisplayName(item);
                 itemStack.setItemMeta(sm);
                 return new OrcItem(itemStack);

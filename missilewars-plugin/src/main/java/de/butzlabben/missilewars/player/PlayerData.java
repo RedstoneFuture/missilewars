@@ -28,6 +28,7 @@ import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.ToString;
 import org.bukkit.GameMode;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.entity.Player;
@@ -84,7 +85,7 @@ public class PlayerData implements ConfigurationSerializable {
 
         player.getInventory().setContents(contents);
         player.setGameMode(gameMode);
-        player.setHealth(Math.min(health, player.getMaxHealth()));
+        player.setHealth(Math.min(health, player.getAttribute(Attribute.MAX_HEALTH).getBaseValue()));
         player.setExp(exp);
         player.setLevel(expLevel);
         player.setFoodLevel(foodLevel);

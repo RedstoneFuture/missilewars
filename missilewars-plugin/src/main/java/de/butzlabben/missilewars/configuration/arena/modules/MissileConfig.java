@@ -49,7 +49,7 @@ public class MissileConfig extends SchematicConfiguration {
         add(new Missile("Tomahawk.schem", "&a%schematic_name_compact%", 3, EntityType.CREEPER, 0, 2));
         add(new Missile("Cruiser.schem", "&e%schematic_name_compact%", 2, EntityType.BLAZE, 0, 2));
         add(new Missile("Sword.schem", "&7%schematic_name_compact%", 2, EntityType.SKELETON, 0, 2));
-        add(new Missile("Juggernaut.schem", "&4%schematic_name_compact%", 2, EntityType.MUSHROOM_COW, 0, 2));
+        add(new Missile("Juggernaut.schem", "&4%schematic_name_compact%", 2, EntityType.MOOSHROOM, 0, 2));
         add(new Missile("Piranha.schem", "&3%schematic_name_compact%", 3, EntityType.HORSE, 0, 2));
         add(new Missile("Tunnelbore.schem", "&0%schematic_name_compact%", 1, EntityType.ENDERMAN, 0, 2));
     }};

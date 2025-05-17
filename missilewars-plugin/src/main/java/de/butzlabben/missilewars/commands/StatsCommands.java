@@ -119,6 +119,8 @@ public class StatsCommands extends BaseCommand {
 
         StatsFetcher fetcher = getFetcher(player, args);
         if (fetcher == null) return;
+        
+        @SuppressWarnings("unused")
         SavedStats avgStatsWithDraws = fetcher.getAverageSavedStats(false);
         SavedStats avgStatsWithoutDraws = fetcher.getAverageSavedStats(true);
         List<String> recommendations = new ArrayList<>();

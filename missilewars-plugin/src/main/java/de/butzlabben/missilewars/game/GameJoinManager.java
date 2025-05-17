@@ -31,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Sound;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerTeleportEvent;
 
@@ -143,7 +144,7 @@ public class GameJoinManager {
     private void setDefaultPlayerData(Player player) {
         player.getInventory().clear();
         player.setFoodLevel(20);
-        player.setHealth(player.getMaxHealth());
+        player.setHealth(player.getAttribute(Attribute.MAX_HEALTH).getBaseValue());
     }
     
     public void startForPlayerAfterCountdown(Player player, boolean isGameJoin) {

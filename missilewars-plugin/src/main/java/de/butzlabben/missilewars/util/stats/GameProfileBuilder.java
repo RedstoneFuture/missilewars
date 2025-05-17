@@ -46,6 +46,7 @@ public class GameProfileBuilder {
             .registerTypeAdapter(PropertyMap.class, new PropertyMap.Serializer()).create();
     @Getter
     private static final Map<UUID, CachedProfile> cache = new HashMap<>();
+    @SuppressWarnings("unused")
     private static final Object sync = new Object();
     private static long cacheTime = -1L;
 

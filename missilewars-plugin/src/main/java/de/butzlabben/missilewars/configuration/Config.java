@@ -97,6 +97,7 @@ public class Config {
         cfg.addDefault("motd.lobby", "&6•&e● MissileWars &7| &eLobby");
         cfg.addDefault("motd.ingame", "&6•&e● MissileWars &7| &bIngame");
         cfg.addDefault("motd.ended", "&6•&e● MissileWars &7| &cRestarting...");
+        cfg.addDefault("motd.error", "&6•&e● MissileWars &7| &cError...");
 
         cfg.addDefault("fightstats.enable", false);
         cfg.addDefault("fightstats.show_real_skins", true);
@@ -340,6 +341,10 @@ public class Config {
 
     public static boolean motdEnabled() {
         return cfg.getBoolean("motd.enable");
+    }
+
+    public static String motdError() {
+        return PluginMessages.getConvertedMsg(cfg.getString("motd.error"));
     }
 
     public static boolean isFightStatsEnabled() {

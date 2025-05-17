@@ -42,6 +42,7 @@ public class PluginMessages {
     @Getter private static final File FILE = new File(MissileWars.getInstance().getDataFolder(), "messages.yml");
     @Setter private static YamlConfiguration cfg;
     
+    @SuppressWarnings("unused")
     private final static boolean isNewConfig = !FILE.exists();
 
     public static void load() {

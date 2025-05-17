@@ -89,6 +89,8 @@ public class ItemRequirement {
     
     private void getCfgValues(ConfigurationSection cfg) {
         switch (type) {
+            case NULL:
+                break;
             case HAS_PERMISSION:
                 permission = cfg.getString("permission");
                 break;

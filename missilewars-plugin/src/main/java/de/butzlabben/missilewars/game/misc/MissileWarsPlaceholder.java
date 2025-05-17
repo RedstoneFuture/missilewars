@@ -32,6 +32,7 @@ import org.jetbrains.annotations.NotNull;
 
 public class MissileWarsPlaceholder extends PlaceholderExpansion {
 
+    @SuppressWarnings("unused")
     private final MissileWars plugin;
     private final String noInformation = "&7?";
 
