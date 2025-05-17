@@ -74,18 +74,15 @@ public class FAWE_Paster {
         ClipboardFormat clipboardFormat = ClipboardFormats.findByFile(schematic);
         
         try (ClipboardReader clipboardReader = clipboardFormat.getReader(new FileInputStream(schematic));
-             var session = WorldEdit.getInstance().newEditSession(weWorld)) {
-            
-            ClipboardHolder clipboardHolder = new ClipboardHolder(clipboardReader.read());
-            clipboardHolder.setTransform(new AffineTransform().rotateY(rotation));
-            
-            Operation pasteBuilder = clipboardHolder
-                    .createPaste(session)
-                    .to(blockVec)
-                    .ignoreAirBlocks(true)
-                    .build();
-            Operations.completeBlindly(pasteBuilder);
-            
+             var session = WorldEdit.getInstance().newEditSession(weWorld);
+             ClipboardHolder clipboardHolder = new ClipboardHolder(clipboardReader.read())) {
+                clipboardHolder.setTransform(new AffineTransform().rotateY(rotation));
+                Operation pasteBuilder = clipboardHolder
+                        .createPaste(session)
+                        .to(blockVec)
+                        .ignoreAirBlocks(true)
+                        .build();
+                Operations.completeBlindly(pasteBuilder);
         } catch (Exception e) {
             plugin.getLogger().log(Level.SEVERE, "Could not paste schematic '" + schematic.getName() 
                     + "' with FAWE (" + WorldEdit.getVersion() + ")", e);
