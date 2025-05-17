@@ -32,6 +32,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.block.sign.Side;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +81,7 @@ public class MWSign {
         }
         Sign sign = (Sign) block.getState();
         for (int i = 0; i < lines.size(); i++) {
-            sign.setLine(i, lines.get(i));
+            sign.getSide(Side.FRONT).setLine(i, lines.get(i));
         }
         sign.update(true);
     }
