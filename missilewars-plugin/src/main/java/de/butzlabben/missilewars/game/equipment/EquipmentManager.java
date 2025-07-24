@@ -61,12 +61,12 @@ public class EquipmentManager {
         if (game.getArenaConfig().getSpawn().isSendBow() || game.getArenaConfig().getRespawn().isSendBow()) {
 
             ItemStack bow = new ItemStack(Material.BOW);
-            bow.addEnchantment(Enchantment.ARROW_FIRE, 1);
-            bow.addEnchantment(Enchantment.ARROW_DAMAGE, 1);
-            bow.addEnchantment(Enchantment.ARROW_KNOCKBACK, 1);
+            bow.addEnchantment(Enchantment.FLAME, 1);
+            bow.addEnchantment(Enchantment.POWER, 1);
+            bow.addEnchantment(Enchantment.PUNCH, 1);
             ItemMeta bowMeta = bow.getItemMeta();
             bowMeta.setUnbreakable(true);
-            bowMeta.addEnchant(Enchantment.DAMAGE_ALL, 6, true);
+            bowMeta.addEnchant(Enchantment.SHARPNESS, 6, true);
             bow.setItemMeta(bowMeta);
             this.customBow = bow;
         }
