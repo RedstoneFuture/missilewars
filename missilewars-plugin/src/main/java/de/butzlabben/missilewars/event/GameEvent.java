@@ -23,6 +23,7 @@ import org.bukkit.event.Event;
 
 public abstract class GameEvent extends Event {
 
+    @SuppressWarnings("unused")
     private final Game game;
 
     public GameEvent(Game game) {

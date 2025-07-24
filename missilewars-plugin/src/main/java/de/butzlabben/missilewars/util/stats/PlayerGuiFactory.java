@@ -49,6 +49,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 public class PlayerGuiFactory {
 
     private final static int MAX_FETCHES = 9;
+    @SuppressWarnings("unused")
     private final static int FETCH_EVERY_ROUND = 3;
 
     private final List<PlayerStats> stats;
@@ -122,8 +123,6 @@ public class PlayerGuiFactory {
             ItemStack itemStack = new ItemStack(Material.PLAYER_HEAD);
             SkullMeta sm = (SkullMeta) itemStack.getItemMeta();
             if (Config.isShowRealSkins()) {
-                sm.setOwner(name);
-            } else {
                 sm.setOwningPlayer(Bukkit.getOfflinePlayer(item.getUuid()));
             }
             List<String> lore = Arrays.asList("§7Games played: §e" + item.getGamesPlayed(),
@@ -135,6 +134,7 @@ public class PlayerGuiFactory {
             return new OrcItem(itemStack);
         });
 
+        @SuppressWarnings("unused")
         Map<Integer, OrcItem> extraButtons = new HashMap<>();
 
         creator.show(player);

@@ -30,6 +30,7 @@ import java.util.UUID;
 
 public class TeamManager {
     
+    @SuppressWarnings("unused")
     private final Game game;
     private final GameConfig gameConfig;
     
@@ -37,6 +38,7 @@ public class TeamManager {
     @Getter private Team team2;
     @Getter private Team teamSpec;
     
+    @SuppressWarnings("unused")
     private final Map<UUID, Team> offlinePlayerTeam = new HashMap<>();
     
     public TeamManager(Game game) {

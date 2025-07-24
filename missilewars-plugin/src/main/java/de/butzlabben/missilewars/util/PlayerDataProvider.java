@@ -22,6 +22,7 @@ import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.player.PlayerData;
 import org.bukkit.GameMode;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 
 import java.io.File;
@@ -90,7 +91,7 @@ public class PlayerDataProvider {
         player.getInventory().clear();
         player.setExp(0);
         player.setLevel(0);
-        player.setHealth(player.getMaxHealth());
+        player.setHealth(player.getAttribute(Attribute.MAX_HEALTH).getBaseValue());
         player.setFoodLevel(20);
         player.setGameMode(GameMode.SURVIVAL);
     }

@@ -13,6 +13,7 @@ public class GameJoinMenu {
 
 
     private final MWPlayer mwPlayer;
+    @SuppressWarnings("unused")
     private final Game game;
     
     // configured hotbar items:

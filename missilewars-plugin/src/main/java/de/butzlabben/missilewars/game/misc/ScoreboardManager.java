@@ -26,6 +26,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.bukkit.Bukkit;
+import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
@@ -80,9 +81,9 @@ public class ScoreboardManager {
         if (board == null) {
             board = Bukkit.getScoreboardManager().getNewScoreboard();
         }
-        obj = board.registerNewObjective("Info", "dummy");
+        
+        obj = board.registerNewObjective("Info", Criteria.DUMMY, SCOREBOARD_TITLE);
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
-        obj.setDisplayName(SCOREBOARD_TITLE);
 
         // check if the team lists are used
         for (String cleanLine : SCOREBOARD_ENTRIES) {

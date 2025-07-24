@@ -11,7 +11,6 @@ import de.butzlabben.missilewars.menus.MenuUtils;
 import de.butzlabben.missilewars.player.MWPlayer;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 public class TeamSelectionMenu {
     

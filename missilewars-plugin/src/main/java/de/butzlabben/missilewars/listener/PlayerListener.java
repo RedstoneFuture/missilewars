@@ -29,10 +29,12 @@ import de.butzlabben.missilewars.game.misc.MotdManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.server.ServerListPingEvent;
@@ -76,8 +78,10 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onPickup(PlayerPickupItemEvent event) {
-        Game game = getGame(event.getPlayer().getLocation());
+    public void onPickup(EntityPickupItemEvent event) {
+        if (event.getEntityType() != EntityType.PLAYER) return;
+
+        Game game = getGame(event.getEntity().getLocation());
         if (game == null) return;
 
         event.setCancelled(true);

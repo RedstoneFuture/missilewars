@@ -50,6 +50,9 @@ public class MotdManager {
                 case INGAME:
                     newMotd = Config.motdGame();
                     break;
+                case ERROR:
+                    newMotd = Config.motdError();
+                    break;
             }
             
             motd = ChatColor.translateAlternateColorCodes('&', newMotd)

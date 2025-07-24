@@ -476,7 +476,11 @@ public class Game {
         }
         
         itemStack.setAmount(itemStack.getAmount() - 1);
-        player.setItemInHand(itemStack);
+        if (player.getInventory().getItemInMainHand().equals(itemStack)) {
+            player.getInventory().setItemInMainHand(itemStack);
+        } else if (player.getInventory().getItemInOffHand().equals(itemStack)) {
+            player.getInventory().setItemInOffHand(itemStack);
+        }
         missile.paste(this, player);
     }
 
@@ -517,7 +521,6 @@ public class Game {
         player.playSound(fb.getLocation(), Sound.ITEM_FLINTANDSTEEL_USE, 100.0F, 1.0F);
         fb.setYield(3F);
         fb.setIsIncendiary(true);
-        fb.setBounce(false);
     }
 
     public void setArena(ArenaConfig arenaConfig) {

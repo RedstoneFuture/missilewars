@@ -58,6 +58,10 @@
             <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
 
+        <repository>
+            <id>redstoneworld-repo</id>
+            <url>https://dl.cloudsmith.io/public/redstoneworld/RedUtilities/maven/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -65,7 +69,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.20.4-R0.1-SNAPSHOT</version>
+            <version>1.21.4-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
@@ -102,7 +106,7 @@
         <dependency>
             <groupId>de.redstoneworld.redutilities</groupId>
             <artifactId>redutilities</artifactId>
-            <version>0.0.14-Snapshot</version>
+            <version>0.0.16-Snapshot</version>
         </dependency>
     </dependencies>
 
@@ -126,8 +130,8 @@
                 <version>3.5.1</version>
                 <configuration>
                     <forceJavacCompilerUse>true</forceJavacCompilerUse>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>17</source>
+                    <target>17</target>
                 </configuration>
             </plugin>
 
@@ -145,6 +149,10 @@
                         <relocation>
                             <pattern>com.github.stefvanschie.inventoryframework</pattern>
                             <shadedPattern>de.butzlabben.missilewars.MissileWars.inventoryframework</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.fasterxml.jackson</pattern>
+                            <shadedPattern>de.butzlabben.missilewars.shaded.jackson</shadedPattern>
                         </relocation>
                     </relocations>
 

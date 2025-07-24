@@ -122,7 +122,7 @@ public class MenuItem {
     
     public static void setEnchantment(ItemStack itemStack) {
         ItemMeta itemMeta = itemStack.getItemMeta();
-        if (itemMeta != null) itemMeta.addEnchant(Enchantment.LUCK, 10, true);
+        if (itemMeta != null) itemMeta.addEnchant(Enchantment.LUCK_OF_THE_SEA, 10, true);
         itemStack.setItemMeta(itemMeta);
     }
     
@@ -135,7 +135,7 @@ public class MenuItem {
     public static void hideMetaValues(ItemStack itemStack) {
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta != null) itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS, ItemFlag.HIDE_DYE, ItemFlag.HIDE_ENCHANTS, 
-                ItemFlag.HIDE_PLACED_ON, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_POTION_EFFECTS);
+                ItemFlag.HIDE_PLACED_ON, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ATTRIBUTES);
         itemStack.setItemMeta(itemMeta);
     }
     
