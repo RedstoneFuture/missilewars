@@ -65,7 +65,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.20.4-R0.1-SNAPSHOT</version>
+            <version>1.21.1-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
 
@@ -73,7 +73,7 @@
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-bukkit</artifactId>
-            <version>7.3.0</version>
+            <version>7.3.9</version>
             <scope>provided</scope>
 
             <exclusions>
@@ -87,7 +87,7 @@
         <dependency>
             <groupId>com.sk89q.worldedit</groupId>
             <artifactId>worldedit-core</artifactId>
-            <version>7.3.0</version>
+            <version>7.3.9</version>
             <scope>provided</scope>
         </dependency>
 
@@ -95,14 +95,14 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.34</version>
+            <version>1.18.36</version>
             <scope>provided</scope>
         </dependency>
         
         <dependency>
             <groupId>de.redstoneworld.redutilities</groupId>
             <artifactId>redutilities</artifactId>
-            <version>0.0.14-Snapshot</version>
+            <version>0.0.17-Snapshot</version>
         </dependency>
     </dependencies>
 
