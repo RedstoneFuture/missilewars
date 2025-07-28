@@ -145,11 +145,15 @@
                     <relocations>
                         <relocation>
                             <pattern>org.bstats</pattern>
-                            <shadedPattern>de.butzlabben.missilewars</shadedPattern>
+                            <shadedPattern>de.butzlabben.missilewars.shaded.bstats</shadedPattern>
                         </relocation>
                         <relocation>
                             <pattern>com.github.stefvanschie.inventoryframework</pattern>
-                            <shadedPattern>de.butzlabben.missilewars.MissileWars.inventoryframework</shadedPattern>
+                            <shadedPattern>de.butzlabben.missilewars.shaded.inventoryframework</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>com.fasterxml.jackson</pattern>
+                            <shadedPattern>de.butzlabben.missilewars.shaded.jackson</shadedPattern>
                         </relocation>
                     </relocations>
 
