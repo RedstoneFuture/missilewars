@@ -101,6 +101,10 @@ public class GameListener extends GameBoundListener {
         // missile spawn with using of a missile spawn egg
         if (Missile.isSpawnEgg(itemStack.getType())) {
             event.setCancelled(true);
+            
+            // prevent spam with the event handling
+            if (isInteractDelay(player)) return;
+            setInteractDelay(player);
 
             // Can missiles only be spawned if the item interaction was performed on a block (no air)?
             boolean isOnlyBlockPlaceable = getGame().getArenaConfig().getMissileConfig().isOnlyBlockPlaceable();
