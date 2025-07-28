@@ -58,6 +58,11 @@
             <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
         </repository>
 
+        <repository>
+            <id>redstoneworld-RedUtilities</id>
+            <url>https://dl.cloudsmith.io/public/redstoneworld/RedUtilities/maven/</url>
+        </repository>
+
     </repositories>
 
     <dependencies>
