@@ -756,6 +756,8 @@ public class Game {
      */
     public void checkPortals() {
         
+        // Note: The 'BlockDestroyEvent' is only available on PaperMC.
+        
         for (Location location : portalBlocks) {
             
             if (location.getBlock().getType() == Material.NETHER_PORTAL) continue;
