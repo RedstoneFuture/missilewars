@@ -23,7 +23,7 @@ public class FileManager {
         
         deleteTempWorlds();
         
-        ConfigLoader.loadConfigs();
+        ConfigLoader.loadMainConfigs();
         
         saveDefaultResource(Config.getMissilesFolder(), "missiles.zip", MissileWars.getInstance());
         saveDefaultResource(Config.getShieldsFolder(), "shields.zip", MissileWars.getInstance());
