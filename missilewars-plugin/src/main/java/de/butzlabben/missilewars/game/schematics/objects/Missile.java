@@ -118,7 +118,7 @@ public class Missile extends SchematicObject {
     }
 
     public static Material getSpawnEgg(EntityType type) {
-        if (type == EntityType.MUSHROOM_COW) {
+        if (type == EntityType.MOOSHROOM) {
             return Material.valueOf("MOOSHROOM_SPAWN_EGG");
 
         }

@@ -1,11 +1,9 @@
 package de.butzlabben.missilewars.menus;
 
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
-import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.configuration.ActionSet;
 import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.player.MWPlayer;
+import de.redstoneworld.redutilities.items.HeadHelper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -16,13 +14,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 public class MenuItem {
@@ -52,7 +46,7 @@ public class MenuItem {
         
         // basehead-<base64 (Value field in the head's give command)>
         if (materialName.startsWith("basehead-")) {
-            tempItem = getCustomHead(materialName.split("-")[1]);
+            tempItem = HeadHelper.getCustomHead(materialName.split("-")[1]);
             
         } else if (materialName.equalsIgnoreCase("{player-team-item}")) {
             tempItem = mwPlayer.getTeam().getMenuItem();
@@ -80,37 +74,6 @@ public class MenuItem {
         mwPlayer.getPlayer().getInventory().setItem(slot, itemStack);
     }
     
-    public static ItemStack getCustomHead(String base64Texture) {
-        ItemStack headItem = new ItemStack(Material.PLAYER_HEAD);
-        SkullMeta skullMeta = (SkullMeta) headItem.getItemMeta();
-        setSkinViaBase64(skullMeta, base64Texture);
-        headItem.setItemMeta(skullMeta);
-        return headItem;
-    }
-
-    /**
-     * A method used to set the skin of a player skull via a base64 encoded string.
-     *
-     * Source: <a href="https://www.spigotmc.org/threads/generated-texture-to-heads.512604/#post-4198463">Post by BoBoBalloon</a>
-     *
-     * @param meta the skull meta to modify
-     * @param base64 the base64 encoded string
-     */
-    private static void setSkinViaBase64(SkullMeta meta, String base64) {
-        try {
-            Method setProfile = meta.getClass().getDeclaredMethod("setProfile", GameProfile.class);
-            setProfile.setAccessible(true);
-
-            GameProfile profile = new GameProfile(UUID.randomUUID(), "skull-texture");
-            profile.getProperties().put("textures", new Property("textures", base64));
-
-            setProfile.invoke(meta, profile);
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            Logger.ERROR.log("There was a severe internal reflection error when attempting to set the skin of a player skull via base64!");
-            e.printStackTrace();
-        }
-    }
-    
     private void updatePapiValues(Player player) {
         finalDisplayName = PluginMessages.getPapiMessage(displayName, player);
 
@@ -122,7 +85,7 @@ public class MenuItem {
     
     public static void setEnchantment(ItemStack itemStack) {
         ItemMeta itemMeta = itemStack.getItemMeta();
-        if (itemMeta != null) itemMeta.addEnchant(Enchantment.LUCK, 10, true);
+        if (itemMeta != null) itemMeta.addEnchant(Enchantment.FORTUNE, 10, true);
         itemStack.setItemMeta(itemMeta);
     }
     
@@ -135,7 +98,7 @@ public class MenuItem {
     public static void hideMetaValues(ItemStack itemStack) {
         ItemMeta itemMeta = itemStack.getItemMeta();
         if (itemMeta != null) itemMeta.addItemFlags(ItemFlag.HIDE_ATTRIBUTES, ItemFlag.HIDE_DESTROYS, ItemFlag.HIDE_DYE, ItemFlag.HIDE_ENCHANTS, 
-                ItemFlag.HIDE_PLACED_ON, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_POTION_EFFECTS);
+                ItemFlag.HIDE_PLACED_ON, ItemFlag.HIDE_UNBREAKABLE, ItemFlag.HIDE_ARMOR_TRIM, ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
         itemStack.setItemMeta(itemMeta);
     }
     
