@@ -476,7 +476,6 @@ public class Game {
         }
         
         itemStack.setAmount(itemStack.getAmount() - 1);
-        player.setItemInHand(itemStack);
         missile.paste(this, player);
     }
 
