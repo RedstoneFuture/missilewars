@@ -476,7 +476,6 @@ public class Game {
         }
         
         itemStack.setAmount(itemStack.getAmount() - 1);
-        player.setItemInHand(itemStack);
         missile.paste(this, player);
     }
 
@@ -755,6 +754,8 @@ public class Game {
      * "BlockPhysicsEvent" event-listener.
      */
     public void checkPortals() {
+        
+        // Note: The 'BlockDestroyEvent' is only available on PaperMC.
         
         for (Location location : portalBlocks) {
             

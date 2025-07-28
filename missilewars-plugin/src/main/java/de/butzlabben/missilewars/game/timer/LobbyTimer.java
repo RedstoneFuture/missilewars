@@ -28,7 +28,7 @@ import org.bukkit.Sound;
  * @author Butzlabben
  * @since 11.01.2018
  */
-public class LobbyTimer extends Timer implements Runnable {
+public class LobbyTimer extends Timer {
 
     private final int startTime;
     private int remaining = 90; // for sending messages

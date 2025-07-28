@@ -416,7 +416,7 @@ public class MWCommands extends BaseCommand {
             return;
         }
 
-        ConfigLoader.loadConfigs();
+        ConfigLoader.loadMainConfigs();
         Arenas.load();
 
         player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.DEBUG_RELOAD_CONFIG));

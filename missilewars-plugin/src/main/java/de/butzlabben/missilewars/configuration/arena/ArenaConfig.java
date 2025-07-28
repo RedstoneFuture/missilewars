@@ -35,7 +35,7 @@ import java.io.IOException;
 public class ArenaConfig implements Cloneable {
 
     // The values defined here are only valid if there is no Config yet.
-    private String name = "arena0";
+    private String name = "arena1";
     @SerializedName("display_name") private String displayName = "&eDefault map";
     @SerializedName("display_material") private String displayMaterial = "STONE";
     @SerializedName("template_world") private String templateWorld = "default_map";

@@ -49,17 +49,18 @@ import java.util.Date;
 @Getter
 public class MissileWars extends JavaPlugin {
 
-    @Getter
-    private static MissileWars instance;
+    @Getter private static MissileWars instance;
     
     public final String version = getDescription().getVersion();
     private SignRepository signRepository;
     public PaperCommandManager commandManager;
     
-    @Getter private PlayerListener playerListener;
-    @Getter private SignListener signListener;
+    private PlayerListener playerListener;
+    private SignListener signListener;
     
-    @Getter private Paster schematicPaster;
+    private Paster schematicPaster;
+    
+    private boolean isPapiInstalled;
     
     public MissileWars() {
         instance = this;
@@ -131,7 +132,11 @@ public class MissileWars extends JavaPlugin {
     private void initialPapiSupport() {
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             new MissileWarsPlaceholder(this).register();
-            Logger.NORMAL.log("The PlaceholderAPI is installed. New placeholders are provided by MissileWars.");
+            isPapiInstalled = true;
+            Logger.NORMAL.log("PlaceholderAPI is installed. New placeholders are provided by MissileWars.");
+        } else {
+            isPapiInstalled = false;
+            Logger.NORMAL.log("PlaceholderAPI is not installed. Placeholders arent working for now.");
         }
     }
     

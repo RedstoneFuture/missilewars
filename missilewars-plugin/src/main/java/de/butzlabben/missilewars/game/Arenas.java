@@ -48,7 +48,7 @@ public class Arenas {
         // Get all arena files or create a new one
         File[] arenaFiles = folder.listFiles();
         if (arenaFiles.length == 0) {
-            File defaultConfig = new File(folder, "arena0.yml");
+            File defaultConfig = new File(folder, "arena1.yml");
             try {
                 defaultConfig.createNewFile();
                 Serializer.serialize(defaultConfig, new ArenaConfig());

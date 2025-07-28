@@ -45,7 +45,7 @@ import java.util.stream.Collectors;
 public class GameConfig {
 
     // The values defined here are only valid if there is no Config yet.
-    private String name = "game0";
+    private String name = "game1";
     @SerializedName("display_name") private String displayName = "&eDefault game";
     @SerializedName("auto_load") private boolean autoLoad = true;
     @SerializedName("min_players") private int minPlayers = 2;
@@ -59,7 +59,7 @@ public class GameConfig {
     @SerializedName("rejoin_ongoing_game") private RejoinIngameBehavior rejoinIngameBehavior = RejoinIngameBehavior.LAST_TEAM;
     @SerializedName("lobby") private LobbyConfig lobbyConfig = new LobbyConfig();
     @SerializedName("possible_arenas") private List<String> possibleArenas = new ArrayList<>() {{
-        add("arena0");
+        add("arena1");
     }};
 
     // These values are only set after the Config has been read.

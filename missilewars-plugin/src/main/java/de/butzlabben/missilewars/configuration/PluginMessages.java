@@ -263,6 +263,9 @@ public class PluginMessages {
     }
     
     public static String getPapiMessage(String message, Player player) {
+        // Is PAPI (soft-depend) installed on the server?
+        if (!MissileWars.getInstance().isPapiInstalled()) return message;
+        
         return ChatColor.translateAlternateColorCodes('&', PlaceholderAPI.setPlaceholders(player, message));
     }
 }

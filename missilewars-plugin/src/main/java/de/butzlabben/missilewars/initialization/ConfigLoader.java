@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 
 public class ConfigLoader {
     
-    public static void loadConfigs() {
+    public static void loadMainConfigs() {
         
         Config.load();
         PluginMessages.load();

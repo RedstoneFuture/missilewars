@@ -30,6 +30,7 @@ public class Shield extends SchematicObject {
             Vector pastePos = new Vector(loc.getX(), loc.getY(), loc.getZ());
             
             MissileWars.getInstance().getSchematicPaster().pasteSchematic(getSchematic(), pastePos, 0, loc.getWorld());
+            ball.remove();
         } catch (Exception e) {
             Logger.ERROR.log("Could not load " + getDisplayName());
             e.printStackTrace();
