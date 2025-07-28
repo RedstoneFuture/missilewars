@@ -81,7 +81,7 @@ public class Config {
 
         cfg.addDefault("games.multiple_games", false);
         cfg.addDefault("games.folder", "plugins/MissileWars/games");
-        cfg.addDefault("games.default_game", "game0.yml");
+        cfg.addDefault("games.default_game", "game1.yml");
 
         cfg.addDefault("missiles.folder", "plugins/MissileWars/schematics/missiles");
         cfg.addDefault("shields.folder", "plugins/MissileWars/schematics/shields");
