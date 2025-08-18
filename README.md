@@ -4,7 +4,7 @@ MissileWars is a minigame system for Minecraft Bukkit based servers. It is compe
 
 ## Downloads
 
-You can download the latest official build of the plugin on our [project Discord server](https://discord.com/invite/JXwPe6NjRC) in the `🡇 plugin-downloads` channel.
+You can download the latest official build of the plugin on our [Discord server](https://discord.com/invite/JXwPe6NjRC) in the `🡇 plugin-downloads` channel for free.
 
 ## Building
 
@@ -23,7 +23,7 @@ in our [GitHub Wiki](https://github.com/RedstoneFuture/missilewars/wiki).
 
 ## Community & Support
 
-Feel free to join our [project Discord server](https://discord.com/invite/JXwPe6NjRC) to get support, previews, announces, community-resources and more. Interact with our development- and support-team and the administrators of other Minecraft servers that actively use this plugin.
+Feel free to join our [Discord server](https://discord.com/invite/JXwPe6NjRC) to get support, previews, announces, community-resources and more. Interact with our development- and support-team and the administrators of other Minecraft servers that actively use this plugin.
 
 ## Project Partners
 
