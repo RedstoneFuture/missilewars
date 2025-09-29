@@ -111,4 +111,13 @@ public class SignRepository {
     public List<MWSign> getSigns(Game game) {
         return signs.stream().filter(s -> s.getLobby().equals(game.getGameConfig().getName())).collect(Collectors.toList());
     }
+    
+    public void checkAllSigns() {
+        getSigns().forEach(mwSign -> {
+            if (!mwSign.isValid()) {
+                Logger.WARN.log("The specified configuration options for the sign at " + mwSign.getLocation() 
+                        + " for the lobby " + mwSign.getLobby() + " are not valid.");
+            }
+        });
+    }
 }
