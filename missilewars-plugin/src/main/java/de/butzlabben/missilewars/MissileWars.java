@@ -80,6 +80,7 @@ public class MissileWars extends JavaPlugin {
         FileManager.setupRoutine();
         
         signRepository = SignRepository.load();
+        getSignRepository().checkAllSigns();
         
         registerEvents();
         registerCommands();

@@ -67,7 +67,9 @@ public class PlayerEquipmentRandomizer {
     }
 
     public void tick() {
-
+        
+        if (mwPlayer.getPlayer().isDead()) return;
+        
         setPlayerInterval(playerInterval - 1);
 
         if (playerInterval <= 0) {

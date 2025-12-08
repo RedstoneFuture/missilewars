@@ -57,10 +57,8 @@ public class MWSign {
     }
 
     public void update() {
-        if (!isValid()) {
-            Logger.WARN.log("The specified configuration options for the sign at " + location + " for the lobby " + lobby + " are not valid.");
-            return;
-        }
+        if (!isValid()) return;
+        
         Game game = GameManager.getInstance().getGame(getLobby());
         List<String> lines = new ArrayList<>();
         lines.add(replace(PluginMessages.getMessage(false, PluginMessages.MessageEnum.SIGN_0), game));

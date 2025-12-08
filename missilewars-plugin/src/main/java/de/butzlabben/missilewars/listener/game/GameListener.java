@@ -232,6 +232,8 @@ public class GameListener extends GameBoundListener {
         }
 
         event.setDeathMessage(null);
+        player.setLevel(0);
+        
         if (getGame().getArenaConfig().isAutoRespawn()) getGame().autoRespawnPlayer(mwPlayer);
     }
 
