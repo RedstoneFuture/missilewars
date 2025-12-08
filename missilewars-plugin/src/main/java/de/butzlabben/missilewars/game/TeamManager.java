@@ -149,7 +149,7 @@ public class TeamManager {
         // prospective team sizes:
         int newTargetTeamSize = targetTeam.getMembers().size() + 1;
         int newEnemyTeamSize = targetTeam.getEnemyTeam().getMembers().size();
-        if (currentTeam.getTeamType() == TeamType.PLAYER) newEnemyTeamSize--;
+        if (currentTeam.getTeamType() == TeamType.PLAYER) newEnemyTeamSize = newEnemyTeamSize - 1;
         
         int diff = Math.abs(newTargetTeamSize - newEnemyTeamSize);
         
