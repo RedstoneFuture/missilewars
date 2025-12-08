@@ -126,15 +126,14 @@ public class TeamManager {
         if (targetTeam.getTeamType() == TeamType.SPECTATOR) return true;
         
         // Prevention of an empty team in some cases.
-        // This should only be relevant if the method is also queried in the lobby.
-        if (currentTeam.getTeamType() == TeamType.PLAYER) {
-            if ((currentTeam.getMembers().size() == 1) && (!targetTeam.getMembers().isEmpty())) {
+        // (This should only be relevant if the method is also queried in the lobby.)
+        if (!targetTeam.getMembers().isEmpty()) {
+            if ((currentTeam.getTeamType() == TeamType.PLAYER) && (currentTeam.getMembers().size() == 1)) {
                 Logger.DEBUG.log("Prevent team switch! Current player-team size: " + currentTeam.getMembers().size() 
                         + "; target player-team size: " + targetTeam.getMembers().size());
                 return false;
             }
-        } else {
-            if ((!targetTeam.getMembers().isEmpty()) && (targetTeam.getEnemyTeam().getMembers().isEmpty())) {
+            if ((currentTeam.getTeamType() == TeamType.SPECTATOR) && (targetTeam.getEnemyTeam().getMembers().isEmpty())) {
                 Logger.DEBUG.log("Prevent team switch! Target player-team size: " + targetTeam.getMembers().size() 
                         + "; enemy player-team size: " + targetTeam.getEnemyTeam().getMembers().size());
                 return false;
