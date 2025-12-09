@@ -136,7 +136,6 @@ public class PluginMessages {
         LOBBY_PLAYER_SWITCHED("lobby.player_switched", "&e%player% &7rejoined the game &8(&7%players%&8/&7%max_players%&8)"),
         LOBBY_PLAYER_LEFT("lobby.player_left", "&e%player% &7left the game &8(&7%players%&8/&7%max_players%&8)"),
         LOBBY_LEFT("lobby.left", "&7You left the MissileWars lobby."),
-        LOBBY_NOT_ENOUGH_PLAYERS("lobby.not_enough_players", "&cThere are not enough players online."),
         LOBBY_TEAMS_UNEQUAL("lobby.teams_unequal", "&cThe teams are unequal distributed."),
         
         TEAM_CHANGE_TEAM_NOT_NOW("team.change.team_not_now", "&cThe game is not in the right state to change your team right now."),
