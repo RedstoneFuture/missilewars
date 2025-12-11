@@ -54,7 +54,7 @@ public class MWPlayer implements Runnable {
     private GameJoinMenu gameJoinMenu;
     private MapVoteMenu mapVoteMenu;
     private TeamSelectionMenu teamSelectionMenu;
-    private long lastTeamChangeTime;
+    private long lastTeamChangeTime = 0;
 
     public MWPlayer(Player player, Game game) {
         this.uuid = player.getUniqueId();
@@ -63,8 +63,6 @@ public class MWPlayer implements Runnable {
         this.gameJoinMenu = new GameJoinMenu(this);
         this.mapVoteMenu = new MapVoteMenu(this);
         this.teamSelectionMenu = new TeamSelectionMenu(this);
-        
-        setLastTeamChangeTime();
     }
 
     public Player getPlayer() {
