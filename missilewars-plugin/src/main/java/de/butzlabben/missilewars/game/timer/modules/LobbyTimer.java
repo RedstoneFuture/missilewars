@@ -16,11 +16,12 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.game.timer;
+package de.butzlabben.missilewars.game.timer.modules;
 
 import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
+import de.butzlabben.missilewars.game.timer.Timer;
 
 /**
  * @author Butzlabben

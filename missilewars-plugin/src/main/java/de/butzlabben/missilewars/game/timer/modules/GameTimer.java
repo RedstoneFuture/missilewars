@@ -16,12 +16,13 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.game.timer;
+package de.butzlabben.missilewars.game.timer.modules;
 
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.enums.TeamType;
+import de.butzlabben.missilewars.game.timer.Timer;
 import de.redstoneworld.redutilities.player.Messages;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
