@@ -37,14 +37,16 @@ public class LobbyTimer extends Timer {
     public void tick() {
         if (getGame().getPlayers().isEmpty()) return;
 
+        // Displaying countdown:
         setLevel(seconds);
         
-        if (getGame().getTeamManager().hasEmptyPlayerTeam()) {
+        // Checking team size:
         if ((getGame().getTeamManager().hasEmptyPlayerTeam()) || (getGame().areToFewPlayers())) {
             resetSeconds();
             return;
         }
         
+        // Sending start time info:
         switch (seconds) {
             case 120:
             case 60:
@@ -63,6 +65,7 @@ public class LobbyTimer extends Timer {
                 break;
         }
         
+        // Executing other checks and the initial Game start:
         switch (seconds) {
             case 10:
                 if (getGame().getGameConfig().getMapChooseProcedure() == MapChooseProcedure.MAPVOTING) {
