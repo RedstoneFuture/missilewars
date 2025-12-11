@@ -34,7 +34,7 @@ import org.bukkit.Sound;
 public abstract class Timer implements Runnable {
 
     private final Game game;
-    public final int startTime;
+    public final int initialSeconds;
     public int seconds;
 
     @Override
@@ -49,7 +49,7 @@ public abstract class Timer implements Runnable {
     }
     
     protected void resetSeconds() {
-        seconds = startTime;
+        seconds = initialSeconds;
     }
     
     protected void setLevel(int level) {
