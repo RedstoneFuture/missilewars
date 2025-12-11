@@ -35,8 +35,8 @@ public class GameTimer extends Timer {
     int actionbarMsgCounter = 0;
     
     public GameTimer(Game game) {
-        super(game);
-        seconds = game.getArenaConfig().getGameDuration() * 60;
+        super(game, game.getArenaConfig().getGameDuration() * 60);
+        resetSeconds();
     }
 
     @Override
@@ -52,7 +52,7 @@ public class GameTimer extends Timer {
             case 600:
             case 300:
             case 180:
-                broadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_TIMER_GAME_ENDS_IN_MINUTES)
+                sendBroadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_TIMER_GAME_ENDS_IN_MINUTES)
                         .replace("%minutes%", Integer.toString(seconds / 60)));
                 break;
             case 60:
@@ -63,7 +63,7 @@ public class GameTimer extends Timer {
             case 3:
             case 2:
             case 1:
-                broadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_TIMER_GAME_ENDS_IN_SECONDS)
+                sendBroadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_TIMER_GAME_ENDS_IN_SECONDS)
                         .replace("%seconds%", Integer.toString(seconds)));
                 break;
             case 0:

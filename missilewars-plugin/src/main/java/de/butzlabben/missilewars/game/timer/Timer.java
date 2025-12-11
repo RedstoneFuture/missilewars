@@ -34,11 +34,8 @@ import org.bukkit.Sound;
 public abstract class Timer implements Runnable {
 
     private final Game game;
+    public final int startTime;
     public int seconds;
-
-    public int getSeconds() {
-        return seconds;
-    }
 
     @Override
     public void run() {
@@ -46,14 +43,24 @@ public abstract class Timer implements Runnable {
     }
 
     public abstract void tick();
-
-    protected void playSoundatAll(Sound s, float pitch) {
-        for (MWPlayer all : game.getPlayers().values()) {
-            all.getPlayer().playSound(all.getPlayer().getLocation(), s, 100, pitch);
+    
+    protected void sendBroadcast(String message) {
+        game.broadcast(message);
+    }
+    
+    protected void resetSeconds() {
+        seconds = startTime;
+    }
+    
+    protected void setLevel(int level) {
+        for (MWPlayer mwPlayer : getGame().getPlayers().values()) {
+            mwPlayer.getPlayer().setLevel(level);
         }
     }
-
-    protected void broadcast(String message) {
-        game.broadcast(message);
+    
+    protected void playPling() {
+        for (MWPlayer mwPlayer : getGame().getPlayers().values()) {
+            mwPlayer.getPlayer().playSound(mwPlayer.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 100, 3);
+        }
     }
 }

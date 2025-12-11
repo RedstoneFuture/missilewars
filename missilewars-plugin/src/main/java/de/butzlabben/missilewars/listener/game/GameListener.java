@@ -133,6 +133,8 @@ public class GameListener extends GameBoundListener {
         if (!(snowball.getShooter() instanceof Player)) return;
 
         Player shooter = (Player) snowball.getShooter();
+        
+        // Create a listener for when the snowball hits an object.
         ShieldListener shieldListener = new ShieldListener(shooter, getGame(), snowball);
         Bukkit.getPluginManager().registerEvents(shieldListener, MissileWars.getInstance());
 
@@ -140,7 +142,7 @@ public class GameListener extends GameBoundListener {
             HandlerList.unregisterAll(shieldListener);
             
             // Is the snowball-entity dead because of an invalid 'fly_time' of the shield-configuration 
-            // or a projectile hit before.
+            // or a projectile hit before?
             if (!snowball.isDead()) getGame().spawnShield(shooter, snowball);
             
         }, getGame().getArenaConfig().getShieldConfig().getFlyTime());

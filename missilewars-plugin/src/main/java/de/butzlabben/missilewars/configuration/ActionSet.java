@@ -46,7 +46,8 @@ public class ActionSet {
     private ActionType getActionType(String actionDef) {
         String prefix = actionDef.split(" ", 2)[0];
         
-        // Action-Type specification inspired by DeluxeMenus https://wiki.helpch.at/helpchat-plugins/deluxemenus/options-and-configurations#actions-types
+        // Action-Type specification inspired by DeluxeMenus: 
+        // https://wiki.helpch.at/helpchat-plugins/deluxemenus/options-and-configurations/actions#actions-types
         
         switch (prefix) {
             case "[player-cmd]": return ActionType.PLAYER_CMD;

@@ -28,8 +28,8 @@ import de.butzlabben.missilewars.game.Game;
 public class EndTimer extends Timer {
 
     public EndTimer(Game game) {
-        super(game);
-        seconds = 21;
+        super(game, 21);
+        resetSeconds();
     }
 
     @Override
@@ -37,7 +37,7 @@ public class EndTimer extends Timer {
 
         switch (seconds) {
             case 15:
-                broadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.ENDGAME_TIMER_GAME_STARTS_NEW_IN)
+                sendBroadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.ENDGAME_TIMER_GAME_STARTS_NEW_IN)
                         .replace("%seconds%", Integer.toString(seconds)));
                 break;
             case 0:
