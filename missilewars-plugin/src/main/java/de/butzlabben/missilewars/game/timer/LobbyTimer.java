@@ -21,73 +21,64 @@ package de.butzlabben.missilewars.game.timer;
 import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.enums.MapChooseProcedure;
-import de.butzlabben.missilewars.player.MWPlayer;
-import org.bukkit.Sound;
 
 /**
  * @author Butzlabben
  * @since 11.01.2018
  */
 public class LobbyTimer extends Timer {
-
-    private final int startTime;
-    private int remaining = 90; // for sending messages
-
-
+    
     public LobbyTimer(Game game, int startTime) {
-        super(game);
-        this.startTime = startTime;
-        seconds = startTime;
+        super(game, startTime);
+        resetSeconds();
     }
 
     @Override
     public void tick() {
         if (getGame().getPlayers().isEmpty()) return;
 
-        for (MWPlayer mwPlayer : getGame().getPlayers().values()) {
-            if (mwPlayer.getPlayer() == null) continue;
-            mwPlayer.getPlayer().setLevel(seconds);
-        }
+        setLevel(seconds);
         
         if (getGame().getTeamManager().hasEmptyPlayerTeam()) {
-            seconds = startTime;
+            resetSeconds();
             return;
         }
         
-        --remaining;
-        if (remaining == 0) {
-            if (getGame().areToFewPlayers()) {
-                seconds = startTime;
-                remaining = 90;
-                broadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.LOBBY_NOT_ENOUGH_PLAYERS));
-                return;
-            }
-        }
-
         switch (seconds) {
             case 120:
             case 60:
             case 30:
+            case 10:
             case 5:
             case 4:
             case 3:
             case 2:
             case 1:
-                broadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.LOBBY_TIMER_GAME_STARTS_IN)
+                sendBroadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.LOBBY_TIMER_GAME_STARTS_IN)
                         .replace("%seconds%", Integer.toString(seconds)));
                 playPling();
                 break;
+            default:
+                break;
+        }
+        
+        switch (seconds) {
+            case 90:
+                if (getGame().areToFewPlayers()) {
+                    sendBroadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.LOBBY_NOT_ENOUGH_PLAYERS));
+                    resetSeconds();
+                    return;
+                }
+                break;
             case 10:
-                if (getGame().getGameConfig().getMapChooseProcedure() == MapChooseProcedure.MAPVOTING)
+                if (getGame().getGameConfig().getMapChooseProcedure() == MapChooseProcedure.MAPVOTING) {
                     getGame().getMapVoting().setVotedArena();
-                broadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.LOBBY_TIMER_GAME_STARTS_IN)
-                        .replace("%seconds%", Integer.toString(seconds)));
-                playPling();
+                }
                 break;
             case 0:
                 if (!getGame().getTeamManager().hasBalancedTeamSizes()) {
-                    broadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.LOBBY_TEAMS_UNEQUAL));
-                    seconds = startTime;
+                    sendBroadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.LOBBY_TEAMS_UNEQUAL));
+                    resetSeconds();
                     return;
                 }
                 executeGameStart();
@@ -98,19 +89,13 @@ public class LobbyTimer extends Timer {
 
         seconds--;
     }
-
-    private void playPling() {
-        for (MWPlayer mwPlayer : getGame().getPlayers().values()) {
-            mwPlayer.getPlayer().playSound(mwPlayer.getPlayer().getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 100, 3);
-        }
-    }
-
+    
     /**
      * This method executes the game start. In addition, the participants
      * are informed about the start.
      */
     public void executeGameStart() {
-        broadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_GAME_STARTS));
+        sendBroadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.GAME_GAME_STARTS));
         getGame().startGame();
     }
     
