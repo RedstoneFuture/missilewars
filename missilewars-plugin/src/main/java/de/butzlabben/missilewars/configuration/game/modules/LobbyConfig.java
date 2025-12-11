@@ -21,7 +21,7 @@ package de.butzlabben.missilewars.configuration.game.modules;
 import com.google.gson.annotations.SerializedName;
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.configuration.Config;
-import de.butzlabben.missilewars.configuration.arena.modules.AreaConfig;
+import de.butzlabben.missilewars.configuration.AreaConfig;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;

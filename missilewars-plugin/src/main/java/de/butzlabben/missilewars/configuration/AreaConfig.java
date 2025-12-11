@@ -16,7 +16,7 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.configuration.arena.modules;
+package de.butzlabben.missilewars.configuration;
 
 import com.google.gson.annotations.SerializedName;
 import java.util.HashMap;

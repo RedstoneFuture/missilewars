@@ -19,6 +19,7 @@
 package de.butzlabben.missilewars.configuration.arena;
 
 import com.google.gson.annotations.SerializedName;
+import de.butzlabben.missilewars.configuration.AreaConfig;
 import de.butzlabben.missilewars.configuration.arena.modules.*;
 import de.butzlabben.missilewars.util.geometry.GameArea;
 import de.butzlabben.missilewars.util.serialization.Serializer;
