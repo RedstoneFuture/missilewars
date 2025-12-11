@@ -63,7 +63,7 @@ public class FAWE_Paster {
      * This method executes the paste command via FAWE.
      * 
      * @param schematic (File) the target WorldEdit schematic file (all Schematic formats usable, '.schem' recommended)
-     * @param locationVec (Vector) the abstract block location
+     * @param locationVec (Vector) the abstract block location for the paste (= Schematic-Origin)
      * @param world (World) the target world for the WorldEdit action
      * @param rotation (int) the target schematic rotation
      * @param plugin (JavaPlugin) the basis plugin
@@ -97,12 +97,12 @@ public class FAWE_Paster {
      * (asynchronously on FAWE) pasted schematic structure gets a 
      * block-update. This remove process happens synchronously for this.
      * 
-     * @param locationVec (Vector) the abstract block location
+     * @param locationVec (Vector) the abstract block location for the operation
      * @param world (World) the target world for the WorldEdit action
      * @param replaceMaterial (Material) the target material for the replacement
-     * @param replaceRadius (int) the configured "Replace radius" 
+     * @param replaceRadius (int) the configured "replace radius" 
      *                      The value is used as the block-limit for the “Starter-Block” check and represents 
-     *                      a half of the cuboid-edge length with the Schematic-Origin as starting point.
+     *                      a half of the cuboid-edge length.
      */
     public void removeTempBlock(Vector locationVec, org.bukkit.World world, Material replaceMaterial, int replaceRadius) {
         int startX = locationVec.getBlockX() - replaceRadius;
