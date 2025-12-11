@@ -40,6 +40,7 @@ public class LobbyTimer extends Timer {
         setLevel(seconds);
         
         if (getGame().getTeamManager().hasEmptyPlayerTeam()) {
+        if ((getGame().getTeamManager().hasEmptyPlayerTeam()) || (getGame().areToFewPlayers())) {
             resetSeconds();
             return;
         }
@@ -63,13 +64,6 @@ public class LobbyTimer extends Timer {
         }
         
         switch (seconds) {
-            case 90:
-                if (getGame().areToFewPlayers()) {
-                    sendBroadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.LOBBY_NOT_ENOUGH_PLAYERS));
-                    resetSeconds();
-                    return;
-                }
-                break;
             case 10:
                 if (getGame().getGameConfig().getMapChooseProcedure() == MapChooseProcedure.MAPVOTING) {
                     getGame().getMapVoting().setVotedArena();
