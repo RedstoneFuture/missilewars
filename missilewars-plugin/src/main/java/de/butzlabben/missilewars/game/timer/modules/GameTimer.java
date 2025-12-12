@@ -35,8 +35,8 @@ public class GameTimer extends Timer {
     
     int actionbarMsgCounter = 0;
     
-    public GameTimer(Game game) {
-        super(game, game.getArenaConfig().getGameDuration() * 60);
+    public GameTimer(Game game, int startTime) {
+        super(game, startTime);
         resetSeconds();
     }
 

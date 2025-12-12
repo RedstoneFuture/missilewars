@@ -238,7 +238,7 @@ public class Game {
 
         taskManager.stopTimer();
         updateGameListener(new GameListener(this));
-        taskManager.setTimer(new GameTimer(this));
+        taskManager.setTimer(new GameTimer(this, arenaConfig.getGameDuration() * 60));
         taskManager.runTimer(5, 20);
         state = GameState.INGAME;
 
@@ -274,7 +274,7 @@ public class Game {
 
         taskManager.stopTimer();
         updateGameListener(new EndListener(this));
-        taskManager.setTimer(new EndTimer(this));
+        taskManager.setTimer(new EndTimer(this, 21));
         taskManager.runTimer(5, 20);
         state = GameState.END;
 

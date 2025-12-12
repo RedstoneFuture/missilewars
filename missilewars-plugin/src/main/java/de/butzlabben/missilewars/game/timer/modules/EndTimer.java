@@ -28,8 +28,8 @@ import de.butzlabben.missilewars.game.timer.Timer;
  */
 public class EndTimer extends Timer {
 
-    public EndTimer(Game game) {
-        super(game, 21);
+    public EndTimer(Game game, int startTime) {
+        super(game, startTime);
         resetSeconds();
     }
 
