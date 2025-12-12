@@ -42,8 +42,7 @@ public class GameTimer extends Timer {
 
     @Override
     public void tick() {
-        Game game = getGame();
-
+        
         switch (seconds) {
             case 7200:
             case 5400:
@@ -68,8 +67,8 @@ public class GameTimer extends Timer {
                         .replace("%seconds%", Integer.toString(seconds)));
                 break;
             case 0:
-                game.sendGameResult();
-                game.stopGame();
+                getGame().sendGameResult();
+                getGame().stopGame();
                 break;
             default:
                 break;
@@ -78,14 +77,14 @@ public class GameTimer extends Timer {
         if (seconds % 5 == 0) {
             game.getScoreboardManager().updateScoreboard();
             
-            game.getPlayers().values().forEach(mwPlayer -> {
+            getGame().getPlayers().values().forEach(mwPlayer -> {
                 Player player = mwPlayer.getPlayer();
                 
                 if (mwPlayer.getTeam().getTeamType() == TeamType.PLAYER) {
                     
                     if (mwPlayer.getPlayer().getGameMode() != GameMode.SURVIVAL) return;
                     
-                    if (game.isInGameArea(player.getLocation())) return;
+                    if (getGame().isInGameArea(player.getLocation())) return;
                     
                     player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.ARENA_LEAVED));
                     mwPlayer.getTeam().teleportToTeamSpawn(player);
@@ -96,7 +95,7 @@ public class GameTimer extends Timer {
         }
         
         if ((Config.getActionbarForSpecEntries().length > 0) && (seconds % Config.getActionbarForSpecDelay() == 0)) {
-            game.getPlayers().values().forEach(mwPlayer -> {
+            getGame().getPlayers().values().forEach(mwPlayer -> {
                 Player player = mwPlayer.getPlayer();
                 
                 if (mwPlayer.getTeam().getTeamType() == TeamType.PLAYER) return;
@@ -110,9 +109,9 @@ public class GameTimer extends Timer {
                 actionbarMsgCounter++;
             }
         }
-
-        game.checkPortals();
-
+        
+        getGame().checkPortals();
+        
         seconds--;
     }
 }

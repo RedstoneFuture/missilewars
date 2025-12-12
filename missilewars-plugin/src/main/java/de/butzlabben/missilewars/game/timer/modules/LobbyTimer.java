@@ -36,6 +36,7 @@ public class LobbyTimer extends Timer {
 
     @Override
     public void tick() {
+        
         if (getGame().getPlayers().isEmpty()) return;
 
         // Displaying countdown:
