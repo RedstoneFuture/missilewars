@@ -44,8 +44,7 @@ public class ScoreboardManager {
     private Team team1;
     private Team team2;
 
-    @Setter
-    private String arenaDisplayName;
+    @Setter private String arenaDisplayName;
     
     // get config options
     private static final String SCOREBOARD_TITLE = Config.getScoreboardTitle();
@@ -205,7 +204,7 @@ public class ScoreboardManager {
     }
 
     /**
-     * This method deletes the old Scoreboard object, if one exists.
+     * This method deletes the old scoreboard object, if one exists.
      */
     public void removeScoreboard() {
 
