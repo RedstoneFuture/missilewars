@@ -111,22 +111,6 @@ public class ScoreboardManager {
         }
     }
 
-    /**
-     * This method creates a team for the scoreboard and adds it to the teams ArrayList.
-     *
-     * @param line the Scoreboard line number
-     */
-    private void addScoreboardTeam(int line) {
-        org.bukkit.scoreboard.Team team;
-
-        if (teams.size() < line) {
-            team = board.registerNewTeam(arenaDisplayName + "-" + line);
-            team.addEntry("§" + COLOR_CODES[line - 1]);
-            obj.getScore("§" + COLOR_CODES[line - 1]).setScore(line);
-            teams.put(line, team);
-        }
-    }
-
     public void updateScoreboard() {
 
         // the number of lines required for the complete Scoreboard
@@ -150,7 +134,7 @@ public class ScoreboardManager {
 
                 // Note: A team-page switch and a 'member_list_max' setting (max items for one page) 
                 // is used here, as the scoreboard can't display more than 15 items.
-                
+
                 Team placeholderTeam;
 
                 // set the current placeholder team
@@ -164,7 +148,7 @@ public class ScoreboardManager {
                 if (placeholderTeam.getMembers().isEmpty()) {
                     continue;
                 }
-                
+
                 // reset team-page number if there are no longer enough players on the team for this page
                 if (getScoreboardTeamPage(placeholderTeam) > Math.ceil((double)placeholderTeam.getMembers().size() / (double)MEMBER_LIST_MAX_SIZE)) {
                     resetScoreboardTeamPage(placeholderTeam);
@@ -174,13 +158,13 @@ public class ScoreboardManager {
 
                 // list all team members
                 for (MWPlayer mwPlayer : placeholderTeam.getMembers()) {
-                    
+
                     // min-item limit check for the current page
                     if (playerCounter <= (getScoreboardTeamPage(placeholderTeam) - 1) * MEMBER_LIST_MAX_SIZE) {
                         playerCounter++;
                         continue;
                     }
-                    
+
                     // max-item limit check for the current page
                     if (playerCounter > getScoreboardTeamPage(placeholderTeam) * MEMBER_LIST_MAX_SIZE) {
                         resetScoreboardTeamPage(placeholderTeam);
@@ -197,12 +181,12 @@ public class ScoreboardManager {
                     playerCounter++;
                     scoreboardLine--;
                 }
-                
+
                 // Fill the rest of the player-list lines with a blank line, if no more player exists, starting on page 2.
                 if (getScoreboardTeamPage(placeholderTeam) == 1) continue;
                 for (int i = playerCounter; i <= getScoreboardTeamPage(placeholderTeam) * MEMBER_LIST_MAX_SIZE; i++) {
                     teams.get(scoreboardLine).setPrefix("");
-                    
+
                     playerCounter++;
                     scoreboardLine--;
                 }
@@ -217,7 +201,59 @@ public class ScoreboardManager {
                 scoreboardLine--;
             }
         }
-        
+
+    }
+
+    /**
+     * This method deletes the current scoreboard and creates a new one.
+     */
+    public void resetScoreboard() {
+        removeScoreboard();
+        createScoreboard();
+    }
+
+    /**
+     * This method deletes the old scoreboard object, if one exists.
+     */
+    public void removeScoreboard() {
+
+        boardIsReady = false;
+
+        if (obj != null) {
+            obj.unregister();
+            obj = null;
+        }
+
+        if (!teams.isEmpty()) {
+            teams.forEach((k, v) -> v.unregister());
+            teams.clear();
+        }
+
+    }
+
+    /**
+     * This method deletes the scoreboard timer, if one exists.
+     */
+    public void stopScoreboardTimer() {
+        if (taskManager != null) {
+            taskManager.stopTimer();
+        }
+    }
+
+    /**
+     * This method creates a team for the scoreboard and adds it to the teams ArrayList.
+     *
+     * @param line the Scoreboard line number
+     */
+    private void addScoreboardTeam(int line) {
+        org.bukkit.scoreboard.Team team;
+
+        if (teams.size() < line) {
+            team = board.registerNewTeam(arenaDisplayName + "-" + line);
+            team.addEntry("§" + COLOR_CODES[line - 1]);
+            obj.getScore("§" + COLOR_CODES[line - 1]).setScore(line);
+            teams.put(line, team);
+        }
     }
 
     /**
@@ -242,42 +278,6 @@ public class ScoreboardManager {
         }
 
         return team1ListSize + team2ListSize;
-    }
-
-    /**
-     * This method deletes the old scoreboard object, if one exists.
-     */
-    public void removeScoreboard() {
-        
-        boardIsReady = false;
-        
-        if (obj != null) {
-            obj.unregister();
-            obj = null;
-        }
-
-        if (!teams.isEmpty()) {
-            teams.forEach((k, v) -> v.unregister());
-            teams.clear();
-        }
-
-    }
-    
-    /**
-     * This method deletes the scoreboard timer, if one exists.
-     */
-    public void stopScoreboardTimer() {
-        if (taskManager != null) {
-            taskManager.stopTimer();
-        }
-    }
-
-    /**
-     * This method deletes the current scoreboard and creates a new one.
-     */
-    public void resetScoreboard() {
-        removeScoreboard();
-        createScoreboard();
     }
 
     /**
