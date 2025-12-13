@@ -636,10 +636,16 @@ public class Game {
     }
     
     /**
-     * This method updates the MissileWars signs and the scoreboard.
+     * This method updates the MissileWars info modules:
+     * - MissileWars info signs
+     * - Scoreboard
+     * - Game-Join menu
      */
     public void updateGameInfo() {
         MissileWars.getInstance().getSignRepository().getSigns(this).forEach(MWSign::update);
+        
+        // Not always a scoreboard update/reset is needed, because the Game-Timer are always update it.
+        // But the most team player changes (join/leave/switch) needs a scoreboard reset, to delete the old line entry.
         scoreboardManager.resetScoreboard();
         if (state == GameState.LOBBY) players.forEach((uuid, mwPlayer) -> mwPlayer.getGameJoinMenu().getMenu());
         
