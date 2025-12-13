@@ -61,6 +61,7 @@ public class ScoreboardManager {
     @Getter private boolean boardIsReady = false;
     private Objective obj;
     private Map<Integer, org.bukkit.scoreboard.Team> teams = new HashMap<>();
+    private Map<Team, Integer> scoreboardTeamPage = new HashMap<>();
     private static final String[] COLOR_CODES = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};
     private TaskManager taskManager;
 
@@ -95,7 +96,10 @@ public class ScoreboardManager {
                 isTeam2ListUsed = true;
             }
         }
-
+        
+        resetScoreboardTeamPage(team1);
+        resetScoreboardTeamPage(team2);
+        
         updateScoreboard();
         
         boardIsReady = true;
@@ -144,6 +148,9 @@ public class ScoreboardManager {
 
                 // team member list placeholder management:
 
+                // Note: A team-page switch and a 'member_list_max' setting (max items for one page) 
+                // is used here, as the scoreboard can't display more than 15 items.
+                
                 Team placeholderTeam;
 
                 // set the current placeholder team
@@ -157,14 +164,26 @@ public class ScoreboardManager {
                 if (placeholderTeam.getMembers().isEmpty()) {
                     continue;
                 }
+                
+                // reset team-page number if there are no longer enough players on the team for this page
+                if (getScoreboardTeamPage(placeholderTeam) > Math.ceil((double)placeholderTeam.getMembers().size() / (double)MEMBER_LIST_MAX_SIZE)) {
+                    resetScoreboardTeamPage(placeholderTeam);
+                }
 
-                int playerCounter = 0;
+                int playerCounter = 1;
 
                 // list all team members
                 for (MWPlayer mwPlayer : placeholderTeam.getMembers()) {
-
-                    // limit check
-                    if (playerCounter >= MEMBER_LIST_MAX_SIZE) {
+                    
+                    // min-item limit check for the current page
+                    if (playerCounter <= (getScoreboardTeamPage(placeholderTeam) - 1) * MEMBER_LIST_MAX_SIZE) {
+                        playerCounter++;
+                        continue;
+                    }
+                    
+                    // max-item limit check for the current page
+                    if (playerCounter > getScoreboardTeamPage(placeholderTeam) * MEMBER_LIST_MAX_SIZE) {
+                        resetScoreboardTeamPage(placeholderTeam);
                         break;
                     }
 
@@ -175,6 +194,15 @@ public class ScoreboardManager {
                             .replace("%team_color%", teamColor);
                     teams.get(scoreboardLine).setPrefix(replacedLine);
 
+                    playerCounter++;
+                    scoreboardLine--;
+                }
+                
+                // Fill the rest of the player-list lines with a blank line, if no more player exists, starting on page 2.
+                if (getScoreboardTeamPage(placeholderTeam) == 1) continue;
+                for (int i = playerCounter; i <= getScoreboardTeamPage(placeholderTeam) * MEMBER_LIST_MAX_SIZE; i++) {
+                    teams.get(scoreboardLine).setPrefix("");
+                    
                     playerCounter++;
                     scoreboardLine--;
                 }
@@ -189,6 +217,7 @@ public class ScoreboardManager {
                 scoreboardLine--;
             }
         }
+        
     }
 
     /**
@@ -276,5 +305,37 @@ public class ScoreboardManager {
 
         return text;
     }
-
+    
+    /**
+     * This method gets the team page number for the scoreboard.
+     * 
+     * @param team the target MissileWars player team
+     */
+    public int getScoreboardTeamPage(Team team) {
+        if (scoreboardTeamPage.containsKey(team)) {
+            return scoreboardTeamPage.get(team);
+        }
+        return 0;
+    }
+    
+    /**
+     * This method increase the team page number to display more 
+     * team-player with over the time in the scoreboard.
+     * 
+     * @param team the target MissileWars player team
+     */
+    public void increaseScoreboardTeamPage(Team team) {
+        scoreboardTeamPage.put(team, scoreboardTeamPage.get(team) + 1);
+    }
+    
+    /**
+     * This method resets the team page number for the scoreboard
+     * to restart with page '1' again.
+     * 
+      @param team the target MissileWars player team
+     */
+    public void resetScoreboardTeamPage(Team team) {
+        scoreboardTeamPage.put(team, 1);
+    }
+    
 }
