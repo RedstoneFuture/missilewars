@@ -16,38 +16,33 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.game.timer;
+package de.butzlabben.missilewars.game.timer.modules;
 
-import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.game.Game;
+import de.butzlabben.missilewars.game.misc.ScoreboardManager;
+import de.butzlabben.missilewars.game.timer.Timer;
 
 /**
  * @author Butzlabben
- * @since 14.01.2018
+ * @since 11.01.2018
  */
-public class EndTimer extends Timer {
-
-    public EndTimer(Game game) {
-        super(game, 21);
+public class ScoreboardTimer extends Timer {
+    
+    public ScoreboardTimer(Game game) {
+        super(game, 0);
         resetSeconds();
     }
 
     @Override
     public void tick() {
-
-        switch (seconds) {
-            case 15:
-                sendBroadcast(PluginMessages.getMessage(true, PluginMessages.MessageEnum.ENDGAME_TIMER_GAME_STARTS_NEW_IN)
-                        .replace("%seconds%", Integer.toString(seconds)));
-                break;
-            case 0:
-                getGame().reset();
-                break;
-            default:
-                break;
-        }
-
-        seconds--;
+        ScoreboardManager scoreboard = getGame().getScoreboardManager();
+        
+        if (!scoreboard.isBoardIsReady()) return;
+        
+        // Updating the scoreboard:
+        scoreboard.updateScoreboard();
+        scoreboard.increaseScoreboardTeamPage(getGame().getTeamManager().getTeam1());
+        scoreboard.increaseScoreboardTeamPage(getGame().getTeamManager().getTeam2());
     }
-
+    
 }

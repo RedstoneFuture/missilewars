@@ -30,7 +30,7 @@ import de.butzlabben.missilewars.game.enums.GameState;
 import de.butzlabben.missilewars.game.enums.TeamType;
 import de.butzlabben.missilewars.game.enums.VoteState;
 import de.butzlabben.missilewars.game.schematics.objects.Missile;
-import de.butzlabben.missilewars.game.timer.LobbyTimer;
+import de.butzlabben.missilewars.game.timer.modules.LobbyTimer;
 import de.butzlabben.missilewars.initialization.ConfigLoader;
 import de.butzlabben.missilewars.player.MWPlayer;
 import de.butzlabben.missilewars.util.MaterialUtil;

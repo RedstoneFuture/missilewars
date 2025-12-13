@@ -37,9 +37,9 @@ import de.butzlabben.missilewars.game.schematics.objects.Missile;
 import de.butzlabben.missilewars.game.schematics.objects.Shield;
 import de.butzlabben.missilewars.game.signs.MWSign;
 import de.butzlabben.missilewars.game.stats.FightStats;
-import de.butzlabben.missilewars.game.timer.EndTimer;
-import de.butzlabben.missilewars.game.timer.GameTimer;
-import de.butzlabben.missilewars.game.timer.LobbyTimer;
+import de.butzlabben.missilewars.game.timer.modules.EndTimer;
+import de.butzlabben.missilewars.game.timer.modules.GameTimer;
+import de.butzlabben.missilewars.game.timer.modules.LobbyTimer;
 import de.butzlabben.missilewars.game.timer.TaskManager;
 import de.butzlabben.missilewars.listener.game.EndListener;
 import de.butzlabben.missilewars.listener.game.GameBoundListener;
@@ -238,7 +238,7 @@ public class Game {
 
         taskManager.stopTimer();
         updateGameListener(new GameListener(this));
-        taskManager.setTimer(new GameTimer(this));
+        taskManager.setTimer(new GameTimer(this, arenaConfig.getGameDuration() * 60));
         taskManager.runTimer(5, 20);
         state = GameState.INGAME;
 
@@ -274,7 +274,7 @@ public class Game {
 
         taskManager.stopTimer();
         updateGameListener(new EndListener(this));
-        taskManager.setTimer(new EndTimer(this));
+        taskManager.setTimer(new EndTimer(this, 21));
         taskManager.runTimer(5, 20);
         state = GameState.END;
 
@@ -339,6 +339,7 @@ public class Game {
         }
 
         if (scoreboardManager != null) {
+            scoreboardManager.stopScoreboardTimer();
             scoreboardManager.removeScoreboard();
         }
     }
@@ -636,10 +637,16 @@ public class Game {
     }
     
     /**
-     * This method updates the MissileWars signs and the scoreboard.
+     * This method updates the MissileWars info modules:
+     * - MissileWars info signs
+     * - Scoreboard
+     * - Game-Join menu
      */
     public void updateGameInfo() {
         MissileWars.getInstance().getSignRepository().getSigns(this).forEach(MWSign::update);
+        
+        // Not always a scoreboard update/reset is needed, because the Game-Timer are always update it.
+        // But the most team player changes (join/leave/switch) needs a scoreboard reset, to delete the old line entry.
         scoreboardManager.resetScoreboard();
         if (state == GameState.LOBBY) players.forEach((uuid, mwPlayer) -> mwPlayer.getGameJoinMenu().getMenu());
         

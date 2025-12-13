@@ -122,8 +122,8 @@ public class GameJoinManager {
         sendTeamSwitchBroadcastMsg(mwPlayer, oldTeam);
         // Sending the private info message is skipped here.
         
-        // Manual update of the scoreboard because the event listener was not addressed.
-        game.getScoreboardManager().updateScoreboard();
+        // Manual update of the game infos because the event listener was not addressed.
+        game.updateGameInfo();
         
         if (game.getState() == GameState.LOBBY) {
             getGameJoinMenu(mwPlayer);

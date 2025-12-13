@@ -16,12 +16,13 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.game.timer;
+package de.butzlabben.missilewars.game.timer.modules;
 
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.enums.TeamType;
+import de.butzlabben.missilewars.game.timer.Timer;
 import de.redstoneworld.redutilities.player.Messages;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
@@ -34,15 +35,14 @@ public class GameTimer extends Timer {
     
     int actionbarMsgCounter = 0;
     
-    public GameTimer(Game game) {
-        super(game, game.getArenaConfig().getGameDuration() * 60);
+    public GameTimer(Game game, int startTime) {
+        super(game, startTime);
         resetSeconds();
     }
 
     @Override
     public void tick() {
-        Game game = getGame();
-
+        
         switch (seconds) {
             case 7200:
             case 5400:
@@ -67,24 +67,23 @@ public class GameTimer extends Timer {
                         .replace("%seconds%", Integer.toString(seconds)));
                 break;
             case 0:
-                game.sendGameResult();
-                game.stopGame();
+                getGame().sendGameResult();
+                getGame().stopGame();
                 break;
             default:
                 break;
         }
 
         if (seconds % 5 == 0) {
-            game.getScoreboardManager().updateScoreboard();
             
-            game.getPlayers().values().forEach(mwPlayer -> {
+            getGame().getPlayers().values().forEach(mwPlayer -> {
                 Player player = mwPlayer.getPlayer();
                 
                 if (mwPlayer.getTeam().getTeamType() == TeamType.PLAYER) {
                     
                     if (mwPlayer.getPlayer().getGameMode() != GameMode.SURVIVAL) return;
                     
-                    if (game.isInGameArea(player.getLocation())) return;
+                    if (getGame().isInGameArea(player.getLocation())) return;
                     
                     player.sendMessage(PluginMessages.getMessage(true, PluginMessages.MessageEnum.ARENA_LEAVED));
                     mwPlayer.getTeam().teleportToTeamSpawn(player);
@@ -95,7 +94,7 @@ public class GameTimer extends Timer {
         }
         
         if ((Config.getActionbarForSpecEntries().length > 0) && (seconds % Config.getActionbarForSpecDelay() == 0)) {
-            game.getPlayers().values().forEach(mwPlayer -> {
+            getGame().getPlayers().values().forEach(mwPlayer -> {
                 Player player = mwPlayer.getPlayer();
                 
                 if (mwPlayer.getTeam().getTeamType() == TeamType.PLAYER) return;
@@ -109,9 +108,9 @@ public class GameTimer extends Timer {
                 actionbarMsgCounter++;
             }
         }
-
-        game.checkPortals();
-
+        
+        getGame().checkPortals();
+        
         seconds--;
     }
 }
