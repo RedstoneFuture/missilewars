@@ -339,6 +339,7 @@ public class Game {
         }
 
         if (scoreboardManager != null) {
+            scoreboardManager.stopScoreboardTimer();
             scoreboardManager.removeScoreboard();
         }
     }

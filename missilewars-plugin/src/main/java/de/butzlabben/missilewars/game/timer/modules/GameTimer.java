@@ -75,7 +75,6 @@ public class GameTimer extends Timer {
         }
 
         if (seconds % 5 == 0) {
-            game.getScoreboardManager().updateScoreboard();
             
             getGame().getPlayers().values().forEach(mwPlayer -> {
                 Player player = mwPlayer.getPlayer();

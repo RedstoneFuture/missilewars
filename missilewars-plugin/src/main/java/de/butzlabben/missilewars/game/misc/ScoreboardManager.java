@@ -21,6 +21,8 @@ package de.butzlabben.missilewars.game.misc;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.Team;
+import de.butzlabben.missilewars.game.timer.modules.ScoreboardTimer;
+import de.butzlabben.missilewars.game.timer.TaskManager;
 import de.butzlabben.missilewars.player.MWPlayer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -56,9 +58,11 @@ public class ScoreboardManager {
     private boolean isTeam2ListUsed = false;
 
     @Getter private Scoreboard board;
+    @Getter private boolean boardIsReady = false;
     private Objective obj;
     private Map<Integer, org.bukkit.scoreboard.Team> teams = new HashMap<>();
     private static final String[] COLOR_CODES = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"};
+    private TaskManager taskManager;
 
     /**
      * This method registers the scoreboard.
@@ -93,6 +97,14 @@ public class ScoreboardManager {
         }
 
         updateScoreboard();
+        
+        boardIsReady = true;
+        
+        if (taskManager == null) {
+            taskManager = new TaskManager(game);
+            taskManager.setTimer(new ScoreboardTimer(game));
+            taskManager.runTimer(0, 60);
+        }
     }
 
     /**
@@ -207,7 +219,9 @@ public class ScoreboardManager {
      * This method deletes the old scoreboard object, if one exists.
      */
     public void removeScoreboard() {
-
+        
+        boardIsReady = false;
+        
         if (obj != null) {
             obj.unregister();
             obj = null;
@@ -218,6 +232,15 @@ public class ScoreboardManager {
             teams.clear();
         }
 
+    }
+    
+    /**
+     * This method deletes the scoreboard timer, if one exists.
+     */
+    public void stopScoreboardTimer() {
+        if (taskManager != null) {
+            taskManager.stopTimer();
+        }
     }
 
     /**
