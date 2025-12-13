@@ -111,6 +111,9 @@ public class ScoreboardManager {
         }
     }
 
+    /**
+     * This method updates the individual scoreboard lines.
+     */
     public void updateScoreboard() {
 
         // the number of lines required for the complete Scoreboard
