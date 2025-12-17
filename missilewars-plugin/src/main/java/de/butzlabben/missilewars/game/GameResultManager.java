@@ -7,7 +7,6 @@ import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.enums.TeamType;
 import de.butzlabben.missilewars.player.MWPlayer;
 import de.butzlabben.missilewars.util.ColorUtil;
-import de.butzlabben.missilewars.util.MoneyUtil;
 import de.butzlabben.missilewars.util.version.ColorConverter;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -35,7 +34,6 @@ public class GameResultManager {
             Team team = mwPlayer.getTeam();
             
             if (team.getTeamType() == TeamType.PLAYER) {
-                sendMoney(mwPlayer);
                 sendGameResultTitle(mwPlayer);
                 sendGameResultSound(mwPlayer);
             } else {
@@ -52,31 +50,6 @@ public class GameResultManager {
         
     }
     
-    /**
-     * This method sends all team members the money for playing the game
-     * with a specific amount for win and lose.
-     */
-    public void sendMoney(MWPlayer mwPlayer) {
-        int money;
-
-        switch (mwPlayer.getTeam().getGameResult()) {
-            case WIN:
-                money = game.getArenaConfig().getMoney().getWin();
-                break;
-            case LOSE:
-                money = game.getArenaConfig().getMoney().getLoss();
-                break;
-            case DRAW:
-                money = game.getArenaConfig().getMoney().getDraw();
-                break;
-            default:
-                money = 0;
-                break;
-        }
-
-        MoneyUtil.giveMoney(mwPlayer.getUuid(), money);
-    }
-
     /**
      * This method sends all team members the title / subtitle of the
      * game result.
