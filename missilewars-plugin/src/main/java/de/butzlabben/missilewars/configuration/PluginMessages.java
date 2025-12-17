@@ -177,7 +177,6 @@ public class PluginMessages {
         GAME_RESULT_SUBTITLE_LOSER("game_result.subtitle_loser", "&chas lost!"),
         GAME_RESULT_TITLE_DRAW("game_result.title_draw", "&7Draw!"),
         GAME_RESULT_SUBTITLE_DRAW("game_result.subtitle_draw", ""),
-        GAME_RESULT_MONEY("game_result.money", "&7You received &e%money% &7coins."),
 
         VOTE_SUCCESS("vote.success", "&7You successfully voted for the map %map%."),
         VOTE_FINISHED("vote.finished", "&7The map %map% &7was selected."),
