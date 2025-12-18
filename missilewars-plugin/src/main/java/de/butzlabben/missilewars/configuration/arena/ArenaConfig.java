@@ -57,6 +57,7 @@ public class ArenaConfig implements Cloneable {
     @SerializedName("shield") private ShieldConfig shieldConfig = new ShieldConfig();
     @Setter @SerializedName("area") private AreaConfig areaConfig = new AreaConfig(-30, 0, -72, 30, 256, 72);
     @SerializedName("teamchange_ongoing_game") private boolean teamchangeOngoingGame = false;
+    @SerializedName("end_game_actions") private EndGameActionsConfig endGameActions = new EndGameActionsConfig();
 
     @SerializedName("spectator_spawn")
     @Setter
