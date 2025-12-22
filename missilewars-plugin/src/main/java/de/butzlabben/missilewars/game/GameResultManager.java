@@ -99,12 +99,12 @@ public class GameResultManager {
             
             if (teamManager.getTeam1().getGameResult() == GameResult.WIN) {
                 title = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_TITLE_WON)
-                        .replace("%team%", teamManager.getTeam1().getName());
+                        .replace("%team%", teamManager.getTeam1().getFullname());
                 subTitle = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_SUBTITLE_WON);
     
             } else if (teamManager.getTeam2().getGameResult() == GameResult.WIN) {
                 title = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_TITLE_WON)
-                        .replace("%team%", teamManager.getTeam2().getName());
+                        .replace("%team%", teamManager.getTeam2().getFullname());
                 subTitle = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_SUBTITLE_WON);
     
             } else {
