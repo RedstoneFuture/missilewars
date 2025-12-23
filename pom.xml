@@ -107,7 +107,7 @@
         <dependency>
             <groupId>de.redstoneworld.redutilities</groupId>
             <artifactId>redutilities</artifactId>
-            <version>0.0.18-Snapshot</version>
+            <version>0.0.20-Snapshot</version>
         </dependency>
     </dependencies>
 
