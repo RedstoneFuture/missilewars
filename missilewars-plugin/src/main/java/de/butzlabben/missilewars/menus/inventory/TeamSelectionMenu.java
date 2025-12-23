@@ -76,6 +76,8 @@ public class TeamSelectionMenu {
         updateGuiItems(mwPlayer);
         
         pane1.setOnClick(event -> {
+            event.setCancelled(true);
+            
             // prevent spam with the event handling
             if (menuUtils.isInteractDelay(mwPlayer, event)) return;
             menuUtils.setInteractDelay(mwPlayer.getPlayer());
@@ -87,6 +89,8 @@ public class TeamSelectionMenu {
         });
         
         pane2.setOnClick(event -> {
+            event.setCancelled(true);
+            
             // prevent spam with the event handling
             if (menuUtils.isInteractDelay(mwPlayer, event)) return;
             menuUtils.setInteractDelay(mwPlayer.getPlayer());
@@ -98,6 +102,8 @@ public class TeamSelectionMenu {
         });
         
         paneSpec.setOnClick(event -> {
+            event.setCancelled(true);
+            
             // prevent spam with the event handling
             if (menuUtils.isInteractDelay(mwPlayer, event)) return;
             menuUtils.setInteractDelay(mwPlayer.getPlayer());
