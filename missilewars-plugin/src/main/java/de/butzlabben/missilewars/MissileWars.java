@@ -32,7 +32,6 @@ import de.butzlabben.missilewars.initialization.GamesInitialization;
 import de.butzlabben.missilewars.listener.PlayerListener;
 import de.butzlabben.missilewars.listener.SignListener;
 import de.butzlabben.missilewars.util.ConnectionHolder;
-import de.butzlabben.missilewars.util.MoneyUtil;
 import de.butzlabben.missilewars.util.stats.PreFetcher;
 import de.butzlabben.missilewars.util.version.VersionUtil;
 import lombok.Getter;
@@ -90,7 +89,6 @@ public class MissileWars extends JavaPlugin {
         
         initialWeSupport();
         initialPapiSupport();
-        MoneyUtil.giveMoney(null, -1);
         
         GamesInitialization.initialize();
         

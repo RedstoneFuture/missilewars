@@ -4,7 +4,7 @@ version: ${project.version}
 main: de.butzlabben.missilewars.MissileWars
 api-version: 1.20
 depend: [ WorldEdit ]
-softdepend: [ Vault, FastAsyncWorldEdit, PlaceholderAPI ]
+softdepend: [ FastAsyncWorldEdit, PlaceholderAPI ]
 
 permissions:
   mw.*:

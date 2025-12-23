@@ -89,14 +89,6 @@
             <version>3.1.0</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.github.MilkBowl/VaultAPI -->
-        <dependency>
-            <groupId>com.github.MilkBowl</groupId>
-            <artifactId>VaultAPI</artifactId>
-            <version>1.7.1</version>
-            <scope>provided</scope>
-        </dependency>
-
         <!-- repo minecraft-repo -->
         <dependency>
             <groupId>com.mojang</groupId>

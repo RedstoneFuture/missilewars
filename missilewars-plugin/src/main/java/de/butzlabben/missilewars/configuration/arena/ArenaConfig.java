@@ -52,12 +52,12 @@ public class ArenaConfig implements Cloneable {
     @SerializedName("arrow") private ArrowConfig arrowConfig = new ArrowConfig();
     @SerializedName("save_statistics") private boolean saveStatistics = true;
     @SerializedName("fall_protection") private FallProtectionConfig fallProtection = new FallProtectionConfig();
-    @SerializedName("game_result.money") private MoneyConfig money = new MoneyConfig();
     @SerializedName("equipment_interval") private EquipmentIntervalConfig interval = new EquipmentIntervalConfig();
     @SerializedName("missile") private MissileConfig missileConfig = new MissileConfig();
     @SerializedName("shield") private ShieldConfig shieldConfig = new ShieldConfig();
     @Setter @SerializedName("area") private AreaConfig areaConfig = new AreaConfig(-30, 0, -72, 30, 256, 72);
     @SerializedName("teamchange_ongoing_game") private boolean teamchangeOngoingGame = false;
+    @SerializedName("end_game_actions") private EndGameActionsConfig endGameActions = new EndGameActionsConfig();
 
     @SerializedName("spectator_spawn")
     @Setter

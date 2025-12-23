@@ -1,13 +1,14 @@
 package de.butzlabben.missilewars.game;
 
 import de.butzlabben.missilewars.MissileWars;
+import de.butzlabben.missilewars.configuration.ActionSet;
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.PluginMessages;
+import de.butzlabben.missilewars.configuration.arena.modules.EndGameActionsConfig;
 import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.enums.TeamType;
 import de.butzlabben.missilewars.player.MWPlayer;
 import de.butzlabben.missilewars.util.ColorUtil;
-import de.butzlabben.missilewars.util.MoneyUtil;
 import de.butzlabben.missilewars.util.version.ColorConverter;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -24,23 +25,32 @@ public class GameResultManager {
     private final Game game;
     private final TeamManager teamManager;
     
+    private ActionSet playerWinActions;
+    private ActionSet playerLoseActions;
+    private ActionSet playerDrawActions;
+    private ActionSet spectatorActions;
+    
     public GameResultManager(Game game) {
         this.game = game;
         this.teamManager = game.getTeamManager();
     }
     
     public void executeResult() {
+
+        EndGameActionsConfig endGameActionsConfig = game.getArenaConfig().getEndGameActions();
+        
+        playerWinActions = new ActionSet(endGameActionsConfig.getPlayerWin());
+        playerLoseActions = new ActionSet(endGameActionsConfig.getPlayerLose());
+        playerDrawActions = new ActionSet(endGameActionsConfig.getPlayerDraw());
+        spectatorActions = new ActionSet(endGameActionsConfig.getSpectator());
+        
         for (Player player : game.getGameWorld().getWorld().getPlayers()) {
             MWPlayer mwPlayer = game.getPlayer(player);
-            Team team = mwPlayer.getTeam();
             
-            if (team.getTeamType() == TeamType.PLAYER) {
-                sendMoney(mwPlayer);
-                sendGameResultTitle(mwPlayer);
-                sendGameResultSound(mwPlayer);
-            } else {
-                sendNeutralGameResultTitle(player);
-            }
+            sendGameResultTitle(mwPlayer);
+            sendGameResultSound(mwPlayer);
+            Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> executeEndGameActions(mwPlayer), 
+                    endGameActionsConfig.getExecutionDelay());
         }
         
         if (!Config.isGameResultFirework()) return;
@@ -51,108 +61,104 @@ public class GameResultManager {
         Bukkit.getScheduler().runTaskLater(MissileWars.getInstance(), () -> spawnSetOfFireworks(15), 100);
         
     }
-    
-    /**
-     * This method sends all team members the money for playing the game
-     * with a specific amount for win and lose.
-     */
-    public void sendMoney(MWPlayer mwPlayer) {
-        int money;
-
-        switch (mwPlayer.getTeam().getGameResult()) {
-            case WIN:
-                money = game.getArenaConfig().getMoney().getWin();
-                break;
-            case LOSE:
-                money = game.getArenaConfig().getMoney().getLoss();
-                break;
-            case DRAW:
-                money = game.getArenaConfig().getMoney().getDraw();
-                break;
-            default:
-                money = 0;
-                break;
-        }
-
-        MoneyUtil.giveMoney(mwPlayer.getUuid(), money);
-    }
 
     /**
-     * This method sends all team members the title / subtitle of the
-     * game result.
+     * This method sends the title and subtitle to the target team member or
+     * spectator of the Game.
+     *
+     * @param mwPlayer the target MissileWars player
      */
     public void sendGameResultTitle(MWPlayer mwPlayer) {
+        Player player = mwPlayer.getPlayer();
+        
         String title;
         String subTitle;
+        
+        if (mwPlayer.getTeam().getTeamType() == TeamType.PLAYER) {
 
-        switch (mwPlayer.getTeam().getGameResult()) {
-            case WIN:
-                title = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_TITLE_WINNER);
-                subTitle = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_SUBTITLE_WINNER);
-                break;
-            case LOSE:
-                title = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_TITLE_LOSER);
-                subTitle = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_SUBTITLE_LOSER);
-                break;
-            case DRAW:
+            switch (mwPlayer.getTeam().getGameResult()) {
+                case WIN:
+                    title = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_TITLE_WINNER);
+                    subTitle = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_SUBTITLE_WINNER);
+                    break;
+                case LOSE:
+                    title = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_TITLE_LOSER);
+                    subTitle = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_SUBTITLE_LOSER);
+                    break;
+                case DRAW:
+                    title = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_TITLE_DRAW);
+                    subTitle = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_SUBTITLE_DRAW);
+                    break;
+                default:
+                    title = null;
+                    subTitle = null;
+                    break;
+            }
+        
+        } else {
+            
+            if (teamManager.getTeam1().getGameResult() == GameResult.WIN) {
+                title = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_TITLE_WON)
+                        .replace("%team%", teamManager.getTeam1().getFullname());
+                subTitle = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_SUBTITLE_WON);
+    
+            } else if (teamManager.getTeam2().getGameResult() == GameResult.WIN) {
+                title = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_TITLE_WON)
+                        .replace("%team%", teamManager.getTeam2().getFullname());
+                subTitle = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_SUBTITLE_WON);
+    
+            } else {
                 title = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_TITLE_DRAW);
                 subTitle = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_SUBTITLE_DRAW);
-                break;
-            default:
-                title = null;
-                subTitle = null;
-                break;
+            }
+            
         }
-
-        mwPlayer.getPlayer().sendTitle(title, subTitle, 10, 140, 20);
-    }
-
-    /**
-     * This method sends all team members the end-sound of the
-     * game result.
-     */
-    public void sendGameResultSound(MWPlayer mwPlayer) {
-
-        Player player = mwPlayer.getPlayer();
-
-        switch (mwPlayer.getTeam().getGameResult()) {
-            case WIN:
-                player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_PLING, 100, 3);
-                break;
-            case LOSE:
-            case DRAW:
-                player.playSound(player.getLocation(), Sound.ENTITY_WITHER_DEATH, 100, 0);
-                break;
-            default:
-                break;
-        }
+        
+        player.sendTitle(title, subTitle, 10, 140, 20);
     }
     
     /**
-     * This method sends the players the title / subtitle of the
-     * game result there are not in a team (= spectator).
+     * This method sends the end-game sound to the target team member or
+     * spectator of the Game.
+     *
+     * @param mwPlayer the target MissileWars player
      */
-    private void sendNeutralGameResultTitle(Player player) {
-        String title;
-        String subTitle;
+    public void sendGameResultSound(MWPlayer mwPlayer) {
+        Player player = mwPlayer.getPlayer();
+        
+        player.playSound(player.getLocation(), Sound.ENTITY_WITHER_DEATH, 100, 0);
+        // player.playSound(player.getLocation(), Sound.ENTITY_WITHER_SPAWN, 100, 1);
+    }
+    
+    /**
+     * This method executes the end-game actions for the target team member or
+     * spectator of the Game.
+     *
+     * @param mwPlayer the target MissileWars player
+     */
+    private void executeEndGameActions(MWPlayer mwPlayer) {
+        if (mwPlayer == null) return;
+        Player player = mwPlayer.getPlayer();
+        
+        if (mwPlayer.getTeam().getTeamType() == TeamType.PLAYER) {
 
-        if (teamManager.getTeam1().getGameResult() == GameResult.WIN) {
-            title = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_TITLE_WON)
-                    .replace("%team%", teamManager.getTeam1().getName());
-            subTitle = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_SUBTITLE_WON);
-
-        } else if (teamManager.getTeam2().getGameResult() == GameResult.WIN) {
-            title = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_TITLE_WON)
-                    .replace("%team%", teamManager.getTeam2().getName());
-            subTitle = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_SUBTITLE_WON);
-
+            switch (mwPlayer.getTeam().getGameResult()) {
+                case WIN:
+                    playerWinActions.runActions(player, game);
+                    break;
+                case LOSE:
+                    playerLoseActions.runActions(player, game);
+                    break;
+                case DRAW:
+                    playerDrawActions.runActions(player, game);
+                    break;
+                default:
+                    break;
+            }
+        
         } else {
-            title = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_TITLE_DRAW);
-            subTitle = PluginMessages.getMessage(false, PluginMessages.MessageEnum.GAME_RESULT_SUBTITLE_DRAW);
-
+            spectatorActions.runActions(player, game);
         }
-
-        player.sendTitle(title, subTitle, 10, 140, 20);
     }
     
     private void spawnSetOfFireworks(int amount) {
