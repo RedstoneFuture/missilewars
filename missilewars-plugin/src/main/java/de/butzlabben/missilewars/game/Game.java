@@ -135,7 +135,6 @@ public class Game {
         Logger.DEBUG.log("Start timer");
 
         taskManager = new TaskManager(this);
-        taskManager.stopTimer();
         updateGameListener(new LobbyListener(this));
         taskManager.setTimer(new LobbyTimer(this, gameConfig.getLobbyConfig().getLobbyTime()));
         taskManager.runTimer(0, 20);
