@@ -9,7 +9,7 @@ import de.butzlabben.missilewars.game.enums.GameResult;
 import de.butzlabben.missilewars.game.enums.TeamType;
 import de.butzlabben.missilewars.player.MWPlayer;
 import de.butzlabben.missilewars.util.ColorUtil;
-import de.butzlabben.missilewars.util.version.ColorConverter;
+import de.butzlabben.missilewars.util.ColorConverter;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;

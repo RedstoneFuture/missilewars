@@ -16,7 +16,7 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.util.version;
+package de.butzlabben.missilewars.util;
 
 import org.bukkit.Color;
 import org.bukkit.Material;

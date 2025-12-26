@@ -24,7 +24,7 @@ import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.game.signs.MWSign;
 import de.butzlabben.missilewars.game.signs.SignRepository;
-import de.butzlabben.missilewars.util.version.MaterialHelper;
+import de.butzlabben.missilewars.util.MaterialHelper;
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
