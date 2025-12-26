@@ -118,6 +118,8 @@ public class MapVoteMenu {
             
             
             arenas.setOnClick(event -> {
+                event.setCancelled(true);
+                
                 // prevent spam with the event handling
                 if (menuUtils.isInteractDelay(mwPlayer, event)) return;
                 menuUtils.setInteractDelay(mwPlayer.getPlayer());
@@ -130,11 +132,10 @@ public class MapVoteMenu {
             });
             
             backwards.setOnClick(event -> {
-                if (isFirstPage()) {
-                    event.setCancelled(true);
-                    return;
-                }
-
+                event.setCancelled(true);
+                
+                if (isFirstPage()) return;
+                
                 paginatedPane.setPage(paginatedPane.getPage() - 1);
                 backwardsItem.setItem(getBackwardsItem());
                 forwardsItem.setItem(getForwardsItem());
@@ -142,11 +143,10 @@ public class MapVoteMenu {
             });
             
             forwards.setOnClick(event -> {
-                if (isLastPage()) {
-                    event.setCancelled(true);
-                    return;
-                }
-
+                event.setCancelled(true);
+                
+                if (isLastPage()) return;
+                
                 paginatedPane.setPage(paginatedPane.getPage() + 1);
                 backwardsItem.setItem(getBackwardsItem());
                 forwardsItem.setItem(getForwardsItem());
