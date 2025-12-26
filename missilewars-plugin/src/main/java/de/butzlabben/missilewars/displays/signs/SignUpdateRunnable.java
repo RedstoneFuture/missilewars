@@ -16,7 +16,7 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.game.signs;
+package de.butzlabben.missilewars.displays.signs;
 
 import de.butzlabben.missilewars.MissileWars;
 import java.util.List;

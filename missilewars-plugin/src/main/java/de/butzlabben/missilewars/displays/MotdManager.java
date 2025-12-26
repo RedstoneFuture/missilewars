@@ -16,7 +16,7 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.game.misc;
+package de.butzlabben.missilewars.displays;
 
 import de.butzlabben.missilewars.configuration.Config;
 import de.butzlabben.missilewars.configuration.PluginMessages;

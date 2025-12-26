@@ -25,7 +25,7 @@ import de.butzlabben.missilewars.event.PlayerArenaJoinEvent;
 import de.butzlabben.missilewars.event.PlayerArenaLeaveEvent;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.GameManager;
-import de.butzlabben.missilewars.game.misc.MotdManager;
+import de.butzlabben.missilewars.displays.MotdManager;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;

@@ -3,7 +3,7 @@ package de.butzlabben.missilewars.initialization;
 import de.butzlabben.missilewars.MissileWars;
 import de.butzlabben.missilewars.game.Arenas;
 import de.butzlabben.missilewars.game.GameManager;
-import de.butzlabben.missilewars.game.signs.SignUpdateRunnable;
+import de.butzlabben.missilewars.displays.signs.SignUpdateRunnable;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
