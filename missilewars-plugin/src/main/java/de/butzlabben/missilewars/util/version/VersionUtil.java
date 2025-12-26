@@ -38,8 +38,8 @@ public class VersionUtil {
             // Detect version:
             String v = Bukkit.getVersion();
 
-            if (v.startsWith("1.22")) {
-                version = 22;
+            if (v.startsWith("26")) {
+                version = 26;
             } else if (v.startsWith("1.21")) {
                 version = 21;
             } else if (v.startsWith("1.20")) {
