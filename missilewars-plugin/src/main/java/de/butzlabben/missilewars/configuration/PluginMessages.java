@@ -123,7 +123,7 @@ public class PluginMessages {
         GAME_CAN_NOT_STARTET("game.can_not_startet", "&cGame cannot be started."),
         GAME_GAME_STARTS("game.game_starts", "&aThe game starts."),
         GAME_MAX_REACHED("game.max_reached", "&cUnfortunately, the lobby is full. You can no longer enter it. Please look for another lobby or wait for the next round."),
-        GAME_REJOINED("game.rejoined", "&eWelcome back! &7A rejoin to the old team is being considered ..."),
+        GAME_REJOINED("game.rejoined", "&eWelcome back! &7A rejoin to the old team is being considered. ..."),
         
         LOBBY_TIMER_GAME_STARTS_IN("lobby_timer.game_starts_in", "&7Game starts in &e%seconds% &7seconds."),
 
@@ -196,8 +196,8 @@ public class PluginMessages {
         GAME_STATE_NO_GAME("game_state.no_game", "&cNo Game."),
         GAME_STATE_LOBBY("game_state.lobby", "&aLobby"),
         GAME_STATE_INGAME("game_state.ingame", "&bIngame"),
-        GAME_STATE_END("game_state.ended", "&8Restarting..."),
-        GAME_STATE_ERROR("game_state.error", "&cError..."),
+        GAME_STATE_END("game_state.ended", "&8Restarting ..."),
+        GAME_STATE_ERROR("game_state.error", "&cError"),
         
         SIGN_0("sign.0", "•● MissileWars ●•"),
         SIGN_1("sign.1", "%state%"),
@@ -206,7 +206,7 @@ public class PluginMessages {
 
         STATS_NOT_ENABLED("stats.not_enabled", "&cThe Fight Stats are not enabled!"),
         STATS_FETCHING_PLAYERS("stats.fetching_players", "Fetching not cached player names: %current_size%/%real_size%"),
-        STATS_LOADING_DATA("stats.loading_data", "Loading data..."),
+        STATS_LOADING_DATA("stats.loading_data", "Loading data ..."),
         STATS_WRONG_DATE_FORMAT("stats.wrong_date_format", "&cPlease use the date format \"dd.MM.yyyy\"."),
         STATS_TOO_FEW_GAMES("stats.too_few_games", "&cPlease play more than 10 games to enable the Fight Stats for you.");
 
