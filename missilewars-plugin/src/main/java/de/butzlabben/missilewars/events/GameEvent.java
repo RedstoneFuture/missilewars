@@ -16,27 +16,16 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.event;
+package de.butzlabben.missilewars.events;
 
 import de.butzlabben.missilewars.game.Game;
-import org.bukkit.event.HandlerList;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.event.Event;
 
-public class GameStartEvent extends GameEvent {
+public abstract class GameEvent extends Event {
 
-    public final static HandlerList handlers = new HandlerList();
+    private final Game game;
 
-    public GameStartEvent(Game game) {
-        super(game);
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
-
-    @Override
-    @NotNull
-    public HandlerList getHandlers() {
-        return handlers;
+    public GameEvent(Game game) {
+        this.game = game;
     }
 }

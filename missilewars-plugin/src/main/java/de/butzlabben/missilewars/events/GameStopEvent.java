@@ -16,27 +16,17 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.event;
+package de.butzlabben.missilewars.events;
 
 import de.butzlabben.missilewars.game.Game;
-import lombok.Getter;
-import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.player.PlayerEvent;
-import org.jetbrains.annotations.NotNull;
 
-/**
- * Get's called, when a player has already left an arena
- */
-@Getter
-public class PlayerArenaLeaveEvent extends PlayerEvent {
+public class GameStopEvent extends GameEvent {
 
     public final static HandlerList handlers = new HandlerList();
-    private final Game game;
 
-    public PlayerArenaLeaveEvent(Player who, Game game) {
-        super(who);
-        this.game = game;
+    public GameStopEvent(Game game) {
+        super(game);
     }
 
     public static HandlerList getHandlerList() {
@@ -44,7 +34,6 @@ public class PlayerArenaLeaveEvent extends PlayerEvent {
     }
 
     @Override
-    @NotNull
     public HandlerList getHandlers() {
         return handlers;
     }
