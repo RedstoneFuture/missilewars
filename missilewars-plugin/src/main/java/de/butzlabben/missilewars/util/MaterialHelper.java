@@ -1,4 +1,4 @@
-package de.butzlabben.missilewars.util.version;
+package de.butzlabben.missilewars.util;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;

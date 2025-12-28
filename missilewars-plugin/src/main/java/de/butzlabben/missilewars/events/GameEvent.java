@@ -16,16 +16,16 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.game.signs;
+package de.butzlabben.missilewars.events;
 
-import de.butzlabben.missilewars.MissileWars;
-import java.util.List;
+import de.butzlabben.missilewars.game.Game;
+import org.bukkit.event.Event;
 
-public class SignUpdateRunnable implements Runnable {
+public abstract class GameEvent extends Event {
 
-    @Override
-    public void run() {
-        List<MWSign> signs = MissileWars.getInstance().getSignRepository().getSigns();
-        signs.forEach(MWSign::update);
+    private final Game game;
+
+    public GameEvent(Game game) {
+        this.game = game;
     }
 }

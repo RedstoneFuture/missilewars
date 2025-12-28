@@ -16,7 +16,7 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.game.signs;
+package de.butzlabben.missilewars.displays.signs;
 
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.MissileWars;
@@ -24,7 +24,7 @@ import de.butzlabben.missilewars.configuration.PluginMessages;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.GameManager;
 import de.butzlabben.missilewars.game.enums.GameState;
-import de.butzlabben.missilewars.util.version.MaterialHelper;
+import de.butzlabben.missilewars.util.MaterialHelper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

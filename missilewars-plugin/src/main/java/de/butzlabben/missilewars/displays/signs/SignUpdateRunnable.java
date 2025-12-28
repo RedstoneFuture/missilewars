@@ -16,36 +16,16 @@
  * along with MissileWars.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.butzlabben.missilewars.event;
+package de.butzlabben.missilewars.displays.signs;
 
-import de.butzlabben.missilewars.game.Game;
-import lombok.Getter;
-import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.player.PlayerEvent;
-import org.jetbrains.annotations.NotNull;
+import de.butzlabben.missilewars.MissileWars;
+import java.util.List;
 
-/**
- * Get's called, when a player has already left an arena
- */
-@Getter
-public class PlayerArenaLeaveEvent extends PlayerEvent {
-
-    public final static HandlerList handlers = new HandlerList();
-    private final Game game;
-
-    public PlayerArenaLeaveEvent(Player who, Game game) {
-        super(who);
-        this.game = game;
-    }
-
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
+public class SignUpdateRunnable implements Runnable {
 
     @Override
-    @NotNull
-    public HandlerList getHandlers() {
-        return handlers;
+    public void run() {
+        List<MWSign> signs = MissileWars.getInstance().getSignRepository().getSigns();
+        signs.forEach(MWSign::update);
     }
 }

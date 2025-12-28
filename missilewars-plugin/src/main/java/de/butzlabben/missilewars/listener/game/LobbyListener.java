@@ -20,8 +20,8 @@ package de.butzlabben.missilewars.listener.game;
 
 import de.butzlabben.missilewars.Logger;
 import de.butzlabben.missilewars.configuration.PluginMessages;
-import de.butzlabben.missilewars.event.PlayerArenaJoinEvent;
-import de.butzlabben.missilewars.event.PlayerArenaLeaveEvent;
+import de.butzlabben.missilewars.events.PlayerArenaJoinEvent;
+import de.butzlabben.missilewars.events.PlayerArenaLeaveEvent;
 import de.butzlabben.missilewars.game.Game;
 import de.butzlabben.missilewars.game.enums.TeamType;
 import de.butzlabben.missilewars.menus.MenuItem;

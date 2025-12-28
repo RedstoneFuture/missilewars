@@ -19,7 +19,7 @@
 package de.butzlabben.missilewars.game.timer.modules;
 
 import de.butzlabben.missilewars.game.Game;
-import de.butzlabben.missilewars.game.misc.ScoreboardManager;
+import de.butzlabben.missilewars.displays.ScoreboardManager;
 import de.butzlabben.missilewars.game.timer.Timer;
 
 /**

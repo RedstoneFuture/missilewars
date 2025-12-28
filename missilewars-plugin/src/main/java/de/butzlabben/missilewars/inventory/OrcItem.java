@@ -18,7 +18,7 @@
 
 package de.butzlabben.missilewars.inventory;
 
-import de.butzlabben.missilewars.util.version.ColorConverter;
+import de.butzlabben.missilewars.util.ColorConverter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
